@@ -96,26 +96,26 @@ int main() {
 
 	// note: each vertex's data is taken from the VBO currently specified as the array buffer
 	float vertices[] = { 
-		0.7f, 0.7f, 0.0f, // top right
-		-0.7f, 0.7f, 0.0f, // top left
-		0.7f, -0.7f, 0.0f, // bottom right
-		-0.7f, -0.7f, 0.0f, // bottom left
+		0.7f, 0.7f, 0.0f, // top right         0
+		-0.7f, 0.7f, 0.0f, // top left         1
+		0.7f, -0.7f, 0.0f, // bottom right     2
+		-0.7f, -0.7f, 0.0f, // bottom left     3
 	};
 	unsigned int indices[] = {
 		2, 0, 1, // first triangles
 		3, 2, 1 // second triangles
 	};
 
-	unsigned int VAO; // vertex array object
+	unsigned int VAO; // vertex array object (containerize VBO and EBO)
 	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO); // all subsequent VBO operations are bound to this VAO
+	glBindVertexArray(VAO); // all subsequent VBO and EBO operations are bound to this VAO
 
-	unsigned int VBO; // vertex buffer object
+	unsigned int VBO; // vertex buffer object (store vertices)
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	unsigned int EBO; // element buffer object
+	unsigned int EBO; // element buffer object (store indices)
 	glGenBuffers(1, &EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
