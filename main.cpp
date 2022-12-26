@@ -39,7 +39,7 @@ int main() {
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	// *** set up rendering pipeline ***
-	Shader shader("Shaders/interpolation.vert", "Shaders/interpolation.frag");
+	Shader shader("Shaders/fragcolor.vert", "Shaders/fragcolor.frag");
 
 	// note: each vertex's data is taken from the VBO currently specified as the array buffer
 	float vertices[] = { 
