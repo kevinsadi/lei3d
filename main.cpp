@@ -3,33 +3,13 @@
 
 #include <iostream>
 
+#include "Shader.hpp";
+
 // no reference types here let's gooooo
 
 // TODO: make header file for main when we refactor
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window);
-
-// just hardcoding in vertex shader right now, will write function
-// to read from files and compile later
-const char* vertexShaderSource =
-"#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n" // specify layout to get vec data from vertex buffer
-"layout (location = 1) in vec3 vertColor;\n" // specify color attribute to get color data from vertex buffer
-"out vec3 color;\n" // for output to frag shader
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"	color = vertColor;\n"
-"}\0";
-
-const char* fragmentShaderSource =
-"#version 330 core\n"
-"out vec4 FragColor;\n"
-"in vec3 color;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(color, 1.0);\n"
-"}\0";
 
 int main() {
 	// *** initialize window ***
@@ -59,44 +39,7 @@ int main() {
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	// *** set up rendering pipeline ***
-
-	// compile and configure shaders
-	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-
-	int success;
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		std::cout << "VERTEX SHADER COMPILATION FAILED" << std::endl;
-		return -1;
-	}
-
-	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
-
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		std::cout << "FRAGMENT SHADER COMPILATION FAILED" << std::endl;
-	}
-
-	unsigned int shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		std::cout << "SHADER PROGRAM LINKING FAILED" << std::endl;
-		return -1;
-	}
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
+	Shader shader("Shaders/interpolation.vert", "Shaders/interpolation.frag");
 
 	// note: each vertex's data is taken from the VBO currently specified as the array buffer
 	float vertices[] = { 
@@ -144,7 +87,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glUseProgram(shaderProgram);
+		shader.use();
 
 		//float timeVal = glfwGetTime();
 		//float greenVal = (sin(timeVal) + 1) / 2;
