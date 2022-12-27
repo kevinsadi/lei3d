@@ -2,6 +2,8 @@
 #include <GLFW/glfw3.h>
 
 #include <iostream>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 #include "Shader.hpp";
 
@@ -39,15 +41,39 @@ int main() {
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	// *** set up rendering pipeline ***
+	// load shaders
 	Shader shader("Shaders/fragcolor.vert", "Shaders/fragcolor.frag");
+
+	// load textures
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	// set texture wrapping options
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	// load and generate texture
+	int width, height, nrChannels;
+	uint8_t* data = stbi_load("Assets/kirbo.jpg", &width, &height, &nrChannels, 0);
+	if (data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "ERROR: Texture loading failed" << std::endl;
+	}
+	stbi_image_free(data); // no memory leaks here, no sir
 
 	// note: each vertex's data is taken from the VBO currently specified as the array buffer
 	float vertices[] = { 
-		// positions
-		0.7f, 0.7f, 0.0f,   1.0f, 0.0f, 0.0f,   // top right         0
-		-0.7f, 0.7f, 0.0f,  0.0f, 1.0f, 0.0f,   // top left         1
-		0.7f, -0.7f, 0.0f,  0.0f, 0.0f, 1.0f,    // bottom right     2
-		-0.7f, -0.7f, 0.0f, 1.0f, 0.0f, 0.0f    // bottom left     3
+		// positions          // colors	       // uv texture coords
+		 0.7f,  0.7f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,          // top right        0
+		-0.7f,  0.7f, 0.0f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,          // top left         1
+		 0.7f, -0.7f, 0.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,          // bottom right     2
+		-0.7f, -0.7f, 0.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f           // bottom left      3
 	};
 	unsigned int indices[] = {
 		2, 0, 1, // first triangles
@@ -69,12 +95,17 @@ int main() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), &indices, GL_STATIC_DRAW);
 
 	// position vert attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GL_FLOAT), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)0);
 	glEnableVertexAttribArray(0);
 
 	// color vert attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+
+	// texture vert attribute
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	// since I have to keep looking it up, the properties on this method is:
+	// index, numcomponents per vert attribute, type, normalized, stride, offset from beginning
 
 	// *** render loop ***
 	while (!glfwWindowShouldClose(window))
@@ -89,14 +120,11 @@ int main() {
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		shader.use();
 
-		//float timeVal = glfwGetTime();
-		//float greenVal = (sin(timeVal) + 1) / 2;
-		//int vertexColorLocation = glGetUniformLocation(shaderProgram, "squareColor");
-		//glUniform4f(vertexColorLocation, 1.0f, greenVal, 1.0f, 1.0f);
-
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
+		glBindVertexArray(0); // unbind vertex array
 
 		// swap chain and call callback functions
 		glfwSwapBuffers(window);
