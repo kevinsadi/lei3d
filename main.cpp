@@ -5,7 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#include "Shader.hpp";
+#include "Shader.hpp"
 
 // no reference types here let's gooooo
 
@@ -42,9 +42,11 @@ int main() {
 
 	// *** set up rendering pipeline ***
 	// load shaders
-	Shader shader("Shaders/fragcolor.vert", "Shaders/fragcolor.frag");
+	Shader shader("Shaders/interpolation.vert", "Shaders/interpolation.frag");
 
 	// load textures
+	stbi_set_flip_vertically_on_load(true);
+
 	unsigned int texture;
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -55,7 +57,7 @@ int main() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// load and generate texture
 	int width, height, nrChannels;
-	uint8_t* data = stbi_load("Assets/kirbo.jpg", &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load("Assets/kirbo.jpg", &width, &height, &nrChannels, 0);
 	if (data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -65,6 +67,8 @@ int main() {
 	{
 		std::cout << "ERROR: Texture loading failed" << std::endl;
 	}
+	glUniform1i(glGetUniformLocation(shader.shaderProgramID, "texture1"), 0);
+
 	stbi_image_free(data); // no memory leaks here, no sir
 
 	// note: each vertex's data is taken from the VBO currently specified as the array buffer
@@ -99,11 +103,12 @@ int main() {
 	glEnableVertexAttribArray(0);
 
 	// color vert attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(3 * sizeof(GL_FLOAT)));
 	glEnableVertexAttribArray(1);
 
 	// texture vert attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (void*)(6 * sizeof(GL_FLOAT)));
+	glEnableVertexAttribArray(2);
 	// since I have to keep looking it up, the properties on this method is:
 	// index, numcomponents per vert attribute, type, normalized, stride, offset from beginning
 
