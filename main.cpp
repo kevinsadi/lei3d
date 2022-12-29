@@ -1,9 +1,13 @@
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
 
 #include "Shader.hpp"
 
@@ -42,7 +46,7 @@ int main() {
 
 	// *** set up rendering pipeline ***
 	// load shaders
-	Shader shader("Shaders/interpolation.vert", "Shaders/interpolation.frag");
+	Shader shader("Shaders/transformations.vert", "Shaders/transformations.frag");
 
 	// load textures
 	stbi_set_flip_vertically_on_load(true);
@@ -125,10 +129,26 @@ int main() {
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		shader.use();
 
+		// transforms on object
+		glm::mat4 trans = glm::mat4(1.0f);
+		trans = glm::rotate(trans, (float)glfwGetTime() * 2, glm::vec3(0.0, 0.0, 1.0));
+		trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
+		trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0));
+
+		unsigned int transformLoc = glGetUniformLocation(shader.shaderProgramID, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		trans = glm::mat4(1.0f);
+		trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
+		trans = glm::translate(trans, glm::vec3(0.5f, 0.5f, 0));
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 		glBindVertexArray(0); // unbind vertex array
 
 		// swap chain and call callback functions
