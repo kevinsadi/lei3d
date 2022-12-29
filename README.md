@@ -1,3 +1,4 @@
+![Kek3d logo](Assets/Logo12-29-2022.png)
 # Kek3d
 
 Kek3d is a graphics engine I'm developing using OpenGL and C++. It's express purpose is to be used to animate the process of Stable Diffusion on Terrain and to implement a interior decorating game.
@@ -15,3 +16,5 @@ GLFW library - https://www.glfw.org
 GLAD library - https://glad.dav1d.de/
 GLM library - https://glm.g-truc.net
 stb image library - https://github.com/nothings/stb/blob/master/stb_image.h
+
+## Screenshots
