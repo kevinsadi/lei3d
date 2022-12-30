@@ -6,12 +6,14 @@ layout (location = 2) in vec2 aTexCoord;
 out vec3 color; // for output to frag shader
 out vec2 TexCoord;
 
-uniform mat4 transform;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 proj;
 
 // outputting the vertex position as color to see what happens
 void main()
 {
-    gl_Position = transform * vec4(aPos.x, aPos.y, aPos.z, 1.0);
+    gl_Position = proj * view * model * vec4(aPos.x, aPos.y, aPos.z, 1.0);
     color = aPos;
     TexCoord = aTexCoord;
 }

@@ -116,6 +116,17 @@ int main() {
 	// since I have to keep looking it up, the properties on this method is:
 	// index, numcomponents per vert attribute, type, normalized, stride, offset from beginning
 
+	// initialize transformation matrices
+	glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
+	// transforms on object
+	model = glm::rotate(model, glm::radians(-50.0f), glm::vec3(1.0, 0.0, 0.0));
+
+	// move camera back
+	view = glm::translate(view, glm::vec3(0.f, 0.f, -3.0f));
+
 	// *** render loop ***
 	while (!glfwWindowShouldClose(window))
 	{
@@ -129,24 +140,16 @@ int main() {
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		shader.use();
 
-		// transforms on object
-		glm::mat4 trans = glm::mat4(1.0f);
-		trans = glm::rotate(trans, (float)glfwGetTime() * 2, glm::vec3(0.0, 0.0, 1.0));
-		trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
-		trans = glm::translate(trans, glm::vec3(-0.5f, -0.5f, 0));
-
-		unsigned int transformLoc = glGetUniformLocation(shader.shaderProgramID, "transform");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+		unsigned int modelLoc = glGetUniformLocation(shader.shaderProgramID, "model");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		unsigned int viewLoc = glGetUniformLocation(shader.shaderProgramID, "view");
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		unsigned int projLoc = glGetUniformLocation(shader.shaderProgramID, "proj");
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-		trans = glm::mat4(1.0f);
-		trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
-		trans = glm::translate(trans, glm::vec3(0.5f, 0.5f, 0));
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glBindVertexArray(0); // unbind vertex array
