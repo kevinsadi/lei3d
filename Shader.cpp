@@ -77,3 +77,9 @@ void Shader::use()
 {
 	glUseProgram(shaderProgramID);
 }
+
+void Shader::setUniformMat4(glm::mat4& matrix, const char* matrixName)
+{
+	unsigned int projLoc = glGetUniformLocation(shaderProgramID, matrixName);
+	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(matrix));
+}
