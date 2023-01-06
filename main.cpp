@@ -82,8 +82,8 @@ float lastFrame = 0.0f;
 
 // camera globals
 bool firstMouse = true;
-double lastX = 400;
-double lastY = 300;
+float lastX = 400;
+float lastY = 300;
 float pitch = 0.0;
 float yaw = -90.f;
 
@@ -173,7 +173,7 @@ int main() {
 	// *** render loop ***
 	while (!glfwWindowShouldClose(window))
 	{
-		float currentFrame = glfwGetTime();
+		float currentFrame = (float)glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
@@ -203,7 +203,8 @@ int main() {
 		{
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, cubePosition);
-			
+			model = glm::rotate(model, glm::radians(45.0f) * (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+
 			shader.setUniformMat4(model, "model");
 
 			glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -227,8 +228,11 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 // ** glfw: called when there is mouse input
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+void mouse_callback(GLFWwindow* window, double xposInput, double yposInput)
 {
+	float xpos = static_cast<float>(xposInput);
+	float ypos = static_cast<float>(yposInput);
+
 	if (firstMouse)
 	{
 		lastX = xpos;
@@ -237,16 +241,18 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	}
 
 	float xoffset = xpos - lastX;
-	float yoffset = ypos + lastY; // openGL inverted y
+	float yoffset = lastY - ypos; // openGL inverted y
 	lastX = xpos;
 	lastY = ypos;
 
-	float mouseSensitivity = 0.0001f;
+	float mouseSensitivity = 0.1f;
 	xoffset *= mouseSensitivity;
 	yoffset *= mouseSensitivity;
 
 	yaw += xoffset;
 	pitch += yoffset;
+
+	std::cout << yaw << " " << pitch << std::endl;
 
 	if (pitch > 89.0f) pitch = 89.0f;
 	if (pitch < -89.0f) pitch = -89.0f;
