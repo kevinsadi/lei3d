@@ -12,6 +12,7 @@
 
 // TODO: make header file for main when we refactor
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void processInput(GLFWwindow* window);
 
 // note: each vertex's data is taken from the VBO currently specified as the array buffer
@@ -69,6 +70,22 @@ glm::vec3 cubePositions[] = {
 	glm::vec3(-4.0f, 4.0f, 4.0f),
 	glm::vec3( 1.0f, 3.0f, 5.0f)
 };
+
+// camera info (public)
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 3.0f);
+
+// ensure constant speed between frames
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
+
+// camera globals
+bool firstMouse = true;
+double lastX = 400;
+double lastY = 300;
+float pitch = 0.0;
+float yaw = -90.f;
 
 int main() {
 	// *** initialize window ***
@@ -150,10 +167,16 @@ int main() {
 	// initialize projection matrix here because it rarely changes
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 	glEnable(GL_DEPTH_TEST);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn off if UI
+	glfwSetCursorPosCallback(window, mouse_callback);
 
 	// *** render loop ***
 	while (!glfwWindowShouldClose(window))
 	{
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 		// input
 		processInput(window);
 
@@ -169,21 +192,17 @@ int main() {
 		// shaders 
 		shader.use();
 		shader.setUniformMat4(projection, "proj");
-
 		
 		// camera system
-		const float radius = 10.0f;
-		float camX = cos(glfwGetTime()) * radius;
-		float camZ = sin(glfwGetTime()) * radius;
 		glm::mat4 view;
-		view = glm::lookAt(glm::vec3(camX, 0, camZ), glm::vec3(0, 0, 0), glm::vec3(0.0, 1.0, 0.0));
+		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		shader.setUniformMat4(view, "view");
 
 		// draw geometry
-		for (unsigned int cube = 0; cube < sizeof(cubePositions); cube++)
+		for (glm::vec3 cubePosition : cubePositions)
 		{
 			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, cubePositions[cube]);
+			model = glm::translate(model, cubePosition);
 			
 			shader.setUniformMat4(model, "model");
 
@@ -201,9 +220,42 @@ int main() {
 	return 0;
 }
 
+// ** glfw: called when the user resizes the window
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
+}
+
+// ** glfw: called when there is mouse input
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+
+	float xoffset = xpos - lastX;
+	float yoffset = ypos + lastY; // openGL inverted y
+	lastX = xpos;
+	lastY = ypos;
+
+	float mouseSensitivity = 0.0001f;
+	xoffset *= mouseSensitivity;
+	yoffset *= mouseSensitivity;
+
+	yaw += xoffset;
+	pitch += yoffset;
+
+	if (pitch > 89.0f) pitch = 89.0f;
+	if (pitch < -89.0f) pitch = -89.0f;
+
+	glm::vec3 direction; // this is trig 
+	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	direction.y = sin(glm::radians(pitch));
+	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	cameraFront = glm::normalize(direction);
 }
 
 void processInput(GLFWwindow* window)
@@ -211,5 +263,23 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
+	}
+	// I am going to refactor this soon
+	const float cameraSpeed = 7.0f * deltaTime;
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	{
+		cameraPos += cameraFront * cameraSpeed;
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	{
+		cameraPos -= cameraFront * cameraSpeed;
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{
+		cameraPos -= glm::cross(cameraFront, cameraUp) * cameraSpeed;
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
+		cameraPos += glm::cross(cameraFront, cameraUp) * cameraSpeed;
 	}
 }
