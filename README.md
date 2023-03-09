@@ -5,9 +5,29 @@ Kek3d is a graphics engine I'm developing using OpenGL and C++. It's express pur
 
 Kek3d has originally been created using Visual Studio 2022 on Windows. To compile, please use CMake to create a build for whatever system you are currently running on. 
 
+## File Structure
+```
+kek3d/
+├─ data/                   # assets
+│  ├─ shaders/             # all the shaders for the engine
+│  ├─ textures/            # any necessary textures
+├─ lib/                    # Cmake pulls in any necessary requirements
+├─ screenshots/            # screenshots for the readme
+├─ src/                    # main meat of the code
+│  ├─ engine/              # Engine source is here
+│  │  ├─ main.cpp          
+│  │  ├─ Shader.cpp
+│  ├─ lib/                 # More necessary requirements for engine
+│  ├─ include/
+│  │  ├─ engine/
+│  │  │  ├─ Shader.hpp/    # Any necessary header files for main source
+├─ README.md
+```
+
+
 ## Build
 
-# Windows
+### Windows
 1) Download [CMake](https://cmake.org/download/). Ensure to set Cmake available on path to all users.
 2) Open CMake GUI tool. Select source code to be the root directory of this cloned repo
 3) Create a new folder called 'build'. Set this to be where we build our binaries
@@ -17,10 +37,10 @@ Kek3d has originally been created using Visual Studio 2022 on Windows. To compil
 7) Right click kek3d again, set it as the startup project. 
 8) Run the project.
 
-# Mac
+### Mac
 Do any of my friends have mac wanna try to build my project using cmake and see what goes wrong
 
-# Unix
+### Unix
 Do any of my friends who have unix wanna try to build my project using cmake and see what goes wrong
 
 ## Requirements
