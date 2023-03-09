@@ -26,10 +26,10 @@ Do any of my friends who have unix wanna try to build my project using cmake and
 ## Requirements
 Graphics card that support OpenGL 4.6
 
-GLFW library - https://www.glfw.org
-GLAD library - https://glad.dav1d.de/
-GLM library - https://glm.g-truc.net
-stb image library - https://github.com/nothings/stb/blob/master/stb_image.h
+* GLFW library - https://www.glfw.org
+* GLAD library - https://glad.dav1d.de/
+* GLM library - https://glm.g-truc.net
+* stb image library - https://github.com/nothings/stb/blob/master/stb_image.h
 
 ## Screenshots
 
