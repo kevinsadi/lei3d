@@ -1,14 +1,18 @@
+#define CGLTF_IMPLEMENTATION
+#include <cgltf.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 
-#include "Shader.hpp"
+#include "include/engine/Shader.hpp"
 
 // TODO: make header file for main when we refactor
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -16,7 +20,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void processInput(GLFWwindow* window);
 
 // note: each vertex's data is taken from the VBO currently specified as the array buffer
-float vertices[] = {
+float vertices[] = {  
+	// face 1
 	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
 	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
@@ -24,6 +29,7 @@ float vertices[] = {
 	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
 	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
+	// face 2
 	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
 	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
@@ -31,6 +37,7 @@ float vertices[] = {
 	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
 	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 
+	// face 3
 	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
 	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
@@ -38,6 +45,7 @@ float vertices[] = {
 	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
+	 // face 4
 	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
 	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
@@ -45,6 +53,7 @@ float vertices[] = {
 	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
+	 // face 5
 	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
 	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
@@ -52,12 +61,24 @@ float vertices[] = {
 	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
+	// face 6
 	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
 	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
 	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
 	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+};
+
+float groundPlaneVertices[] = {
+	0.0f, 0.0f, 0.0f, // 0
+	0.0f, 0.0f, 6.0f, // 1
+	6.0f, 0.0f, 6.0f, // 2
+	6.0f, 0.0f, 0.0f  // 3
+};
+unsigned int groundPlaneIndices[] = {
+	0, 2, 1,
+	0, 3, 2
 };
 
 glm::vec3 cubePositions[] = {
@@ -116,7 +137,7 @@ int main() {
 
 	// *** set up rendering pipeline ***
 	// load shaders
-	Shader shader("Shaders/transformations.vert", "Shaders/transformations.frag");
+	Shader shader("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
 
 	// load textures
 	stbi_set_flip_vertically_on_load(true);
@@ -131,7 +152,7 @@ int main() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// load and generate texture
 	int width, height, nrChannels;
-	unsigned char* data = stbi_load("Assets/kirbo.jpg", &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load("./data/textures/kirbo.jpg", &width, &height, &nrChannels, 0);
 	if (data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -164,6 +185,27 @@ int main() {
 	// since I have to keep looking it up, the properties on this method is:
 	// index, numcomponents per vert attribute, type, normalized, stride, offset from beginning
 
+
+	/*     DEFINE PLANE      */
+	unsigned int planeVAO;
+	unsigned int planeVBO;
+	unsigned int planeEBO;
+
+	glGenVertexArrays(1, &planeVAO);
+	glGenBuffers(1, &planeVBO);
+	glGenBuffers(1, &planeEBO);
+
+	glBindVertexArray(planeVAO);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(groundPlaneVertices), groundPlaneVertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(groundPlaneIndices), groundPlaneIndices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
 	// initialize projection matrix here because it rarely changes
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -183,6 +225,10 @@ int main() {
 		// rendering
 		glClearColor(0, 0, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// draw plane
+		glBindVertexArray(planeVAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		// set texture
 		glActiveTexture(GL_TEXTURE0);
@@ -252,15 +298,10 @@ void mouse_callback(GLFWwindow* window, double xposInput, double yposInput)
 	yaw += xoffset;
 	pitch += yoffset;
 
-	std::cout << yaw << " " << pitch << std::endl;
-
 	if (pitch > 89.0f) pitch = 89.0f;
 	if (pitch < -89.0f) pitch = -89.0f;
 
 	glm::vec3 direction; // this is trig 
-	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	direction.y = sin(glm::radians(pitch));
-	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 	cameraFront = glm::normalize(direction);
 }
 

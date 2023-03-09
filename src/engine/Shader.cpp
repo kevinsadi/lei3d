@@ -1,4 +1,4 @@
-﻿#include "Shader.hpp";
+﻿#include "include/engine/Shader.hpp";
 
 Shader::Shader(const char* vertexShaderPath, const char* fragShaderPath)
 {
