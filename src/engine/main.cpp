@@ -1,3 +1,10 @@
+/*
+ * This file is a part of Kek3D. 
+ * 
+ * Author: Kevin Sadi
+ */
+
+
 #define CGLTF_IMPLEMENTATION
 #include <cgltf.h>
 #define STB_IMAGE_IMPLEMENTATION
@@ -112,7 +119,11 @@ float lastX = 400;
 float lastY = 300;
 float pitch = 0.0;
 float yaw = -90.f;
-
+/*
+ * The main entrypoint for Kek3d (needs to be refactored)
+ * 
+ * Creates window, loads textures, loads vertices, has main render loop
+ */
 int main() {
 	// *** initialize window ***
 	glfwInit();
@@ -343,4 +354,47 @@ void processInput(GLFWwindow* window)
 		cameraPos += glm::cross(cameraFront, cameraUp) * cameraSpeed;
 	}
 	*/
+}
+
+
+/*
+ * Takes in two arrays by reference and populates them with the vertices to create a square ground plane made by vertices
+ * 
+ * Both arrays should have size dim*dim
+ * 
+ * @param groundPlaneVertices - 
+ * @param groundPlaneUVs -
+ * @param dim - this should be 128 for our purposes
+ */
+void createGroundPlane(float* groundPlaneVertices, float* groundPlaneUVs, int dim)
+{
+	// okay now lets try to make these ground plane verts and indices, but not manually
+	for (int vertX = 0; vertX < dim; ++vertX)
+	{
+		for (int vertY = 0; vertY < dim; ++vertY)
+		{
+
+		}
+	}
+}
+
+/*
+ * Takes in array by reference and populates it with the 
+ *
+ * Both arrays should have size dim*dim
+ *
+ * @param groundPlaneVertices -
+ * @param groundPlaneUVs -
+ * @param dim - this should be 128 for our purposes
+ */
+void createGroundPlaneTris(float* groundPlaneIndices, int lenVertices)
+{
+	// okay now lets try to make these ground plane verts and indices, but not manually
+	for (int vertX = 0; vertX < dim; ++vertX)
+	{
+		for (int vertY = 0; vertY < dim; ++vertY)
+		{
+
+		}
+	}
 }
