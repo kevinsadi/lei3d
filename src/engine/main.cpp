@@ -71,10 +71,10 @@ float vertices[] = {
 };
 
 float groundPlaneVertices[] = {
-	0.0f, -0.5f, 0.0f, // 0
-	0.0f, -0.5f, 6.0f, // 1
-	6.0f, -0.5f, 6.0f, // 2
-	6.0f, -0.5f, 0.0f  // 3
+	0.0f, -0.5f, 0.0f, 0.0f, 0.0f, // 0
+	0.0f, -0.5f, 6.0f, 0.0f, 1.0f, // 1
+	6.0f, -0.5f, 6.0f, 1.0f, 1.0f, // 2
+	6.0f, -0.5f, 0.0f, 1.0f, 0.0f  // 3
 };
 unsigned int groundPlaneIndices[] = {
 	0, 2, 1,
@@ -157,7 +157,7 @@ int main() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// load and generate texture
 	int width, height, nrChannels;
-	unsigned char* data = stbi_load("./data/textures/kirbo.jpg", &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load("./data/textures/rgb.png", &width, &height, &nrChannels, 0);
 	if (data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -208,8 +208,11 @@ int main() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(groundPlaneIndices), groundPlaneIndices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (void*)(3 * sizeof(GL_FLOAT)));
+	glEnableVertexAttribArray(1);
 
 	// initialize projection matrix here because it rarely changes
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
