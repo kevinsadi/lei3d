@@ -71,10 +71,10 @@ float vertices[] = {
 };
 
 float groundPlaneVertices[] = {
-	0.0f, 0.0f, 0.0f, // 0
-	0.0f, 0.0f, 6.0f, // 1
-	6.0f, 0.0f, 6.0f, // 2
-	6.0f, 0.0f, 0.0f  // 3
+	0.0f, -0.5f, 0.0f, // 0
+	0.0f, -0.5f, 6.0f, // 1
+	6.0f, -0.5f, 6.0f, // 2
+	6.0f, -0.5f, 0.0f  // 3
 };
 unsigned int groundPlaneIndices[] = {
 	0, 2, 1,
@@ -92,10 +92,15 @@ glm::vec3 cubePositions[] = {
 	glm::vec3( 1.0f, 3.0f, 5.0f)
 };
 
-// camera info (public)
+// Get camera info using the Gram-Schmidt process
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 3.0f);
+glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 reverseCameraPointing = glm::normalize(cameraPos - cameraTarget);
+
+glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec3 cameraRight = glm::cross(up, reverseCameraPointing); // right hand rule 
+
+glm::vec3 cameraUp = glm::cross(reverseCameraPointing, cameraRight);
 
 // ensure constant speed between frames
 float deltaTime = 0.0f;
@@ -115,7 +120,7 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "kek3d", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(1200,1000, "kek3d", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "failed to create GLFW window" << std::endl;
@@ -130,7 +135,7 @@ int main() {
 		return -1;
 	}
 
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, 1200, 1000);
 
 	// resize the openGL context if a user changes the window size
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -212,7 +217,7 @@ int main() {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn off if UI
 	glfwSetCursorPosCallback(window, mouse_callback);
 
-	// *** render loop ***
+	// ************************************** RENDER LOOP **********************************************
 	while (!glfwWindowShouldClose(window))
 	{
 		float currentFrame = (float)glfwGetTime();
@@ -230,7 +235,7 @@ int main() {
 		glBindVertexArray(planeVAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		// set texture
+		// set VAO for the kirbies
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture);
 		glBindVertexArray(VAO);
@@ -240,16 +245,23 @@ int main() {
 		shader.setUniformMat4(projection, "proj");
 		
 		// camera system
-		glm::mat4 view;
-		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		const float radius = 12.0f;
+		float cameraX = cos(glfwGetTime()) * radius;
+		float cameraY = sin(glfwGetTime()) * radius;
+
+		glm::mat4 view = glm::lookAt(glm::vec3(cameraX, 5.0f, cameraY), // param eye is misleading. It is the location of the camera
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f));
+		//glm::mat4 view;
+		//view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		shader.setUniformMat4(view, "view");
 
 		// draw geometry
 		for (glm::vec3 cubePosition : cubePositions)
 		{
 			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, cubePosition);
-			model = glm::rotate(model, glm::radians(45.0f) * (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+			//model = glm::translate(model, cubePosition);
+			//model = glm::rotate(model, glm::radians(45.0f) * (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
 
 			shader.setUniformMat4(model, "model");
 
@@ -300,9 +312,6 @@ void mouse_callback(GLFWwindow* window, double xposInput, double yposInput)
 
 	if (pitch > 89.0f) pitch = 89.0f;
 	if (pitch < -89.0f) pitch = -89.0f;
-
-	glm::vec3 direction; // this is trig 
-	cameraFront = glm::normalize(direction);
 }
 
 void processInput(GLFWwindow* window)
@@ -312,6 +321,7 @@ void processInput(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);
 	}
 	// I am going to refactor this soon
+	/*
 	const float cameraSpeed = 7.0f * deltaTime;
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
@@ -329,4 +339,5 @@ void processInput(GLFWwindow* window)
 	{
 		cameraPos += glm::cross(cameraFront, cameraUp) * cameraSpeed;
 	}
+	*/
 }
