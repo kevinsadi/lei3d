@@ -18,6 +18,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+#include <vector>
 
 #include "include/engine/Shader.hpp"
 
@@ -27,6 +28,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void processInput(GLFWwindow* window);
 void createGroundPlane(float* groundPlaneVertices, int dim);
 void createGroundPlaneTris(unsigned int* groundPlaneIndices, int dim);
+std::vector<unsigned char>* getElevationData();
 
 // note: each vertex's data is taken from the VBO currently specified as the array buffer
 float vertices[] = {  
@@ -275,7 +277,7 @@ int main() {
 		float cameraX = cos(glfwGetTime()) * radius;
 		float cameraY = sin(glfwGetTime()) * radius;
 
-		glm::mat4 view = glm::lookAt(glm::vec3(cameraX, 50.0f, cameraY), // param eye is misleading. It is the location of the camera
+		glm::mat4 view = glm::lookAt(glm::vec3(cameraX, 100.0f, cameraY), // param eye is misleading. It is the location of the camera
 			glm::vec3(0.0f, 0.0f, 0.0f),
 			glm::vec3(0.0f, 1.0f, 0.0f));
 		//glm::mat4 view;
@@ -385,6 +387,9 @@ void processInput(GLFWwindow* window)
  */
 void createGroundPlane(float* groundPlaneVertices, int dim)
 {
+	std::vector<unsigned char>* elevation = getElevationData();
+	int vertItr = 0;
+
 	// okay now lets try to make these ground plane verts and indices, but not manually
 	for (int vertX = 0; vertX < dim; ++vertX)
 	{
@@ -393,13 +398,34 @@ void createGroundPlane(float* groundPlaneVertices, int dim)
 			int vertArrIndex = vertX * 5 + (vertY * 5 * dim); // start of this vertex in the array
 			// vertex position
 			groundPlaneVertices[vertArrIndex] = float(vertX);
-			groundPlaneVertices[++vertArrIndex] = 0.0f;
+			groundPlaneVertices[++vertArrIndex] = (*elevation)[vertItr];
 			groundPlaneVertices[++vertArrIndex] = float(vertY);
 			// uvs
 			groundPlaneVertices[++vertArrIndex] = float(vertX) / dim;
 			groundPlaneVertices[++vertArrIndex] = float(vertY) / dim;
+
+			vertItr++;
 		}
 	}
+}
+
+
+std::vector<unsigned char>* getElevationData()
+{
+	stbi_set_flip_vertically_on_load(true);
+
+	int width, height, nrChannels;
+	unsigned char* data = stbi_load("./data/textures/elevation.png", &width, &height, &nrChannels, 0);
+	if (!data)
+	{
+		std::cout << "ERROR: Elevation loading failed" << std::endl;
+	}
+
+	std::vector<unsigned char>* imageVec = new std::vector<unsigned char>;
+	imageVec->assign(data, data + width * height);
+	stbi_image_free(data); // no memory leaks here, no sir
+
+	return imageVec;
 }
 
 /*
