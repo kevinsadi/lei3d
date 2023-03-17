@@ -215,23 +215,6 @@ int main() {
 	createGroundPlane(groundPlaneVertices, dim);
 	createGroundPlaneTris(groundPlaneIndices, dim);
 
-	for (int i = 0; i < dim * dim * 5; i++)
-	{
-		std::cout << groundPlaneVertices[i] << " ";
-		if ((i+1) % 5 == 0) {
-			std::cout << " " << std::endl;
-		}
-	}
-
-	for (int i = 0; i < ((dim-1) * (dim-1) * 6); i++)
-	{
-		std::cout << groundPlaneIndices[i] << " ";
-		if ((i + 1) % 3 == 0) {
-			std::cout << " " << std::endl;
-		}
-	}
-
-
 	unsigned int planeVAO;
 	unsigned int planeVBO;
 	unsigned int planeEBO;
@@ -288,21 +271,25 @@ int main() {
 		shader.setUniformMat4(projection, "proj");
 		
 		// camera system
-		const float radius = 25.0f;
+		const float radius = 40.0f;
 		float cameraX = cos(glfwGetTime()) * radius;
 		float cameraY = sin(glfwGetTime()) * radius;
 
-		glm::mat4 view = glm::lookAt(glm::vec3(cameraX, 5.0f, cameraY), // param eye is misleading. It is the location of the camera
+		glm::mat4 view = glm::lookAt(glm::vec3(cameraX, 50.0f, cameraY), // param eye is misleading. It is the location of the camera
 			glm::vec3(0.0f, 0.0f, 0.0f),
 			glm::vec3(0.0f, 1.0f, 0.0f));
 		//glm::mat4 view;
 		//view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		shader.setUniformMat4(view, "view");
 
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.25, 0.25, 0.25));
+		model = glm::translate(model, glm::vec3(-64, 0, -64));
+
 		// draw geometry
 		for (glm::vec3 cubePosition : cubePositions)
 		{
-			glm::mat4 model = glm::mat4(1.0f);
+			//glm::mat4 model = glm::mat4(1.0f);
 			//model = glm::translate(model, cubePosition);
 			//model = glm::rotate(model, glm::radians(45.0f) * (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
 
