@@ -25,6 +25,8 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void processInput(GLFWwindow* window);
+void createGroundPlane(float* groundPlaneVertices, int dim);
+void createGroundPlaneTris(unsigned int* groundPlaneIndices, int dim);
 
 // note: each vertex's data is taken from the VBO currently specified as the array buffer
 float vertices[] = {  
@@ -77,6 +79,7 @@ float vertices[] = {
 	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
 
+/*
 float groundPlaneVertices[] = {
 	0.0f, -0.5f, 0.0f, 0.0f, 0.0f, // 0
 	0.0f, -0.5f, 6.0f, 0.0f, 1.0f, // 1
@@ -87,6 +90,7 @@ unsigned int groundPlaneIndices[] = {
 	0, 2, 1,
 	0, 3, 2
 };
+*/
 
 glm::vec3 cubePositions[] = {
 	glm::vec3( 0.0f, 0.0f, 0.0f),
@@ -203,6 +207,31 @@ int main() {
 
 
 	/*     DEFINE PLANE      */
+	const int dim = 128;
+
+	float groundPlaneVertices[dim*dim*5];
+	unsigned int groundPlaneIndices[(dim - 1) * (dim - 1) * 6];
+	
+	createGroundPlane(groundPlaneVertices, dim);
+	createGroundPlaneTris(groundPlaneIndices, dim);
+
+	for (int i = 0; i < dim * dim * 5; i++)
+	{
+		std::cout << groundPlaneVertices[i] << " ";
+		if ((i+1) % 5 == 0) {
+			std::cout << " " << std::endl;
+		}
+	}
+
+	for (int i = 0; i < ((dim-1) * (dim-1) * 6); i++)
+	{
+		std::cout << groundPlaneIndices[i] << " ";
+		if ((i + 1) % 3 == 0) {
+			std::cout << " " << std::endl;
+		}
+	}
+
+
 	unsigned int planeVAO;
 	unsigned int planeVBO;
 	unsigned int planeEBO;
@@ -228,7 +257,7 @@ int main() {
 	// initialize projection matrix here because it rarely changes
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 	glEnable(GL_DEPTH_TEST);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn off if UI
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn off if UI
 	glfwSetCursorPosCallback(window, mouse_callback);
 
 	// ************************************** RENDER LOOP **********************************************
@@ -247,7 +276,7 @@ int main() {
 
 		// draw plane
 		glBindVertexArray(planeVAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, ((dim-1)*(dim-1)*6), GL_UNSIGNED_INT, 0);
 
 		// set VAO for the kirbies
 		glActiveTexture(GL_TEXTURE0);
@@ -259,7 +288,7 @@ int main() {
 		shader.setUniformMat4(projection, "proj");
 		
 		// camera system
-		const float radius = 12.0f;
+		const float radius = 25.0f;
 		float cameraX = cos(glfwGetTime()) * radius;
 		float cameraY = sin(glfwGetTime()) * radius;
 
@@ -360,20 +389,28 @@ void processInput(GLFWwindow* window)
 /*
  * Takes in two arrays by reference and populates them with the vertices to create a square ground plane made by vertices
  * 
- * Both arrays should have size dim*dim
+ * 
+ * Array should have size dim*dim*(3+2)           - explanation: dim*dim vertices. 3 vert points + 2 uv coords per vertex
  * 
  * @param groundPlaneVertices - 
  * @param groundPlaneUVs -
  * @param dim - this should be 128 for our purposes
  */
-void createGroundPlane(float* groundPlaneVertices, float* groundPlaneUVs, int dim)
+void createGroundPlane(float* groundPlaneVertices, int dim)
 {
 	// okay now lets try to make these ground plane verts and indices, but not manually
 	for (int vertX = 0; vertX < dim; ++vertX)
 	{
 		for (int vertY = 0; vertY < dim; ++vertY)
 		{
-
+			int vertArrIndex = vertX * 5 + (vertY * 5 * dim); // start of this vertex in the array
+			// vertex position
+			groundPlaneVertices[vertArrIndex] = float(vertX);
+			groundPlaneVertices[++vertArrIndex] = 0.0f;
+			groundPlaneVertices[++vertArrIndex] = float(vertY);
+			// uvs
+			groundPlaneVertices[++vertArrIndex] = float(vertX) / dim;
+			groundPlaneVertices[++vertArrIndex] = float(vertY) / dim;
 		}
 	}
 }
@@ -381,20 +418,32 @@ void createGroundPlane(float* groundPlaneVertices, float* groundPlaneUVs, int di
 /*
  * Takes in array by reference and populates it with the 
  *
- * Both arrays should have size dim*dim
+ * Array should have size (dim-1)*(dim-1)*6.              - explanation = this gives us cubes * cubes. 2 tris per cube. 3 indices per tri.
  *
  * @param groundPlaneVertices -
  * @param groundPlaneUVs -
  * @param dim - this should be 128 for our purposes
  */
-void createGroundPlaneTris(float* groundPlaneIndices, int lenVertices)
+void createGroundPlaneTris(unsigned int* groundPlaneIndices, int dim)
 {
-	// okay now lets try to make these ground plane verts and indices, but not manually
-	for (int vertX = 0; vertX < dim; ++vertX)
-	{
-		for (int vertY = 0; vertY < dim; ++vertY)
-		{
+	int colCheck = 0;
+	int tNum = 0;
 
+	// okay now lets try to make these ground plane verts and indices, but not manually
+	for (int vi = 0; vi < (dim * dim) - dim; vi++)
+	{
+		colCheck += 1;
+		if (colCheck % dim != 0) // do not include vertices on the last column
+		{
+			groundPlaneIndices[tNum]   = vi+1;     // right of current index
+			groundPlaneIndices[tNum+1] = vi+dim+1; // right of directly above index
+			groundPlaneIndices[tNum+2] = vi;       // current index
+
+			groundPlaneIndices[tNum+3] = vi;       // current index
+			groundPlaneIndices[tNum+4] = vi+dim+1; // right of directly above index
+			groundPlaneIndices[tNum+5] = vi+dim;   // directly above index
+
+			tNum += 6;
 		}
 	}
 }
