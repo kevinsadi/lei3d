@@ -11,9 +11,11 @@ target_include_directories(spdlog PUBLIC include)
 set(sourceFiles
     main.cpp
     Shader.cpp
+    PCGHelpers.cpp
 )
 set(headerFiles
     include/engine/Shader.hpp
+    include/pcg/PCGHelpers.hpp
 )
 add_executable(kek3d ${sourceFiles} ${headerFiles})
 add_dependencies(kek3d copy_data)
