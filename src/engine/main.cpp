@@ -1,3 +1,10 @@
+/*
+ * This file is a part of Kek3D. 
+ * 
+ * Author: Kevin Sadi
+ */
+
+
 #define CGLTF_IMPLEMENTATION
 #include <cgltf.h>
 #define STB_IMAGE_IMPLEMENTATION
@@ -11,6 +18,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
+#include <vector>
 
 #include "include/engine/Shader.hpp"
 
@@ -18,6 +26,9 @@
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void processInput(GLFWwindow* window);
+void createGroundPlane(float* groundPlaneVertices, int dim);
+void createGroundPlaneTris(unsigned int* groundPlaneIndices, int dim);
+std::vector<unsigned char>* getElevationData();
 
 // note: each vertex's data is taken from the VBO currently specified as the array buffer
 float vertices[] = {  
@@ -70,16 +81,18 @@ float vertices[] = {
 	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 };
 
+/*
 float groundPlaneVertices[] = {
-	0.0f, -0.5f, 0.0f, // 0
-	0.0f, -0.5f, 6.0f, // 1
-	6.0f, -0.5f, 6.0f, // 2
-	6.0f, -0.5f, 0.0f  // 3
+	0.0f, -0.5f, 0.0f, 0.0f, 0.0f, // 0
+	0.0f, -0.5f, 6.0f, 0.0f, 1.0f, // 1
+	6.0f, -0.5f, 6.0f, 1.0f, 1.0f, // 2
+	6.0f, -0.5f, 0.0f, 1.0f, 0.0f  // 3
 };
 unsigned int groundPlaneIndices[] = {
 	0, 2, 1,
 	0, 3, 2
 };
+*/
 
 glm::vec3 cubePositions[] = {
 	glm::vec3( 0.0f, 0.0f, 0.0f),
@@ -112,7 +125,11 @@ float lastX = 400;
 float lastY = 300;
 float pitch = 0.0;
 float yaw = -90.f;
-
+/*
+ * The main entrypoint for Kek3d (needs to be refactored)
+ * 
+ * Creates window, loads textures, loads vertices, has main render loop
+ */
 int main() {
 	// *** initialize window ***
 	glfwInit();
@@ -157,7 +174,7 @@ int main() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	// load and generate texture
 	int width, height, nrChannels;
-	unsigned char* data = stbi_load("./data/textures/kirbo.jpg", &width, &height, &nrChannels, 0);
+	unsigned char* data = stbi_load("./data/textures/rgb.png", &width, &height, &nrChannels, 0);
 	if (data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -192,6 +209,14 @@ int main() {
 
 
 	/*     DEFINE PLANE      */
+	const int dim = 128;
+
+	float groundPlaneVertices[dim*dim*5];
+	unsigned int groundPlaneIndices[(dim - 1) * (dim - 1) * 6];
+	
+	createGroundPlane(groundPlaneVertices, dim);
+	createGroundPlaneTris(groundPlaneIndices, dim);
+
 	unsigned int planeVAO;
 	unsigned int planeVBO;
 	unsigned int planeEBO;
@@ -208,13 +233,16 @@ int main() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(groundPlaneIndices), groundPlaneIndices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (void*)(3 * sizeof(GL_FLOAT)));
+	glEnableVertexAttribArray(1);
 
 	// initialize projection matrix here because it rarely changes
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 	glEnable(GL_DEPTH_TEST);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn off if UI
+	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn off if UI
 	glfwSetCursorPosCallback(window, mouse_callback);
 
 	// ************************************** RENDER LOOP **********************************************
@@ -233,7 +261,7 @@ int main() {
 
 		// draw plane
 		glBindVertexArray(planeVAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, ((dim-1)*(dim-1)*6), GL_UNSIGNED_INT, 0);
 
 		// set VAO for the kirbies
 		glActiveTexture(GL_TEXTURE0);
@@ -245,21 +273,25 @@ int main() {
 		shader.setUniformMat4(projection, "proj");
 		
 		// camera system
-		const float radius = 12.0f;
+		const float radius = 40.0f;
 		float cameraX = cos(glfwGetTime()) * radius;
 		float cameraY = sin(glfwGetTime()) * radius;
 
-		glm::mat4 view = glm::lookAt(glm::vec3(cameraX, 5.0f, cameraY), // param eye is misleading. It is the location of the camera
+		glm::mat4 view = glm::lookAt(glm::vec3(cameraX, 100.0f, cameraY), // param eye is misleading. It is the location of the camera
 			glm::vec3(0.0f, 0.0f, 0.0f),
 			glm::vec3(0.0f, 1.0f, 0.0f));
 		//glm::mat4 view;
 		//view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		shader.setUniformMat4(view, "view");
 
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::scale(model, glm::vec3(0.25, 0.25, 0.25));
+		model = glm::translate(model, glm::vec3(-64, 0, -64));
+
 		// draw geometry
 		for (glm::vec3 cubePosition : cubePositions)
 		{
-			glm::mat4 model = glm::mat4(1.0f);
+			//glm::mat4 model = glm::mat4(1.0f);
 			//model = glm::translate(model, cubePosition);
 			//model = glm::rotate(model, glm::radians(45.0f) * (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -340,4 +372,91 @@ void processInput(GLFWwindow* window)
 		cameraPos += glm::cross(cameraFront, cameraUp) * cameraSpeed;
 	}
 	*/
+}
+
+
+/*
+ * Takes in two arrays by reference and populates them with the vertices to create a square ground plane made by vertices
+ * 
+ * 
+ * Array should have size dim*dim*(3+2)           - explanation: dim*dim vertices. 3 vert points + 2 uv coords per vertex
+ * 
+ * @param groundPlaneVertices - 
+ * @param groundPlaneUVs -
+ * @param dim - this should be 128 for our purposes
+ */
+void createGroundPlane(float* groundPlaneVertices, int dim)
+{
+	std::vector<unsigned char>* elevation = getElevationData();
+	int vertItr = 0;
+
+	// okay now lets try to make these ground plane verts and indices, but not manually
+	for (int vertX = 0; vertX < dim; ++vertX)
+	{
+		for (int vertY = 0; vertY < dim; ++vertY)
+		{
+			int vertArrIndex = vertX * 5 + (vertY * 5 * dim); // start of this vertex in the array
+			// vertex position
+			groundPlaneVertices[vertArrIndex] = float(vertX);
+			groundPlaneVertices[++vertArrIndex] = (*elevation)[vertItr];
+			groundPlaneVertices[++vertArrIndex] = float(vertY);
+			// uvs
+			groundPlaneVertices[++vertArrIndex] = float(vertX) / dim;
+			groundPlaneVertices[++vertArrIndex] = float(vertY) / dim;
+
+			vertItr++;
+		}
+	}
+}
+
+
+std::vector<unsigned char>* getElevationData()
+{
+	stbi_set_flip_vertically_on_load(true);
+
+	int width, height, nrChannels;
+	unsigned char* data = stbi_load("./data/textures/elevation.png", &width, &height, &nrChannels, 0);
+	if (!data)
+	{
+		std::cout << "ERROR: Elevation loading failed" << std::endl;
+	}
+
+	std::vector<unsigned char>* imageVec = new std::vector<unsigned char>;
+	imageVec->assign(data, data + width * height);
+	stbi_image_free(data); // no memory leaks here, no sir
+
+	return imageVec;
+}
+
+/*
+ * Takes in array by reference and populates it with the 
+ *
+ * Array should have size (dim-1)*(dim-1)*6.              - explanation = this gives us cubes * cubes. 2 tris per cube. 3 indices per tri.
+ *
+ * @param groundPlaneVertices -
+ * @param groundPlaneUVs -
+ * @param dim - this should be 128 for our purposes
+ */
+void createGroundPlaneTris(unsigned int* groundPlaneIndices, int dim)
+{
+	int colCheck = 0;
+	int tNum = 0;
+
+	// okay now lets try to make these ground plane verts and indices, but not manually
+	for (int vi = 0; vi < (dim * dim) - dim; vi++)
+	{
+		colCheck += 1;
+		if (colCheck % dim != 0) // do not include vertices on the last column
+		{
+			groundPlaneIndices[tNum]   = vi+1;     // right of current index
+			groundPlaneIndices[tNum+1] = vi+dim+1; // right of directly above index
+			groundPlaneIndices[tNum+2] = vi;       // current index
+
+			groundPlaneIndices[tNum+3] = vi;       // current index
+			groundPlaneIndices[tNum+4] = vi+dim+1; // right of directly above index
+			groundPlaneIndices[tNum+5] = vi+dim;   // directly above index
+
+			tNum += 6;
+		}
+	}
 }
