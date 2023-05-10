@@ -3,7 +3,7 @@
 namespace kek3d 
 {
 
-    std::vector<unsigned char>* getElevationData()
+    std::vector<unsigned char> getElevationData()
     {
         stbi_set_flip_vertically_on_load(true);
 
@@ -14,8 +14,8 @@ namespace kek3d
             std::cout << "ERROR: Elevation loading failed" << std::endl;
         }
 
-        std::vector<unsigned char>* imageVec = new std::vector<unsigned char>;
-        imageVec->assign(data, data + width * height);
+        std::vector<unsigned char> imageVec;
+        imageVec.assign(data, data + width * height);
         stbi_image_free(data); // no memory leaks here, no sir
 
         return imageVec;
@@ -33,7 +33,7 @@ namespace kek3d
     */
     void createGroundPlane(float* groundPlaneVertices, int dim)
     {
-        std::vector<unsigned char>* elevation = getElevationData();
+        std::vector<unsigned char> elevation = getElevationData();
         int vertItr = 0;
 
         // okay now lets try to make these ground plane verts and indices, but not manually
@@ -44,7 +44,7 @@ namespace kek3d
                 int vertArrIndex = vertX * 5 + (vertY * 5 * dim); // start of this vertex in the array
                 // vertex position
                 groundPlaneVertices[vertArrIndex] = float(vertX);
-                groundPlaneVertices[++vertArrIndex] = (*elevation)[vertItr];
+                groundPlaneVertices[++vertArrIndex] = elevation[vertItr];
                 groundPlaneVertices[++vertArrIndex] = float(vertY);
                 // uvs
                 groundPlaneVertices[++vertArrIndex] = float(vertX) / dim;
@@ -53,6 +53,8 @@ namespace kek3d
                 vertItr++;
             }
         }
+
+
     }
 
     /*

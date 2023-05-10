@@ -18,7 +18,7 @@
 namespace kek3d {
     void createGroundPlane(float* groundPlaneVertices, int dim);
     void createGroundPlaneTris(unsigned int* groundPlaneIndices, int dim);
-    std::vector<unsigned char>* getElevationData();
+    std::vector<unsigned char> getElevationData();
 }
 
 #endif

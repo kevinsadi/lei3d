@@ -40,8 +40,12 @@ kek3d/
 ### Mac
 Do any of my friends have mac wanna try to build my project using cmake and see what goes wrong
 
-### Unix
-Do any of my friends who have unix wanna try to build my project using cmake and see what goes wrong
+### Linux
+1) Navigate to the project folder
+2) Make a build folder `mkdir build`  
+3) Enter the folder `cd build`
+4) Compile your project `cmake ..`
+5) 
 
 ## Requirements
 Graphics card that support OpenGL 4.6

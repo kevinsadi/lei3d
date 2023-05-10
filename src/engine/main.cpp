@@ -297,6 +297,13 @@ int main() {
 		glfwPollEvents();
 	}
 
+	glDeleteBuffers(1, &planeVAO);
+	glDeleteBuffers(1, &planeEBO);
+	glDeleteBuffers(1, &planeVBO);
+	glDeleteBuffers(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+
+	// clear all of the previously allocated GLFW resources
 	glfwTerminate();
 	return 0;
 }
