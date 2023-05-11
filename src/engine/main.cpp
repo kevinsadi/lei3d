@@ -95,24 +95,24 @@ glm::vec3 cubePositions[] = {
 
 // Get camera info using the Gram-Schmidt process
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 reverseCameraPointing = glm::normalize(cameraPos - cameraTarget);
-
-glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-glm::vec3 cameraRight = glm::cross(up, reverseCameraPointing); // right hand rule 
-
-glm::vec3 cameraUp = glm::cross(reverseCameraPointing, cameraRight);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 
 // ensure constant speed between frames
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+float screenHeight = 1000;
+float screenWidth = 1200;
+
 // camera globals
 bool firstMouse = true;
-float lastX = 400;
-float lastY = 300;
+float lastX = screenWidth / 2.0f;  // RIGHT NOW, THIS WILL BREAK IF THE USER RESIZES THE GAME
+float lastY = screenHeight / 2.0f;
 float pitch = 0.0;
 float yaw = -90.f;
+float flySpeed = 3.0f;
+
 
 /*
  * The main entrypoint for Kek3d (needs to be refactored)
@@ -126,7 +126,7 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(1200,1000, "kek3d", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(screenWidth,screenHeight, "kek3d", NULL, NULL);
 	if (window == NULL)
 	{
 		std::cout << "failed to create GLFW window" << std::endl;
@@ -232,7 +232,7 @@ int main() {
 	// initialize projection matrix here because it rarely changes
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 	glEnable(GL_DEPTH_TEST);
-	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn off if UI
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn off if UI
 	glfwSetCursorPosCallback(window, mouse_callback);
 
 	// ************************************** RENDER LOOP **********************************************
@@ -263,15 +263,7 @@ int main() {
 		shader.setUniformMat4(projection, "proj");
 		
 		// camera system
-		const float radius = 40.0f;
-		float cameraX = cos(glfwGetTime()) * radius;
-		float cameraY = sin(glfwGetTime()) * radius;
-
-		glm::mat4 view = glm::lookAt(glm::vec3(cameraX, 100.0f, cameraY), // param eye is misleading. It is the location of the camera
-			glm::vec3(0.0f, 0.0f, 0.0f),
-			glm::vec3(0.0f, 1.0f, 0.0f));
-		//glm::mat4 view;
-		//view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		shader.setUniformMat4(view, "view");
 
 		glm::mat4 model = glm::mat4(1.0f);
@@ -332,7 +324,7 @@ void mouse_callback(GLFWwindow* window, double xposInput, double yposInput)
 	lastX = xpos;
 	lastY = ypos;
 
-	float mouseSensitivity = 0.1f;
+	const float mouseSensitivity = 0.1f;
 	xoffset *= mouseSensitivity;
 	yoffset *= mouseSensitivity;
 
@@ -341,12 +333,16 @@ void mouse_callback(GLFWwindow* window, double xposInput, double yposInput)
 
 	if (pitch > 89.0f) pitch = 89.0f;
 	if (pitch < -89.0f) pitch = -89.0f;
+
+	glm::vec3 direction;
+	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	direction.y = sin(glm::radians(pitch));
+	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	cameraFront = glm::normalize(direction) * flySpeed;
 }
 
 void processInput(GLFWwindow* window)
 {
-
-	/*
 	const float cameraSpeed = 7.0f * deltaTime;
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
@@ -364,5 +360,13 @@ void processInput(GLFWwindow* window)
 	{
 		cameraPos += glm::cross(cameraFront, cameraUp) * cameraSpeed;
 	}
-	*/
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+	{
+		flySpeed = 5.0f; // TODO: Right now permanently just makes the camera fly speed to 5.0f lmfao
+	}
+	// gracefully exit on escape
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
+		glfwSetWindowShouldClose(window, true);
+	}
 }
