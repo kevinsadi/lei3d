@@ -12,9 +12,11 @@ set(sourceFiles
     main.cpp
     Shader.cpp
     PCGHelpers.cpp
+    FlyCamera.cpp
 )
 set(headerFiles
     include/engine/Shader.hpp
+    include/engine/FlyCamera.hpp
     include/pcg/PCGHelpers.hpp
 )
 add_executable(kek3d ${sourceFiles} ${headerFiles})

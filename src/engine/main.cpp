@@ -126,6 +126,10 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+#ifdef __APPLE__
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
 	GLFWwindow* window = glfwCreateWindow(screenWidth,screenHeight, "kek3d", NULL, NULL);
 	if (window == NULL)
 	{
@@ -246,7 +250,7 @@ int main() {
 		processInput(window);
 
 		// rendering
-		glClearColor(0, 0, 1, 1);
+		glClearColor(0.2, 0.8, 0.9, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// draw plane
@@ -279,8 +283,9 @@ int main() {
 
 			shader.setUniformMat4(model, "model");
 
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+			//glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
+
 
 		glBindVertexArray(0); // unbind vertex array
 
@@ -362,7 +367,7 @@ void processInput(GLFWwindow* window)
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
-		flySpeed = 5.0f; // TODO: Right now permanently just makes the camera fly speed to 5.0f lmfao
+		flySpeed = 5.0f; // TODO: Right now permanently just makes the camera fly speed to 5.0f lmfao, fix this so it's only temporary
 	}
 	// gracefully exit on escape
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
