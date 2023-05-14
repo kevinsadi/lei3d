@@ -14,8 +14,16 @@
 #ifndef STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #endif
-
+ 
 namespace kek3d {
+    struct PlaneMesh
+    {
+        unsigned int planeVAO;
+        unsigned int planeVBO;
+        unsigned int planeEBO;
+    };
+
+    PlaneMesh createPlaneMesh();
     void createGroundPlane(float* groundPlaneVertices, int dim);
     void createGroundPlaneTris(unsigned int* groundPlaneIndices, int dim);
     std::vector<unsigned char> getElevationData();

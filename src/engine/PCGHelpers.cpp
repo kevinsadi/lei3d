@@ -1,7 +1,48 @@
+#include <glad/glad.h> 
+#include <GLFW/glfw3.h>
+
 #include "include/pcg/PCGHelpers.hpp";
 
 namespace kek3d 
 {
+
+    PlaneMesh createPlaneMesh()
+    {
+        /*     DEFINE PLANE      */
+        const int dim = 128;
+
+        float groundPlaneVertices[dim*dim*5];
+        unsigned int groundPlaneIndices[(dim - 1) * (dim - 1) * 6];
+        
+        createGroundPlane(groundPlaneVertices, dim);
+        createGroundPlaneTris(groundPlaneIndices, dim);
+
+        unsigned int planeVAO;
+        unsigned int planeVBO;
+        unsigned int planeEBO;
+
+        glGenVertexArrays(1, &planeVAO);
+        glGenBuffers(1, &planeVBO);
+        glGenBuffers(1, &planeEBO);
+
+        glBindVertexArray(planeVAO);
+        
+        glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(groundPlaneVertices), groundPlaneVertices, GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, planeEBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(groundPlaneIndices), groundPlaneIndices, GL_STATIC_DRAW);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (void*)(3 * sizeof(GL_FLOAT)));
+        glEnableVertexAttribArray(1);
+
+        PlaneMesh planeMesh = {planeVAO, planeVBO, planeEBO};
+        return planeMesh;
+    }
+
 
     std::vector<unsigned char> getElevationData()
     {
@@ -22,13 +63,11 @@ namespace kek3d
     }
 
     /*
-    * Takes in two arrays by reference and populates them with the vertices to create a square ground plane made by vertices
-    * 
+    * Takes array by reference and populates them with the vertices to create a square ground plane made by vertices
     * 
     * Array should have size dim*dim*(3+2)           - explanation: dim*dim vertices. 3 vert points + 2 uv coords per vertex
     * 
     * @param groundPlaneVertices - 
-    * @param groundPlaneUVs -
     * @param dim - this should be 128 for our purposes
     */
     void createGroundPlane(float* groundPlaneVertices, int dim)
@@ -58,12 +97,11 @@ namespace kek3d
     }
 
     /*
-    * Takes in array by reference and populates it with the 
+    * Takes in array by reference and populates it with the values to create an EBO
     *
     * Array should have size (dim-1)*(dim-1)*6.              - explanation = this gives us cubes * cubes. 2 tris per cube. 3 indices per tri.
     *
-    * @param groundPlaneVertices -
-    * @param groundPlaneUVs -
+    * @param groundPlaneIndices
     * @param dim - this should be 128 for our purposes
     */
     void createGroundPlaneTris(unsigned int* groundPlaneIndices, int dim)
