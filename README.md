@@ -9,18 +9,26 @@ Kek3d has originally been created using Visual Studio 2022 on Windows. To compil
 ```
 kek3d/
 ├─ data/                   # assets
-│  ├─ shaders/             # all the shaders for the engine
-│  ├─ textures/            # any necessary textures
+│  ├─ shaders/                 # all the shaders for the engine
+│  ├─ textures/                # any necessary textures
 ├─ lib/                    # Cmake pulls in any necessary requirements
 ├─ screenshots/            # screenshots for the readme
 ├─ src/                    # main meat of the code
-│  ├─ engine/              # Engine source is here
-│  │  ├─ main.cpp          
+│  ├─ include/                 # All the header files are here            
+│  │  ├─ engine/ 
+│  │  │  ├─ Engine.hpp/            # Initialization, Loading, and main render loop logic
+│  │  │  ├─ FlyCamera.hpp/         # Flight Camera, soon will have FPS camera
+│  │  │  ├─ Shader.hpp/            # Shader code
+│  │  ├─ pcg/ 
+│  │  │  ├─ PCGHelpers.hpp/        # Helpers to create PCG meshes
+│  ├─ engine/              # All the source files are here
+│  │  ├─ Engine.cpp          
+│  │  ├─ FlyCamera.cpp
+│  │  ├─ main.cpp   
+│  │  ├─ PCGHelpers.cpp        
 │  │  ├─ Shader.cpp
 │  ├─ lib/                 # More necessary requirements for engine
-│  ├─ include/
-│  │  ├─ engine/
-│  │  │  ├─ Shader.hpp/    # Any necessary header files for main source
+
 ├─ README.md
 ```
 

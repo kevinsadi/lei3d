@@ -4,7 +4,7 @@ namespace kek3d
 {
     FlyCamera::FlyCamera(GLFWwindow* window, float yaw, float pitch, float flySpeed)
     {
-      this->window = window;
+      this->window = window; // do I need to do this-> ?? I don't do it elsewhere but it's throwing bugs if I don't rn
       this->yaw = yaw;
       this->pitch = pitch;
       this->flySpeed = flySpeed;
