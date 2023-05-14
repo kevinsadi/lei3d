@@ -1,17 +1,20 @@
 #include "include/engine/FlyCamera.hpp"
+#include <iostream>
 
 namespace kek3d
 {
     FlyCamera::FlyCamera(GLFWwindow* window, float yaw, float pitch, float flySpeed)
     {
-        window = window;
-        yaw = yaw;
-        pitch = pitch;
-        flySpeed = flySpeed;
-        firstMouse = true;
+        this->window = window;
+        this->yaw = yaw;
+        this->pitch = pitch;
+        this->flySpeed = flySpeed;
+        this->firstMouse = true;
 
         int screenWidth, screenHeight;
         glfwGetWindowSize(window, &screenWidth, &screenHeight);
+
+        std::cout << screenWidth << "a     " << screenHeight << std::endl;
 
         lastX = screenWidth / 2.0f;  
         lastY = screenHeight / 2.0f; 
@@ -20,6 +23,12 @@ namespace kek3d
         cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
         cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
     }
+
+    FlyCamera::~FlyCamera()
+    {
+        // no need rn
+    }
+
 
     void FlyCamera::cameraMouseCallback(GLFWwindow* window, double xPosInput, double yPosInput)
     {
@@ -77,6 +86,7 @@ namespace kek3d
 
     glm::mat4 FlyCamera::getCameraView()
     {
+        cameraView = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         return cameraView;
     }
 

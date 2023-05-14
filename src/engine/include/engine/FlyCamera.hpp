@@ -10,6 +10,7 @@ namespace kek3d
     {
     public:        
         FlyCamera(GLFWwindow* window, float yaw, float pitch, float flySpeed);
+        ~FlyCamera();
 
         glm::mat4 getCameraView();
         void cameraMouseCallback(GLFWwindow* window, double xPosInput, double yPosInput);
