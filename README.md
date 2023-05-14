@@ -38,14 +38,22 @@ kek3d/
 8) Run the project.
 
 ### Mac
-Do any of my friends have mac wanna try to build my project using cmake and see what goes wrong
+1) Navigate to the project folder
+2) Make a build folder `mkdir build`  
+3) Enter the folder `cd build`
+4) Compile your project `cmake ..`
+5) Call `make`
+6) cd `/src/engine`
+7) `./kek3d`
 
 ### Linux
 1) Navigate to the project folder
 2) Make a build folder `mkdir build`  
 3) Enter the folder `cd build`
 4) Compile your project `cmake ..`
-5) 
+5) Call `make`
+6) cd `/src/engine`
+7) `./kek3d`
 
 ## Requirements
 Graphics card that support OpenGL 4.6
