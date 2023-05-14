@@ -1,7 +1,12 @@
-﻿#include "include/engine/Shader.hpp";
+﻿#include "include/engine/Shader.hpp"
 
 namespace kek3d 
 {
+	Shader::Shader()
+	{
+		// another clown emoji
+	}
+
 	Shader::Shader(const char* vertexShaderPath, const char* fragShaderPath)
 	{
 		// read from the files 

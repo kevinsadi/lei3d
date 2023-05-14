@@ -1,5 +1,10 @@
+#define CGLTF_IMPLEMENTATION
+#include <cgltf.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 #include "include/engine/Engine.hpp"
-#include <iostream>
 
 namespace kek3d
 {
@@ -12,17 +17,21 @@ namespace kek3d
     Engine::Engine()
     {
         // clown emoji
-        // kevin pls fix this
-        shader = Shader("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
+        // kevin please fix
     }
 
     Engine::~Engine()
     {
-        glDeleteBuffers(1, &groundPlane.planeVAO);
-        glDeleteBuffers(1, &groundPlane.planeEBO);
-        glDeleteBuffers(1, &groundPlane.planeVBO);
+        if (groundPlane)
+        {
+            glDeleteBuffers(1, &(groundPlane->planeVAO));
+            glDeleteBuffers(1, &(groundPlane->planeEBO));
+            glDeleteBuffers(1, &(groundPlane->planeVBO));
+            delete groundPlane;
+        }
 
-        delete camera;
+        if (camera)
+          delete camera;
 
         // clear all of the previously allocated GLFW resources
         glfwTerminate();
@@ -117,7 +126,7 @@ namespace kek3d
         groundPlane = createPlaneMesh();
 
         // load camera
-        FlyCamera* camera = new FlyCamera(window, -90.0f, 0.0f, 1.2f);
+        camera = new FlyCamera(window, -90.0f, 0.0f, 1.2f);
 	    glfwSetWindowUserPointer(window, camera);
 
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn off if UI
@@ -146,7 +155,7 @@ namespace kek3d
 		lastFrame = currentFrame;
 
         // rendering
-		glClearColor(0.2, 0.8, 0.9, 1);
+		glClearColor(0.2f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// input
@@ -169,7 +178,7 @@ namespace kek3d
 
 		// draw plane
         int dim = 128;
-		glBindVertexArray(groundPlane.planeVAO);
+		glBindVertexArray(groundPlane->planeVAO);
 		glDrawElements(GL_TRIANGLES, ((dim-1)*(dim-1)*6), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0); // unbind vertex array
     }

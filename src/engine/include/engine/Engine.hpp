@@ -1,15 +1,15 @@
-#define CGLTF_IMPLEMENTATION
-#include <cgltf.h>
-
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#ifndef ENGINE_H
+#define ENGINE_H
 
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
 
+#include <iostream>
+#include <vector>
+
 #include "include/engine/Shader.hpp"
-#include "include/engine/FlyCamera.hpp"
 #include "include/pcg/PCGHelpers.hpp"
+#include "include/engine/FlyCamera.hpp"
 
 namespace kek3d
 {
@@ -24,7 +24,7 @@ namespace kek3d
         GLFWwindow* window = nullptr;
         Shader shader;
         FlyCamera* camera = nullptr;
-        PlaneMesh groundPlane;
+        PlaneMesh* groundPlane = nullptr;
 
         float lastFrame = 0.0f; // used to keep track of delta time
         float deltaTime = 0.0f;
@@ -34,8 +34,10 @@ namespace kek3d
 
         void Render(); // render UI and scene
         void RenderScene();
-        virtual void RenderUI();
+        //virtual void RenderUI();
 
         void processInput(GLFWwindow* window, FlyCamera* camera);
     };
 }
+
+#endif

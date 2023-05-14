@@ -1,12 +1,9 @@
-#include <glad/glad.h> 
-#include <GLFW/glfw3.h>
-
 #include "include/pcg/PCGHelpers.hpp";
 
 namespace kek3d 
 {
 
-    PlaneMesh createPlaneMesh()
+    PlaneMesh* createPlaneMesh()
     {
         /*     DEFINE PLANE      */
         const int dim = 128;
@@ -39,7 +36,7 @@ namespace kek3d
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GL_FLOAT), (void*)(3 * sizeof(GL_FLOAT)));
         glEnableVertexAttribArray(1);
 
-        PlaneMesh planeMesh = {planeVAO, planeVBO, planeEBO};
+        PlaneMesh* planeMesh = new PlaneMesh{planeVAO, planeVBO, planeEBO};
         return planeMesh;
     }
 

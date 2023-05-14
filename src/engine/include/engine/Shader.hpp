@@ -17,7 +17,9 @@ namespace kek3d
 	public:
 		unsigned int shaderProgramID;
 
+		Shader();
 		Shader(const char* vertexShaderPath, const char* fragShaderPath);
+
 		
 		// compile and link shader, then activate the shader
 		void use();

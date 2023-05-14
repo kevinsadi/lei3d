@@ -1,27 +1,24 @@
 #include "include/engine/FlyCamera.hpp"
-#include <iostream>
 
 namespace kek3d
 {
     FlyCamera::FlyCamera(GLFWwindow* window, float yaw, float pitch, float flySpeed)
     {
-        this->window = window;
-        this->yaw = yaw;
-        this->pitch = pitch;
-        this->flySpeed = flySpeed;
-        this->firstMouse = true;
+      this->window = window;
+      this->yaw = yaw;
+      this->pitch = pitch;
+      this->flySpeed = flySpeed;
+      this->firstMouse = true;
 
-        int screenWidth, screenHeight;
-        glfwGetWindowSize(window, &screenWidth, &screenHeight);
+      int screenWidth, screenHeight;
+      glfwGetWindowSize(window, &screenWidth, &screenHeight);
 
-        std::cout << screenWidth << "a     " << screenHeight << std::endl;
+      lastX = screenWidth / 2.0f;  
+      lastY = screenHeight / 2.0f; 
 
-        lastX = screenWidth / 2.0f;  
-        lastY = screenHeight / 2.0f; 
-
-        cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-        cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-        cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+      this->cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+      this->cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+      this->cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
     }
 
     FlyCamera::~FlyCamera()
@@ -66,28 +63,28 @@ namespace kek3d
 
     void FlyCamera::handleForward()
     {
-		cameraPos += cameraFront * flySpeed;
+		  cameraPos += cameraFront * flySpeed;
     }
 
     void FlyCamera::handleBack()
     {
-		cameraPos -= cameraFront * flySpeed;
+		  cameraPos -= cameraFront * flySpeed;
     }
 
     void FlyCamera::handleLeft()
     {
-		cameraPos -= glm::cross(cameraFront, cameraUp) * flySpeed;
+		  cameraPos -= glm::cross(cameraFront, cameraUp) * flySpeed;
     }
 
     void FlyCamera::handleRight()
     {
-		cameraPos += glm::cross(cameraFront, cameraUp) * flySpeed;
+		  cameraPos += glm::cross(cameraFront, cameraUp) * flySpeed;
     }
 
     glm::mat4 FlyCamera::getCameraView()
     {
-        cameraView = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-        return cameraView;
+      cameraView = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+      return cameraView;
     }
 
 }

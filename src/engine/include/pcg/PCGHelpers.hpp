@@ -10,10 +10,12 @@
 #include <vector>
 #include <iostream>
 
-
 #ifndef STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #endif
+
+#include <glad/glad.h> 
+#include <GLFW/glfw3.h>
  
 namespace kek3d {
     struct PlaneMesh
@@ -23,7 +25,7 @@ namespace kek3d {
         unsigned int planeEBO;
     };
 
-    PlaneMesh createPlaneMesh();
+    PlaneMesh* createPlaneMesh();
     void createGroundPlane(float* groundPlaneVertices, int dim);
     void createGroundPlaneTris(unsigned int* groundPlaneIndices, int dim);
     std::vector<unsigned char> getElevationData();
