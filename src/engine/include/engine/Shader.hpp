@@ -25,6 +25,7 @@ namespace kek3d
 		void use();
 		
 		void setUniformMat4(glm::mat4& matrix, const char* matrixName);
+		void setInt(const std::string &name, int value); // set string value in shader to an int
 	};
 }
 

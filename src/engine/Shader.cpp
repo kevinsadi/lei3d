@@ -90,4 +90,9 @@ namespace kek3d
 		unsigned int projLoc = glGetUniformLocation(shaderProgramID, matrixName);
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
+
+	void Shader::setInt(const std::string &name, int value)
+    { 
+        glUniform1i(glGetUniformLocation(shaderProgramID, name.c_str()), value); 
+    }
 }

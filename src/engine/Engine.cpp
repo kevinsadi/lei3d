@@ -166,7 +166,7 @@ namespace kek3d
 		shader.use();
 
         // set up camera views and pass to shader
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 200.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 400.0f);
 		shader.setUniformMat4(projection, "proj");
 		
 		glm::mat4 view = camera->getCameraView();
