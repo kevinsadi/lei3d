@@ -127,7 +127,7 @@ namespace kek3d
         groundPlane = createPlaneMesh();
 
         // load camera
-        camera = new FlyCamera(window, -90.0f, 0.0f, 1.2f);
+        camera = new FlyCamera(window, 90.0f, 0.0f, 1.2f);
 	    glfwSetWindowUserPointer(window, camera);
 
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn off if UI

@@ -132,9 +132,9 @@ if(NOT assimp_POPULATED)
     FetchContent_Populate(assimp)
     message("Fetching assimp")
 
-    FetchContent_MakeAvailable(assimp)
-
     add_subdirectory(${assimp_SOURCE_DIR} ${assimp_BINARY_DIR}) # THIS DOESN'T FEEL RIGHT
+
+    FetchContent_MakeAvailable(assimp)
 endif()
 
 #-------------------------------------------------------------------------------------
