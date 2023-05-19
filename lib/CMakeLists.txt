@@ -113,3 +113,28 @@ if(NOT stb_image_POPULATED)
     add_library(stb_image INTERFACE ${stb_image_SOURCE_DIR}/stb_image.h)
     target_include_directories(stb_image INTERFACE ${stb_image_SOURCE_DIR})
 endif()
+
+#-------------------------------------------------------------------------------------
+
+FetchContent_Declare(
+    assimp
+    GIT_REPOSITORY https://github.com/assimp/assimp.git
+    GIT_TAG        master
+    GIT_SHALLOW    TRUE
+    GIT_PROGRESS   TRUE
+)
+
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+
+FetchContent_GetProperties(assimp)
+if(NOT assimp_POPULATED)
+
+    FetchContent_Populate(assimp)
+    message("Fetching assimp")
+
+    FetchContent_MakeAvailable(assimp)
+
+    add_subdirectory(${assimp_SOURCE_DIR} ${assimp_BINARY_DIR}) # THIS DOESN'T FEEL RIGHT
+endif()
+
+#-------------------------------------------------------------------------------------

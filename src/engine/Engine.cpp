@@ -50,6 +50,7 @@ namespace kek3d
             glfwPollEvents();
             Render();
         }
+        std::cout << "Gracefully Closing and Cleaning Up Data" << std::endl;
     }
 
     void Engine::Inititalize()

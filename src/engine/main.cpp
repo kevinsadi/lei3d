@@ -14,6 +14,7 @@ using namespace kek3d;
  * Creates window, loads textures, loads vertices, has main render loop
  */
 int main() {
+
 	
 	Engine* engine = new Engine();
 	// loops until render loop ends
