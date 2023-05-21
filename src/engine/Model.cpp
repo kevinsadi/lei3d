@@ -2,7 +2,13 @@
 
 namespace kek3d
 {
-    Model::Model(char* path)
+
+    Model::Model()
+    {
+        // ::clown emoticon::
+    }
+
+    Model::Model(std::string path)
     {
         loadModel(path);        
     }
@@ -26,18 +32,23 @@ namespace kek3d
     void Model::processNode(aiNode* node, const aiScene* scene)
     {
         // process node's meshes
-        for (unsigned int i = 0; i < node->mNumMeshes; ++i)
+        for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
             meshes.push_back(processMesh(mesh, scene));
         }
-        // process node children's meshes
-        for (unsigned int i = 0; i < node ->mNumChildren; ++i)
+        // process node children
+        for (unsigned int i = 0; i < node ->mNumChildren; i++)
         {
             processNode(node->mChildren[i], scene);
         }
     }
 
+    /**
+    * Given an mesh and the scene it belongs to, create our own representation of a mesh
+    * object that we can render.
+    * 
+    */
     Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     {
         std::vector<Vertex> vertices;
@@ -55,11 +66,14 @@ namespace kek3d
             pos.z = mesh->mVertices[i].z;
             vertex.Position = pos;
 
-            glm::vec3 normal;
-            normal.x = mesh->mNormals[i].x;
-            normal.y = mesh->mNormals[i].y;
-            normal.z = mesh->mNormals[i].z;
-            vertex.Normal = normal; 
+            if (mesh->HasNormals())
+            {
+                glm::vec3 normal;
+                normal.x = mesh->mNormals[i].x;
+                normal.y = mesh->mNormals[i].y;
+                normal.z = mesh->mNormals[i].z;
+                vertex.Normal = normal; 
+            }
 
             if(mesh->mTextureCoords[0]) // are there any uv coordinates associated with mesh
             {
@@ -72,6 +86,8 @@ namespace kek3d
             {
                 vertex.TexCoords = glm::vec2(0.0f, 0.0f);  
             }
+
+            vertices.push_back(vertex);
         }
 
         // we set all of our faces to be triangles, so it's easy to get the indices we need
@@ -93,8 +109,31 @@ namespace kek3d
             std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
         }  
+
+        // here is where our assumption of sampler names matters when we create our mesh
+        // create materials
+        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex]; // refer to assimp data structures
+
+
+        // this is a bit wonky, we're gonna have to experiment with this as we import more detailed meshes. ***BLENDER_USERS***
+        // 1. diffuse maps
+        std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+        // 2. specular maps
+        std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+        // 3. normal maps
+        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+        textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+        // 4. height maps
+        std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+        textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+        
+        // return a mesh object created from the extracted mesh data
+        return Mesh(vertices, indices, textures);
     }
 
+    // get the materials that we want from the assimp mat and convert it to textures array that is returned
     std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
     {
         std::vector<Texture> textures;
@@ -109,6 +148,14 @@ namespace kek3d
             textures.push_back(texture);
         }
         return textures;
+    }
+
+    void Model::Draw(Shader &shader)
+    {
+        for (unsigned int i = 0; i < this->meshes.size(); i++)
+        {
+            meshes[i].Draw(shader);
+        }
     }
 
 

@@ -6,10 +6,12 @@
 
 #include <iostream>
 #include <vector>
+#include <filesystem>
 
 #include "include/engine/Shader.hpp"
 #include "include/pcg/PCGHelpers.hpp"
 #include "include/engine/FlyCamera.hpp"
+#include "include/engine/Model.hpp"
 
 namespace kek3d
 {
@@ -25,6 +27,7 @@ namespace kek3d
         Shader shader;
         FlyCamera* camera = nullptr;
         PlaneMesh* groundPlane = nullptr;
+        Model meshModel;
 
         float lastFrame = 0.0f; // used to keep track of delta time
         float deltaTime = 0.0f;

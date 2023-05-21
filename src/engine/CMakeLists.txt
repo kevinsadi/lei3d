@@ -14,6 +14,7 @@ set(sourceFiles
     PCGHelpers.cpp
     FlyCamera.cpp
     Mesh.cpp
+    Model.cpp
     Engine.cpp
 )
 set(headerFiles
@@ -21,6 +22,7 @@ set(headerFiles
     include/engine/FlyCamera.hpp
     include/engine/Engine.hpp
     include/engine/Mesh.hpp
+    include/engine/Model.hpp
     include/pcg/PCGHelpers.hpp
 )
 add_executable(kek3d ${sourceFiles} ${headerFiles})

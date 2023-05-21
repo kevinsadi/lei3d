@@ -126,6 +126,11 @@ namespace kek3d
         // load pcg mesh
         groundPlane = createPlaneMesh();
 
+        // load mesh from obj file (EVENTUALLY WILL WANT TO USE GTLF FILES INSTEAD)
+        std::string path = "data/models/backpack/backpack.obj";
+
+        this->meshModel = Model(path);
+
         // load camera
         camera = new FlyCamera(window, 90.0f, 0.0f, 1.2f);
 	    glfwSetWindowUserPointer(window, camera);
@@ -176,6 +181,9 @@ namespace kek3d
 		model = glm::scale(model, glm::vec3(0.25, 0.25, 0.25));
 		model = glm::translate(model, glm::vec3(-64, 0, -64));
 		shader.setUniformMat4(model, "model");
+
+        // draw mesh
+        meshModel.Draw(shader);
 
 		// draw plane
         int dim = 128;

@@ -119,7 +119,7 @@ endif()
 FetchContent_Declare(
     assimp
     GIT_REPOSITORY https://github.com/assimp/assimp.git
-    GIT_TAG        master
+    GIT_TAG        v5.2.5
     GIT_SHALLOW    TRUE
     GIT_PROGRESS   TRUE
 )

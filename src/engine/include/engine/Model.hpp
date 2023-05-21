@@ -19,7 +19,9 @@ namespace kek3d
     public:
         std::vector<Texture> texturesLoaded;
         
-        Model(char *path);
+        Model();
+        Model(std::string path);
+        
         void Draw(Shader &shader);
     private:
         // model data
