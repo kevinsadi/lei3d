@@ -26,7 +26,6 @@ namespace kek3d
         // no need rn
     }
 
-
     void FlyCamera::cameraMouseCallback(GLFWwindow* window, double xPosInput, double yPosInput)
     {
         float xpos = static_cast<float>(xPosInput);
