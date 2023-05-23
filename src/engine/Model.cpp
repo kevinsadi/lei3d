@@ -8,12 +8,17 @@ namespace kek3d
         // ::clown emoticon::
     }
 
-    Model::Model(std::string path)
+    Model::Model(const std::string& path)
     {
         loadModel(path);        
     }
 
-    void Model::loadModel(std::string path)
+    Model::~Model()
+    {
+
+    }
+
+    void Model::loadModel(const std::string& path)
     {
         Assimp::Importer importer;
         const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -103,49 +108,56 @@ namespace kek3d
         // finally load all the materials we want
         if(mesh->mMaterialIndex >= 0)
         {
-            aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+            // here is where our assumption of sampler names matters when we create our mesh
+            // create materials
+            aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex]; // refer to assimp data structures
+
+            // this is a bit wonky, we're gonna have to experiment with this as we import more detailed meshes. ***BLENDER_USERS***
+            // 1. diffuse maps
             std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
             textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+            // 2. specular maps
             std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+            // 3. normal maps
+            std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
+            textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+            // 4. height maps
+            std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+            textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
         }  
-
-        // here is where our assumption of sampler names matters when we create our mesh
-        // create materials
-        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex]; // refer to assimp data structures
-
-
-        // this is a bit wonky, we're gonna have to experiment with this as we import more detailed meshes. ***BLENDER_USERS***
-        // 1. diffuse maps
-        std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-        textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-        // 2. specular maps
-        std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-        textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-        // 3. normal maps
-        std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-        textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-        // 4. height maps
-        std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-        textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
         
         // return a mesh object created from the extracted mesh data
         return Mesh(vertices, indices, textures);
     }
 
     // get the materials that we want from the assimp mat and convert it to textures array that is returned
-    std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
+    std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName)
     {
         std::vector<Texture> textures;
         for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
         {
             aiString str;
             mat->GetTexture(type, i, &str);
-            Texture texture;
-            texture.id = TextureFromFile(str.C_Str(), directory);
-            texture.type = typeName;
-            texture.path = str.C_Str();
-            textures.push_back(texture);
+
+            bool skip = false;
+            for (unsigned int j = 0; j < textures_loaded.size(); j++) // for every texture we've loaded so far
+            {
+                if (std::strcmp(str.C_Str(), textures_loaded[j].path.c_str()) == 0)
+                {
+                    skip == true;
+                }
+            }
+
+            if (!skip)
+            {
+                Texture texture;
+                texture.id = TextureFromFile(str.C_Str(), directory);
+                texture.type = typeName;
+                texture.path = str.C_Str();
+                textures.push_back(texture);
+                textures_loaded.push_back(texture);
+            }
         }
         return textures;
     }
@@ -160,7 +172,7 @@ namespace kek3d
 
 
     // from https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/model.h
-    unsigned int TextureFromFile(const char* path, const std::string &directory, bool gamma)
+    unsigned int TextureFromFile(const char* path, const std::string& directory, bool gamma)
     {
         std::string filename = std::string(path);
         filename = directory + '/' + filename;

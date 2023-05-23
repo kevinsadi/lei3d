@@ -27,7 +27,7 @@ namespace kek3d
         Shader shader;
         FlyCamera* camera = nullptr;
         PlaneMesh* groundPlane = nullptr;
-        Model meshModel;
+        Model* meshModel = nullptr;
 
         float lastFrame = 0.0f; // used to keep track of delta time
         float deltaTime = 0.0f;

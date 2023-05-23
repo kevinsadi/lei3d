@@ -99,37 +99,13 @@ namespace kek3d
         // load textures
         stbi_set_flip_vertically_on_load(true);
 
-        unsigned int texture;
-        glGenTextures(1, &texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        // set texture wrapping options
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        
-        // load and generate texture
-        int width, height, nrChannels;
-        unsigned char* data = stbi_load("./data/textures/rgb.png", &width, &height, &nrChannels, 0);
-        if (data)
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
-        }
-        else
-        {
-            std::cout << "ERROR: Texture loading failed" << std::endl;
-        }
-        glUniform1i(glGetUniformLocation(shader.shaderProgramID, "texture1"), 0);
-        stbi_image_free(data); // no memory leaks here, no sir
-
         // load pcg mesh
         groundPlane = createPlaneMesh();
 
         // load mesh from obj file (EVENTUALLY WILL WANT TO USE GTLF FILES INSTEAD)
         std::string path = "data/models/backpack/backpack.obj";
 
-        this->meshModel = Model(path);
+        this->meshModel = new Model(path);
 
         // load camera
         camera = new FlyCamera(window, 90.0f, 0.0f, 1.2f);
@@ -143,7 +119,6 @@ namespace kek3d
                 camera->cameraMouseCallback(window, x, y);
             }
         });
-
 
     }
 
@@ -183,9 +158,33 @@ namespace kek3d
 		shader.setUniformMat4(model, "model");
 
         // draw mesh
-        meshModel.Draw(shader);
+        meshModel->Draw(shader);
 
 		// draw plane
+        unsigned int texture;
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        // set texture wrapping options
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        
+        // load and generate texture
+        int width, height, nrChannels;
+        unsigned char* data = stbi_load("./data/textures/rgb.png", &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+        }
+        else
+        {
+            std::cout << "ERROR: Texture loading failed" << std::endl;
+        }
+        glUniform1i(glGetUniformLocation(shader.shaderProgramID, "texture1"), 0);
+        stbi_image_free(data); // no memory leaks here, no sir
+
         int dim = 128;
 		glBindVertexArray(groundPlane->planeVAO);
 		glDrawElements(GL_TRIANGLES, ((dim-1)*(dim-1)*6), GL_UNSIGNED_INT, 0);

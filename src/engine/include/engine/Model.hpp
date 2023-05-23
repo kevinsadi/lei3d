@@ -17,10 +17,11 @@ namespace kek3d
     class Model
     {
     public:
-        std::vector<Texture> texturesLoaded;
+        std::vector<Texture> textures_loaded;
         
         Model();
-        Model(std::string path);
+        Model(const std::string& path);
+        ~Model();
         
         void Draw(Shader &shader);
     private:
@@ -28,11 +29,11 @@ namespace kek3d
         std::vector<Mesh> meshes;
         std::string directory;
 
-        void loadModel(std::string path);
+        void loadModel(const std::string& path);
         void processNode(aiNode *node, const aiScene *scene);
         Mesh processMesh(aiMesh *mesh, const aiScene *scene);
-        std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
+        std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string& typeName);
     };
 
-    unsigned int TextureFromFile(const char *path, const std::string &directory, bool gamma = false);
+    unsigned int TextureFromFile(const char *path, const std::string& directory, bool gamma = false);
 }
