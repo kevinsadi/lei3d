@@ -145,7 +145,7 @@ namespace kek3d
             {
                 if (std::strcmp(str.C_Str(), textures_loaded[j].path.c_str()) == 0)
                 {
-                    skip == true;
+                    skip = true;
                 }
             }
 
