@@ -128,7 +128,8 @@ namespace kek3d
             Engine* self = static_cast<Engine*>(glfwGetWindowUserPointer(window));
             if (self)
             {
-                self->camera->cameraMouseCallback(window, x, y);
+                if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED) // when the cursor is normal, don't move the camera according to mouse mvnt
+                    self->camera->cameraMouseCallback(window, x, y);
             }
         });
 
@@ -150,27 +151,25 @@ namespace kek3d
 
         RenderScene();
         // Render UI
-        /*
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
         {
-            RenderUI();
+            RenderUI(deltaTime);
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             ImGui::EndFrame();
         }
-        */
         processCameraInput(deltaTime);
         glfwSwapBuffers(window);
     }
 
-    void Engine::RenderUI()
+    void Engine::RenderUI(float deltaTime)
     {
         ImGui::Begin("Window");        
-        ImGui::TextUnformatted("Hello World!");
+        ImGui::Text("fps = %f", 1000/deltaTime);
+        ImGui::SetWindowSize(ImVec2(0, 0));
         ImGui::End();
-        ImGui::ShowDemoWindow();
     }
 
     void Engine::RenderScene()

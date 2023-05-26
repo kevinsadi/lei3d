@@ -40,7 +40,7 @@ namespace kek3d
 
         void Render(); // render UI and scene
         void RenderScene();
-        void RenderUI();
+        void RenderUI(float delaTime); // deltaTime to show FPS
 
         void processInput(GLFWwindow* window, int key, int scancode, int action, int mods);
         void processCameraInput(float deltaTime);
