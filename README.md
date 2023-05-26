@@ -1,9 +1,9 @@
 ![Kek3d logo](screenshots/Logo12-29-2022.png)
 # Kek3d
 
-Kek3d is a graphics engine I'm developing using OpenGL and C++. It's express purpose is to be used to animate the process of Stable Diffusion on Terrain and to implement a interior decorating game.
+Kek3d is a graphics engine I'm developing using OpenGL and C++. It's express purpose has been to model 3D terrain generation through GANs and as the properietary engine for the game SkyLei.
 
-Kek3d has originally been created using Visual Studio 2022 on Windows. To compile, please use CMake to create a build for whatever system you are currently running on. 
+Kek3d has originally been created using Visual Studio 2022 on Windows. It has been tested on other platforms, to compile, please follow the instructions below to use CMake to create a build for whatever system you are currently running on. 
 
 ## File Structure
 ```
@@ -31,7 +31,6 @@ kek3d/
 
 ├─ README.md
 ```
-
 
 ## Build
 
@@ -70,6 +69,15 @@ Graphics card that support OpenGL 4.6
 * GLAD library - https://glad.dav1d.de/
 * GLM library - https://glm.g-truc.net
 * stb image library - https://github.com/nothings/stb/blob/master/stb_image.h
+
+# SkyLei
+SkyLei is a first person 3D surfing game heavily inspired by the minigame born out of the HAVOK engine's physics.
+
+## Controls:
+WASD - movement 
+look around the scene by moving mouse
+tab to unlock cursor to interact with the gui
+
 
 ## Screenshots
 

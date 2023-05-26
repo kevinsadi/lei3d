@@ -3,6 +3,9 @@
 
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
+#include <imgui.h>
+#include <imgui_impl_opengl3.h>
+#include <imgui_impl_glfw.h>
 
 #include <iostream>
 #include <vector>
@@ -37,9 +40,10 @@ namespace kek3d
 
         void Render(); // render UI and scene
         void RenderScene();
-        //virtual void RenderUI();
+        void RenderUI();
 
-        void processInput(GLFWwindow* window, FlyCamera* camera);
+        void processInput(GLFWwindow* window, int key, int scancode, int action, int mods);
+        void processCameraInput(float deltaTime);
     };
 }
 

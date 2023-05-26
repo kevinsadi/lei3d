@@ -60,24 +60,24 @@ namespace kek3d
         cameraFront = glm::normalize(direction) * flySpeed;
     }
 
-    void FlyCamera::handleForward()
+    void FlyCamera::handleForward(float deltaTime)
     {
-		  cameraPos += cameraFront * flySpeed;
+		  cameraPos += cameraFront * flySpeed * deltaTime;
     }
 
-    void FlyCamera::handleBack()
+    void FlyCamera::handleBack(float deltaTime)
     {
-		  cameraPos -= cameraFront * flySpeed;
+		  cameraPos -= cameraFront * flySpeed * deltaTime;
     }
 
-    void FlyCamera::handleLeft()
+    void FlyCamera::handleLeft(float deltaTime)
     {
-		  cameraPos -= glm::cross(cameraFront, cameraUp) * flySpeed;
+		  cameraPos -= glm::cross(cameraFront, cameraUp) * flySpeed * deltaTime;
     }
 
-    void FlyCamera::handleRight()
+    void FlyCamera::handleRight(float deltaTime)
     {
-		  cameraPos += glm::cross(cameraFront, cameraUp) * flySpeed;
+		  cameraPos += glm::cross(cameraFront, cameraUp) * flySpeed * deltaTime;
     }
 
     glm::mat4 FlyCamera::getCameraView()

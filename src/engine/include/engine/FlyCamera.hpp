@@ -20,10 +20,10 @@ namespace kek3d
         glm::mat4 getCameraView();
         void cameraMouseCallback(GLFWwindow* window, double xPosInput, double yPosInput);
         
-        void handleForward();
-        void handleLeft();
-        void handleRight();
-        void handleBack();
+        void handleForward(float deltaTime);
+        void handleLeft(float deltaTime);
+        void handleRight(float deltaTime);
+        void handleBack(float deltaTime);
 
     private:
         GLFWwindow* window;

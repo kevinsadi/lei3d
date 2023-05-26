@@ -1,6 +1,3 @@
-#define CGLTF_IMPLEMENTATION
-#include <cgltf.h>
-
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
@@ -38,6 +35,11 @@ namespace kek3d
 
         // clear all of the previously allocated GLFW resources
         glfwTerminate();
+
+        // turn off imgui resources 
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
     }
 
     void Engine::Start()
@@ -90,6 +92,11 @@ namespace kek3d
 
         // resize the openGL context if a user changes the window size
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+        // set up imgui
+        ImGui::CreateContext();
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init();
     }
 
     void Engine::Load()
@@ -111,39 +118,66 @@ namespace kek3d
         this->meshModel = new Model(path);
 
         // load camera
-        camera = new FlyCamera(window, 90.0f, 0.0f, 0.1f);
-	    glfwSetWindowUserPointer(window, camera);
+        this->camera = new FlyCamera(window, 90.0f, 0.0f, 4.0f);
+	    glfwSetWindowUserPointer(window, this);
 
+        // set glfw inputs
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn off if UI
         glfwSetCursorPosCallback(window, [](GLFWwindow* window, double x, double y)
         {
-            if (FlyCamera* camera = static_cast<FlyCamera*>(glfwGetWindowUserPointer(window)))
+            Engine* self = static_cast<Engine*>(glfwGetWindowUserPointer(window));
+            if (self)
             {
-                camera->cameraMouseCallback(window, x, y);
+                self->camera->cameraMouseCallback(window, x, y);
             }
         });
 
+        glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+        {
+            Engine* self = static_cast<Engine*>(glfwGetWindowUserPointer(window));
+            if (self)
+            {
+                self->processInput(window, key, scancode, action, mods);
+            }
+        });
     }
 
     void Engine::Render()
-    {
-        RenderScene();
-        // Here is where I would render the UI
-        glfwSwapBuffers(window);
-    }
-
-    void Engine::RenderScene()
     {
         float currentFrame = (float)glfwGetTime();
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
+        RenderScene();
+        // Render UI
+        /*
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        {
+            RenderUI();
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+            ImGui::EndFrame();
+        }
+        */
+        processCameraInput(deltaTime);
+        glfwSwapBuffers(window);
+    }
+
+    void Engine::RenderUI()
+    {
+        ImGui::Begin("Window");        
+        ImGui::TextUnformatted("Hello World!");
+        ImGui::End();
+        ImGui::ShowDemoWindow();
+    }
+
+    void Engine::RenderScene()
+    {
         // rendering
 		glClearColor(0.2f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		// input
-		processInput(window, camera);
 
         // shaders 
 		shader.use();
@@ -164,28 +198,38 @@ namespace kek3d
         meshModel->Draw(shader);
     }
 
-    void Engine::processInput(GLFWwindow* window, FlyCamera* camera)
+    void Engine::processInput(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        // gracefully exit on escape
+        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         {
-            camera->handleForward();
+            glfwSetWindowShouldClose(window, true);
+        }
+        if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
+        {
+            int currentCursorMode = glfwGetInputMode(window, GLFW_CURSOR);
+            int reverseCursorLockMode = (currentCursorMode == GLFW_CURSOR_DISABLED) ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
+            glfwSetInputMode(window, GLFW_CURSOR, reverseCursorLockMode); // turn off if UI
+        }
+    }
+
+    void Engine::processCameraInput(float deltaTime)
+    {
+        if (glfwGetKey(this->window, GLFW_KEY_W) == GLFW_PRESS)
+        {
+            this->camera->handleForward(deltaTime);
         }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         {
-            camera->handleBack();
+            this->camera->handleBack(deltaTime);
         }
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         {
-            camera->handleLeft();
+            this->camera->handleLeft(deltaTime);
         }
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         {
-            camera->handleRight();
-        }
-        // gracefully exit on escape
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        {
-            glfwSetWindowShouldClose(window, true);
+            this->camera->handleRight(deltaTime);
         }
     }
 

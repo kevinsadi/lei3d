@@ -1,4 +1,4 @@
-#include "include/pcg/PCGHelpers.hpp";
+#include "include/pcg/PCGHelpers.hpp"
 
 namespace kek3d 
 {
