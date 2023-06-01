@@ -17,7 +17,7 @@
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
  
-namespace kek3d {
+namespace lei3d {
     struct PlaneMesh
     {
         unsigned int planeVAO;

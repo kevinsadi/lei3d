@@ -1,6 +1,6 @@
 #include "include/pcg/PCGHelpers.hpp"
 
-namespace kek3d 
+namespace lei3d 
 {
 
     PlaneMesh* createPlaneMesh()

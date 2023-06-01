@@ -1,6 +1,6 @@
 #include "include/engine/FlyCamera.hpp"
 
-namespace kek3d
+namespace lei3d
 {
     FlyCamera::FlyCamera(GLFWwindow* window, float yaw, float pitch, float flySpeed)
     {

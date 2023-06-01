@@ -16,7 +16,7 @@
 #include "include/engine/FlyCamera.hpp"
 #include "include/engine/Model.hpp"
 
-namespace kek3d
+namespace lei3d
 {
     class Engine
     {

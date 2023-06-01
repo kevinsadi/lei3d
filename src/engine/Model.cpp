@@ -1,6 +1,6 @@
 #include "include/engine/Model.hpp"
 
-namespace kek3d
+namespace lei3d
 {
 
     Model::Model()

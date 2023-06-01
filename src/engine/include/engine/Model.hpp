@@ -12,7 +12,7 @@
 #include "include/engine/Shader.hpp"
 #include "include/engine/Mesh.hpp"
 
-namespace kek3d
+namespace lei3d
 {
     class Model
     {

@@ -1,6 +1,6 @@
 ﻿#include "include/engine/Shader.hpp"
 
-namespace kek3d 
+namespace lei3d 
 {
 	Shader::Shader()
 	{

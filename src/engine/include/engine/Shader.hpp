@@ -10,7 +10,7 @@
 #include <sstream>
 #include <iostream>
 
-namespace kek3d 
+namespace lei3d 
 {
 	class Shader {
 		

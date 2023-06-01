@@ -3,7 +3,7 @@
 
 #include "include/engine/Engine.hpp"
 
-namespace kek3d
+namespace lei3d
 {
     void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     {
@@ -73,7 +73,7 @@ namespace kek3d
         int screenWidth = 1200;
         int screenHeight = 1000;
 
-        window = glfwCreateWindow(screenWidth, screenHeight, "kek3d", NULL, NULL);
+        window = glfwCreateWindow(screenWidth, screenHeight, "lei3d", NULL, NULL);
         if (window == NULL)
         {
             std::cout << "failed to create GLFW window" << std::endl;

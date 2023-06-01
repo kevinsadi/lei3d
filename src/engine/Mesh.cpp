@@ -1,6 +1,6 @@
 #include "include/engine/Mesh.hpp"
 
-namespace kek3d
+namespace lei3d
 {
     Mesh::Mesh()
     {

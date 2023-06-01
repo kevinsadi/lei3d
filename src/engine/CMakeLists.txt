@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(kek3d)
+project(lei3d)
 
 add_subdirectory(lib)
 
@@ -25,8 +25,8 @@ set(headerFiles
     include/engine/Model.hpp
     include/pcg/PCGHelpers.hpp
 )
-add_executable(kek3d ${sourceFiles} ${headerFiles})
-add_dependencies(kek3d copy_data)
+add_executable(lei3d ${sourceFiles} ${headerFiles})
+add_dependencies(lei3d copy_data)
 
 find_package(OpenGL REQUIRED)
 
@@ -35,5 +35,5 @@ target_include_directories(glad PUBLIC include)
 target_include_directories(imgui PUBLIC include)
 target_include_directories(spdlog PUBLIC include)
 
-target_include_directories(kek3d PRIVATE include)
-target_link_libraries(kek3d PRIVATE glfw glad imgui glm stb_image spdlog assimp)
+target_include_directories(lei3d PRIVATE include)
+target_link_libraries(lei3d PRIVATE glfw glad imgui glm stb_image spdlog assimp)

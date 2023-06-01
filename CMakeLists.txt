@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(kek3d)
+project(lei3d)
 
 set(CMAKE_CXX_STANDARD 20)
 
