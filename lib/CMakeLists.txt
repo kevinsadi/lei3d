@@ -120,3 +120,42 @@ if(NOT assimp_POPULATED)
 endif()
 
 #-------------------------------------------------------------------------------------
+
+# Fetch Bullet3
+FetchContent_Declare(
+  bullet
+  GIT_REPOSITORY https://github.com/bulletphysics/bullet3
+  GIT_SHALLOW    TRUE
+  GIT_PROGRESS   TRUE
+  GIT_TAG        master
+)
+
+set(BUILD_EXTRAS OFF CACHE BOOL "" FORCE)
+set(BUILD_PYBULLET OFF CACHE BOOL "" FORCE)
+set(BUILD_BULLET2_DEMOS OFF CACHE BOOL "" FORCE)
+set(BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
+set(BUILD_CPU_DEMOS OFF CACHE BOOL "" FORCE)
+set(BUILD_OPENGL3_DEMOS OFF CACHE BOOL "" FORCE)
+
+FetchContent_GetProperties(bullet)
+if(NOT bullet_POPULATED)
+  FetchContent_Populate(bullet)
+  add_subdirectory(${bullet_SOURCE_DIR} ${bullet_BINARY_DIR})
+  target_include_directories(Bullet3Collision PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
+  target_include_directories(Bullet3Common PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
+  target_include_directories(Bullet3Dynamics PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
+  target_include_directories(Bullet3Geometry PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
+  target_include_directories(Bullet3OpenCL_clew PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
+  target_include_directories(Bullet2FileLoader PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
+  target_include_directories(BulletCollision PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
+  target_include_directories(BulletDynamics PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
+  target_include_directories(BulletInverseDynamics PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
+  target_include_directories(BulletSoftBody PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
+  target_include_directories(LinearMath PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
+endif()
+
+
+
+
+
+
