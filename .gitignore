@@ -2,6 +2,7 @@
 
 build/
 build-linux/
+buildtest/
 .vscode/
 .vs/
 

@@ -167,7 +167,7 @@ namespace lei3d
     void Engine::RenderUI(float deltaTime)
     {
         ImGui::Begin("Window");        
-        ImGui::Text("fps = %f", 1000/deltaTime);
+        ImGui::Text("fps = %f", 1/deltaTime);
         ImGui::SetWindowSize(ImVec2(0, 0));
         ImGui::End();
     }
