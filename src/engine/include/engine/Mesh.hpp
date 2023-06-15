@@ -1,3 +1,6 @@
+#ifndef MESH
+#define MESH
+
 #include <vector>
 #include <string>
 
@@ -40,3 +43,5 @@ namespace lei3d
     };
 
 }
+
+#endif // MESH

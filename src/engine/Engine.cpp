@@ -97,6 +97,9 @@ namespace lei3d
         ImGui::CreateContext();
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init();
+
+        // Create physics world
+        physicsObjects = CreatePhysicsWorld();
     }
 
     void Engine::Load()
@@ -108,9 +111,6 @@ namespace lei3d
 
         // load textures
         stbi_set_flip_vertically_on_load(true);
-
-        // load pcg mesh
-        groundPlane = createPlaneMesh();
 
         // load mesh from obj file (EVENTUALLY WILL WANT TO USE GTLF FILES INSTEAD)
         std::string path = "data/models/backpack/backpack.obj";
@@ -149,6 +149,7 @@ namespace lei3d
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
+        PhysicsStep(this->physicsObjects);
         RenderScene();
         // Render UI
         ImGui_ImplOpenGL3_NewFrame();

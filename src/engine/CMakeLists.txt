@@ -16,6 +16,7 @@ set(sourceFiles
     Mesh.cpp
     Model.cpp
     Engine.cpp
+    Physics.cpp
 )
 set(headerFiles
     include/engine/Shader.hpp
@@ -24,6 +25,7 @@ set(headerFiles
     include/engine/Mesh.hpp
     include/engine/Model.hpp
     include/pcg/PCGHelpers.hpp
+    include/physics/Physics.hpp
 )
 add_executable(lei3d ${sourceFiles} ${headerFiles})
 add_dependencies(lei3d copy_data)
