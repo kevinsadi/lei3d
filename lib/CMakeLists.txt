@@ -121,44 +121,134 @@ endif()
 
 #-------------------------------------------------------------------------------------
 
-# Fetch Bullet3
+# Fetch Bullet3 (it's gonna be a bit a different than the other libraries bc bullet3 is weird)
+# https://github.com/potatoengine/libbullet3-cmake -> thank you to Sean Middleditch
+
 FetchContent_Declare(
   bullet
   GIT_REPOSITORY https://github.com/bulletphysics/bullet3
-  GIT_SHALLOW    TRUE
-  GIT_PROGRESS   TRUE
-  GIT_TAG        master
+  GIT_TAG        ebe1916b90acae8b13cd8c6b637d8327cdc64e94 # 3.1.7
 )
-
-set(BUILD_EXTRAS OFF CACHE BOOL "" FORCE)
-set(BUILD_PYBULLET OFF CACHE BOOL "" FORCE)
-set(BUILD_BULLET2_DEMOS OFF CACHE BOOL "" FORCE)
-set(BUILD_UNIT_TESTS OFF CACHE BOOL "" FORCE)
-set(BUILD_CPU_DEMOS OFF CACHE BOOL "" FORCE)
-set(BUILD_OPENGL3_DEMOS OFF CACHE BOOL "" FORCE)
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-set(BUILD_STATIC_LIBS ON CACHE BOOL "" FORCE)
-set(USE_MSVC_RUNTIME_LIBRARY_DLL OFF CACHE BOOL "" FORCE)
+# Do a check for bullet_POPULATED
 
 FetchContent_GetProperties(bullet)
 if(NOT bullet_POPULATED)
-  FetchContent_Populate(bullet)
-  add_subdirectory(${bullet_SOURCE_DIR} ${bullet_BINARY_DIR})
-  target_include_directories(Bullet3Collision PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
-  target_include_directories(Bullet3Common PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
-  target_include_directories(Bullet3Dynamics PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
-  target_include_directories(Bullet3Geometry PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
-  target_include_directories(Bullet3OpenCL_clew PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
-  target_include_directories(Bullet2FileLoader PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
-  target_include_directories(BulletCollision PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
-  target_include_directories(BulletDynamics PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
-  target_include_directories(BulletInverseDynamics PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
-  target_include_directories(BulletSoftBody PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
-  target_include_directories(LinearMath PUBLIC ${BULLET_PHYSICS_SOURCE_DIR}/src)
+    FetchContent_Populate(bullet)
+    message("Fetching bullet3")
+
+    # Bullet is broken into sub-"libraries"; we'll automate handling of these
+    set(BULLET_SUBMODULES
+        Bullet3Collision
+        Bullet3Common
+        Bullet3Dynamics
+        Bullet3Geometry
+        BulletDynamics
+        BulletCollision
+        BulletInverseDynamics
+        BulletSoftBody
+        LinearMath
+    )
+
+    # Find all relevant sources in upstream repo
+    # We don't use the bc*All.cpp files, as they
+    # fail to build, while the individual sources
+    # build correctly
+    set(BULLET3_SOURCES
+        "${bullet_SOURCE_DIR}/src/btBulletCollisionCommon.h"
+        "${bullet_SOURCE_DIR}/src/btBulletDynamicsCommon.h"
+    )
+    foreach(SUB ${BULLET_SUBMODULES})
+        file(GLOB_RECURSE SUBMODULE_SOURCES
+            "${bullet_SOURCE_DIR}/src/${SUB}/*.h"
+            "${bullet_SOURCE_DIR}/src/${SUB}/*.cpp"
+        )
+        list(APPEND BULLET3_SOURCES ${SUBMODULE_SOURCES})
+    endforeach()
+
+    # CPack support
+    set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+    set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
+    include(CPack)
+
+    # Build the main libbullet3 library
+    set(BULLET3_LIBRARY_TYPE "STATIC")
+    add_library(libbullet3 ${BULLET3_LIBRARY_TYPE} ${BULLET3_SOURCES})
+    set_target_properties(libbullet3 PROPERTIES
+        WINDOWS_EXPORT_ALL_SYMBOLS 1
+        VERSION ${PROJECT_VERSION}
+        SOVERSION ${PROJECT_VERSION}
+    )
+    target_include_directories(libbullet3
+        SYSTEM INTERFACE
+            $<BUILD_INTERFACE:${bullet_SOURCE_DIR}/src>
+            $<INSTALL_INTERFACE:include/Bullet3>
+        PRIVATE
+            ${bullet_SOURCE_DIR}/src
+    )
+
+    # Silence the many warnings in the libbullet source code;
+    # we're not the maintainers of the code, so these warnings
+    # aren't meaningful to us; they just clog up build output
+    # when building Bullet as a subdirectory
+    target_compile_options(libbullet3 PRIVATE
+        $<$<CXX_COMPILER_ID:MSVC>:/w>
+        $<$<CXX_COMPILER_ID:GNU,Clang,Intel>:-w>
+    )
+
+    # Installation
+    install(
+        TARGETS libbullet3
+        DESTINATION lib
+        EXPORT Bullet3Targets
+    )
+
+    install(FILES
+        "${bullet_SOURCE_DIR}/src/btBulletCollisionCommon.h"
+        "${bullet_SOURCE_DIR}/src/btBulletDynamicsCommon.h"
+        DESTINATION "include/Bullet3"
+    )
+    foreach(SUB ${BULLET_SUBMODULES})
+        install(
+            DIRECTORY "${bullet_SOURCE_DIR}/src/${SUB}"
+            DESTINATION "include/Bullet3"
+            FILES_MATCHING PATTERN "*.h"
+        )
+    endforeach()
+
+    install(
+        EXPORT Bullet3Targets
+        FILE Bullet3Targets.cmake
+        DESTINATION "lib/cmake/Bullet3"
+    )
+
+    install(
+        EXPORT Bullet3Targets
+        FILE Bullet3Targets.cmake
+        DESTINATION "lib/cmake/Bullet3"
+    )
+
+    include(CMakePackageConfigHelpers)
+    configure_package_config_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/Bullet3Config.cmake"
+        INSTALL_DESTINATION "lib/cmake/Bullet3"
+        NO_SET_AND_CHECK_MACRO
+        NO_CHECK_REQUIRED_COMPONENTS_MACRO
+    )
+
+    write_basic_package_version_file(
+        "${CMAKE_CURRENT_BINARY_DIR}/Bullet3ConfigVersion.cmake"
+        VERSION "${libbullet3_VERSION_MAJOR}.${libbullet3_VERSION_MINOR}"
+        COMPATIBILITY AnyNewerVersion
+    )
+
+    install(FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/Bullet3Config.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/Bullet3ConfigVersion.cmake"
+        DESTINATION lib/cmake/Bullet3
+    )
+
+    export(EXPORT Bullet3Targets
+        FILE "${CMAKE_CURRENT_BINARY_DIR}/Bullet3Targets.cmake"
+    )
 endif()
-
-
-
-
-
-
