@@ -129,7 +129,6 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/bulletphysics/bullet3
   GIT_TAG        ebe1916b90acae8b13cd8c6b637d8327cdc64e94 # 3.1.7
 )
-# Do a check for bullet_POPULATED
 
 FetchContent_GetProperties(bullet)
 if(NOT bullet_POPULATED)
