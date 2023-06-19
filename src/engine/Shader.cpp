@@ -80,6 +80,9 @@ namespace lei3d
 		glDeleteShader(fragmentShaderID);
 	}
 
+	/** 
+	 * Set OpenGL to use this shader. 
+	 */
 	void Shader::use() 
 	{
 		glUseProgram(shaderProgramID);

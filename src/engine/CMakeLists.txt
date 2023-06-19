@@ -16,6 +16,7 @@ set(sourceFiles
     Mesh.cpp
     Model.cpp
     Engine.cpp
+    SkyBox.cpp
     Physics.cpp
 )
 set(headerFiles
@@ -24,6 +25,7 @@ set(headerFiles
     include/engine/Engine.hpp
     include/engine/Mesh.hpp
     include/engine/Model.hpp
+    include/engine/SkyBox.hpp
     include/pcg/PCGHelpers.hpp
     include/physics/Physics.hpp
 )

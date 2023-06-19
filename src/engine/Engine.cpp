@@ -27,6 +27,8 @@ namespace lei3d
             delete groundPlane;
         }
 
+        // add clean up for the skybox buffers, especially if we switch the buffers
+
         if (camera)
           delete camera;
 
@@ -141,6 +143,24 @@ namespace lei3d
                 self->processInput(window, key, scancode, action, mods);
             }
         });
+
+        // create skybox
+        SkyBox skybox = SkyBox();
+
+        std::vector<std::string> faces
+        {
+            "data/skybox/anime_etheria/right.jpg",
+            "data/skybox/anime_etheria/left.jpg",
+            "data/skybox/anime_etheria/up.jpg",
+            "data/skybox/anime_etheria/down.jpg",
+            "data/skybox/anime_etheria/front.jpg",
+            "data/skybox/anime_etheria/back.jpg"
+        };
+        skybox.loadCubemap(faces);
+
+        skybox.skyboxShader.use();
+        skybox.skyboxShader.setInt("skybox", 0);
+        this->skybox = skybox;
     }
 
     void Engine::Render()
@@ -179,10 +199,10 @@ namespace lei3d
 		glClearColor(0.2f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // shaders 
+        // camera shader 
 		shader.use();
 
-        // set up camera views and pass to shader
+        // -- Set up camera views and pass to shader
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 400.0f);
 		shader.setUniformMat4(projection, "proj");
 		
@@ -196,6 +216,20 @@ namespace lei3d
 
         // draw mesh
         meshModel->Draw(shader);
+
+        // render skybox after rendering rest of the scene (only draw skybox where an object is not present)
+        glDepthFunc(GL_LEQUAL); // we change the depth function here to it passes when testingdepth value is equal to what is current stored
+        skybox.skyboxShader.use();
+        view = glm::mat4(glm::mat3(camera->getCameraView()));
+        skybox.skyboxShader.setUniformMat4(view, "view");
+        skybox.skyboxShader.setUniformMat4(projection, "projection");
+        // -- render the skybox cube
+        glBindVertexArray(skybox.skyboxVAO);
+        glActiveTexture(GL_TEXTURE0); //! could be the problem
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.cubeMapTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+        glDepthFunc(GL_LESS); // set depth function back to normal
     }
 
     void Engine::processInput(GLFWwindow* window, int key, int scancode, int action, int mods)
