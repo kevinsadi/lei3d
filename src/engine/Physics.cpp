@@ -11,7 +11,7 @@ namespace lei3d
         btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
         btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver();
         btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-        dynamicsWorld->setGravity(btVector3(0, -10, 0));
+        dynamicsWorld->setGravity(btVector3(0, -1, 0));
 
         // Create collisionShapes object to keep track of all the objects we want to collide over (this will be the scene)
         btAlignedObjectArray<btCollisionShape*> collisionShapes;
@@ -22,7 +22,7 @@ namespace lei3d
         
         btTransform groundTransform;
         groundTransform.setIdentity();
-        groundTransform.setOrigin(btVector3(0, -56, 0));
+        groundTransform.setOrigin(btVector3(0, -70, 0));
 
         btScalar floorMass = 0.0f;
         btVector3 floorLocalInertia{0.0f, 0.0f, 0.0f}; // list initialization makes my brain happy with structs. I'm sorry for the sudden switch haha
@@ -64,9 +64,9 @@ namespace lei3d
         return objects;
     }
 
-    void PhysicsStep(PhysicsObjects physicsObjects)
+    void PhysicsStep(PhysicsObjects physicsObjects, float deltaTime)
     {
-        physicsObjects.dynamicsWorld->stepSimulation(1.0f / 60.0f, 10);
+        physicsObjects.dynamicsWorld->stepSimulation(deltaTime, 10);
 
         //print positions of all objects
 		for (int j = physicsObjects.dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
@@ -84,6 +84,23 @@ namespace lei3d
 			}
 			//printf("world pos object %d = %f,%f,%f\n", j, float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
 		}
+    }
+
+    glm::vec3 GetFirstColliderPosition(PhysicsObjects physicsObjects)
+    {
+        btCollisionObject* obj = physicsObjects.dynamicsWorld->getCollisionObjectArray()[1];
+        btRigidBody* body = btRigidBody::upcast(obj);
+        btTransform trans;
+        if (body && body->getMotionState())
+        {
+            body->getMotionState()->getWorldTransform(trans);
+        }
+        else
+        {
+            trans = obj->getWorldTransform();
+        }
+        glm::vec3 position = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
+        return position;
     }
 
 

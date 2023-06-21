@@ -5,6 +5,7 @@
 
 #include "btBulletDynamicsCommon.h"
 #include <stdio.h>
+#include <glm/glm.hpp>
 
 namespace lei3d
 {
@@ -19,8 +20,8 @@ namespace lei3d
     };
 
     PhysicsObjects CreatePhysicsWorld();
-    void PhysicsStep(PhysicsObjects physicsObjects);
-
+    void PhysicsStep(PhysicsObjects physicsObjects, float deltaTime);
+    glm::vec3 GetFirstColliderPosition(PhysicsObjects physicsObjects);
 }
 
 #endif // PHYSICS

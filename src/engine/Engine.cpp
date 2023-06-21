@@ -169,7 +169,7 @@ namespace lei3d
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
-        PhysicsStep(this->physicsObjects);
+        PhysicsStep(this->physicsObjects, deltaTime);
         RenderScene();
         // Render UI
         ImGui_ImplOpenGL3_NewFrame();
@@ -211,7 +211,8 @@ namespace lei3d
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::scale(model, glm::vec3(0.25, 0.25, 0.25));
-		model = glm::translate(model, glm::vec3(-64, 0, -64));
+        glm::vec3 physicsPos = GetFirstColliderPosition(this->physicsObjects);
+		model = glm::translate(model, physicsPos);
 		shader.setUniformMat4(model, "model");
 
         // draw mesh
