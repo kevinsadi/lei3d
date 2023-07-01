@@ -83,5 +83,13 @@ tab to unlock cursor to interact with the gui
 
 ## Screenshots
 
-https://user-images.githubusercontent.com/34428034/210031032-c1a0070b-4849-45ed-adfe-096b33d1d307.mp4
+
+https://github.com/kevinsadi/lei3d/assets/34428034/aa5ea3b3-0151-4f35-8f73-911fa94d8c9a
+
+
+https://github.com/kevinsadi/lei3d/assets/34428034/8bb4486a-66a1-429d-a42a-c4a8afaf8f15
+
+
+
+
 
