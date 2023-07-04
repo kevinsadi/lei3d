@@ -16,6 +16,7 @@
 #include "include/engine/FlyCamera.hpp"
 #include "include/engine/Model.hpp"
 #include "include/engine/SkyBox.hpp"
+#include "include/engine/Entity.hpp"
 #include "include/physics/Physics.hpp"
 
 namespace lei3d
@@ -32,8 +33,8 @@ namespace lei3d
         Shader shader;
         FlyCamera* camera = nullptr;
         PlaneMesh* groundPlane = nullptr;
-        Model* meshModel = nullptr;
         SkyBox skybox;
+        Entity backpackEntity;
         PhysicsObjects physicsObjects;        
 
         float lastFrame = 0.0f; // used to keep track of delta time

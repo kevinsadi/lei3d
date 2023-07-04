@@ -18,6 +18,7 @@ namespace lei3d
 
     class Entity
     {
+    public:
         Model* model = nullptr;    
         Transform transform;
 

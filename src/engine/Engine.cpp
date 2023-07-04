@@ -32,9 +32,6 @@ namespace lei3d
         if (camera)
           delete camera;
 
-        if (meshModel)
-            delete meshModel;
-
         // clear all of the previously allocated GLFW resources
         glfwTerminate();
 
@@ -116,10 +113,11 @@ namespace lei3d
 
         // load mesh from obj file (EVENTUALLY WILL WANT TO USE GTLF FILES INSTEAD)
         std::string path = "data/models/backpack/backpack.obj";
+        Model* backpackModel = new Model(path);
+        backpackEntity = Entity(backpackModel); 
 
-        this->meshModel = new Model(path);
         // load camera
-        this->camera = new FlyCamera(window, 90.0f, 0.0f, 4.0f);
+        camera = new FlyCamera(window, 90.0f, 0.0f, 4.0f);
 	    glfwSetWindowUserPointer(window, this);
 
         // set glfw inputs
@@ -198,7 +196,7 @@ namespace lei3d
 		glClearColor(0.2f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // camera shader 
+        // Use transformation Shader for Rendering Main Object
 		shader.use();
 
         // -- Set up camera views and pass to shader
@@ -210,12 +208,14 @@ namespace lei3d
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::scale(model, glm::vec3(0.25, 0.25, 0.25));
+
+        // -- translate the backpack
         glm::vec3 physicsPos = GetFirstColliderPosition(this->physicsObjects);
 		model = glm::translate(model, physicsPos);
 		shader.setUniformMat4(model, "model");
 
-        // draw mesh
-        meshModel->Draw(shader);
+        // -- draw mesh
+        backpackEntity.model->Draw(shader);
 
         // render skybox after rendering rest of the scene (only draw skybox where an object is not present)
         glDepthFunc(GL_LEQUAL); // we change the depth function here to it passes when testingdepth value is equal to what is current stored

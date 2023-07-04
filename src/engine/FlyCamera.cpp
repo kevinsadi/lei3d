@@ -3,22 +3,21 @@
 namespace lei3d
 {
     FlyCamera::FlyCamera(GLFWwindow* window, float yaw, float pitch, float flySpeed)
+      : window{window}, // this is a member initializer list using uniform initialization C++17 feature
+        yaw{yaw},
+        pitch{pitch},
+        flySpeed{flySpeed}
     {
-      this->window = window; // do I need to do this-> ?? I don't do it elsewhere but it's throwing bugs if I don't rn
-      this->yaw = yaw;
-      this->pitch = pitch;
-      this->flySpeed = flySpeed;
-      this->firstMouse = true;
+      firstMouse = true; // the first time the mouse is entered onto the screen, do not flick
 
       int screenWidth, screenHeight;
       glfwGetWindowSize(window, &screenWidth, &screenHeight);
-
       lastX = screenWidth / 2.0f;  
       lastY = screenHeight / 2.0f; 
 
-      this->cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-      this->cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-      this->cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+      cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+      cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+      cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
     }
 
     FlyCamera::~FlyCamera()
