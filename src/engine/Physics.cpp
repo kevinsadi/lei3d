@@ -13,10 +13,29 @@ namespace lei3d
         btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
         dynamicsWorld->setGravity(btVector3(0, -1, 0));
 
-        // Create collisionShapes object to keep track of all the objects we want to collide over (this will be the scene)
+        // Create collisionShapes object to keep track of all the objects we want to collide over (this will eventually include the whole scene)
         btAlignedObjectArray<btCollisionShape*> collisionShapes;
 
-        // Now we want to create our Rigid Bodies, starting with the ground
+        // Create a character capsule that obeys the laws of gravity.
+        btCollisionShape* character = new btCapsuleShape(btScalar{1.0f}, btScalar{3.0f});
+        collisionShapes.push_back(character);
+
+        btTransform startTransform;
+        startTransform.setIdentity();
+
+        btScalar mass{1.f};
+
+        btVector3 localInertia{0.0f, 0.0f, 0.0f};
+        character->calculateLocalInertia(mass, localInertia);
+        startTransform.setOrigin(btVector3{3.0f, 50.0f, 0.0f});
+        
+        btDefaultMotionState* charMotionState = new btDefaultMotionState(startTransform);
+        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, charMotionState, character, localInertia);
+        btRigidBody* characterBody = new btRigidBody(rbInfo);
+
+        dynamicsWorld->addRigidBody(characterBody);
+
+        // Now make the ground 
         btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
         collisionShapes.push_back(groundShape);
         
@@ -32,26 +51,8 @@ namespace lei3d
         btRigidBody* floorBody = new btRigidBody(rbFloorInfo);
 
         dynamicsWorld->addRigidBody(floorBody);
-
-        // now create a random character capsule that obeys the laws of gravity. Soon we will replace both of these with actual meshes
-        btCollisionShape* character = new btCapsuleShape(btScalar{1.0f}, btScalar{3.0f});
-        collisionShapes.push_back(character);
-
-        btTransform startTransform;
-        startTransform.setIdentity();
-
-        btScalar mass{1.f};
-
-        btVector3 localInertia{0.0f, 0.0f, 0.0f};
-        character->calculateLocalInertia(mass, localInertia);
-        startTransform.setOrigin(btVector3{3.0f, 10.0f, 0.0f});
         
-        btDefaultMotionState* charMotionState = new btDefaultMotionState(startTransform);
-        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, charMotionState, character, localInertia);
-        btRigidBody* characterBody = new btRigidBody(rbInfo);
-
-        dynamicsWorld->addRigidBody(characterBody);
-        
+        // return our physics objects, will be modified before passed to physicsStep
         PhysicsObjects objects {
             collisionConfiguration, 
             dispatcher, 
@@ -68,7 +69,7 @@ namespace lei3d
     {
         physicsObjects.dynamicsWorld->stepSimulation(deltaTime, 10);
 
-        //print positions of all objects
+        // Move every object
 		for (int j = physicsObjects.dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
 		{
 			btCollisionObject* obj = physicsObjects.dynamicsWorld->getCollisionObjectArray()[j];
@@ -82,13 +83,12 @@ namespace lei3d
 			{
 				trans = obj->getWorldTransform();
 			}
-			//printf("world pos object %d = %f,%f,%f\n", j, float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
 		}
     }
 
     glm::vec3 GetFirstColliderPosition(PhysicsObjects physicsObjects)
     {
-        btCollisionObject* obj = physicsObjects.dynamicsWorld->getCollisionObjectArray()[1];
+        btCollisionObject* obj = physicsObjects.dynamicsWorld->getCollisionObjectArray()[0];
         btRigidBody* body = btRigidBody::upcast(obj);
         btTransform trans;
         if (body && body->getMotionState())

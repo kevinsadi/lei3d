@@ -118,7 +118,6 @@ namespace lei3d
         std::string path = "data/models/backpack/backpack.obj";
 
         this->meshModel = new Model(path);
-
         // load camera
         this->camera = new FlyCamera(window, 90.0f, 0.0f, 4.0f);
 	    glfwSetWindowUserPointer(window, this);
