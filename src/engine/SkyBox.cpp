@@ -1,5 +1,7 @@
 #include "include/engine/SkyBox.hpp"
 
+#include "include/util/GLDebug.hpp"
+
 namespace lei3d
 {
     SkyBox::SkyBox()
@@ -13,8 +15,8 @@ namespace lei3d
         stbi_set_flip_vertically_on_load(false);
 
         unsigned int textureID;
-        glGenTextures(1, &textureID);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+        GLCall(glGenTextures(1, &textureID));
+        GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, textureID));
 
         int width, height, nrChannels;
         for (unsigned int i = 0; i < faces.size(); i++)
@@ -33,11 +35,11 @@ namespace lei3d
                 stbi_image_free(data);
             }
         }
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+        GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+        GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+        GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+        GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
         
         // load skybox shader
         skyboxShader = Shader("./data/shaders/skybox.vert", "./data/shaders/skybox.frag");
@@ -90,13 +92,13 @@ namespace lei3d
 
 
         unsigned int skyboxVAO, skyboxVBO;
-        glGenVertexArrays(1, &skyboxVAO);
-        glGenBuffers(1, &skyboxVBO);
-        glBindVertexArray(skyboxVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        GLCall(glGenVertexArrays(1, &skyboxVAO));
+        GLCall(glGenBuffers(1, &skyboxVBO));
+        GLCall(glBindVertexArray(skyboxVAO));
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO));
+        GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW));
+        GLCall(glEnableVertexAttribArray(0));
+        GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
 
         this->skyboxShader = skyboxShader;
         this->cubeMapTexture = textureID;

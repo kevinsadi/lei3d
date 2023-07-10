@@ -1,4 +1,5 @@
 ﻿#include "include/engine/Shader.hpp"
+#include "include/util/GLDebug.hpp"
 
 namespace lei3d 
 {
@@ -41,8 +42,8 @@ namespace lei3d
 		// compile and configure shaders
 		char infoLog[512];
 
-		unsigned int vertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vertexShaderID, 1, &vShaderCode, NULL);
+		GLCall(unsigned int vertexShaderID = glCreateShader(GL_VERTEX_SHADER));
+		GLCall(glShaderSource(vertexShaderID, 1, &vShaderCode, NULL));
 		glCompileShader(vertexShaderID);
 
 		int success;
