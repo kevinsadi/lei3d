@@ -16,4 +16,16 @@ namespace lei3d
     {
         // clown emoticon
     }
+
+    // Translate entity by glm::vec3
+    void Entity::SetPosition(glm::vec3 position)
+    {
+        transform.position = position; 
+    }
+
+    // Multiply the 
+    void Entity::SetScale(glm::vec3 scale)
+    {
+        transform.scale = scale;
+    }
 }

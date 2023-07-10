@@ -25,6 +25,9 @@ namespace lei3d
         Entity();
         Entity(Model* model);
         ~Entity();
+
+        void SetPosition(glm::vec3 translation);
+        void SetScale(glm::vec3 scale);
     };
 }
 

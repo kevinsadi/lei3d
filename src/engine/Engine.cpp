@@ -206,16 +206,40 @@ namespace lei3d
 		glm::mat4 view = camera->getCameraView();
 		shader.setUniformMat4(view, "view");
 
+        // RENDER FIRST OBJECT
+        backpackEntity.SetScale(glm::vec3(0.25, 0.25, 0.25));
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::scale(model, glm::vec3(0.25, 0.25, 0.25));
+		model = glm::scale(model, backpackEntity.transform.scale);
 
         // -- translate the backpack
         glm::vec3 physicsPos = GetFirstColliderPosition(this->physicsObjects);
-		model = glm::translate(model, physicsPos);
+		backpackEntity.SetPosition(physicsPos);
+        model = glm::translate(model, backpackEntity.transform.position);
 		shader.setUniformMat4(model, "model");
 
         // -- draw mesh
         backpackEntity.model->Draw(shader);
+
+        // RENDER SECOND OBJECT
+
+		model = glm::mat4(1.0f);
+        backpackEntity.SetScale(glm::vec3(5.25, 3.25, 2.25));
+		model = glm::scale(model, backpackEntity.transform.scale);
+		shader.setUniformMat4(model, "model");
+
+        // -- draw mesh
+        backpackEntity.model->Draw(shader);
+        
+        // RENDER THIRD OBJECT
+
+		model = glm::mat4(1.0f);
+        backpackEntity.SetScale(glm::vec3(1.25, 1.25, 1.25));
+		model = glm::scale(model, backpackEntity.transform.scale);
+		shader.setUniformMat4(model, "model");
+
+        // -- draw mesh
+        backpackEntity.model->Draw(shader);
+
 
         // render skybox after rendering rest of the scene (only draw skybox where an object is not present)
         glDepthFunc(GL_LEQUAL); // we change the depth function here to it passes when testingdepth value is equal to what is current stored
