@@ -2,13 +2,14 @@
 #include <stb_image.h>
 
 #include "include/engine/Engine.hpp"
+#include "include/util/GLDebug.hpp"
 
 namespace lei3d
 {
     void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     {
         // TODO: Somehow change the engine window's width and height 
-        glViewport(0, 0, width, height);
+        GLCall(glViewport(0, 0, width, height));
     }
 
     Engine::Engine()
@@ -21,9 +22,9 @@ namespace lei3d
     {
         if (groundPlane)
         {
-            glDeleteBuffers(1, &(groundPlane->planeVAO));
-            glDeleteBuffers(1, &(groundPlane->planeEBO));
-            glDeleteBuffers(1, &(groundPlane->planeVBO));
+            GLCall(glDeleteBuffers(1, &(groundPlane->planeVAO)));
+            GLCall(glDeleteBuffers(1, &(groundPlane->planeEBO)));
+            GLCall(glDeleteBuffers(1, &(groundPlane->planeVBO)));
             delete groundPlane;
         }
 
@@ -87,7 +88,7 @@ namespace lei3d
             return;
         }
 
-        glViewport(0, 0, screenWidth, screenHeight);
+        GLCall(glViewport(0, 0, screenWidth, screenHeight));
 
         // resize the openGL context if a user changes the window size
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -103,7 +104,7 @@ namespace lei3d
 
     void Engine::Load()
     {
-    	glEnable(GL_DEPTH_TEST);
+        GLCall(glEnable(GL_DEPTH_TEST));
 
         // load shaders
         shader = Shader("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
@@ -193,8 +194,8 @@ namespace lei3d
     void Engine::RenderScene()
     {
         // rendering
-		glClearColor(0.2f, 0.8f, 0.9f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        GLCall(glClearColor(0.2f, 0.8f, 0.9f, 1.0f));
+        GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
         // Use transformation Shader for Rendering Main Object
 		shader.use();
@@ -218,18 +219,18 @@ namespace lei3d
         backpackEntity.model->Draw(shader);
 
         // render skybox after rendering rest of the scene (only draw skybox where an object is not present)
-        glDepthFunc(GL_LEQUAL); // we change the depth function here to it passes when testingdepth value is equal to what is current stored
+        GLCall(glDepthFunc(GL_LEQUAL)); // we change the depth function here to it passes when testingdepth value is equal to what is current stored
         skybox.skyboxShader.use();
         view = glm::mat4(glm::mat3(camera->getCameraView()));
         skybox.skyboxShader.setUniformMat4(view, "view");
         skybox.skyboxShader.setUniformMat4(projection, "projection");
         // -- render the skybox cube
-        glBindVertexArray(skybox.skyboxVAO);
-        glActiveTexture(GL_TEXTURE0); //! could be the problem
-        glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.cubeMapTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
-        glDepthFunc(GL_LESS); // set depth function back to normal
+        GLCall(glBindVertexArray(skybox.skyboxVAO));
+        GLCall(glActiveTexture(GL_TEXTURE0)); //! could be the problem
+        GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.cubeMapTexture));
+        GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
+        GLCall(glBindVertexArray(0));
+        GLCall(glDepthFunc(GL_LESS)); // set depth function back to normal
     }
 
     void Engine::processInput(GLFWwindow* window, int key, int scancode, int action, int mods)
