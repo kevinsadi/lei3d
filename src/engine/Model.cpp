@@ -1,4 +1,4 @@
-#include "include/engine/Model.hpp"
+#include "engine/Model.hpp"
 
 namespace lei3d
 {

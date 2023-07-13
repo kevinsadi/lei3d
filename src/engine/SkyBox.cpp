@@ -1,6 +1,6 @@
-#include "include/engine/SkyBox.hpp"
+#include "engine/SkyBox.hpp"
 
-#include "include/util/GLDebug.hpp"
+#include "util/GLDebug.hpp"
 
 namespace lei3d
 {

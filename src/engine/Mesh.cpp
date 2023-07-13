@@ -1,4 +1,4 @@
-#include "include/engine/Mesh.hpp"
+#include "engine/Mesh.hpp"
 
 namespace lei3d
 {

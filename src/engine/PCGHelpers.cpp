@@ -1,4 +1,4 @@
-#include "include/pcg/PCGHelpers.hpp"
+#include "pcg/PCGHelpers.hpp"
 
 namespace lei3d 
 {

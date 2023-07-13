@@ -10,7 +10,7 @@
 #include <stb_image.h>
 #endif
 
-#include "include/engine/Shader.hpp"
+#include "engine/Shader.hpp"
 
 namespace lei3d
 {
