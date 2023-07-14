@@ -31,7 +31,7 @@ namespace lei3d
             }
             else
             {
-                std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+                LEI_WARN("Cubemap texture failed to load at path: " + faces[i]);
                 stbi_image_free(data);
             }
         }

@@ -25,7 +25,8 @@ namespace lei3d
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
-            std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
+            std::string errorString = importer.GetErrorString();
+            LEI_WARN("ERROR::ASSIMP::" + errorString);
             return;
         }
         directory = path.substr(0, path.find_last_of('/'));
@@ -205,7 +206,7 @@ namespace lei3d
         }
         else
         {
-            std::cout << "Texture failed to load at path: " << path << std::endl;
+            LEI_WARN("Texture failed to load at path: " + std::string(path));
             stbi_image_free(data);
         }
 

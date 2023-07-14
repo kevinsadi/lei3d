@@ -14,6 +14,7 @@
 
 #include "engine/Shader.hpp"
 #include "engine/Mesh.hpp"
+#include "util/Log.hpp";
 
 namespace lei3d
 {
