@@ -1,8 +1,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-#include "include/engine/Engine.hpp"
-#include "include/util/GLDebug.hpp"
+#include "engine/Engine.hpp"
+#include "util/GLDebug.hpp"
 
 namespace lei3d
 {
