@@ -13,9 +13,10 @@
 namespace lei3d 
 {
 	class Shader {
-		
-	public:
+	private:
 		unsigned int shaderProgramID;
+	public:
+
 
 		Shader();
 		Shader(const char* vertexShaderPath, const char* fragShaderPath);

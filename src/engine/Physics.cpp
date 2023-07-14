@@ -1,4 +1,4 @@
-#include "include/physics/Physics.hpp"
+#include "physics/Physics.hpp"
 
 namespace lei3d
 {

@@ -12,8 +12,9 @@
 #include <stb_image.h>
 #endif
 
-#include "include/engine/Shader.hpp"
-#include "include/engine/Mesh.hpp"
+#include "engine/Shader.hpp"
+#include "engine/Mesh.hpp"
+#include "util/Log.hpp";
 
 namespace lei3d
 {

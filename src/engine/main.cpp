@@ -4,7 +4,8 @@
  * Author: Kevin Sadi
  */
 
-#include "include/engine/Engine.hpp"
+#include "engine/Engine.hpp"
+#include "util/Log.hpp"
 
 using namespace lei3d;
 
@@ -14,6 +15,8 @@ using namespace lei3d;
  * Creates window, loads textures, loads vertices, has main render loop
  */
 int main() {
+	Log::Init();
+	LEI_TRACE("Initialized Logger");
 	Engine* engine = new Engine();
 	// loops until render loop ends
 	engine->Start();

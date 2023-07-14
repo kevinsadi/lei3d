@@ -11,13 +11,13 @@
 #include <vector>
 #include <filesystem>
 
-#include "include/engine/Shader.hpp"
-#include "include/pcg/PCGHelpers.hpp"
-#include "include/engine/FlyCamera.hpp"
-#include "include/engine/Model.hpp"
-#include "include/engine/SkyBox.hpp"
-#include "include/engine/Entity.hpp"
-#include "include/physics/Physics.hpp"
+#include "engine/Shader.hpp"
+#include "pcg/PCGHelpers.hpp"
+#include "engine/FlyCamera.hpp"
+#include "engine/Model.hpp"
+#include "engine/SkyBox.hpp"
+#include "engine/Entity.hpp"
+#include "physics/Physics.hpp"
 
 namespace lei3d
 {

@@ -1,4 +1,4 @@
-#include "include/pcg/PCGHelpers.hpp"
+#include "pcg/PCGHelpers.hpp"
 
 namespace lei3d 
 {
@@ -49,7 +49,7 @@ namespace lei3d
         unsigned char* data = stbi_load("./data/textures/elevation.png", &width, &height, &nrChannels, 0);
         if (!data)
         {
-            std::cout << "ERROR: Elevation loading failed" << std::endl;
+            LEI_ERROR("ERROR: Elevation loading failed");
         }
 
         std::vector<unsigned char> imageVec;

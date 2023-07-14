@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "include/engine/Model.hpp"
+#include "engine/Model.hpp"
 
 namespace lei3d
 {
