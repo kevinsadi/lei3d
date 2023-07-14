@@ -44,18 +44,19 @@ namespace lei3d
 
     void Engine::Start()
     {
-        std::cout << "Initializing Engine" << std::endl;
+        LEI_TRACE("Initializing Engine");
         Inititalize();
-        std::cout << "Loading Resources" << std::endl;
+        
+        LEI_TRACE("Loading Resources");
         Load();
 
-        std::cout << "Entering Rendering Loop" << std::endl;
+        LEI_TRACE("Entering Rendering Loop");
         while (!glfwWindowShouldClose(window))
         {
             glfwPollEvents();
             Render();
         }
-        std::cout << "Gracefully Closing and Cleaning Up Data" << std::endl;
+        LEI_TRACE("Gracefully Closing and Cleaning Up Data");
     }
 
     void Engine::Inititalize()
@@ -76,7 +77,7 @@ namespace lei3d
         window = glfwCreateWindow(screenWidth, screenHeight, "lei3d", NULL, NULL);
         if (window == NULL)
         {
-            std::cout << "failed to create GLFW window" << std::endl;
+            LEI_WARN("failed to create GLFW window");
             glfwTerminate();
             return;
         }
@@ -84,7 +85,7 @@ namespace lei3d
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
-            std::cout << "failed to initialize GLAD" << std::endl;
+            LEI_WARN("failed to initialize GLAD");
             return;
         }
 

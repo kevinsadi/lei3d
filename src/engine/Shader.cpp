@@ -34,7 +34,7 @@ namespace lei3d
 		}
 		catch (std::ifstream::failure* e)
 		{
-			std::cout << "ERROR - Shader File Not Successfully Read" << std::endl;
+			LEI_ERROR("ERROR - Shader File Not Successfully Read");
 		}
 		const char* vShaderCode = vertexCode.c_str(); // yeah I can work with c strings ( ͡° ͜ʖ ͡°)
 		const char* fShaderCode = fragmentCode.c_str();
@@ -51,7 +51,7 @@ namespace lei3d
 		if (!success)
 		{
 			glGetShaderInfoLog(vertexShaderID, 512, NULL, infoLog);
-			std::cout << "VERTEX SHADER COMPILATION FAILED\n\n" << infoLog << std::endl;
+			LEI_ERROR("VERTEX SHADER COMPILATION FAILED\n\n" + std::string(infoLog));
 		}
 
 		unsigned int fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -62,7 +62,7 @@ namespace lei3d
 		if (!success)
 		{
 			glGetShaderInfoLog(fragmentShaderID, 512, NULL, infoLog);
-			std::cout << "FRAGMENT SHADER COMPILATION FAILED\n\n" << infoLog << std::endl;
+			LEI_ERROR("FRAGMENT SHADER COMPILATION FAILED\n\n" + std::string(infoLog));
 		}
 
 		shaderProgramID = glCreateProgram(); // member variable
@@ -74,7 +74,7 @@ namespace lei3d
 		if (!success)
 		{
 			glGetProgramInfoLog(shaderProgramID, 512, NULL, infoLog);
-			std::cout << "SHADER PROGRAM LINKING FAILED\n\n" << infoLog << std::endl;
+			LEI_ERROR("SHADER PROGRAM LINKING FAILED\n\n" + std::string(infoLog));
 		}
 
 		glDeleteShader(vertexShaderID);
