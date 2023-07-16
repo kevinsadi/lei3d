@@ -32,9 +32,22 @@ namespace lei3d
 			vertexCode = vShaderStream.str();
 			fragmentCode = fShaderStream.str();
 		}
-		catch (std::ifstream::failure* e)
+		catch (const std::ifstream::failure& e)
 		{
-			LEI_ERROR("ERROR - Shader File Not Successfully Read");
+			if (vShaderFile.fail())
+			{
+				LEI_ERROR("ERROR - Failed to open vertex shader file: " + std::string(vertexShaderPath));
+			}
+			else if (fShaderFile.fail())
+			{
+				LEI_ERROR("ERROR - Failed to open fragment shader file: " + std::string(fragShaderPath));
+			}
+			else
+			{
+				// in my experience this outputs something like "basic_ios::clear: iostream error"
+				// for something like a file not found. preferably the specific error would be output
+				LEI_ERROR("ERROR - Shader File Not Successfully Read: " + std::string(e.what()));
+			}
 		}
 		const char* vShaderCode = vertexCode.c_str(); // yeah I can work with c strings ( ͡° ͜ʖ ͡°)
 		const char* fShaderCode = fragmentCode.c_str();
