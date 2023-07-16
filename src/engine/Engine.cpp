@@ -164,12 +164,14 @@ namespace lei3d
 
     void Engine::Render()
     {
-        float currentFrame = (float)glfwGetTime();
-		deltaTime = currentFrame - lastFrame;
-		lastFrame = currentFrame;
+        const float currentTime = (float)glfwGetTime();
+        
+		deltaTime = currentTime - lastFrameTime;
+		lastFrameTime = currentTime;
 
         PhysicsStep(this->physicsObjects, deltaTime);
         RenderScene();
+
         // Render UI
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -180,14 +182,23 @@ namespace lei3d
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             ImGui::EndFrame();
         }
+
         processCameraInput(deltaTime);
         glfwSwapBuffers(window);
+
+        //Sync FPS to desired value
+        const float currentDrawTime = (float) glfwGetTime() - currentTime;
+        const float sleepTime = 1.0f / desiredFPS - currentDrawTime;
+        if (sleepTime > 0.0f) {
+            _sleep(sleepTime);
+        }
     }
 
     void Engine::RenderUI(float deltaTime)
     {
-        ImGui::Begin("Window");        
-        ImGui::Text("fps = %f", 1/deltaTime);
+        ImGui::Begin("Debug Window");
+        ImGui::Text("PRESS TAB TO UNLOCK MOUSE");
+        ImGui::Text("fps = %f", 1.0f / deltaTime);
         ImGui::SetWindowSize(ImVec2(0, 0));
         ImGui::End();
     }

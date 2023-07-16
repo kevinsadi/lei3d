@@ -37,8 +37,9 @@ namespace lei3d
         Entity backpackEntity;
         PhysicsObjects physicsObjects;        
 
-        float lastFrame = 0.0f; // used to keep track of delta time
-        float deltaTime = 0.0f;
+        float lastFrameTime = 0.0f; // used to keep track of delta time
+        float deltaTime = 0.0f; //Total time for last frame. 
+        float desiredFPS = 60.0f;   //FPS will be capped to this value.
 
         void Inititalize(); // initalize GLFW  
         void Load(); // load shaders and meshes and other game info?
