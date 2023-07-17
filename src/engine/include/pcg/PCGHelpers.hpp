@@ -4,8 +4,7 @@
  * Author: Kevin Sadi
  */
 
-#ifndef PCG_HELPERS
-#define PCG_HELPERS
+#pragma once
 
 #include <vector>
 #include <iostream>
@@ -32,5 +31,3 @@ namespace lei3d {
     void createGroundPlaneTris(unsigned int* groundPlaneIndices, int dim);
     std::vector<unsigned char> getElevationData();
 }
-
-#endif

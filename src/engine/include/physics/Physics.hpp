@@ -1,7 +1,6 @@
 // no need for a class, at least right now
 // nice to finally get some code going again
-#ifndef PHYSICS
-#define PHYSICS
+#pragma once
 
 #include "btBulletDynamicsCommon.h"
 #include <stdio.h>
@@ -23,5 +22,3 @@ namespace lei3d
     void PhysicsStep(PhysicsObjects physicsObjects, float deltaTime);
     glm::vec3 GetFirstColliderPosition(PhysicsObjects physicsObjects);
 }
-
-#endif // PHYSICS

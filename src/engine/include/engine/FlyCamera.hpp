@@ -1,5 +1,4 @@
-#ifndef FLY_CAMERA_H
-#define FLY_CAMERA_H
+#pragma once
 
 #include <GLFW/glfw3.h>
 
@@ -43,5 +42,3 @@ namespace lei3d
 
     };
 }
-
-#endif

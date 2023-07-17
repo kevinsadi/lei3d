@@ -2,19 +2,28 @@
 
 namespace lei3d
 {
-    Entity::Entity()
+    Entity::Entity() : m_Model(nullptr), m_Shader(nullptr)
     {
         // clown emoticon
     }
 
-    Entity::Entity(Model* model) : model(model)
+    Entity::Entity(Model* model) : m_Model(model) {
+        LEI_ASSERT(m_Model);
+    }
+
+    Entity::Entity(Model* model, Shader* shader) : m_Model(model), m_Shader(shader)
     {
-        // We have moved on to member intializer lists
+        LEI_ASSERT(m_Model);
+        LEI_ASSERT(m_Shader);
     }
 
     Entity::~Entity()
     {
         // clown emoticon
+    }
+
+    void Entity::AddComponent(EntityComponent component) {
+
     }
 
     // Translate entity by glm::vec3
@@ -27,5 +36,19 @@ namespace lei3d
     void Entity::SetScale(glm::vec3 scale)
     {
         transform.scale = scale;
+    }
+
+    void Entity::SetShader(Shader* shader) {
+        m_Shader = shader;
+    }
+
+    void Entity::Update(float deltaTime) {
+        for (EntityComponent& component : m_Components) {
+            component.Update(deltaTime);
+        }
+    }
+
+    void Entity::Render() {
+        m_Model->Draw(*m_Shader);
     }
 }

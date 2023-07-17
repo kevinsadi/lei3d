@@ -1,5 +1,4 @@
-#ifndef SHADER_H
-#define SHADER_H
+#pragma once
 
 #include <glad/glad.h>
 #include <glm/matrix.hpp>
@@ -29,5 +28,3 @@ namespace lei3d
 		void setInt(const std::string &name, int value); // set string value in shader to an int
 	};
 }
-
-#endif

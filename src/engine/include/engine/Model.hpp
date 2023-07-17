@@ -1,5 +1,4 @@
-#ifndef MODEL
-#define MODEL
+#pragma once
 
 #include <vector>
 #include <string>
@@ -41,5 +40,3 @@ namespace lei3d
 
     unsigned int TextureFromFile(const char *path, const std::string& directory, bool gamma = false);
 }
-
-#endif // MODEL

@@ -1,5 +1,4 @@
-#ifndef MESH
-#define MESH
+#pragma once
 
 #include <vector>
 #include <string>
@@ -43,5 +42,3 @@ namespace lei3d
     };
 
 }
-
-#endif // MESH

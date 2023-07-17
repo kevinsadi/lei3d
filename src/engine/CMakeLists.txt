@@ -39,6 +39,9 @@ target_include_directories(spdlog PUBLIC include)
 
 file(GLOB sourceFiles
      "*.cpp"
+     "*/*.cpp"
+     "*/*/*.cpp"
+     "*/*/*/*.cpp"
 )
 
 file(GLOB headerFiles

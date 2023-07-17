@@ -1,5 +1,4 @@
-#ifndef SKYBOX
-#define SKYBOX
+#pragma once
 
 #include <glad/glad.h> 
 #include <vector>
@@ -28,8 +27,3 @@ namespace lei3d
         void renderCubemap();
     };
 }
-
-
-
-
-#endif // SKYBOX

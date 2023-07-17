@@ -1,5 +1,4 @@
-#ifndef ENGINE_H
-#define ENGINE_H
+#pragma once
 
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
@@ -11,46 +10,51 @@
 #include <vector>
 #include <filesystem>
 
-#include "engine/Shader.hpp"
-#include "pcg/PCGHelpers.hpp"
 #include "engine/FlyCamera.hpp"
-#include "engine/Model.hpp"
-#include "engine/SkyBox.hpp"
-#include "engine/Entity.hpp"
+
+#include "pcg/PCGHelpers.hpp"
+
 #include "physics/Physics.hpp"
+
+#include "scenes/Scene.hpp"
 
 namespace lei3d
 {
-    class Engine
+    class Scene;
+
+    class Application
     {
     public:
-        Engine();
-        ~Engine();
-        
-        void Start(); // do everything to start the scene 
+        Application();
+        ~Application();
+
+        void Run(); // Run the app.
+
+        void SetScene(Scene* scene);
+
+        GLFWwindow* Window();
     private:
-        GLFWwindow* window = nullptr;
-        Shader shader;
-        FlyCamera* camera = nullptr;
+        GLFWwindow* m_Window = nullptr;
+
         PlaneMesh* groundPlane = nullptr;
-        SkyBox skybox;
-        Entity backpackEntity;
-        PhysicsObjects physicsObjects;        
+ 
+
+
+        Scene* m_ActiveScene = nullptr;
 
         float lastFrameTime = 0.0f; // used to keep track of delta time
         float deltaTime = 0.0f; //Total time for last frame. 
         float desiredFPS = 60.0f;   //FPS will be capped to this value.
 
         void Inititalize(); // initalize GLFW  
-        void Load(); // load shaders and meshes and other game info?
+        void LoadScene(); // 
+        void FrameTick();
 
+        void Update();
         void Render(); // render UI and scene
-        void RenderScene();
         void RenderUI(float delaTime); // deltaTime to show FPS
 
+        void SetupSceneCallbacks();
         void processInput(GLFWwindow* window, int key, int scancode, int action, int mods);
-        void processCameraInput(float deltaTime);
     };
 }
-
-#endif
