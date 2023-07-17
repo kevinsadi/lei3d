@@ -7,11 +7,11 @@ namespace lei3d
         // ::clown emoticon::
     }
 
-    Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures)
+    Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::shared_ptr<Material> material)
     {
         this->vertices = vertices;
         this->indices = indices;
-        this->textures = textures;
+        this->material = material;
 
         setupMesh();
     }
@@ -65,20 +65,14 @@ namespace lei3d
     {
         unsigned int textureNum = 1;
 
-        for (unsigned int i = 0; i < textures.size(); i++) // very purposeful decision for i++ here, increment after first iteration, not before
-        {
-            glActiveTexture(GL_TEXTURE0 + i);
-
-            // set shader's 2d uniform samplers to the textures in the mesh
-            shader.setInt(("texture_" + std::to_string(textureNum)).c_str(), i);
-            glBindTexture(GL_TEXTURE_2D, textures[i].id);
-        }
+        material->bind(shader, textureNum);
 
         // actually draw the mesh now
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
+        material->unbind(textureNum);
         // set back to default
         glActiveTexture(GL_TEXTURE0);
     }

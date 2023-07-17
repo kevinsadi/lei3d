@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 
 #include "engine/Shader.hpp"
+#include "engine/Material.hpp"
 
 namespace lei3d
 {
@@ -17,22 +18,15 @@ namespace lei3d
         glm::vec2 TexCoords;
     };
 
-    struct Texture
-    {
-        unsigned int id;
-        std::string type;
-        std::string path;
-    };
-
     class Mesh
     {
     public:
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
-        std::vector<Texture> textures;
+        std::shared_ptr<Material> material;
         
         Mesh();
-        Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures); // I'm a pass by reference man now
+        Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::shared_ptr<Material> material); // I'm a pass by reference man now
         ~Mesh();
 
         void Draw(Shader &shader); // taking value by reference for funsies, might switch it up back to pointers
