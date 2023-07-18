@@ -30,7 +30,7 @@ namespace lei3d
         ~Model();
         
         void Draw(Shader &shader);
-        std::vector<btTriangleMesh> GetCollisionMeshesFromModel();
+        std::vector<btTriangleMesh*> GetCollisionMeshesFromModel();
     private:
         // model data
         std::vector<Mesh> meshes;

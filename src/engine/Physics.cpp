@@ -110,9 +110,9 @@ namespace lei3d
      * @param physicsObjects 
      * @param triMesh 
      */
-    void AddCollisionsFromTriangleMesh(PhysicsObjects physicsObjects, btTriangleMesh triMesh)
+    void AddCollisionsFromTriangleMesh(PhysicsObjects physicsObjects, btTriangleMesh* triMesh)
     {
-        btBvhTriangleMeshShape* meshShape = new btBvhTriangleMeshShape(&triMesh, true, true);
+        btBvhTriangleMeshShape* meshShape = new btBvhTriangleMeshShape(triMesh, true, true);
 
         // Now make the ground 
         physicsObjects.collisionShapes.push_back(meshShape);

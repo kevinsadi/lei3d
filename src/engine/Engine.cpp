@@ -121,11 +121,11 @@ namespace lei3d
         // Load house mesh and then create collisions for it 
         std::string housePath = "data/models/ryan/kekkin.obj";
         houseModel = new Model(housePath);
-        //std::vector<btTriangleMesh> houseMeshes = houseModel->GetCollisionMeshesFromModel();
-        //for (btTriangleMesh triMesh: houseMeshes)
-        //{
-        //    AddCollisionsFromTriangleMesh(physicsObjects, triMesh);
-        //}
+        std::vector<btTriangleMesh*> houseMeshes = houseModel->GetCollisionMeshesFromModel();
+        for (btTriangleMesh* triMesh: houseMeshes)
+        {
+            //AddCollisionsFromTriangleMesh(physicsObjects, triMesh);
+        }
 
         // load camera
         camera = new FlyCamera(window, 90.0f, 0.0f, 4.0f);
