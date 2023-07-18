@@ -22,6 +22,7 @@ namespace lei3d
     PhysicsObjects CreatePhysicsWorld();
     void PhysicsStep(PhysicsObjects physicsObjects, float deltaTime);
     glm::vec3 GetFirstColliderPosition(PhysicsObjects physicsObjects);
+    void AddCollisionsFromTriangleMesh(PhysicsObjects physicsObjects, btTriangleMesh triMesh);
 }
 
 #endif // PHYSICS

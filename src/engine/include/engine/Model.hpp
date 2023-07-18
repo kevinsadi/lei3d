@@ -8,13 +8,15 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "btBulletDynamicsCommon.h"
+
 #ifndef STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 #endif
 
 #include "engine/Shader.hpp"
 #include "engine/Mesh.hpp"
-#include "util/Log.hpp";
+#include "util/Log.hpp"
 
 namespace lei3d
 {
@@ -28,6 +30,7 @@ namespace lei3d
         ~Model();
         
         void Draw(Shader &shader);
+        std::vector<btTriangleMesh> GetCollisionMeshesFromModel();
     private:
         // model data
         std::vector<Mesh> meshes;

@@ -35,6 +35,7 @@ namespace lei3d
         PlaneMesh* groundPlane = nullptr;
         SkyBox skybox;
         Entity backpackEntity;
+        Model* houseModel;
         PhysicsObjects physicsObjects;        
 
         float lastFrame = 0.0f; // used to keep track of delta time

@@ -165,11 +165,48 @@ namespace lei3d
 
     void Model::Draw(Shader &shader)
     {
-        for (unsigned int i = 0; i < this->meshes.size(); i++)
+        for (unsigned int i = 0; i < meshes.size(); i++)
         {
             meshes[i].Draw(shader);
         }
     }
+
+
+    /**
+     * @brief Creates collision meshes From Model object
+     * 
+     * Requires the Model to have loaded it's meshes. Leverages the vertices and indices of each mesh to create a
+     * btTriangleMesh for each Mesh.
+     * 
+     * @return std::vector<btTriangleMesh> 
+     */
+    std::vector<btTriangleMesh> Model::GetCollisionMeshesFromModel()
+    {
+        std::vector<btTriangleMesh> collisionMeshList;
+
+        for (Mesh mesh : meshes)
+        {
+            btTriangleMesh* curCollisionMesh = new btTriangleMesh();
+
+            std::vector<Vertex> vertices = mesh.vertices;
+            std::vector<unsigned int> indices = mesh.indices;
+            
+            for (int i = 0; i < indices.size(); i += 3)
+            {
+                glm::vec3 vert1 = vertices[indices[i]].Position;
+                btVector3 bvert1(vert1.x, vert1.y, vert1.z);
+                glm::vec3 vert2 = vertices[indices[i+1]].Position;
+                btVector3 bvert2(vert1.x, vert1.y, vert1.z);
+                glm::vec3 vert3 = vertices[indices[i+2]].Position;
+                btVector3 bvert3(vert1.x, vert1.y, vert1.z);
+
+                curCollisionMesh->addTriangle(bvert1, bvert2, bvert3);
+            }
+            collisionMeshList.push_back(curCollisionMesh);
+        }
+        return collisionMeshList;
+    }
+
 
 
     // from https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/model.h

@@ -99,7 +99,7 @@ namespace lei3d
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init();
 
-        // Create physics world
+        // Create physics world TODO: Create physics into it's own class so we can have functions that mutate it's state
         physicsObjects = CreatePhysicsWorld();
     }
 
@@ -117,6 +117,15 @@ namespace lei3d
         std::string path = "data/models/backpack/backpack.obj";
         Model* backpackModel = new Model(path);
         backpackEntity = Entity(backpackModel); 
+        
+        // Load house mesh and then create collisions for it 
+        std::string housePath = "data/models/ryan/kekkin.obj";
+        houseModel = new Model(housePath);
+        //std::vector<btTriangleMesh> houseMeshes = houseModel->GetCollisionMeshesFromModel();
+        //for (btTriangleMesh triMesh: houseMeshes)
+        //{
+        //    AddCollisionsFromTriangleMesh(physicsObjects, triMesh);
+        //}
 
         // load camera
         camera = new FlyCamera(window, 90.0f, 0.0f, 4.0f);
@@ -168,7 +177,7 @@ namespace lei3d
 		deltaTime = currentFrame - lastFrame;
 		lastFrame = currentFrame;
 
-        PhysicsStep(this->physicsObjects, deltaTime);
+        PhysicsStep(physicsObjects, deltaTime);
         RenderScene();
         // Render UI
         ImGui_ImplOpenGL3_NewFrame();
@@ -214,6 +223,7 @@ namespace lei3d
 		model = glm::scale(model, backpackEntity.transform.scale);
 
         // -- translate the backpack
+        // Get the position of the backpack with respect to the physics world, translate it in the rendered world with respect to the physics location
         glm::vec3 physicsPos = GetFirstColliderPosition(this->physicsObjects);
 		backpackEntity.SetPosition(physicsPos);
         model = glm::translate(model, backpackEntity.transform.position);
@@ -242,6 +252,14 @@ namespace lei3d
         // -- draw mesh
         backpackEntity.model->Draw(shader);
 
+                
+        // RENDER HOUSE
+
+		model = glm::mat4(1.0f);
+		shader.setUniformMat4(model, "model");
+
+        // -- draw mesh
+        houseModel->Draw(shader);
 
         // render skybox after rendering rest of the scene (only draw skybox where an object is not present)
         GLCall(glDepthFunc(GL_LEQUAL)); // we change the depth function here to it passes when testingdepth value is equal to what is current stored

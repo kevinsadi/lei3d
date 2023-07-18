@@ -65,6 +65,7 @@ namespace lei3d
         return objects;
     }
 
+    // This is so messed up, makes a copy of physicsObjects struct, but every thing in the struct is a pointer, so we modify the values of the struct
     void PhysicsStep(PhysicsObjects physicsObjects, float deltaTime)
     {
         physicsObjects.dynamicsWorld->stepSimulation(deltaTime, 10);
@@ -101,6 +102,33 @@ namespace lei3d
         }
         glm::vec3 position = glm::vec3(float(trans.getOrigin().getX()), float(trans.getOrigin().getY()), float(trans.getOrigin().getZ()));
         return position;
+    }
+
+    /**
+     * @brief Mutates values in physicsObject to add the triMesh to the dynamicsWorldScene
+     * 
+     * @param physicsObjects 
+     * @param triMesh 
+     */
+    void AddCollisionsFromTriangleMesh(PhysicsObjects physicsObjects, btTriangleMesh triMesh)
+    {
+        btBvhTriangleMeshShape* meshShape = new btBvhTriangleMeshShape(&triMesh, true, true);
+
+        // Now make the ground 
+        physicsObjects.collisionShapes.push_back(meshShape);
+        
+        btTransform meshTransform;
+        meshTransform.setIdentity();
+
+        // mesh environment collisions are static 
+        btScalar meshMass = 0.0f;
+        btVector3 meshLocalInertia{0.0f, 0.0f, 0.0f};
+        
+        btDefaultMotionState* myMotionState = new btDefaultMotionState(meshTransform);
+        btRigidBody::btRigidBodyConstructionInfo rbMeshInfo{meshMass, myMotionState, meshShape, meshLocalInertia};
+        btRigidBody* meshBody = new btRigidBody(rbMeshInfo);
+
+        physicsObjects.dynamicsWorld->addRigidBody(meshBody);
     }
 
 
