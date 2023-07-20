@@ -1,4 +1,4 @@
-#include "engine/SkyBox.hpp"
+#include "SkyBox.hpp"
 
 #include "util/GLDebug.hpp"
 

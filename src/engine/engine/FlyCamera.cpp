@@ -1,4 +1,4 @@
-#include "engine/FlyCamera.hpp"
+#include "FlyCamera.hpp"
 
 namespace lei3d
 {

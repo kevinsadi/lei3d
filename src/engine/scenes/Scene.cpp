@@ -1,4 +1,4 @@
-#include "include/scenes/Scene.hpp"
+#include "scenes/Scene.hpp"
 
 namespace lei3d {
 	Scene::Scene() {

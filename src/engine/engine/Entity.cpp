@@ -1,4 +1,4 @@
-#include "engine/Entity.hpp"
+#include "Entity.hpp"
 
 namespace lei3d
 {
@@ -22,10 +22,6 @@ namespace lei3d
         // clown emoticon
     }
 
-    void Entity::AddComponent(EntityComponent component) {
-
-    }
-
     // Translate entity by glm::vec3
     void Entity::SetPosition(glm::vec3 position)
     {
@@ -43,7 +39,7 @@ namespace lei3d
     }
 
     void Entity::Update(float deltaTime) {
-        for (EntityComponent& component : m_Components) {
+        for (Component& component : m_Components) {
             component.Update(deltaTime);
         }
     }
