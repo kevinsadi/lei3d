@@ -2,6 +2,8 @@
 #include <stb_image.h>
 
 #include "Application.hpp"
+
+#include "scenes/TestScene.hpp"
 #include "util/GLDebug.hpp"
 
 namespace lei3d
@@ -46,19 +48,18 @@ namespace lei3d
         LEI_TRACE("Initializing Engine");
         Inititalize();
         
-        LEI_TRACE("Loading Resources");
-        LoadScene();
+        LEI_TRACE("Loading Scene");
+        Scene* testScene = new TestScene();
+        LoadScene(testScene);
 
-        LEI_TRACE("Entering Rendering Loop");
+        LEI_TRACE("Entering Frame Loop");
         while (!glfwWindowShouldClose(m_Window))
         {
             FrameTick();
         }
+
         LEI_TRACE("Gracefully Closing and Cleaning Up Data");
-    }
-    
-    void Application::SetScene(Scene* scene) {
-        m_ActiveScene = scene;
+        delete testScene;
     }
 
     GLFWwindow* Application::Window()
@@ -107,12 +108,12 @@ namespace lei3d
         ImGui_ImplOpenGL3_Init();
     }
 
-    void Application::LoadScene()
+    void Application::LoadScene(Scene* scene)
     {
         GLCall(glEnable(GL_DEPTH_TEST));
 
+        m_ActiveScene = scene;
         m_ActiveScene->Init(this);
-        m_ActiveScene->LoadObjects();
         SetupSceneCallbacks();
     }
 
@@ -162,6 +163,7 @@ namespace lei3d
 
     void Application::Update() {
         m_ActiveScene->Update(deltaTime);
+        m_ActiveScene->PhysicsUpdate(deltaTime);    //idk how often we need to do this.
     }
 
     void Application::Render()

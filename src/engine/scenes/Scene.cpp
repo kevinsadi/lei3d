@@ -6,33 +6,65 @@ namespace lei3d {
 	}
 
 	Scene::~Scene() {
-        if (m_Camera)
-            delete m_Camera;
+        Destroy();
 	}
 
     void Scene::Init(Application* runningApp) {
         m_App = runningApp;
         m_PhysicsObjects = CreatePhysicsWorld();
-        initCamera();
+
+        // load camera
+        GLFWwindow* const win = window();
+        m_Camera = new FlyCamera(win, 90.0f, 0.0f, 4.0f);
+
+        Start();
+    }
+
+    void Scene::Start() {
+        LEI_TRACE("Scene Start");
+        LoadObjects();
+
+        for (Entity& entity : m_Entities) {
+            entity.Start();
+        }
     }
 
 	void Scene::Update(float deltaTime) {
-		for (auto entity : m_Entities) {
-			entity->Update(deltaTime);
+        //LEI_TRACE("Scene Update");
+		for (Entity& entity : m_Entities) {
+			entity.Update(deltaTime);
 		}
 
-        PhysicsStep(m_PhysicsObjects, deltaTime);
-
-		OnUpdate();
+		OnUpdate(deltaTime);
 	}
 
+    void Scene::PhysicsUpdate(float deltaTime) {
+        //LEI_TRACE("Scene Physics Update");
+        for (Entity& entity : m_Entities) {
+            entity.PhysicsUpdate(deltaTime);
+        }
+
+        PhysicsStep(m_PhysicsObjects, deltaTime);
+    }
+
 	void Scene::Render() {
-		for (auto entity : m_Entities) {
-			entity->Render();
+        //LEI_TRACE("Scene Render");
+		for (Entity& entity : m_Entities) {
+			entity.Render();
 		}
 
 		OnRender();
 	}
+
+    void Scene::Destroy() {
+        LEI_TRACE("Scene Destroy");
+
+        if (m_Camera) {
+            delete m_Camera;
+        }
+
+        OnDestroy();
+    }
 
     void Scene::ProcessCameraInput(float deltaTime)
     {
@@ -56,13 +88,6 @@ namespace lei3d {
         }
     }
 
-    void Scene::initCamera() {
-        
-        // load camera
-        GLFWwindow* const win = window();
-        m_Camera = new FlyCamera(win, 90.0f, 0.0f, 4.0f);
-    }
-
     FlyCamera* Scene::MainCamera() {
         return m_Camera;
     }
@@ -70,7 +95,5 @@ namespace lei3d {
     GLFWwindow* Scene::window() {
         return m_App->Window();
     }
-
-
 }
 

@@ -7,8 +7,6 @@
 #include "engine/Application.hpp"
 #include "util/Log.hpp"
 
-#include "scenes/TestScene.hpp"
-
 using namespace lei3d;
 
 /*
@@ -20,12 +18,9 @@ int main() {
 	Log::Init();
 	LEI_TRACE("Initialized Logger");
 	Application* app = new Application();
-	Scene* testScene = new TestScene();
-	app->SetScene(testScene);
+
 	// loops until render loop ends
 	app->Run();
-
-	delete testScene;
 	delete app;
 
 	return 0;

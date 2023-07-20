@@ -46,7 +46,7 @@ namespace lei3d {
         m_Skybox = skybox;
     }
 
-    void TestScene::OnUpdate() {
+    void TestScene::OnUpdate(float deltaTime) {
 
     }
 

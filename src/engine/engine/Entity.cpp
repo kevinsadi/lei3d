@@ -19,7 +19,7 @@ namespace lei3d
 
     Entity::~Entity()
     {
-        // clown emoticon
+        OnDestroy();
     }
 
     // Translate entity by glm::vec3
@@ -38,13 +38,36 @@ namespace lei3d
         m_Shader = shader;
     }
 
+    void Entity::Start() {
+        for (Component& component : m_Components) {
+            component.Start();
+        }
+    }
+
     void Entity::Update(float deltaTime) {
         for (Component& component : m_Components) {
             component.Update(deltaTime);
         }
     }
 
+    void Entity::PhysicsUpdate(float deltaTime) {
+        for (Component& component : m_Components) {
+            component.PhysicsUpdate(deltaTime);
+        }
+    }
+
     void Entity::Render() {
+        for (Component& component : m_Components) {
+            component.Render();
+        }
+
+        //TODO: Abstract into component
         m_Model->Draw(*m_Shader);
+    }
+
+    void Entity::OnDestroy() {
+        for (Component& component : m_Components) {
+            component.OnDestroy();
+        }
     }
 }

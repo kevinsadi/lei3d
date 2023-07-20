@@ -30,15 +30,11 @@ namespace lei3d
 
         void Run(); // Run the app.
 
-        void SetScene(Scene* scene);
-
         GLFWwindow* Window();
     private:
         GLFWwindow* m_Window = nullptr;
 
         PlaneMesh* groundPlane = nullptr;
- 
-
 
         Scene* m_ActiveScene = nullptr;
 
@@ -47,7 +43,7 @@ namespace lei3d
         float desiredFPS = 60.0f;   //FPS will be capped to this value.
 
         void Inititalize(); // initalize GLFW  
-        void LoadScene(); // 
+        void LoadScene(Scene* scene); // 
         void FrameTick();
 
         void Update();

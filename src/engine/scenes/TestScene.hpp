@@ -19,7 +19,7 @@ namespace lei3d {
         ~TestScene();
 
         void LoadObjects() override;
-        void OnUpdate() override;
+        void OnUpdate(float deltaTime) override;
         void OnRender() override;
     };
 }

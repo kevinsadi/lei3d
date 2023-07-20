@@ -33,15 +33,16 @@ namespace lei3d
         Transform transform;
         Shader* m_Shader = nullptr;
 
-
-
         Entity();
         Entity(Model* model);
         Entity(Model* model, Shader* shader);
         ~Entity();
 
-        virtual void Update(float deltaTime);
-        virtual void Render();
+        void Start();
+        void Update(float deltaTime);
+        void PhysicsUpdate(float deltaTime);
+        void Render();
+        void OnDestroy();
 
         void SetPosition(glm::vec3 translation);
         void SetScale(glm::vec3 scale);
