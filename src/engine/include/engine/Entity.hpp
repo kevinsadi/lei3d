@@ -6,16 +6,11 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "engine/Model.hpp"
+#include "physics/Physics.hpp"
+#include "util/Transform.hpp"
 
 namespace lei3d
 {
-    struct Transform
-    {
-        glm::vec3 position;
-        glm::vec3 rotation;       
-        glm::vec3 scale;
-    };
-
     class Entity
     {
     public:
@@ -28,6 +23,7 @@ namespace lei3d
 
         void SetPosition(glm::vec3 translation);
         void SetScale(glm::vec3 scale);
+        void AddModelColliderStatic(PhysicsObjects physicsObjects);
     };
 }
 

@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <glm/glm.hpp>
 
+#include "util/Transform.hpp"
+
 namespace lei3d
 {
     struct PhysicsObjects
@@ -22,7 +24,7 @@ namespace lei3d
     PhysicsObjects CreatePhysicsWorld();
     void PhysicsStep(PhysicsObjects physicsObjects, float deltaTime);
     glm::vec3 GetFirstColliderPosition(PhysicsObjects physicsObjects);
-    void AddCollisionsFromTriangleMesh(PhysicsObjects physicsObjects, btTriangleMesh* triMesh);
+    void AddCollisionsFromTriangleMesh(PhysicsObjects physicsObjects, btTriangleMesh* triMesh, Transform transform);
 }
 
 #endif // PHYSICS

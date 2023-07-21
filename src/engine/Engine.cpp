@@ -117,15 +117,14 @@ namespace lei3d
         std::string path = "data/models/backpack/backpack.obj";
         Model* backpackModel = new Model(path);
         backpackEntity = Entity(backpackModel); 
+        houseEntity.SetPosition(glm::vec3(0, 0, 0));
         
         // Load house mesh and then create collisions for it 
         std::string housePath = "data/models/ryan/kekkin.obj";
-        houseModel = new Model(housePath);
-        std::vector<btTriangleMesh*> houseMeshes = houseModel->GetCollisionMeshesFromModel();
-        for (btTriangleMesh* triMesh: houseMeshes)
-        {
-            //AddCollisionsFromTriangleMesh(physicsObjects, triMesh);
-        }
+        Model* houseModel = new Model(housePath);
+        houseEntity = Entity(houseModel);
+        houseEntity.SetPosition(glm::vec3(0, -40, 0));
+        houseEntity.AddModelColliderStatic(physicsObjects);
 
         // load camera
         camera = new FlyCamera(window, 90.0f, 0.0f, 4.0f);
@@ -218,26 +217,32 @@ namespace lei3d
 		shader.setUniformMat4(view, "view");
 
         // RENDER FIRST OBJECT
-        backpackEntity.SetScale(glm::vec3(0.25, 0.25, 0.25));
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::scale(model, backpackEntity.transform.scale);
 
         // -- translate the backpack
         // Get the position of the backpack with respect to the physics world, translate it in the rendered world with respect to the physics location
         glm::vec3 physicsPos = GetFirstColliderPosition(this->physicsObjects);
 		backpackEntity.SetPosition(physicsPos);
         model = glm::translate(model, backpackEntity.transform.position);
-		shader.setUniformMat4(model, "model");
+
+        // THEN scale the object
+        backpackEntity.SetScale(glm::vec3(1.0, 1.0, 1.0));
+		model = glm::scale(model, backpackEntity.transform.scale);
+		
+        shader.setUniformMat4(model, "model");
 
         // -- draw mesh
         backpackEntity.model->Draw(shader);
 
+        /*
         // RENDER SECOND OBJECT
 
 		model = glm::mat4(1.0f);
         backpackEntity.SetScale(glm::vec3(5.25, 3.25, 2.25));
 		model = glm::scale(model, backpackEntity.transform.scale);
 		shader.setUniformMat4(model, "model");
+        
+
 
         // -- draw mesh
         backpackEntity.model->Draw(shader);
@@ -251,15 +256,15 @@ namespace lei3d
 
         // -- draw mesh
         backpackEntity.model->Draw(shader);
-
+        */
                 
         // RENDER HOUSE
 
 		model = glm::mat4(1.0f);
+        model = glm::translate(model, houseEntity.transform.position);
 		shader.setUniformMat4(model, "model");
-
         // -- draw mesh
-        houseModel->Draw(shader);
+        houseEntity.model->Draw(shader);
 
         // render skybox after rendering rest of the scene (only draw skybox where an object is not present)
         GLCall(glDepthFunc(GL_LEQUAL)); // we change the depth function here to it passes when testingdepth value is equal to what is current stored

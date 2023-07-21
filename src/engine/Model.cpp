@@ -189,9 +189,7 @@ namespace lei3d
             btTriangleMesh* curCollisionMesh = new btTriangleMesh();
 
             std::vector<Vertex> vertices = mesh.vertices;
-            std::cout << "vertices length: " << vertices.size() << std::endl;
             std::vector<unsigned int> indices = mesh.indices;
-            std::cout << "indices length: " << indices.size() << std::endl;
             
             for (int i = 0; i < indices.size(); i += 3)
             {
@@ -207,7 +205,6 @@ namespace lei3d
             collisionMeshList.push_back(curCollisionMesh);
         }
 
-        std::cout << "collisionMeshList length: " << collisionMeshList.size() << std::endl;
         return collisionMeshList;
     }
 

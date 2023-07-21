@@ -1,4 +1,5 @@
 #include "physics/Physics.hpp"
+#include <iostream>
 
 namespace lei3d
 {
@@ -22,12 +23,12 @@ namespace lei3d
 
         btTransform startTransform;
         startTransform.setIdentity();
+        startTransform.setOrigin(btVector3{0.0f, 0.0f, 0.0f});
 
         btScalar mass{1.f};
 
         btVector3 localInertia{0.0f, 0.0f, 0.0f};
         character->calculateLocalInertia(mass, localInertia);
-        startTransform.setOrigin(btVector3{3.0f, 50.0f, 0.0f});
         
         btDefaultMotionState* charMotionState = new btDefaultMotionState(startTransform);
         btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, charMotionState, character, localInertia);
@@ -35,13 +36,14 @@ namespace lei3d
 
         dynamicsWorld->addRigidBody(characterBody);
 
+        /*
         // Now make the ground 
-        btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
+        btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(1.), btScalar(50.)));
         collisionShapes.push_back(groundShape);
         
         btTransform groundTransform;
         groundTransform.setIdentity();
-        groundTransform.setOrigin(btVector3(0, -70, 0));
+        groundTransform.setOrigin(btVector3(0, -50, 0));
 
         btScalar floorMass = 0.0f;
         btVector3 floorLocalInertia{0.0f, 0.0f, 0.0f}; // list initialization makes my brain happy with structs. I'm sorry for the sudden switch haha
@@ -51,7 +53,8 @@ namespace lei3d
         btRigidBody* floorBody = new btRigidBody(rbFloorInfo);
 
         dynamicsWorld->addRigidBody(floorBody);
-        
+        */
+
         // return our physics objects, will be modified before passed to physicsStep
         PhysicsObjects objects {
             collisionConfiguration, 
@@ -110,7 +113,7 @@ namespace lei3d
      * @param physicsObjects 
      * @param triMesh 
      */
-    void AddCollisionsFromTriangleMesh(PhysicsObjects physicsObjects, btTriangleMesh* triMesh)
+    void AddCollisionsFromTriangleMesh(PhysicsObjects physicsObjects, btTriangleMesh* triMesh, Transform transform)
     {
         btBvhTriangleMeshShape* meshShape = new btBvhTriangleMeshShape(triMesh, true, true);
 
@@ -119,6 +122,8 @@ namespace lei3d
         
         btTransform meshTransform;
         meshTransform.setIdentity();
+        meshTransform.setOrigin(btVector3{transform.position.x, transform.position.y, transform.position.z});
+        //meshTransform.setOrigin(btVector3{0, 0, 0});
 
         // mesh environment collisions are static 
         btScalar meshMass = 0.0f;

@@ -28,4 +28,17 @@ namespace lei3d
     {
         transform.scale = scale;
     }
+
+    void Entity::AddModelColliderStatic(PhysicsObjects physicsObjects)
+    {
+        if (model)
+        {
+            std::vector<btTriangleMesh*> modelMeshes = model->GetCollisionMeshesFromModel();
+            for (auto triMesh: modelMeshes)
+            {
+                AddCollisionsFromTriangleMesh(physicsObjects, triMesh, transform);
+            }
+
+        }
+    }
 }
