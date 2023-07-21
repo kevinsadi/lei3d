@@ -5,9 +5,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "engine/Component.hpp"
-#include "engine/Model.hpp"
 #include "engine/Shader.hpp"
 
+#include <memory>
+#include <typeinfo>
 #include <unordered_map>
 
 namespace lei3d
@@ -26,16 +27,14 @@ namespace lei3d
     class Entity
     {
     private:
-        std::unordered_map<std::string, std::vector<Component>> m_ComponentLookup;   //typename, Component
-        std::vector<Component> m_Components;
+        std::vector<std::shared_ptr<Component>> m_Components;
     public:
-        Model* m_Model = nullptr;    
+        //std::shared_ptr<Model> m_Model = nullptr;    
         Transform transform;
         Shader* m_Shader = nullptr;
 
         Entity();
-        Entity(Model* model);
-        Entity(Model* model, Shader* shader);
+        //Entity(std::string modelPath);   //TODO: Get rid of this s***** eventually
         ~Entity();
 
         void Start();
@@ -52,17 +51,31 @@ namespace lei3d
         //Template component stuff
 
         template<typename C>
-        C GetComponent() {
-            static_assert(std::is_same<C, Component>::value, "C must be a component type");
+        C* GetComponent() {
+            static_assert(std::is_convertible<C, Component>::value, "C must be a component type");
 
             //Get entry in data structure for T           
             //Return first one prob. (may need GetComponents if we have multiple)
+            for (Component& c : m_Components) {
+                if (GetComponentName<typeid(c)>.compare(GetComponentName<C>()) == 0) {
+                    //returns the first match
+                    return &c;
+                }
+            }
         }
         
-        template<typename T> 
-        void AddComponent(...) {
+        //returns the component that was just created.
+        template<typename C> 
+        std::shared_ptr<C> AddComponent() {
+
+            static_assert(std::is_convertible<C, Component>::value, "C must be a component type");
+
             //Construct new component object
             //Add new component to dict/whatever data structure for components
+
+            std::shared_ptr<C> c = std::make_shared<C>(this);
+            m_Components.push_back(c);
+            return c;
         }
     };
 }

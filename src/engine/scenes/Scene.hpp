@@ -8,6 +8,7 @@
 #include "engine/Entity.hpp"
 #include "engine/FlyCamera.hpp"
 
+#include <memory>
 #include <vector>
 
 namespace lei3d
@@ -18,10 +19,11 @@ namespace lei3d
     {
     protected:
         Application* m_App;
-        std::vector<Entity> m_Entities;
+        std::vector<std::shared_ptr<Entity>> m_Entities;
         PhysicsObjects m_PhysicsObjects;
 
-        FlyCamera* m_Camera = nullptr;    //every scene needs this
+        std::shared_ptr<FlyCamera> m_Camera = nullptr;    //every scene needs this
+        std::shared_ptr<Shader> m_MainShader = nullptr; //THIS IS TEMPORARY
     public:
         Scene();
         ~Scene();
@@ -43,7 +45,7 @@ namespace lei3d
         virtual void OnRender() {}
         virtual void OnDestroy() {}
 
-        FlyCamera* MainCamera();
+        std::shared_ptr<FlyCamera> MainCamera();
     private:
         GLFWwindow* window();
     };

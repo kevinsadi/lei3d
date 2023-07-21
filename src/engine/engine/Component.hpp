@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Entity.hpp"
+
 #include <string>
 
 namespace lei3d
@@ -7,12 +9,19 @@ namespace lei3d
     template<typename C>
     std::string GetComponentName();
 
-#define DEFINE_COMPONENT(name, type) \
-template<> std::string GetComponentName<type>() { return name; }
+#define DEFINE_COMPONENT(type, name) \
+template<> \
+std::string GetComponentName<type>() { return std::string(name); }
+
+    class Entity;
 
     class Component
     {
+    protected:
+        Entity* m_Entity;
     public:
+        Component(Entity* entity);
+
         virtual void Start() {}
         virtual void Update(float deltaTime) {}
         virtual void PhysicsUpdate(float deltaTime) {}

@@ -11,22 +11,28 @@
 #include <stb_image.h>
 #endif
 
+#include "engine/Component.hpp"
 #include "engine/Shader.hpp"
 #include "engine/Mesh.hpp"
 #include "util/Log.hpp";
 
 namespace lei3d
 {
-    class Model
+    class Component;
+
+    class Model : public Component
     {
     public:
         std::vector<Texture> textures_loaded;
+
+        Shader* prop_shader;
         
-        Model();
-        Model(const std::string& path);
+        Model(Entity* entity);
         ~Model();
         
-        void Draw(Shader &shader);
+        void Init(const std::string& modelPath, Shader& shader);
+
+        void Render() override;
     private:
         // model data
         std::vector<Mesh> meshes;

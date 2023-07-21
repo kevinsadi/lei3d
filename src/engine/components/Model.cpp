@@ -2,20 +2,19 @@
 
 namespace lei3d
 {
-
-    Model::Model()
-    {
-        // ::clown emoticon::
-    }
-
-    Model::Model(const std::string& path)
-    {
-        loadModel(path);        
+    DEFINE_COMPONENT(Model, "Model");
+    
+    Model::Model(Entity* entity) : Component(entity)
+    {      
     }
 
     Model::~Model()
     {
+    }
 
+    void Model::Init(const std::string& modelPath, Shader& shader) {
+        prop_shader = &shader;
+        loadModel(modelPath);
     }
 
     void Model::loadModel(const std::string& path)
@@ -163,11 +162,11 @@ namespace lei3d
         return textures;
     }
 
-    void Model::Draw(Shader &shader)
+    void Model::Render()
     {
         for (unsigned int i = 0; i < this->meshes.size(); i++)
         {
-            meshes[i].Draw(shader);
+            meshes[i].Draw(*prop_shader);
         }
     }
 
