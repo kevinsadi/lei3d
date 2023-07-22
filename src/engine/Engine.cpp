@@ -117,8 +117,8 @@ namespace lei3d
         std::string path = "data/models/backpack/backpack.obj";
         Model* backpackModel = new Model(path);
         backpackEntity = Entity(backpackModel); 
-        houseEntity.SetPosition(glm::vec3(0, 0, 0));
-        
+        backpackEntity.SetScale(glm::vec3(1, 1, 1));
+
         // Load house mesh and then create collisions for it 
         std::string housePath = "data/models/ryan/kekkin.obj";
         Model* houseModel = new Model(housePath);
@@ -226,9 +226,7 @@ namespace lei3d
         model = glm::translate(model, backpackEntity.transform.position);
 
         // THEN scale the object
-        backpackEntity.SetScale(glm::vec3(1.0, 1.0, 1.0));
 		model = glm::scale(model, backpackEntity.transform.scale);
-		
         shader.setUniformMat4(model, "model");
 
         // -- draw mesh

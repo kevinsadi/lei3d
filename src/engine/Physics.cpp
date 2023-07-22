@@ -36,25 +36,6 @@ namespace lei3d
 
         dynamicsWorld->addRigidBody(characterBody);
 
-        /*
-        // Now make the ground 
-        btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(1.), btScalar(50.)));
-        collisionShapes.push_back(groundShape);
-        
-        btTransform groundTransform;
-        groundTransform.setIdentity();
-        groundTransform.setOrigin(btVector3(0, -50, 0));
-
-        btScalar floorMass = 0.0f;
-        btVector3 floorLocalInertia{0.0f, 0.0f, 0.0f}; // list initialization makes my brain happy with structs. I'm sorry for the sudden switch haha
-        
-        btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
-        btRigidBody::btRigidBodyConstructionInfo rbFloorInfo{floorMass, myMotionState, groundShape, floorLocalInertia};
-        btRigidBody* floorBody = new btRigidBody(rbFloorInfo);
-
-        dynamicsWorld->addRigidBody(floorBody);
-        */
-
         // return our physics objects, will be modified before passed to physicsStep
         PhysicsObjects objects {
             collisionConfiguration, 
@@ -115,7 +96,9 @@ namespace lei3d
      */
     void AddCollisionsFromTriangleMesh(PhysicsObjects physicsObjects, btTriangleMesh* triMesh, Transform transform)
     {
-        btBvhTriangleMeshShape* meshShape = new btBvhTriangleMeshShape(triMesh, true, true);
+        btVector3 scaleVector{transform.scale.x, transform.scale.y, transform.scale.z};
+        btBvhTriangleMeshShape* nonScaledMeshShape = new btBvhTriangleMeshShape(triMesh, true, true);
+        btScaledBvhTriangleMeshShape* meshShape = new btScaledBvhTriangleMeshShape(nonScaledMeshShape, scaleVector);
 
         // Now make the ground 
         physicsObjects.collisionShapes.push_back(meshShape);

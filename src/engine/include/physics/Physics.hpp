@@ -4,6 +4,8 @@
 #define PHYSICS
 
 #include "btBulletDynamicsCommon.h"
+#include "BulletCollision/CollisionShapes/btScaledBvhTriangleMeshShape.h"
+
 #include <stdio.h>
 #include <glm/glm.hpp>
 
