@@ -14,7 +14,7 @@
 
 #define LEI_ASSERT(x, ...) {\
 	if (!(x)) {\
-		SG_ERROR("Assertion Failed: {0}", __VA_ARGS__);\
+		LEI_ERROR("Assertion Failed: {0}", __VA_ARGS__);\
 		__debugbreak();\
 	}\
 }

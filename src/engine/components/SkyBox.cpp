@@ -4,9 +4,20 @@
 
 namespace lei3d
 {
-    SkyBox::SkyBox()
+    DEFINE_COMPONENT(SkyBox, "SkyBox");
+
+    SkyBox::SkyBox(Entity* entity) : Component(entity)
     {
-        // clown emoticon //
+    }
+
+    SkyBox::~SkyBox() {
+        
+    }
+
+    void SkyBox::Init(std::vector<std::string> faces) {
+        loadCubemap(faces);
+
+        skyboxShader.setInt("u_TexSkybox", 0);
     }
 
     void SkyBox::loadCubemap(std::vector<std::string> faces)
@@ -99,6 +110,9 @@ namespace lei3d
         GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW));
         GLCall(glEnableVertexAttribArray(0));
         GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
+        GLCall(glBindVertexArray(0));
+
+        LEI_INFO("SkyBox VAO: {0}", skyboxVAO);
 
         this->skyboxShader = skyboxShader;
         this->cubeMapTexture = textureID;
@@ -106,7 +120,7 @@ namespace lei3d
         this->skyboxVBO = skyboxVBO;
     }
 
-    void SkyBox::renderCubemap()
+    void SkyBox::Render()
     {
         /*
         glDepthMask(GL_FALSE);
@@ -117,8 +131,24 @@ namespace lei3d
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glDepthMask(GL_TRUE);
         */
+
+        auto camera = ActiveScene()->MainCamera();
+
+        //C++ doesn't like it if you don't declare these beforehand (initial ref. to non-const value)
+        glm::mat4 proj = camera->GetProj();
+        glm::mat4 skyboxView = glm::mat4(glm::mat3(camera->GetView()));
+        glm::mat4 model = glm::identity<glm::mat4>();
+        skyboxShader.setUniformMat4("u_Proj", proj);
+        skyboxShader.setUniformMat4("u_View", skyboxView);
+        skyboxShader.setUniformMat4("u_Model", model);
+        skyboxShader.bind();
+
+        GLCall(glDepthFunc(GL_LEQUAL)); // we change the depth function here to it passes when testingdepth value is equal to what is current stored
+        GLCall(glBindVertexArray(skyboxVAO));
+        GLCall(glActiveTexture(GL_TEXTURE0)); //! could be the problem
+        GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, cubeMapTexture));
+        GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
+        GLCall(glBindVertexArray(0));
+        GLCall(glDepthFunc(GL_LESS)); // set depth function back to normal
     }
-
-
-
 }

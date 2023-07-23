@@ -31,7 +31,13 @@ namespace lei3d
         void Run(); // Run the app.
 
         GLFWwindow* Window();
+
+        static Application* Curr();
+
+        Scene* ActiveScene();
     private:
+        static Application* s_Instance;
+
         GLFWwindow* m_Window = nullptr;
 
         PlaneMesh* groundPlane = nullptr;

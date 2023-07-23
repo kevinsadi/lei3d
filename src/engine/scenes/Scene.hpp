@@ -14,6 +14,9 @@
 namespace lei3d
 {
     class Application;
+    class Entity;
+    class PhysicsObjects;
+    class Shader;
 
     class Scene
     {
@@ -24,6 +27,8 @@ namespace lei3d
 
         std::shared_ptr<FlyCamera> m_Camera = nullptr;    //every scene needs this
         std::shared_ptr<Shader> m_MainShader = nullptr; //THIS IS TEMPORARY
+
+        //glm::mat4 m_VP;
     public:
         Scene();
         ~Scene();
@@ -46,6 +51,7 @@ namespace lei3d
         virtual void OnDestroy() {}
 
         std::shared_ptr<FlyCamera> MainCamera();
+        //glm::mat4 GetVPMat();
     private:
         GLFWwindow* window();
     };

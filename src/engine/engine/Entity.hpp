@@ -10,6 +10,7 @@
 #include <memory>
 #include <typeinfo>
 #include <unordered_map>
+#include <string>
 
 namespace lei3d
 {
@@ -21,7 +22,6 @@ namespace lei3d
     };
 
     class Component;
-    class Model;
     class Shader;
 
     class Entity
@@ -68,10 +68,10 @@ namespace lei3d
         template<typename C> 
         std::shared_ptr<C> AddComponent() {
 
-            static_assert(std::is_convertible<C, Component>::value, "C must be a component type");
+            //std::string componentTypeStr = "Must be a component type: ";
+            //componentTypeStr.append(GetComponentName<C>());
 
-            //Construct new component object
-            //Add new component to dict/whatever data structure for components
+            static_assert(std::is_convertible<C, Component>::value, "C must be a component type.");
 
             std::shared_ptr<C> c = std::make_shared<C>(this);
             m_Components.push_back(c);

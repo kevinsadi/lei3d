@@ -78,15 +78,15 @@ namespace lei3d
 			LEI_ERROR("FRAGMENT SHADER COMPILATION FAILED\n\n" + std::string(infoLog));
 		}
 
-		shaderProgramID = glCreateProgram(); // member variable
-		glAttachShader(shaderProgramID, vertexShaderID);
-		glAttachShader(shaderProgramID, fragmentShaderID);
-		glLinkProgram(shaderProgramID);
+		m_ShaderID = glCreateProgram(); // member variable
+		glAttachShader(m_ShaderID, vertexShaderID);
+		glAttachShader(m_ShaderID, fragmentShaderID);
+		glLinkProgram(m_ShaderID);
 
-		glGetProgramiv(shaderProgramID, GL_LINK_STATUS, &success);
+		glGetProgramiv(m_ShaderID, GL_LINK_STATUS, &success);
 		if (!success)
 		{
-			glGetProgramInfoLog(shaderProgramID, 512, NULL, infoLog);
+			glGetProgramInfoLog(m_ShaderID, 512, NULL, infoLog);
 			LEI_ERROR("SHADER PROGRAM LINKING FAILED\n\n" + std::string(infoLog));
 		}
 
@@ -97,19 +97,37 @@ namespace lei3d
 	/** 
 	 * Set OpenGL to use this shader. 
 	 */
-	void Shader::use() 
-	{
-		glUseProgram(shaderProgramID);
+	void Shader::bind() {
+		GLCall(glUseProgram(m_ShaderID));
 	}
 
-	void Shader::setUniformMat4(glm::mat4& matrix, const char* matrixName)
+	void Shader::unbind() {
+		GLCall(glUseProgram(0));
+	}
+
+	void Shader::setUniformMat4(const std::string& name, glm::mat4& matrix)
 	{
-		unsigned int projLoc = glGetUniformLocation(shaderProgramID, matrixName);
-		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(matrix));
+		bind();
+		GLCall(glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix)));
+		unbind();
 	}
 
 	void Shader::setInt(const std::string &name, int value)
     { 
-        glUniform1i(glGetUniformLocation(shaderProgramID, name.c_str()), value); 
+		bind();
+        glUniform1i(glGetUniformLocation(m_ShaderID, name.c_str()), value); 
+		unbind();
     }
+
+	int Shader::getUniformLocation(const std::string& name) {
+		if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end()) {
+			return m_UniformLocationCache[name];
+		}
+
+		GLCall(int location = glGetUniformLocation(m_ShaderID, name.c_str()));
+		if (location == -1) {
+			LEI_ERROR("Uniform does not exist: " + name);
+		}
+		return location;
+	}
 }

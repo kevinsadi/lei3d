@@ -11,9 +11,13 @@
 
 #include "engine/Shader.hpp"
 
+#include "engine/Component.hpp"
+
 namespace lei3d
 {
-    class SkyBox
+    class Component;
+
+    class SkyBox : public Component
     {
     public:
         unsigned int skyboxVAO;
@@ -21,9 +25,14 @@ namespace lei3d
         Shader skyboxShader;
         unsigned int cubeMapTexture;
 
-        SkyBox();
+        SkyBox(Entity* entity);
+        ~SkyBox();
 
+        void Init(std::vector<std::string> faces);
+
+        void Render() override;
+
+    private:
         void loadCubemap(std::vector<std::string> faces);
-        void renderCubemap();
     };
 }

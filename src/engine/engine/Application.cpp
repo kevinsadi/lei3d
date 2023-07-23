@@ -14,14 +14,21 @@ namespace lei3d
         GLCall(glViewport(0, 0, width, height));
     }
 
+    Application* Application::s_Instance = nullptr;
+
     Application::Application()
     {
-        // clown emoji
-        // kevin please fix
+        if (s_Instance) {
+            LEI_ERROR("Multiple instances detected. Only one application should be running at a time.");
+        }
+
+        s_Instance = this;
     }
 
     Application::~Application()
     {
+        s_Instance = nullptr;
+
         if (groundPlane)
         {
             GLCall(glDeleteBuffers(1, &(groundPlane->planeVAO)));
@@ -29,8 +36,6 @@ namespace lei3d
             GLCall(glDeleteBuffers(1, &(groundPlane->planeVBO)));
             delete groundPlane;
         }
-
-        // add clean up for the skybox buffers, especially if we switch the buffers
 
         // clear all of the previously allocated GLFW resources
         glfwTerminate();
@@ -41,16 +46,23 @@ namespace lei3d
         ImGui::DestroyContext();
     }
 
+    Application* Application::Curr() {
+        return s_Instance;
+    }
+
+    Scene* Application::ActiveScene() {
+        return m_ActiveScene;
+    }
+
     void Application::Run()
     {
-        LEI_ASSERT(m_ActiveScene != nullptr, "Please make sure a scene is set before running");
-
         LEI_TRACE("Initializing Engine");
         Inititalize();
         
         LEI_TRACE("Loading Scene");
         Scene* testScene = new TestScene();
         LoadScene(testScene);
+        LEI_ASSERT(m_ActiveScene != nullptr, "Please make sure a scene is set before running");
 
         LEI_TRACE("Entering Frame Loop");
         while (!glfwWindowShouldClose(m_Window))

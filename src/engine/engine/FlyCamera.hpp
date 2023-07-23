@@ -16,7 +16,12 @@ namespace lei3d
         FlyCamera(GLFWwindow* window, float yaw, float pitch, float flySpeed);
         ~FlyCamera();
 
-        glm::mat4 getCameraView();
+        glm::mat4 GetView();
+        glm::mat4 GetProj();
+
+        void SetFOV(float fov);
+        void SetClipPlanes(float near, float far);
+
         void cameraMouseCallback(GLFWwindow* window, double xPosInput, double yPosInput);
         
         void handleForward(float deltaTime);
@@ -30,6 +35,9 @@ namespace lei3d
         float pitch;
         float flySpeed;
         bool firstMouse;
+
+        //projection values
+        float m_FOVDeg, m_Aspect, m_NearPlane, m_FarPlane;
 
         glm::mat4 cameraView;
 

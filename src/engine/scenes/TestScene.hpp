@@ -6,7 +6,7 @@
 #include "engine/Entity.hpp"
 
 #include "engine/Shader.hpp"
-#include "engine/SkyBox.hpp"
+#include "components/SkyBox.hpp"
 
 namespace lei3d {
     class Entity;
@@ -16,9 +16,6 @@ namespace lei3d {
 
     class TestScene : public Scene {
     private:
- 
-        Entity m_Backpack;
-        SkyBox m_Skybox;
     public:
         TestScene();
         ~TestScene();

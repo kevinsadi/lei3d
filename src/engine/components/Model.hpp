@@ -24,7 +24,6 @@ namespace lei3d
     {
     public:
         std::vector<Texture> textures_loaded;
-
         Shader* prop_shader;
         
         Model(Entity* entity);
@@ -37,6 +36,8 @@ namespace lei3d
         // model data
         std::vector<Mesh> meshes;
         std::string directory;
+
+        unsigned int numMeshes = 0;  //TEMPORARY
 
         void loadModel(const std::string& path);
         void processNode(aiNode *node, const aiScene *scene);

@@ -24,17 +24,15 @@ namespace lei3d {
         stbi_set_flip_vertically_on_load(true);
 
         // load mesh from obj file (EVENTUALLY WILL WANT TO USE GTLF FILES INSTEAD)
-        std::string modelPath = "data/models/backpack/backpack.obj";
-        //m_Backpack = Entity(path);
-        std::shared_ptr<Entity> backpack = std::make_shared<Entity>();
-        backpack->AddComponent<Backpack>();
-        std::shared_ptr<Model> model = backpack->AddComponent<Model>();
-        model->Init(modelPath, *m_MainShader);
-        m_Entities.push_back(backpack);
+        //const std::string modelPath = "data/models/backpack/backpack.obj";
+        //std::shared_ptr<Entity> backpackObj = std::make_shared<Entity>();
+        //backpackObj->AddComponent<Backpack>();
+        //std::shared_ptr<Model> model = backpackObj->AddComponent<Model>();
+        //model->Init(modelPath, *m_MainShader);
+        //m_Entities.push_back(backpackObj);
 
-        // create skybox
-        SkyBox skybox = SkyBox();
-
+        std::shared_ptr<Entity> skyboxObj = std::make_shared<Entity>();
+        std::shared_ptr<SkyBox> skybox = skyboxObj->AddComponent<SkyBox>();
         std::vector<std::string> faces
         {
             "data/skybox/anime_etheria/right.jpg",
@@ -44,11 +42,8 @@ namespace lei3d {
             "data/skybox/anime_etheria/front.jpg",
             "data/skybox/anime_etheria/back.jpg"
         };
-        skybox.loadCubemap(faces);
-
-        skybox.skyboxShader.use();
-        skybox.skyboxShader.setInt("skybox", 0);
-        m_Skybox = skybox;
+        skybox->Init(faces);
+        m_Entities.push_back(skyboxObj);
     }
 
     void TestScene::OnUpdate(float deltaTime) {
@@ -58,8 +53,8 @@ namespace lei3d {
     void TestScene::OnRender() {
         //LEI_TRACE("Rendering Test Scene");
         // rendering
-  /*      GLCall(glClearColor(0.2f, 0.8f, 0.9f, 1.0f));
-        GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));*/
+        //GLCall(glClearColor(0.2f, 0.8f, 0.9f, 1.0f));
+        //GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
         // Use transformation Shader for Rendering Main Object
         //m_MainShader.use();
@@ -108,19 +103,16 @@ namespace lei3d {
 
 
         // render skybox after rendering rest of the scene (only draw skybox where an object is not present)
-        GLCall(glDepthFunc(GL_LEQUAL)); // we change the depth function here to it passes when testingdepth value is equal to what is current stored
-        m_Skybox.skyboxShader.use();
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 400.0f);
-        m_Skybox.skyboxShader.setUniformMat4(projection, "proj");
-        glm::mat4 view = glm::mat4(glm::mat3(m_Camera->getCameraView()));
-        m_Skybox.skyboxShader.setUniformMat4(view, "view");
+        //GLCall(glDepthFunc(GL_LEQUAL)); // we change the depth function here to it passes when testingdepth value is equal to what is current stored
+        //m_Skybox.skyboxShader.use();
+        //glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 400.0f);
+        //m_Skybox.skyboxShader.setUniformMat4(projection, "proj");
+        //glm::mat4 view = glm::mat4(glm::mat3(m_Camera->GetCameraVP()));
+        //m_Skybox->skyboxShader.bind();
+        //glm::mat4 skyboxMVP = m_Camera->GetProj() * glm::mat4(glm::mat3(m_Camera->GetView()));
+        //m_Skybox.skyboxShader.setUniformMat4("u_MVP", skyboxMVP);
 
-        // -- render the skybox cube
-        GLCall(glBindVertexArray(m_Skybox.skyboxVAO));
-        GLCall(glActiveTexture(GL_TEXTURE0)); //! could be the problem
-        GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, m_Skybox.cubeMapTexture));
-        GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
-        GLCall(glBindVertexArray(0));
-        GLCall(glDepthFunc(GL_LESS)); // set depth function back to normal
+        //// -- render the skybox cube
+        //m_Skybox.Render();
     }
 }

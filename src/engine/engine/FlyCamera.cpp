@@ -6,7 +6,10 @@ namespace lei3d
       : window{window}, // this is a member initializer list using uniform initialization C++17 feature
         yaw{yaw},
         pitch{pitch},
-        flySpeed{flySpeed}
+        flySpeed{flySpeed},
+        m_FOVDeg{45.0f},
+        m_NearPlane{0.1f},
+        m_FarPlane{400.0f}
     {
       firstMouse = true; // the first time the mouse is entered onto the screen, do not flick
 
@@ -14,6 +17,7 @@ namespace lei3d
       glfwGetWindowSize(window, &screenWidth, &screenHeight);
       lastX = screenWidth / 2.0f;  
       lastY = screenHeight / 2.0f; 
+      m_Aspect = (float) screenWidth / screenHeight;
 
       cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
       cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -59,6 +63,15 @@ namespace lei3d
         cameraFront = glm::normalize(direction) * flySpeed;
     }
 
+    void FlyCamera::SetFOV(float fovDeg) {
+        m_FOVDeg = fovDeg;
+    }
+
+    void FlyCamera::SetClipPlanes(float near, float far) {
+        m_NearPlane = near;
+        m_FarPlane = far;
+    }
+
     void FlyCamera::handleForward(float deltaTime)
     {
 		  cameraPos += cameraFront * flySpeed * deltaTime;
@@ -79,10 +92,13 @@ namespace lei3d
 		  cameraPos += glm::cross(cameraFront, cameraUp) * flySpeed * deltaTime;
     }
 
-    glm::mat4 FlyCamera::getCameraView()
+    glm::mat4 FlyCamera::GetView() 
     {
-      cameraView = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-      return cameraView;
+        return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
     }
 
+    glm::mat4 FlyCamera::GetProj()
+    {
+        return glm::perspective(glm::radians(m_FOVDeg), 800.0f / 600.0f, m_NearPlane, m_FarPlane);
+    }
 }

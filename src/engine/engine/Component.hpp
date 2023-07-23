@@ -2,6 +2,8 @@
 
 #include "Entity.hpp"
 
+#include "scenes/Scene.hpp"
+
 #include <string>
 
 namespace lei3d
@@ -14,6 +16,7 @@ template<> \
 std::string GetComponentName<type>() { return std::string(name); }
 
     class Entity;
+    class Scene;
 
     class Component
     {
@@ -27,5 +30,7 @@ std::string GetComponentName<type>() { return std::string(name); }
         virtual void PhysicsUpdate(float deltaTime) {}
         virtual void Render() {}
         virtual void OnDestroy() {}
+
+        Scene* ActiveScene();
     };
 }
