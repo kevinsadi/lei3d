@@ -28,7 +28,6 @@ namespace lei3d
     void Mesh::setupMesh()
     {
         GLCall(glGenVertexArrays(1, &VAO));
-        LEI_INFO("Mesh VAO: {0}", VAO);
         GLCall(glGenBuffers(1, &VBO));
         GLCall(glGenBuffers(1, &EBO));
 

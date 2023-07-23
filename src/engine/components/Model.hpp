@@ -37,8 +37,6 @@ namespace lei3d
         std::vector<Mesh> meshes;
         std::string directory;
 
-        unsigned int numMeshes = 0;  //TEMPORARY
-
         void loadModel(const std::string& path);
         void processNode(aiNode *node, const aiScene *scene);
         Mesh processMesh(aiMesh *mesh, const aiScene *scene);

@@ -39,15 +39,10 @@ namespace lei3d
         // process node's meshes
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
-            //LEI_INFO("Number of Meshes: {0}", numMeshes);
-            if (numMeshes > 0) {
-                continue;
-            }
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
             meshes.push_back(processMesh(mesh, scene));
-
-            numMeshes++;
         }
+
         // process node children
         for (unsigned int i = 0; i < node ->mNumChildren; i++)
         {

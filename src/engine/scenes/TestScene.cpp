@@ -24,6 +24,7 @@ namespace lei3d {
         stbi_set_flip_vertically_on_load(true);
 
         // load mesh from obj file (EVENTUALLY WILL WANT TO USE GTLF FILES INSTEAD)
+        // NOTE: We haven't implemented transform changing component stuff yet so the backpack might render weird/be really big if you uncomment.
         //const std::string modelPath = "data/models/backpack/backpack.obj";
         //std::shared_ptr<Entity> backpackObj = std::make_shared<Entity>();
         //backpackObj->AddComponent<Backpack>();

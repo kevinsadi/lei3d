@@ -29,12 +29,10 @@ namespace lei3d
     private:
         std::vector<std::shared_ptr<Component>> m_Components;
     public:
-        //std::shared_ptr<Model> m_Model = nullptr;    
         Transform transform;
         Shader* m_Shader = nullptr;
 
         Entity();
-        //Entity(std::string modelPath);   //TODO: Get rid of this s***** eventually
         ~Entity();
 
         void Start();
