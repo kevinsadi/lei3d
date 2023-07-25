@@ -18,7 +18,7 @@ namespace lei3d {
 
     void TestScene::LoadObjects() {
         // load shaders
-        m_MainShader = std::make_shared<Shader>("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
+        m_MainShader = std::make_unique<Shader>("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
 
         // load textures
         stbi_set_flip_vertically_on_load(true);
@@ -26,14 +26,17 @@ namespace lei3d {
         // load mesh from obj file (EVENTUALLY WILL WANT TO USE GTLF FILES INSTEAD)
         // NOTE: We haven't implemented transform changing component stuff yet so the backpack might render weird/be really big if you uncomment.
         //const std::string modelPath = "data/models/backpack/backpack.obj";
-        //std::shared_ptr<Entity> backpackObj = std::make_shared<Entity>();
+        //std::unique_ptr<Entity> backpackObj = std::make_unique<Entity>();
         //backpackObj->AddComponent<Backpack>();
-        //std::shared_ptr<Model> model = backpackObj->AddComponent<Model>();
+        //Model& model = backpackObj->AddComponent<Model>();
         //model->Init(modelPath, *m_MainShader);
         //m_Entities.push_back(backpackObj);
 
-        std::shared_ptr<Entity> skyboxObj = std::make_shared<Entity>();
-        std::shared_ptr<SkyBox> skybox = skyboxObj->AddComponent<SkyBox>();
+        std::unique_ptr<Entity> skyboxObj = std::make_unique<Entity>();
+
+        //Test Multiple Components
+        SkyBox* skybox = skyboxObj->AddComponent<SkyBox>();
+        skyboxObj->AddComponent<Backpack>();
         std::vector<std::string> faces
         {
             "data/skybox/anime_etheria/right.jpg",
@@ -44,11 +47,17 @@ namespace lei3d {
             "data/skybox/anime_etheria/back.jpg"
         };
         skybox->Init(faces);
-        m_Entities.push_back(skyboxObj);
+        m_Entities.push_back(std::move(skyboxObj));
+
+        m_PhysicsWorld.Create();    //TODO: This is temporary. Change this to use physics components.
     }
 
     void TestScene::OnUpdate(float deltaTime) {
 
+    }
+
+    void TestScene::OnPhysicsUpdate(float deltaTime) {
+        m_PhysicsWorld.Step(deltaTime);
     }
 
     void TestScene::OnRender() {

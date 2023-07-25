@@ -28,6 +28,7 @@ namespace lei3d
         SkyBox(Entity* entity);
         ~SkyBox();
 
+        //std::string GetComponentName() override;
         void Init(std::vector<std::string> faces);
 
         void Render() override;

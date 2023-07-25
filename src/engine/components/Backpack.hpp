@@ -12,6 +12,8 @@ namespace lei3d
     public:
         Backpack(Entity* entity);
 
+        //std::string GetComponentName() override;
+
         void Start() override;
     };
 }

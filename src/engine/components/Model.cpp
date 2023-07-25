@@ -2,7 +2,7 @@
 
 namespace lei3d
 {
-    DEFINE_COMPONENT(Model, "Model");
+    // DEFINE_COMPONENT(Model, "Model");
     
     Model::Model(Entity* entity) : Component(entity)
     {      
@@ -11,6 +11,10 @@ namespace lei3d
     Model::~Model()
     {
     }
+
+    //std::string Model::GetComponentName() {
+    //    return "Model";
+    //}
 
     void Model::Init(const std::string& modelPath, Shader& shader) {
         prop_shader = &shader;

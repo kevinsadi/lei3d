@@ -138,7 +138,7 @@ namespace lei3d
                 if (self)
                 {
                     if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED) // when the cursor is normal, don't move the camera according to mouse mvnt
-                        self->m_ActiveScene->MainCamera()->cameraMouseCallback(window, x, y);
+                        self->m_ActiveScene->MainCamera().cameraMouseCallback(window, x, y);
                 }
             });
 

@@ -17,11 +17,10 @@ using namespace lei3d;
 int main() {
 	Log::Init();
 	LEI_TRACE("Initialized Logger");
-	Application* app = new Application();
 
 	// loops until render loop ends
-	app->Run();
-	delete app;
+	Application app;
+	app.Run();
 
 	return 0;
 }

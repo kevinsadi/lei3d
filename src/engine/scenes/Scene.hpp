@@ -22,11 +22,10 @@ namespace lei3d
     {
     protected:
         Application* m_App;
-        std::vector<std::shared_ptr<Entity>> m_Entities;
-        PhysicsObjects m_PhysicsObjects;
+        std::vector<std::unique_ptr<Entity>> m_Entities;
 
-        std::shared_ptr<FlyCamera> m_Camera = nullptr;    //every scene needs this
-        std::shared_ptr<Shader> m_MainShader = nullptr; //THIS IS TEMPORARY
+        std::unique_ptr<FlyCamera> m_Camera = nullptr;  //every scene needs a camera
+        std::unique_ptr<Shader> m_MainShader = nullptr; //THIS IS TEMPORARY
 
         //glm::mat4 m_VP;
     public:
@@ -44,14 +43,16 @@ namespace lei3d
         void ProcessCameraInput(float deltaTime);
 
         //TODO: Abstract scene creation/loading into files: https://trello.com/c/eC66QGuD/25-define-scene-file-format
-        //Right now we use this virtual load function to load all the objs in code. 
+        //Right now we use this virtual LoadObjects function to load all the objs in code. 
         virtual void LoadObjects() {}; //load shaders and meshes and other scene info ?
+
+        //These should rarely be used because everything is handled by ECS.
         virtual void OnUpdate(float deltaTime) {}
+        virtual void OnPhysicsUpdate(float deltaTime) {}
         virtual void OnRender() {}
         virtual void OnDestroy() {}
 
-        std::shared_ptr<FlyCamera> MainCamera();
-        //glm::mat4 GetVPMat();
+        FlyCamera& MainCamera();
     private:
         GLFWwindow* window();
     };

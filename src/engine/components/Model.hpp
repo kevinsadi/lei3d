@@ -29,6 +29,7 @@ namespace lei3d
         Model(Entity* entity);
         ~Model();
         
+        //std::string GetComponentName() override;
         void Init(const std::string& modelPath, Shader& shader);
 
         void Render() override;

@@ -33,34 +33,31 @@ namespace lei3d
     void Entity::Start() {
         LEI_TRACE("Started Entity");
 
-        for (auto component : m_Components) {
+        for (auto& component : m_Components) {
             component->Start();
         }
     }
 
     void Entity::Update(float deltaTime) {
-        for (auto component : m_Components) {
+        for (auto& component : m_Components) {
             component->Update(deltaTime);
         }
     }
 
     void Entity::PhysicsUpdate(float deltaTime) {
-        for (auto component : m_Components) {
+        for (auto& component : m_Components) {
             component->PhysicsUpdate(deltaTime);
         }
     }
 
     void Entity::Render() {
-        for (auto component : m_Components) {
+        for (auto& component : m_Components) {
             component->Render();
         }
-
-        //TODO: Abstract into component
-        //m_Model->Draw(*m_Shader);
     }
 
     void Entity::OnDestroy() {
-        for (auto component : m_Components) {
+        for (auto& component : m_Components) {
             component->OnDestroy();
         }
     }

@@ -8,12 +8,11 @@
 
 namespace lei3d
 {
-    template<typename C>
-    std::string GetComponentName();
 
-#define DEFINE_COMPONENT(type, name) \
-template<> \
-std::string GetComponentName<type>() { return std::string(name); }
+
+//#define DEFINE_COMPONENT(type, name) \
+//template<> \
+//std::string GetComponentName<type>() { return std::string(name); }
 
     class Entity;
     class Scene;
@@ -30,6 +29,8 @@ std::string GetComponentName<type>() { return std::string(name); }
         virtual void PhysicsUpdate(float deltaTime) {}
         virtual void Render() {}
         virtual void OnDestroy() {}
+
+        //static std::string GetComponentName();
 
         Scene* ActiveScene();
     };

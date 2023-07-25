@@ -4,7 +4,7 @@
 
 namespace lei3d
 {
-    DEFINE_COMPONENT(SkyBox, "SkyBox");
+    // DEFINE_COMPONENT(SkyBox, "SkyBox");
 
     SkyBox::SkyBox(Entity* entity) : Component(entity)
     {
@@ -13,6 +13,10 @@ namespace lei3d
     SkyBox::~SkyBox() {
         
     }
+
+    //std::string SkyBox::GetComponentName() {
+    //    return "SkyBox";
+    //}
 
     void SkyBox::Init(std::vector<std::string> faces) {
         loadCubemap(faces);
@@ -112,8 +116,6 @@ namespace lei3d
         GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
         GLCall(glBindVertexArray(0));
 
-        LEI_INFO("SkyBox VAO: {0}", skyboxVAO);
-
         this->skyboxShader = skyboxShader;
         this->cubeMapTexture = textureID;
         this->skyboxVAO = skyboxVAO;
@@ -122,21 +124,11 @@ namespace lei3d
 
     void SkyBox::Render()
     {
-        /*
-        glDepthMask(GL_FALSE);
-        skyboxShader.use();
-        // set the view and proj matrix
-        glBindVertexArray(skyboxVAO);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glDepthMask(GL_TRUE);
-        */
-
         auto camera = ActiveScene()->MainCamera();
 
         //C++ doesn't like it if you don't declare these beforehand (initial ref. to non-const value)
-        glm::mat4 proj = camera->GetProj();
-        glm::mat4 skyboxView = glm::mat4(glm::mat3(camera->GetView()));
+        glm::mat4 proj = camera.GetProj();
+        glm::mat4 skyboxView = glm::mat4(glm::mat3(camera.GetView()));
         glm::mat4 model = glm::identity<glm::mat4>();
         skyboxShader.setUniformMat4("u_Proj", proj);
         skyboxShader.setUniformMat4("u_View", skyboxView);

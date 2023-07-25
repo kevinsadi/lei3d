@@ -13,11 +13,10 @@ namespace lei3d {
 
     void Scene::Init(Application* runningApp) {
         m_App = runningApp;
-        m_PhysicsObjects = CreatePhysicsWorld();
 
         // load camera
         GLFWwindow* const win = window();
-        m_Camera = std::make_shared<FlyCamera>(win, 90.0f, 0.0f, 4.0f);
+        m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 4.0f);
 
         Start();
     }
@@ -26,7 +25,7 @@ namespace lei3d {
         LEI_TRACE("Scene Start");
         LoadObjects();
 
-        for (auto entity : m_Entities) {
+        for (auto& entity : m_Entities) {
             entity->Start();
         }
     }
@@ -35,7 +34,7 @@ namespace lei3d {
         //m_VP = m_Camera->GetProj() * m_Camera->GetView();
 
         //LEI_TRACE("Scene Update");
-		for (auto entity : m_Entities) {
+		for (auto& entity : m_Entities) {
 			entity->Update(deltaTime);
 		}
 
@@ -44,28 +43,19 @@ namespace lei3d {
 
     void Scene::PhysicsUpdate(float deltaTime) {
         //LEI_TRACE("Scene Physics Update");
-        for (auto entity : m_Entities) {
+        for (auto& entity : m_Entities) {
             entity->PhysicsUpdate(deltaTime);
         }
 
-        PhysicsStep(m_PhysicsObjects, deltaTime);
+        OnPhysicsUpdate(deltaTime);
     }
 
 	void Scene::Render() {
         GLCall(glClearColor(0.2f, 0.8f, 0.9f, 1.0f));
         GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-        //Update view/projection matrix (generally on the gpu this is just MVP for the whole thing)
-        //Idk how to do shader updates yet. Prob. we will want to have a set of static default shaders managed somewhere
-        //that we update using the scene info.
-        //glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 400.0f);
-        //m_MainShader->setUniformMat4(projection, "proj");
-
-        //glm::mat4 view = m_Camera->GetCameraVP();
-        //m_MainShader->setUniformMat4(view, "view");
-
         //LEI_TRACE("Scene Render");
-		for (auto entity : m_Entities) {
+		for (auto& entity : m_Entities) {
 			entity->Render();
 		}
 
@@ -100,13 +90,9 @@ namespace lei3d {
         }
     }
 
-    std::shared_ptr<FlyCamera> Scene::MainCamera() {
-        return m_Camera;
+    FlyCamera& Scene::MainCamera() {
+        return *m_Camera;
     }
-
-    //glm::mat4 Scene::GetVPMat() {
-    //    return m_VP;
-    //}
 
     GLFWwindow* Scene::window() {
         return m_App->Window();

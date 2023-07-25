@@ -10,11 +10,7 @@
 #include <vector>
 #include <filesystem>
 
-#include "engine/FlyCamera.hpp"
-
 #include "pcg/PCGHelpers.hpp"
-
-#include "physics/Physics.hpp"
 
 #include "scenes/Scene.hpp"
 
@@ -40,7 +36,7 @@ namespace lei3d
 
         GLFWwindow* m_Window = nullptr;
 
-        PlaneMesh* groundPlane = nullptr;
+        PlaneMesh* groundPlane = nullptr;   //TODO: Convert this to entity assuming we actually use it.
 
         Scene* m_ActiveScene = nullptr;
 

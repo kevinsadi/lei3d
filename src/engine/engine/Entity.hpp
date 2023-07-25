@@ -7,6 +7,8 @@
 #include "engine/Component.hpp"
 #include "engine/Shader.hpp"
 
+#include "util/Log.hpp"
+
 #include <memory>
 #include <typeinfo>
 #include <unordered_map>
@@ -27,7 +29,7 @@ namespace lei3d
     class Entity
     {
     private:
-        std::vector<std::shared_ptr<Component>> m_Components;
+        std::vector<std::unique_ptr<Component>> m_Components;
     public:
         Transform transform;
         Shader* m_Shader = nullptr;
@@ -46,34 +48,50 @@ namespace lei3d
 
         void SetShader(Shader* shader);
 
-        //Template component stuff
+        /*
+        * Component System:
+        * Components should always be added through AddComponent<C> and returned through GetComponent<C>.
+        * These work essentially the same as in Unity. 
+        * DO NOT Call the Constructor for a Component or any of it's subclasses. Always use add Component.
+        * If you need to initialize a component with data, use an Init function (see SkyBox.cpp for an example)
+        */
 
+        /*
+        * Will return component attached to this entity of type C.
+        * If there are multiple components of the same type, it will return the first one found. 
+        */
         template<typename C>
         C* GetComponent() {
             static_assert(std::is_convertible<C, Component>::value, "C must be a component type");
 
-            //Get entry in data structure for T           
-            //Return first one prob. (may need GetComponents if we have multiple)
-            for (Component& c : m_Components) {
-                if (GetComponentName<typeid(c)>.compare(GetComponentName<C>()) == 0) {
+            //(may need GetComponents if we have multiple)
+            for (auto& c : m_Components) {
+                //Component& cRef = *c;
+                if (typeid(*c)  == typeid(C)) {
                     //returns the first match
-                    return &c;
+                    return static_cast<C*>(c.get());
                 }
             }
+
+            LEI_ERROR("Could not find component.");
+            return nullptr;
         }
         
-        //returns the component that was just created.
+        /*
+        * Creates and adds a component of type C and returns a reference to it.
+        * Internally calls the component constructor.
+        */
         template<typename C> 
-        std::shared_ptr<C> AddComponent() {
+        C* AddComponent() {
 
-            //std::string componentTypeStr = "Must be a component type: ";
-            //componentTypeStr.append(GetComponentName<C>());
-
+            //If this is hitting, check that your component is using "public" for inheritance.
             static_assert(std::is_convertible<C, Component>::value, "C must be a component type.");
 
-            std::shared_ptr<C> c = std::make_shared<C>(this);
-            m_Components.push_back(c);
-            return c;
+            std::unique_ptr<C> c = std::make_unique<C>(this);
+            m_Components.push_back(std::move(c));
+            //The element was just added at the back of the component list, so we retrieve it from the back here. 
+            //Note: We cannot use c since it got moved into the list.
+            return static_cast<C*>(m_Components.back().get());
         }
     };
 }
