@@ -36,6 +36,7 @@ namespace lei3d
         SkyBox skybox;
         Entity backpackEntity;
         Entity houseEntity;
+        Entity floorEntity;
         PhysicsObjects physicsObjects;        
 
         float lastFrame = 0.0f; // used to keep track of delta time

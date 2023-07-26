@@ -208,8 +208,6 @@ namespace lei3d
         return collisionMeshList;
     }
 
-
-
     // from https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/model.h
     unsigned int TextureFromFile(const char* path, const std::string& directory, bool gamma)
     {

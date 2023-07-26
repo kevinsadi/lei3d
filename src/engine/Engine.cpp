@@ -120,11 +120,12 @@ namespace lei3d
         backpackEntity.SetScale(glm::vec3(1, 1, 1));
 
         // Load house mesh and then create collisions for it 
-        std::string housePath = "data/models/ryan/kekkin.obj";
-        Model* houseModel = new Model(housePath);
-        houseEntity = Entity(houseModel);
-        houseEntity.SetPosition(glm::vec3(0, -40, 0));
-        houseEntity.AddModelColliderStatic(physicsObjects);
+        std::string floorPath = "data/models/ryan/kekkin.obj";
+        Model* floorModel = new Model(floorPath);
+        floorEntity = Entity(floorModel);
+        floorEntity.SetPosition(glm::vec3(0, -50, 0));
+        floorEntity.SetScale(glm::vec3(6, .4, 6));
+        floorEntity.AddModelColliderStatic(physicsObjects);
 
         // load camera
         camera = new FlyCamera(window, 90.0f, 0.0f, 4.0f);
@@ -225,44 +226,32 @@ namespace lei3d
 		backpackEntity.SetPosition(physicsPos);
         model = glm::translate(model, backpackEntity.transform.position);
 
-        // THEN scale the object
+        // -- THEN scale the object
 		model = glm::scale(model, backpackEntity.transform.scale);
         shader.setUniformMat4(model, "model");
-
+ 
         // -- draw mesh
         backpackEntity.model->Draw(shader);
 
         /*
-        // RENDER SECOND OBJECT
-
-		model = glm::mat4(1.0f);
-        backpackEntity.SetScale(glm::vec3(5.25, 3.25, 2.25));
-		model = glm::scale(model, backpackEntity.transform.scale);
-		shader.setUniformMat4(model, "model");
-        
-
-
-        // -- draw mesh
-        backpackEntity.model->Draw(shader);
-        
-        // RENDER THIRD OBJECT
-
-		model = glm::mat4(1.0f);
-        backpackEntity.SetScale(glm::vec3(1.25, 1.25, 1.25));
-		model = glm::scale(model, backpackEntity.transform.scale);
-		shader.setUniformMat4(model, "model");
-
-        // -- draw mesh
-        backpackEntity.model->Draw(shader);
-        */
-                
-        // RENDER HOUSE
-
 		model = glm::mat4(1.0f);
         model = glm::translate(model, houseEntity.transform.position);
 		shader.setUniformMat4(model, "model");
         // -- draw mesh
         houseEntity.model->Draw(shader);
+        */
+
+        // RENDER FLOOR
+
+		model = glm::mat4(1.0f);
+        model = glm::translate(model, floorEntity.transform.position);
+
+        // -- THEN scale the object
+		model = glm::scale(model, floorEntity.transform.scale);
+        shader.setUniformMat4(model, "model");
+
+        // -- draw mesh
+        floorEntity.model->Draw(shader);
 
         // render skybox after rendering rest of the scene (only draw skybox where an object is not present)
         GLCall(glDepthFunc(GL_LEQUAL)); // we change the depth function here to it passes when testingdepth value is equal to what is current stored
