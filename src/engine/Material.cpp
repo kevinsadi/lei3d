@@ -7,7 +7,7 @@ void Material::bind(Shader &shader, unsigned int tex_offset) {
     if (!use_albedo_map) {
         shader.setVec3("material.albedo", albedo);
     } else {
-        shader.setInt("material.texture_diffuse", tex_offset + curr_offset);
+        shader.setInt("material.texture_albedo", tex_offset + curr_offset);
         glActiveTexture(GL_TEXTURE0 + tex_offset + curr_offset);
         glBindTexture(GL_TEXTURE_2D, albedo_texture->id);
         curr_offset++;
@@ -38,13 +38,13 @@ void Material::bind(Shader &shader, unsigned int tex_offset) {
     }
 
     if (use_normal_map) {
-        shader.setInt("material.normal_map", tex_offset + curr_offset);
+        shader.setInt("material.texture_normal", tex_offset + curr_offset);
         glActiveTexture(GL_TEXTURE0 + tex_offset + curr_offset);
         glBindTexture(GL_TEXTURE_2D, normal_map->id);
         curr_offset++;
     }
     if (use_bump_map) {
-        shader.setInt("material.bump_map", tex_offset + curr_offset);
+        shader.setInt("material.texture_bump", tex_offset + curr_offset);
         glActiveTexture(GL_TEXTURE0 + tex_offset + curr_offset);
         glBindTexture(GL_TEXTURE_2D, bump_map->id);
         curr_offset++;

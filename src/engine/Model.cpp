@@ -94,6 +94,11 @@ namespace lei3d
                 vertex.TexCoords = glm::vec2(0.0f, 0.0f);  
             }
 
+            if (mesh->mTangents) {
+                glm::vec3 tangent(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
+                vertex.Tangent = tangent;
+            }
+
             vertices.push_back(vertex);
         }
 
