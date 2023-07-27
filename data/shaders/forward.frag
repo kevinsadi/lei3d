@@ -75,7 +75,7 @@ void main() {
 
     vec3 lightColor = dirLight.color * dirLight.intensity;
     vec3 outColor = lightColor * albedo.rgb;
-    float NdotL = dot(dirLight.direction, N);
+    float NdotL = dot(-dirLight.direction, N);
     if (NdotL > 0.95) {
         outColor = outColor * 1.0;
     } else if (NdotL > 0.5) {
