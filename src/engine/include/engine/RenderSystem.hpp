@@ -48,7 +48,7 @@ private:
     Shader postprocessShader;
 
     ///< temporary light
-    DirectionalLight directionalLight{{0.1, -0.5, 0.5}};
+    DirectionalLight directionalLight{{0.1, -0.5, -0.45}};
 };
 
 } // lei3d

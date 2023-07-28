@@ -7,9 +7,16 @@ uniform sampler2D SaturationMask;
 
 in vec2 TexCoords;
 
+float linear_luminance(vec3 color) {
+    return dot(color, vec3(0.299, 0.587, 0.114));
+}
+
+float gamma_luminance(vec3 color) {
+    return dot(color, vec3(0.2126, 0.7152, 0.0722));
+}
+
 vec3 desaturate(vec3 color, float factor) {
-    vec3 lum = vec3(0.299, 0.587, 0.114);
-    vec3 gray = vec3(dot(lum, color));
+    vec3 gray = vec3(linear_luminance(color));
     return mix(gray, color, factor);
 }
 
@@ -40,6 +47,13 @@ vec3 aces_fitted(vec3 color) {
     return clamp(color_tonemapped, 0.0, 1.0);
 }
 
+// Reinhard tonemapping variant by Jodie: https://www.shadertoy.com/view/4dBcD1
+vec3 reinhard_jodie(vec3 color) {
+    float lum = gamma_luminance(color);
+    vec3 color_tonemapped = color / (color + 1.0);
+    return mix(color / (lum + 1.0), color_tonemapped, color_tonemapped);
+}
+
 // Approximate conversion to srgb from http://chilliant.blogspot.com/2012/08/srgb-approximations-for-hlsl.html
 // Use instead of gamma correction
 vec3 linear_to_srgb(vec3 color) {
@@ -51,7 +65,7 @@ void main() {
     float factor = texture(SaturationMask, TexCoords).r;
     vec3 finalColor = desaturate(color, factor);
 
-    vec3 tonemapped = aces_fitted(finalColor);
+    vec3 tonemapped = reinhard_jodie(finalColor);
 
-    FragColor.rgb = linear_to_srgb(finalColor);
+    FragColor.rgb = linear_to_srgb(tonemapped);
 }
