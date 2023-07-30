@@ -24,18 +24,17 @@ namespace lei3d
     }
 
     void Model::Update(float deltaTime) {
+    }
+
+    void Model::Render()
+    {
         glm::mat4 model = m_Entity->GetModelMat();
-        //glm::mat4 model = glm::identity<glm::mat4>();
         FlyCamera& camera = ActiveScene().MainCamera();
         glm::mat4 view = camera.GetView();
         glm::mat4 proj = camera.GetProj();
         m_Shader->setUniformMat4("u_Model", model);
         m_Shader->setUniformMat4("u_View", view);
         m_Shader->setUniformMat4("u_Proj", proj);
-    }
-
-    void Model::Render()
-    {
         for (unsigned int i = 0; i < this->meshes.size(); i++)
         {
             meshes[i].Draw(*m_Shader);

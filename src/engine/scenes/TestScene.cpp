@@ -25,6 +25,7 @@ namespace lei3d {
 
         // NOTE: We haven't implemented transform changing component stuff yet so the backpack might render weird/be really big if you uncomment.
         const std::string modelPath = "data/models/backpack/backpack.obj";
+
         std::unique_ptr<Entity> backpackObj = std::make_unique<Entity>();
         backpackObj->AddComponent<Backpack>();
         Model* model = backpackObj->AddComponent<Model>();
@@ -32,6 +33,14 @@ namespace lei3d {
         backpackObj->SetScale(glm::vec3(1.25f, 1.25f, 1.25f));
         backpackObj->SetPosition(glm::vec3(0.f, 0.f, 0.f));
         m_Entities.push_back(std::move(backpackObj));
+
+        std::unique_ptr<Entity> backpackObj2 = std::make_unique<Entity>();
+        backpackObj2->AddComponent<Backpack>();
+        Model* model2 = backpackObj2->AddComponent<Model>();
+        model2->Init(modelPath, *m_MainShader);
+        backpackObj2->SetScale(glm::vec3(0.25f, 0.25f, 0.25f));
+        backpackObj2->SetPosition(glm::vec3(10.f, 0.f, 0.f));
+        m_Entities.push_back(std::move(backpackObj2));
 
         //Test Multiple Components
         std::unique_ptr<Entity> skyboxObj = std::make_unique<Entity>();
