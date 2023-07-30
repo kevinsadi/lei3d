@@ -1,5 +1,7 @@
 #include "Model.hpp"
 
+#include "util/Util.hpp"
+
 namespace lei3d
 {
     // DEFINE_COMPONENT(Model, "Model");
@@ -17,8 +19,27 @@ namespace lei3d
     //}
 
     void Model::Init(const std::string& modelPath, Shader& shader) {
-        prop_shader = &shader;
+        m_Shader = &shader;
         loadModel(modelPath);
+    }
+
+    void Model::Update(float deltaTime) {
+        glm::mat4 model = m_Entity->GetModelMat();
+        //glm::mat4 model = glm::identity<glm::mat4>();
+        FlyCamera& camera = ActiveScene().MainCamera();
+        glm::mat4 view = camera.GetView();
+        glm::mat4 proj = camera.GetProj();
+        m_Shader->setUniformMat4("u_Model", model);
+        m_Shader->setUniformMat4("u_View", view);
+        m_Shader->setUniformMat4("u_Proj", proj);
+    }
+
+    void Model::Render()
+    {
+        for (unsigned int i = 0; i < this->meshes.size(); i++)
+        {
+            meshes[i].Draw(*m_Shader);
+        }
     }
 
     void Model::loadModel(const std::string& path)
@@ -166,15 +187,6 @@ namespace lei3d
         }
         return textures;
     }
-
-    void Model::Render()
-    {
-        for (unsigned int i = 0; i < this->meshes.size(); i++)
-        {
-            meshes[i].Draw(*prop_shader);
-        }
-    }
-
 
     // from https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/model.h
     unsigned int TextureFromFile(const char* path, const std::string& directory, bool gamma)

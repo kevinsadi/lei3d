@@ -7,9 +7,9 @@ namespace lei3d {
 
 	}
 
-	Scene* Component::ActiveScene() {
+	Scene& Component::ActiveScene() {
 		Scene* scene = Application::Curr()->ActiveScene();
 		LEI_ASSERT(scene, "Attempt to access active scene when there wasn't one.");
-		return scene;
+		return *scene;
 	}
 }

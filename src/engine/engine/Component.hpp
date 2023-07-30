@@ -32,6 +32,6 @@ namespace lei3d
 
         //static std::string GetComponentName();
 
-        Scene* ActiveScene();
+        Scene& ActiveScene();
     };
 }

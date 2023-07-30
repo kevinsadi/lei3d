@@ -78,7 +78,9 @@ namespace lei3d
 
         // actually draw the mesh now
         glBindVertexArray(VAO);
+        shader.bind();
         glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
+        shader.unbind();
         glBindVertexArray(0);
 
         // set back to default

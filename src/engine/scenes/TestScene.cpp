@@ -23,18 +23,18 @@ namespace lei3d {
         // load textures
         stbi_set_flip_vertically_on_load(true);
 
-        // load mesh from obj file (EVENTUALLY WILL WANT TO USE GTLF FILES INSTEAD)
         // NOTE: We haven't implemented transform changing component stuff yet so the backpack might render weird/be really big if you uncomment.
-        //const std::string modelPath = "data/models/backpack/backpack.obj";
-        //std::unique_ptr<Entity> backpackObj = std::make_unique<Entity>();
-        //backpackObj->AddComponent<Backpack>();
-        //Model& model = backpackObj->AddComponent<Model>();
-        //model->Init(modelPath, *m_MainShader);
-        //m_Entities.push_back(backpackObj);
-
-        std::unique_ptr<Entity> skyboxObj = std::make_unique<Entity>();
+        const std::string modelPath = "data/models/backpack/backpack.obj";
+        std::unique_ptr<Entity> backpackObj = std::make_unique<Entity>();
+        backpackObj->AddComponent<Backpack>();
+        Model* model = backpackObj->AddComponent<Model>();
+        model->Init(modelPath, *m_MainShader);
+        backpackObj->SetScale(glm::vec3(1.25f, 1.25f, 1.25f));
+        backpackObj->SetPosition(glm::vec3(0.f, 0.f, 0.f));
+        m_Entities.push_back(std::move(backpackObj));
 
         //Test Multiple Components
+        std::unique_ptr<Entity> skyboxObj = std::make_unique<Entity>();
         SkyBox* skybox = skyboxObj->AddComponent<SkyBox>();
         skyboxObj->AddComponent<Backpack>();
         std::vector<std::string> faces

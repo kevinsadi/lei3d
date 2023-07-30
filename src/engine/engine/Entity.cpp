@@ -1,6 +1,7 @@
 #include "Entity.hpp"
 
 #include "util/Log.hpp"
+#include "util/Util.hpp"
 
 namespace lei3d
 {
@@ -14,20 +15,47 @@ namespace lei3d
         OnDestroy();
     }
 
-    // Translate entity by glm::vec3
     void Entity::SetPosition(glm::vec3 position)
     {
-        transform.position = position; 
+        m_Transform.position = position; 
     }
 
-    // Multiply the 
     void Entity::SetScale(glm::vec3 scale)
     {
-        transform.scale = scale;
+        m_Transform.scale = scale;
     }
 
     void Entity::SetShader(Shader* shader) {
         m_Shader = shader;
+    }
+
+    glm::mat4 Entity::GetTranslationMat() {
+        return glm::translate(glm::identity<glm::mat4>(), m_Transform.position);
+    }
+
+    glm::mat4 Entity::GetRotationMat() {
+        //TODO: Implement quaternion.
+        return glm::identity<glm::mat4>();
+    }
+    
+    glm::mat4 Entity::GetScaleMat() {
+        return glm::scale(glm::identity<glm::mat4>(), m_Transform.scale);
+    }
+
+    glm::mat4 Entity::GetModelMat() {
+        glm::mat4 translate = GetTranslationMat();
+        glm::mat4 rotate = GetRotationMat();
+        glm::mat4 scale = GetScaleMat();
+        glm::mat4 model = translate * rotate * scale;
+        //LEI_INFO("TRANSLATE:");
+        //PrintMat4(translate);
+        //LEI_INFO("ROTATE:");
+        //PrintMat4(rotate);
+        //LEI_INFO("SCALE:");
+        //PrintMat4(scale);
+        //LEI_INFO("MODEL: ");
+        //PrintMat4(model);
+        return model;
     }
 
     void Entity::Start() {

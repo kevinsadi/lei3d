@@ -19,7 +19,7 @@ namespace lei3d
     struct Transform
     {
         glm::vec3 position;
-        glm::vec3 rotation;       
+        //glm::vec3 rotation;       
         glm::vec3 scale;
     };
 
@@ -31,7 +31,7 @@ namespace lei3d
     private:
         std::vector<std::unique_ptr<Component>> m_Components;
     public:
-        Transform transform;
+        Transform m_Transform;
         Shader* m_Shader = nullptr;
 
         Entity();
@@ -47,6 +47,11 @@ namespace lei3d
         void SetScale(glm::vec3 scale);
 
         void SetShader(Shader* shader);
+
+        glm::mat4 GetTranslationMat();
+        glm::mat4 GetRotationMat();
+        glm::mat4 GetScaleMat();
+        glm::mat4 GetModelMat();
 
         /*
         * Component System:

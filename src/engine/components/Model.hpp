@@ -24,7 +24,7 @@ namespace lei3d
     {
     public:
         std::vector<Texture> textures_loaded;
-        Shader* prop_shader;
+        Shader* m_Shader;    //This is temporary. We want to abstract the shader system eventually to handle them better.
         
         Model(Entity* entity);
         ~Model();
@@ -32,6 +32,7 @@ namespace lei3d
         //std::string GetComponentName() override;
         void Init(const std::string& modelPath, Shader& shader);
 
+        void Update(float deltaTime) override;
         void Render() override;
     private:
         // model data
