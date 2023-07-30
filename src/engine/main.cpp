@@ -4,7 +4,7 @@
  * Author: Kevin Sadi
  */
 
-#include "engine/Engine.hpp"
+#include "engine/Application.hpp"
 #include "util/Log.hpp"
 
 using namespace lei3d;
@@ -17,10 +17,10 @@ using namespace lei3d;
 int main() {
 	Log::Init();
 	LEI_TRACE("Initialized Logger");
-	Engine* engine = new Engine();
+
 	// loops until render loop ends
-	engine->Start();
-	delete engine;
+	Application app;
+	app.Run();
 
 	return 0;
 }
