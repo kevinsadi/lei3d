@@ -120,7 +120,7 @@ namespace lei3d
         backpackEntity.SetScale(glm::vec3(1, 1, 1));
 
         // Load house mesh and then create collisions for it 
-        std::string floorPath = "data/models/leveldesign/KevRamp.obj";
+        std::string floorPath = "data/models/leveldesign/KekkekinPlayground.obj";
         Model* floorModel = new Model(floorPath);
         floorEntity = Entity(floorModel);
         floorEntity.SetPosition(glm::vec3(0, -50, 0));
