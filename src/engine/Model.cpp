@@ -196,9 +196,9 @@ namespace lei3d
                 glm::vec3 vert1 = vertices[indices[i]].Position;
                 btVector3 bvert1(vert1.x, vert1.y, vert1.z);
                 glm::vec3 vert2 = vertices[indices[i+1]].Position;
-                btVector3 bvert2(vert1.x, vert1.y, vert1.z);
+                btVector3 bvert2(vert2.x, vert2.y, vert2.z);
                 glm::vec3 vert3 = vertices[indices[i+2]].Position;
-                btVector3 bvert3(vert1.x, vert1.y, vert1.z);
+                btVector3 bvert3(vert3.x, vert3.y, vert3.z);
 
                 curCollisionMesh->addTriangle(bvert1, bvert2, bvert3);
             }
