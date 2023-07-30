@@ -12,7 +12,7 @@ namespace lei3d
         btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
         btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver();
         btDiscreteDynamicsWorld* dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-        dynamicsWorld->setGravity(btVector3(0, -1, 0));
+        dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
         // Create collisionShapes object to keep track of all the objects we want to collide over (this will eventually include the whole scene)
         btAlignedObjectArray<btCollisionShape*> collisionShapes;
@@ -33,6 +33,9 @@ namespace lei3d
         btDefaultMotionState* charMotionState = new btDefaultMotionState(startTransform);
         btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, charMotionState, character, localInertia);
         btRigidBody* characterBody = new btRigidBody(rbInfo);
+
+        characterBody->setSleepingThresholds(0.0, 0.0);
+        characterBody->setAngularFactor(0.0);
 
         dynamicsWorld->addRigidBody(characterBody);
 
