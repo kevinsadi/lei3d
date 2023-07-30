@@ -168,8 +168,14 @@ namespace lei3d
         //Sync FPS to desired value
         const float currentDrawTime = (float)glfwGetTime() - currentTime;
         const float sleepTime = 1.0f / desiredFPS - currentDrawTime;
+
+        typedef std::chrono::duration<int, std::milli> ms;
+
+        ms sleepDuration = ms((int) (sleepTime * 1000));
         if (sleepTime > 0.0f) {
-            _sleep(sleepTime);
+            //Note: Need to fix, currently doesn't cap at the right fps.
+            std::this_thread::sleep_for(sleepDuration);
+            //_sleep(sleepTime);    //Platform Dependent
         }
     }
 

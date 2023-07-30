@@ -61,6 +61,8 @@ namespace lei3d {
     }
 
     void TestScene::OnRender() {
+        //FOR TESTING, NO LONGER BEING USED IN-GAME
+
         //LEI_TRACE("Rendering Test Scene");
         // rendering
         //GLCall(glClearColor(0.2f, 0.8f, 0.9f, 1.0f));
