@@ -19,13 +19,13 @@ namespace lei3d {
     class TestScene : public Scene {
     private:
         PhysicsWorld m_PhysicsWorld;
+        std::unique_ptr<Shader> m_MainShader = nullptr; //THIS IS TEMPORARY
     public:
         TestScene();
         ~TestScene();
 
-        void LoadObjects() override;
+        void OnLoad() override;
         void OnUpdate(float deltaTime) override;
         void OnPhysicsUpdate(float deltaTime) override;
-        void OnRender() override;
     };
 }

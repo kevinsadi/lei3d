@@ -9,6 +9,7 @@
 #include <iostream>
 #include <filesystem>
 #include <memory>
+#include <map>
 #include <vector>
 
 #include "pcg/PCGHelpers.hpp"
@@ -28,12 +29,15 @@ namespace lei3d
         Application();
         ~Application();
 
-        void Run(); // Run the app.
-
-        GLFWwindow* Window();
-
         static Application* Curr();
 
+        void Run(); // Run the app.
+
+        void SetUIActive(bool uiActive);
+        void ChangeScenes(Scene* scene);
+
+        GLFWwindow* Window();
+        const std::vector<std::pair<std::string, std::unique_ptr<Scene>>>& GetScenes();
         Scene* ActiveScene();
         float DeltaTime();
     private:
@@ -44,15 +48,22 @@ namespace lei3d
         //PlaneMesh* groundPlane = nullptr;   //TODO: Convert this to entity or get rid of it.
         //SceneGUI* m_Menu = nullptr;
         Scene* m_ActiveScene = nullptr;
+        Scene* m_NextScene = nullptr;
+        //std::map<std::string, std::unique_ptr<Scene>> m_AllScenes;
+        std::vector<std::pair<std::string, std::unique_ptr<Scene>>> m_AllScenes;
         std::unique_ptr<AppGUI> m_AppGUI;
+
+        //NOTE: Don't modify this directly. Use SetUIActive.
+        bool m_UIActive = false;
+        bool m_SceneChanged = false;    //Flags the app to load another scene.
 
         float m_LastFrameTime = 0.0f; // used to keep track of delta time
         float m_DeltaTime = 0.0f; //Total time for last frame. 
         float m_DesiredFPS = 60.0f;   //FPS will be capped to this value.
 
-        void Inititalize(); // initalize GLFW  
-        void LoadScene(Scene* scene); // 
-        void FrameTick();
+        void Inititalize(); // Start the App
+        void FrameTick();   //Called every frame
+        void LoadScene(Scene* scene);
 
         void Update();
         void Render(); // render UI and scene

@@ -3,10 +3,10 @@
 
 #include "Application.hpp"
 
+#include "scenes/EmptyScene.hpp"
 #include "scenes/TestScene.hpp"
+
 #include "util/GLDebug.hpp"
-
-
 
 namespace lei3d
 {
@@ -53,20 +53,28 @@ namespace lei3d
     {
         LEI_TRACE("Initializing Engine");
         Inititalize();
-        
-        LEI_TRACE("Loading Scene");
-        Scene* testScene = new TestScene();
-        LoadScene(testScene);
-        LEI_ASSERT(m_ActiveScene != nullptr, "Please make sure a scene is set before running");
 
         LEI_TRACE("Entering Frame Loop");
         while (!glfwWindowShouldClose(m_Window))
         {
+            //We need to block frame ticking until the new scene has been loaded
+            //Not the most optimal scene loader (may need to look into async loading), but works for now.
+            if (m_SceneChanged)
+            {
+                m_ActiveScene = m_NextScene;
+                LoadScene(m_ActiveScene);
+                m_SceneChanged = false;
+            }
             FrameTick();
         }
 
         LEI_TRACE("Gracefully Closing and Cleaning Up Data");
-        delete testScene;
+    }
+
+    void Application::ChangeScenes(Scene* scene)
+    {
+        m_NextScene = scene;
+        m_SceneChanged = true;
     }
 
     void Application::Inititalize()
@@ -77,9 +85,9 @@ namespace lei3d
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        #ifdef __APPLE__
-            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-        #endif
+#ifdef __APPLE__
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
 
         int screenWidth = 1200;
         int screenHeight = 1000;
@@ -104,11 +112,13 @@ namespace lei3d
         // resize the openGL context if a user changes the window size
         glfwSetFramebufferSizeCallback(m_Window, framebuffer_size_callback);
 
+        GLCall(glEnable(GL_DEPTH_TEST));
+
         //IMGUI SETUP --------------------------------
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
-        (void) io;
+        (void)io;
 
         //Set ImGui Style
         ImGui::StyleColorsDark();
@@ -118,15 +128,30 @@ namespace lei3d
 
         //AppGUI --------------------------------
         m_AppGUI = std::make_unique<AppGUI>();
+        SetUIActive(false);
+
+        //CREATE SCENES --------------------------------
+        m_AllScenes.push_back({ "Test", std::make_unique<TestScene>() });
+        m_AllScenes.push_back({ "Empty", std::make_unique<EmptyScene>() });
+
+        LEI_TRACE("Loading Scenes");
+        Scene* defaultScene = m_AllScenes[0].second.get(); //This just gets the first scene we added
+        //LoadScene(defaultScene);
+        ChangeScenes(defaultScene);
+        LEI_ASSERT(m_ActiveScene != nullptr, "Please make sure a scene is set before running");
+
+        SetupInputCallbacks();
     }
 
     void Application::LoadScene(Scene* scene)
     {
-        GLCall(glEnable(GL_DEPTH_TEST));
+        if (m_ActiveScene != nullptr)
+        {
+            m_ActiveScene->Unload();
+        }
 
         m_ActiveScene = scene;
         m_ActiveScene->Init(this);
-        SetupInputCallbacks();
     }
 
     void Application::FrameTick() {
@@ -163,6 +188,13 @@ namespace lei3d
         m_ActiveScene->PhysicsUpdate(m_DeltaTime);    //idk how often we need to do this.
     }
 
+    void Application::SetUIActive(bool uiActive)
+    {
+        m_UIActive = uiActive;
+        int cursorMode = m_UIActive ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
+        glfwSetInputMode(m_Window, GLFW_CURSOR, cursorMode);
+    }
+
     void Application::Render()
     {
         m_ActiveScene->Render();
@@ -173,17 +205,20 @@ namespace lei3d
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        m_AppGUI->RenderUI();
+        if (m_UIActive)
+        {
+            m_AppGUI->RenderUI();
+        }
 
         ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        ImDrawData* drawData = ImGui::GetDrawData();
+        ImGui_ImplOpenGL3_RenderDrawData(drawData);
         ImGui::EndFrame();
     }
 
     //TODO: Put into input class
     void Application::SetupInputCallbacks() {
         glfwSetWindowUserPointer(m_Window, this);
-        glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED); // turn off if UI
 
         //NOTE: We need to be careful about overwriting the inputs, bc that will screw over imgui.
         //TODO: https://trello.com/c/S05x7OxG/33-input-callbacks
@@ -249,10 +284,7 @@ namespace lei3d
         }
         if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
         {
-            //Toggle the cursor mode.
-            int currentCursorMode = glfwGetInputMode(window, GLFW_CURSOR);
-            int reverseCursorLockMode = (currentCursorMode == GLFW_CURSOR_DISABLED) ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
-            glfwSetInputMode(window, GLFW_CURSOR, reverseCursorLockMode);
+            SetUIActive(!m_UIActive);
         }
     }
 
@@ -267,6 +299,11 @@ namespace lei3d
 
     Scene* Application::ActiveScene() {
         return m_ActiveScene;
+    }
+
+    const std::vector<std::pair<std::string, std::unique_ptr<Scene>>>& Application::GetScenes()
+    {
+        return m_AllScenes;
     }
 
     float Application::DeltaTime() {

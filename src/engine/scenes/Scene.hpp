@@ -25,7 +25,6 @@ namespace lei3d
         std::vector<std::unique_ptr<Entity>> m_Entities;
 
         std::unique_ptr<FlyCamera> m_Camera = nullptr;  //every scene needs a camera
-        std::unique_ptr<Shader> m_MainShader = nullptr; //THIS IS TEMPORARY
 
         //glm::mat4 m_VP;
     public:
@@ -40,11 +39,15 @@ namespace lei3d
         void Render();
         void Destroy();
 
+        void Load();
+        void Unload();
+
         void ProcessCameraInput(float deltaTime);
 
         //TODO: Abstract scene creation/loading into files: https://trello.com/c/eC66QGuD/25-define-scene-file-format
-        //Right now we use this virtual LoadObjects function to load all the objs in code. 
-        virtual void LoadObjects() {}; //load shaders and meshes and other scene info ?
+        //Right now we use this virtual Load function to load all the objs in code. 
+        virtual void OnLoad() {}  //load shaders and meshes and other scene info ?
+        virtual void OnUnload() {}
 
         //These should rarely be used because everything is handled by ECS.
         virtual void OnUpdate(float deltaTime) {}

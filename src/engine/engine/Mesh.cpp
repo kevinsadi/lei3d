@@ -49,6 +49,9 @@ namespace lei3d
         GLCall(glEnableVertexAttribArray(2));
         GLCall(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords)));
 
+        //DON'T UNBIND THE BUFFERS HERE (it causes it to not render fsr I don't understand)
+        //GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+        //GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
         GLCall(glBindVertexArray(0));
     }
 

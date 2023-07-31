@@ -21,9 +21,22 @@ namespace lei3d {
         Start();
     }
 
+    void Scene::Load()
+    {
+        //We might want to do general scene loading things here later.
+        OnLoad();
+    }
+
+    void Scene::Unload()
+    {
+        m_Entities.clear(); //This should auto-destruct entities bc smart pointers.
+
+        OnUnload();
+    }
+
     void Scene::Start() {
         LEI_TRACE("Scene Start");
-        LoadObjects();
+        Load();
 
         for (auto& entity : m_Entities) {
             entity->Start();
