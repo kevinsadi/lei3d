@@ -13,7 +13,6 @@ namespace lei3d
     public:
         StaticCollider(Entity* entity);
 
-        void Start() override;
         void Init();
     private:
         void GiveModelStaticCollider();

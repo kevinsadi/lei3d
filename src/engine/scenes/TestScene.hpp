@@ -7,6 +7,7 @@
 
 #include "engine/Shader.hpp"
 #include "components/SkyBox.hpp"
+#include "components/StaticCollider.hpp"
 
 #include "physics/PhysicsWorld.hpp"
 

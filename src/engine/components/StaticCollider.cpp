@@ -3,6 +3,10 @@
 
 namespace lei3d
 {
+    StaticCollider::StaticCollider(Entity* entity) : Component(entity) {
+
+    }
+
     /**
      * @brief - Instantiate Static Collider on an entity. If it has a model.  
      *

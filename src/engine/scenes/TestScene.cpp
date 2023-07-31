@@ -44,6 +44,8 @@ namespace lei3d {
         physicsPlaygroundModel->Init(physicsPlaygroundPath, *m_MainShader);
         physicsPlaygroundObj->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
         physicsPlaygroundObj->SetPosition(glm::vec3(0.0f, -10.f, 0.f));
+        StaticCollider* physicsPlaygroundCollider = physicsPlaygroundObj->AddComponent<StaticCollider>();
+        physicsPlaygroundCollider->Init();
         m_Entities.push_back(std::move(physicsPlaygroundObj));
 
         //Test Multiple Components
