@@ -38,6 +38,7 @@ namespace lei3d {
 			entity->Update(deltaTime);
 		}
 
+        ProcessCameraInput(deltaTime);
 		OnUpdate(deltaTime);
 	}
 
