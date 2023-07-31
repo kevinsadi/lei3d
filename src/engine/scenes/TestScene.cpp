@@ -36,6 +36,8 @@ namespace lei3d {
         model->Init(modelPath, *m_MainShader);
         backpackObj->SetScale(glm::vec3(1.25f, 1.25f, 1.25f));
         backpackObj->SetPosition(glm::vec3(0.f, 0.f, 0.f));
+        CharacterController* characterController = backpackObj->AddComponent<CharacterController>();
+        characterController->Init();
         m_Entities.push_back(std::move(backpackObj));
 
         const std::string physicsPlaygroundPath = "data/models/leveldesign/KekkekinPlayground.obj";
