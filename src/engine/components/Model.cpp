@@ -187,6 +187,42 @@ namespace lei3d
         return textures;
     }
 
+    /**
+     * @brief Creates collision meshes From Model object
+     * 
+     * Requires the Model to have loaded it's meshes. Leverages the vertices and indices of each mesh to create a
+     * btTriangleMesh for each Mesh.
+     * 
+     * @return std::vector<btTriangleMesh> 
+     */
+    std::vector<btTriangleMesh*> Model::GetCollisionMeshesFromModel()
+    {
+        std::vector<btTriangleMesh*> collisionMeshList;
+
+        for (Mesh mesh : meshes)
+        {
+            btTriangleMesh* curCollisionMesh = new btTriangleMesh();
+
+            std::vector<Vertex> vertices = mesh.vertices;
+            std::vector<unsigned int> indices = mesh.indices;
+
+            for (int i = 0; i < indices.size(); i += 3)
+            {
+                glm::vec3 vert1 = vertices[indices[i]].Position;
+                btVector3 bvert1(vert1.x, vert1.y, vert1.z);
+                glm::vec3 vert2 = vertices[indices[i+1]].Position;
+                btVector3 bvert2(vert2.x, vert2.y, vert2.z);
+                glm::vec3 vert3 = vertices[indices[i+2]].Position;
+                btVector3 bvert3(vert3.x, vert3.y, vert3.z);
+
+                curCollisionMesh->addTriangle(bvert1, bvert2, bvert3);
+            }
+            collisionMeshList.push_back(curCollisionMesh);
+        }
+
+        return collisionMeshList;
+    }    
+
     // from https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/model.h
     unsigned int TextureFromFile(const char* path, const std::string& directory, bool gamma)
     {

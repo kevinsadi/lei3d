@@ -34,6 +34,8 @@ namespace lei3d
 
         void Update(float deltaTime) override;
         void Render() override;
+
+         std::vector<btTriangleMesh*> GetCollisionMeshesFromModel();
     private:
         // model data
         std::vector<Mesh> meshes;

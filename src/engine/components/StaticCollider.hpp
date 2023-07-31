@@ -1,6 +1,7 @@
 #pragma once
 
 #include "engine/Component.hpp"
+#include "components/Model.hpp"
 
 namespace lei3d
 {
@@ -13,5 +14,9 @@ namespace lei3d
         StaticCollider(Entity* entity);
 
         void Start() override;
+        void Init();
+    private:
+        void GiveModelStaticCollider();
+        void AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, Transform transform);
     };
 }
