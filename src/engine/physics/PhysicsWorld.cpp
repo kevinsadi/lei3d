@@ -19,21 +19,21 @@ namespace lei3d
     {
         //CHARACTER--------------------
         //std::unique_ptr<btCollisionShape> character = std::make_unique<btCapsuleShape>(btScalar{1.0f}, btScalar{3.0f});
-        btCollisionShape* character = new btCapsuleShape(btScalar{1.0f}, btScalar{3.0f});
-        btTransform startTransform;
-        startTransform.setIdentity();
+        // btCollisionShape* character = new btCapsuleShape(btScalar{1.0f}, btScalar{3.0f});
+        // btTransform startTransform;
+        // startTransform.setIdentity();
 
-        btScalar mass{1.f};
-        btVector3 localInertia{0.0f, 0.0f, 0.0f};
-        character->calculateLocalInertia(mass, localInertia);
-        startTransform.setOrigin(btVector3{3.0f, 50.0f, 0.0f});
+        // btScalar mass{1.f};
+        // btVector3 localInertia{0.0f, 0.0f, 0.0f};
+        // character->calculateLocalInertia(mass, localInertia);
+        // startTransform.setOrigin(btVector3{3.0f, 50.0f, 0.0f});
         
-        //THIS IS A MEMORY LEAK, FIX!!
-        btDefaultMotionState* charMotionState = new btDefaultMotionState(startTransform);
-        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, charMotionState, character, localInertia);
-        btRigidBody* characterBody = new btRigidBody(rbInfo);
-        m_dynamicsWorld->addRigidBody(characterBody);
-        m_collisionShapes.push_back(character);
+        // //THIS IS A MEMORY LEAK, FIX!!
+        // btDefaultMotionState* charMotionState = new btDefaultMotionState(startTransform);
+        // btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, charMotionState, character, localInertia);
+        // btRigidBody* characterBody = new btRigidBody(rbInfo);
+       // m_dynamicsWorld->addRigidBody(characterBody);
+        //m_collisionShapes.push_back(character);
     }
 
     void PhysicsWorld::Step(float deltaTime)
