@@ -6,10 +6,12 @@
 #include "util/GLDebug.hpp"
 
 #include <glm/glm.hpp>
+#include "physics/PhysicsWorld.hpp"
+
+
 
 namespace lei3d {
     TestScene::TestScene() {
-
     }
 
     TestScene::~TestScene() {
@@ -19,6 +21,8 @@ namespace lei3d {
     void TestScene::LoadObjects() {
         // load shaders
         m_MainShader = std::make_unique<Shader>("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
+        m_PhysicsWorld = std::make_unique<PhysicsWorld>();
+        m_PhysicsWorld->Create();    //TODO: Consider if there is some better way to do this
 
         // load textures
         stbi_set_flip_vertically_on_load(true);
@@ -30,17 +34,21 @@ namespace lei3d {
         backpackObj->AddComponent<Backpack>();
         Model* model = backpackObj->AddComponent<Model>();
         model->Init(modelPath, *m_MainShader);
-        backpackObj->SetScale(glm::vec3(1.25f, 1.25f, 1.25f));
-        backpackObj->SetPosition(glm::vec3(0.f, 0.f, 0.f));
+        backpackObj->SetScale(glm::vec3(1.f, 1.f, 1.f));
+        backpackObj->SetPosition(glm::vec3(0.f, 200.f, 0.f));
+        CharacterController* characterController = backpackObj->AddComponent<CharacterController>();
+        characterController->Init();
         m_Entities.push_back(std::move(backpackObj));
 
-        std::unique_ptr<Entity> backpackObj2 = std::make_unique<Entity>();
-        backpackObj2->AddComponent<Backpack>();
-        Model* model2 = backpackObj2->AddComponent<Model>();
-        model2->Init(modelPath, *m_MainShader);
-        backpackObj2->SetScale(glm::vec3(0.25f, 0.25f, 0.25f));
-        backpackObj2->SetPosition(glm::vec3(10.f, 0.f, 0.f));
-        m_Entities.push_back(std::move(backpackObj2));
+        const std::string physicsPlaygroundPath = "data/models/leveldesign/KekkekinPlayground.obj";
+        std::unique_ptr<Entity> physicsPlaygroundObj = std::make_unique<Entity>();
+        Model* physicsPlaygroundModel = physicsPlaygroundObj->AddComponent<Model>();
+        physicsPlaygroundModel->Init(physicsPlaygroundPath, *m_MainShader);
+        physicsPlaygroundObj->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
+        physicsPlaygroundObj->SetPosition(glm::vec3(0.0f, -10.f, 0.f));
+        StaticCollider* physicsPlaygroundCollider = physicsPlaygroundObj->AddComponent<StaticCollider>();
+        physicsPlaygroundCollider->Init();
+        m_Entities.push_back(std::move(physicsPlaygroundObj));
 
         //Test Multiple Components
         std::unique_ptr<Entity> skyboxObj = std::make_unique<Entity>();
@@ -58,7 +66,6 @@ namespace lei3d {
         skybox->Init(faces);
         m_Entities.push_back(std::move(skyboxObj));
 
-        m_PhysicsWorld.Create();    //TODO: This is temporary. Change this to use physics components.
     }
 
     void TestScene::OnUpdate(float deltaTime) {
@@ -66,7 +73,7 @@ namespace lei3d {
     }
 
     void TestScene::OnPhysicsUpdate(float deltaTime) {
-        m_PhysicsWorld.Step(deltaTime);
+        m_PhysicsWorld->Step(deltaTime);
     }
 
     void TestScene::OnRender() {

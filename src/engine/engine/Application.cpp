@@ -186,7 +186,7 @@ namespace lei3d
 
     void Application::Render()
     {
-        m_ActiveScene->Render();
+        m_ActiveScene->Render(); // renders all of the entities within the scene 
 
         // Render UI
         ImGui_ImplOpenGL3_NewFrame();

@@ -42,7 +42,7 @@ namespace lei3d
 
         float lastFrameTime = 0.0f; // used to keep track of delta time
         float deltaTime = 0.0f; //Total time for last frame. 
-        float desiredFPS = 60.0f;   //FPS will be capped to this value.
+        float desiredFPS = 120.0f;   //FPS will be capped to this value. (current bug means that the FPS cap is half, not sure why)
 
         void Inititalize(); // initalize GLFW  
         void LoadScene(Scene* scene); // 

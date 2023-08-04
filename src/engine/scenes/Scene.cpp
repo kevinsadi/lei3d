@@ -94,6 +94,10 @@ namespace lei3d {
         return *m_Camera;
     }
 
+    PhysicsWorld& Scene::GetPhysicsWorld() {
+        return *m_PhysicsWorld;
+    }
+
     GLFWwindow* Scene::window() {
         return m_App->Window();
     }

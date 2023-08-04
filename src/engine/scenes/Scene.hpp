@@ -7,6 +7,7 @@
 #include "engine/Application.hpp"
 #include "engine/Entity.hpp"
 #include "engine/FlyCamera.hpp"
+#include "physics/PhysicsWorld.hpp"
 
 #include <memory>
 #include <vector>
@@ -15,7 +16,7 @@ namespace lei3d
 {
     class Application;
     class Entity;
-    class PhysicsObjects;
+    class PhysicsWorld;
     class Shader;
 
     class Scene
@@ -24,8 +25,9 @@ namespace lei3d
         Application* m_App;
         std::vector<std::unique_ptr<Entity>> m_Entities;
 
-        std::unique_ptr<FlyCamera> m_Camera = nullptr;  //every scene needs a camera
-        std::unique_ptr<Shader> m_MainShader = nullptr; //THIS IS TEMPORARY
+        std::unique_ptr<FlyCamera> m_Camera = nullptr;  // every scene needs a camera
+        std::unique_ptr<Shader> m_MainShader = nullptr; // THIS IS TEMPORARY
+        std::unique_ptr<PhysicsWorld> m_PhysicsWorld = nullptr; // Each scene has a physics world
 
         //glm::mat4 m_VP;
     public:
@@ -53,6 +55,7 @@ namespace lei3d
         virtual void OnDestroy() {}
 
         FlyCamera& MainCamera();
+        PhysicsWorld& GetPhysicsWorld();
     private:
         GLFWwindow* window();
     };

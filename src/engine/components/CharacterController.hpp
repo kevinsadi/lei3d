@@ -1,22 +1,22 @@
 #pragma once
 
 #include "engine/Component.hpp"
-
-
-// THIS IS JUST A TEST COMPONENT. IT HAS NO ACTUAL USE.
+#include "physics/CharacterPhysicsUpdate.hpp"
 
 namespace lei3d
 {
     class Entity;
     class Component;
 
-    class Backpack : public Component
+    class CharacterController : public Component
     {
     public:
-        Backpack(Entity* entity);
+        CharacterController(Entity* entity);
 
         //std::string GetComponentName() override;
 
         void Start() override;
+        void PhysicsUpdate(float deltaTime) override;
+        void Init();
     };
 }

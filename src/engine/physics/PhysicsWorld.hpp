@@ -10,19 +10,20 @@
 
 namespace lei3d
 {
-    struct PhysicsWorld
+    class PhysicsWorld
     {
-        std::unique_ptr<btDefaultCollisionConfiguration> collisionConfiguration;
-        std::unique_ptr<btCollisionDispatcher> dispatcher = nullptr;
-        std::unique_ptr<btBroadphaseInterface> overlappingPairCache = nullptr;
-        std::unique_ptr<btSequentialImpulseConstraintSolver> solver = nullptr;
-        std::unique_ptr<btDiscreteDynamicsWorld> dynamicsWorld = nullptr;
+    public:
+        std::unique_ptr<btDefaultCollisionConfiguration> m_collisionConfiguration = nullptr;
+        std::unique_ptr<btCollisionDispatcher> m_dispatcher = nullptr;
+        std::unique_ptr<btBroadphaseInterface> m_overlappingPairCache = nullptr;
+        std::unique_ptr<btSequentialImpulseConstraintSolver> m_solver = nullptr;
+        std::unique_ptr<btDiscreteDynamicsWorld> m_dynamicsWorld = nullptr;
         //btAlignedObjectArray<std::unique_ptr<btCollisionShape>> collisionShapes;
-        btAlignedObjectArray<btCollisionShape*> collisionShapes;
+        btAlignedObjectArray<btCollisionShape*> m_collisionShapes;
 
         PhysicsWorld();
+        
         void Create();
-
         void Step(float deltaTime);
         glm::vec3 GetFirstColliderPosition();
     };
