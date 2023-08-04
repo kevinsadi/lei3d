@@ -1,6 +1,7 @@
 #pragma once
 
 #include "engine/Component.hpp"
+#include "physics/CharacterPhysicsUpdate.hpp"
 
 namespace lei3d
 {

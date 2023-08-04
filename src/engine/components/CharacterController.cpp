@@ -12,7 +12,8 @@ namespace lei3d {
     }
 
     /**
-     * @brief - Add a cylinder collision mesh to this object. DO THIS BEFORE MAKING ANY OTHER MESHES 
+     * Add a cylinder collision mesh to this object. DO THIS BEFORE MAKING ANY OTHER MESHES.
+     * Also cannot change the size of the graphics mesh of the character controller for proper collisions. 
      * 
      */
     void CharacterController::Init() {
@@ -36,10 +37,15 @@ namespace lei3d {
         characterBody->setAngularFactor(0.0);
         ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addRigidBody(characterBody);
         ActiveScene().GetPhysicsWorld().m_collisionShapes.push_back(character);
+        
+        // WITHIN THIS CUSTOM PHYSICS UPDATE IS THE MAGIC THAT MAKES AIRSTRAFING / SURF POSSIBLE
+        CharacterPhysicsUpdate* customCharacterPhysicsUpdate = new CharacterPhysicsUpdate(characterBody);
+        ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addAction(customCharacterPhysicsUpdate);
     }
 
     void CharacterController::PhysicsUpdate(float deltaTime)
     {
         m_Entity->m_Transform.position = ActiveScene().GetPhysicsWorld().GetFirstColliderPosition();
     }
+
 }
