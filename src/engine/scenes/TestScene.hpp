@@ -28,5 +28,8 @@ namespace lei3d {
         void OnUpdate(float deltaTime) override;
         void OnPhysicsUpdate(float deltaTime) override;
         void OnRender() override;
+    private:
+        std::unique_ptr<Model> backpackModel;
+        std::unique_ptr<Model> playgroundModel;
     };
 }

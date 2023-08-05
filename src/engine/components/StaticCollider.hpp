@@ -1,7 +1,7 @@
 #pragma once
 
 #include "core/Component.hpp"
-#include "components/Model.hpp"
+#include "rendering/Model.hpp"
 
 namespace lei3d
 {
@@ -14,8 +14,8 @@ namespace lei3d
         StaticCollider(Entity* entity);
 
         void Init();
+        void SetColliderToModel(const Model& model);
     private:
-        void GiveModelStaticCollider();
         void AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, Transform transform);
     };
 }

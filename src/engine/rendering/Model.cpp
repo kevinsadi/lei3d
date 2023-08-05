@@ -4,40 +4,20 @@
 
 namespace lei3d
 {
-    // DEFINE_COMPONENT(Model, "Model");
-    
-    Model::Model(Entity* entity) : Component(entity)
-    {      
+    Model::Model(const std::string& modelPath)
+    {     
+        loadModel(modelPath); 
     }
 
     Model::~Model()
     {
     }
 
-    //std::string Model::GetComponentName() {
-    //    return "Model";
-    //}
-
-    void Model::Init(const std::string& modelPath, Shader& shader) {
-        m_Shader = &shader;
-        loadModel(modelPath);
-    }
-
-    void Model::Update(float deltaTime) {
-    }
-
-    void Model::Render()
+    void Model::Draw(Shader& shader)
     {
-        glm::mat4 model = m_Entity->GetModelMat();
-        FlyCamera& camera = ActiveScene().MainCamera();
-        glm::mat4 view = camera.GetView();
-        glm::mat4 proj = camera.GetProj();
-        m_Shader->setUniformMat4("u_Model", model);
-        m_Shader->setUniformMat4("u_View", view);
-        m_Shader->setUniformMat4("u_Proj", proj);
         for (unsigned int i = 0; i < this->meshes.size(); i++)
         {
-            meshes[i].Draw(*m_Shader);
+            meshes[i].Draw(shader);
         }
     }
 
@@ -195,7 +175,7 @@ namespace lei3d
      * 
      * @return std::vector<btTriangleMesh> 
      */
-    std::vector<btTriangleMesh*> Model::GetCollisionMeshesFromModel()
+    std::vector<btTriangleMesh*> Model::GetCollisionMeshes() const
     {
         std::vector<btTriangleMesh*> collisionMeshList;
 

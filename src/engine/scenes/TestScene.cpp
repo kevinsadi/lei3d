@@ -1,6 +1,6 @@
 #include "TestScene.hpp"
 
-#include "components/Model.hpp"
+#include "components/ModelRenderer.hpp"
 
 #include "logging/GLDebug.hpp"
 
@@ -26,26 +26,37 @@ namespace lei3d {
         // load textures
         stbi_set_flip_vertically_on_load(true);
 
-        // NOTE: We haven't implemented transform changing component stuff yet so the backpack might render weird/be really big if you uncomment.
-        const std::string modelPath = "data/models/backpack/backpack.obj";
+        // Load Models
+        const std::string backpackPath = "data/models/backpack/backpack.obj";
+        backpackModel = std::make_unique<Model>(backpackPath);
+        const std::string physicsPlaygroundPath = "data/models/leveldesign/KekkekinPlayground.obj";
+        playgroundModel = std::make_unique<Model>(physicsPlaygroundPath);
 
+        //BACKPACK (Character) ---------------------
         std::unique_ptr<Entity> backpackObj = std::make_unique<Entity>();
-        Model* model = backpackObj->AddComponent<Model>();
-        model->Init(modelPath, *m_MainShader);
+
+        ModelRenderer* modelRender = backpackObj->AddComponent<ModelRenderer>();
+        modelRender->Init(backpackModel.get(), m_MainShader.get());
         backpackObj->SetScale(glm::vec3(1.f, 1.f, 1.f));
         backpackObj->SetPosition(glm::vec3(0.f, 200.f, 0.f));
+
         CharacterController* characterController = backpackObj->AddComponent<CharacterController>();
         characterController->Init();
+
         m_Entities.push_back(std::move(backpackObj));
 
-        const std::string physicsPlaygroundPath = "data/models/leveldesign/KekkekinPlayground.obj";
+        //PHYSICS PLAYGROUND---------------------
         std::unique_ptr<Entity> physicsPlaygroundObj = std::make_unique<Entity>();
-        Model* physicsPlaygroundModel = physicsPlaygroundObj->AddComponent<Model>();
-        physicsPlaygroundModel->Init(physicsPlaygroundPath, *m_MainShader);
+
+        ModelRenderer* playgroundRender = physicsPlaygroundObj->AddComponent<ModelRenderer>();
+        playgroundRender->Init(playgroundModel.get(), m_MainShader.get());
         physicsPlaygroundObj->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
         physicsPlaygroundObj->SetPosition(glm::vec3(0.0f, -10.f, 0.f));
+
         StaticCollider* physicsPlaygroundCollider = physicsPlaygroundObj->AddComponent<StaticCollider>();
         physicsPlaygroundCollider->Init();
+        physicsPlaygroundCollider->SetColliderToModel(*playgroundModel);
+
         m_Entities.push_back(std::move(physicsPlaygroundObj));
 
         //Test Multiple Components

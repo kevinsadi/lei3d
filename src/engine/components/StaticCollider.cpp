@@ -15,23 +15,16 @@ namespace lei3d
      */
     void StaticCollider::Init()
     {
-        GiveModelStaticCollider();
     }
 
-    void StaticCollider::GiveModelStaticCollider()
-    {
-        Model* entityModel = m_Entity->GetComponent<Model>();
-        
-        if (entityModel)
+    void StaticCollider::SetColliderToModel(const Model& model)
+    {  
+        std::vector<btTriangleMesh*> modelMeshes = model.GetCollisionMeshes();
+        for (auto triMesh: modelMeshes)
         {
-            std::vector<btTriangleMesh*> modelMeshes = entityModel->GetCollisionMeshesFromModel();
-            for (auto triMesh: modelMeshes)
-            {
-                AddCollisionsFromTriangleMesh(triMesh, m_Entity->m_Transform);
-            }
+            AddCollisionsFromTriangleMesh(triMesh, m_Entity->m_Transform);
         }
     }
-
 
     /**
      * @brief Mutates values in PhysicsWorld to add the triMesh to the dynamicsWorldScene
