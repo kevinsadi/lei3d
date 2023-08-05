@@ -9,9 +9,9 @@
 #include <stb_image.h>
 #endif
 
-#include "engine/Shader.hpp"
+#include "rendering/Shader.hpp"
 
-#include "engine/Component.hpp"
+#include "core/Component.hpp"
 
 namespace lei3d
 {

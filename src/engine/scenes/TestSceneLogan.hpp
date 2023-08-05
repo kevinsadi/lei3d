@@ -3,10 +3,12 @@
 #include "Scene.hpp"
 
 
-#include "engine/Entity.hpp"
+#include "core/Entity.hpp"
 
-#include "engine/Shader.hpp"
+#include "rendering/Shader.hpp"
 #include "components/SkyBox.hpp"
+#include "components/StaticCollider.hpp"
+#include "components/CharacterController.hpp"
 
 #include "physics/PhysicsWorld.hpp"
 
@@ -15,17 +17,17 @@ namespace lei3d {
     class Model;
     class Shader;
     class SkyBox;
+    class PhysicsWorld;
 
-    class TestScene : public Scene {
-    private:
-        PhysicsWorld m_PhysicsWorld;
-        std::unique_ptr<Shader> m_MainShader = nullptr; //THIS IS TEMPORARY
+    class TestSceneLogan : public Scene {
     public:
-        TestScene();
-        ~TestScene();
+        TestSceneLogan();
+        ~TestSceneLogan();
 
         void OnLoad() override;
         void OnUpdate(float deltaTime) override;
         void OnPhysicsUpdate(float deltaTime) override;
+    private:
+        std::unique_ptr<Model> backpackModel;
     };
 }

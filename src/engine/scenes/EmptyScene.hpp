@@ -3,7 +3,7 @@
 #include "Scene.hpp"
 
 
-#include "engine/Entity.hpp"
+#include "core/Entity.hpp"
 
 #include "components/SkyBox.hpp"
 

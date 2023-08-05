@@ -11,29 +11,27 @@
 #include <stb_image.h>
 #endif
 
-#include "engine/Component.hpp"
-#include "engine/Shader.hpp"
-#include "engine/Mesh.hpp"
-#include "util/Log.hpp";
+#include "core/Component.hpp"
+#include "rendering/Shader.hpp"
+#include "rendering/Mesh.hpp"
+#include "logging/Log.hpp";
 
 namespace lei3d
 {
     class Component;
 
-    class Model : public Component
+    class Model
     {
     public:
         std::vector<Texture> textures_loaded;
         Shader* m_Shader;    //This is temporary. We want to abstract the shader system eventually to handle them better.
         
-        Model(Entity* entity);
+        Model(const std::string& modelPath);
         ~Model();
-        
-        //std::string GetComponentName() override;
-        void Init(const std::string& modelPath, Shader& shader);
 
-        void Update(float deltaTime) override;
-        void Render() override;
+        void Draw(Shader& shader);
+
+        std::vector<btTriangleMesh*> GetCollisionMeshes() const;
     private:
         // model data
         std::vector<Mesh> meshes;

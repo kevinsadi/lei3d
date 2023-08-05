@@ -1,6 +1,6 @@
 #include "scenes/Scene.hpp"
 
-#include "util/GLDebug.hpp"
+#include "logging/GLDebug.hpp"
 
 namespace lei3d {
 	Scene::Scene() {
@@ -17,6 +17,13 @@ namespace lei3d {
         // load camera
         GLFWwindow* const win = window();
         m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 4.0f);
+
+        //Load shader (TEMPORARY)
+        m_MainShader = std::make_unique<Shader>("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
+
+        //Load physics world
+        m_PhysicsWorld = std::make_unique<PhysicsWorld>();
+        m_PhysicsWorld->Create();    //TODO: Consider if there is some better way to do this
 
         Start();
     }
@@ -106,6 +113,10 @@ namespace lei3d {
 
     FlyCamera& Scene::MainCamera() {
         return *m_Camera;
+    }
+
+    PhysicsWorld& Scene::GetPhysicsWorld() {
+        return *m_PhysicsWorld;
     }
 
     GLFWwindow* Scene::window() {

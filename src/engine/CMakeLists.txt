@@ -8,18 +8,12 @@ add_custom_target(copy_data ALL COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMA
 target_include_directories(imgui PUBLIC include)
 target_include_directories(spdlog PUBLIC include)
 
-file(GLOB sourceFiles
-     "*.cpp"
-     "*/*.cpp"
-     "*/*/*.cpp"
-     "*/*/*/*.cpp"
+file(GLOB_RECURSE sourceFiles
+    "*.cpp"
 )
 
-file(GLOB headerFiles
+file(GLOB_RECURSE headerFiles
     "*.hpp"
-    "*/*.hpp"
-    "*/*/*.hpp"
-    "*/*/*/*.hpp"
 )
 
 add_executable(lei3d ${sourceFiles} ${headerFiles})

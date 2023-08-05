@@ -4,9 +4,11 @@
 #include "Application.hpp"
 
 #include "scenes/EmptyScene.hpp"
-#include "scenes/TestScene.hpp"
+#include "scenes/TestSceneKevin.hpp"
+#include "scenes/TestSceneLogan.hpp"
 
-#include "util/GLDebug.hpp"
+#include "logging/GLDebug.hpp"
+
 
 namespace lei3d
 {
@@ -53,6 +55,8 @@ namespace lei3d
     {
         LEI_TRACE("Initializing Engine");
         Inititalize();
+
+        LEI_ASSERT(m_ActiveScene != nullptr, "Please make sure a scene is set before running");
 
         LEI_TRACE("Entering Frame Loop");
         while (!glfwWindowShouldClose(m_Window))
@@ -131,14 +135,13 @@ namespace lei3d
         SetUIActive(false);
 
         //CREATE SCENES --------------------------------
-        m_AllScenes.push_back({ "Test", std::make_unique<TestScene>() });
+        m_AllScenes.push_back({ "Test Kevin", std::make_unique<TestSceneKevin>() });
+        m_AllScenes.push_back({ "Test Logan", std::make_unique<TestSceneLogan>() });
         m_AllScenes.push_back({ "Empty", std::make_unique<EmptyScene>() });
 
-        LEI_TRACE("Loading Scenes");
+        LEI_TRACE("Loading Default Scene");
         Scene* defaultScene = m_AllScenes[0].second.get(); //This just gets the first scene we added
-        //LoadScene(defaultScene);
         ChangeScenes(defaultScene);
-        LEI_ASSERT(m_ActiveScene != nullptr, "Please make sure a scene is set before running");
 
         SetupInputCallbacks();
     }

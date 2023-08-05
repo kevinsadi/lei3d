@@ -55,11 +55,12 @@ namespace lei3d
 
         //NOTE: Don't modify this directly. Use SetUIActive.
         bool m_UIActive = false;
-        bool m_SceneChanged = false;    //Flags the app to load another scene.
+
+        bool m_SceneChanged = false;    //Flags the app to load another scene in sync with render loop.
 
         float m_LastFrameTime = 0.0f; // used to keep track of delta time
         float m_DeltaTime = 0.0f; //Total time for last frame. 
-        float m_DesiredFPS = 60.0f;   //FPS will be capped to this value.
+        float m_DesiredFPS = 120.0f;   //FPS will be capped to this value. (current bug means that the FPS cap is half, not sure why)
 
         void Inititalize(); // Start the App
         void FrameTick();   //Called every frame

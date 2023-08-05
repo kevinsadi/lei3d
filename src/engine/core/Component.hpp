@@ -30,8 +30,6 @@ namespace lei3d
         virtual void Render() {}
         virtual void OnDestroy() {}
 
-        //static std::string GetComponentName();
-
         Scene& ActiveScene();
     };
 }
