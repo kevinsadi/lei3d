@@ -1,4 +1,4 @@
-#include "TestScene.hpp"
+#include "TestSceneKevin.hpp"
 
 #include "components/ModelRenderer.hpp"
 
@@ -10,14 +10,14 @@
 
 
 namespace lei3d {
-    TestScene::TestScene() {
+    TestSceneKevin::TestSceneKevin() {
     }
 
-    TestScene::~TestScene() {
+    TestSceneKevin::~TestSceneKevin() {
 
     }
 
-    void TestScene::LoadObjects() {
+    void TestSceneKevin::LoadObjects() {
 
         // load textures
         stbi_set_flip_vertically_on_load(true);
@@ -72,15 +72,15 @@ namespace lei3d {
 
     }
 
-    void TestScene::OnUpdate(float deltaTime) {
+    void TestSceneKevin::OnUpdate(float deltaTime) {
 
     }
 
-    void TestScene::OnPhysicsUpdate(float deltaTime) {
+    void TestSceneKevin::OnPhysicsUpdate(float deltaTime) {
         m_PhysicsWorld->Step(deltaTime);
     }
 
-    void TestScene::OnRender() {
+    void TestSceneKevin::OnRender() {
         //FOR TESTING, NO LONGER BEING USED IN-GAME
 
         //LEI_TRACE("Rendering Test Scene");

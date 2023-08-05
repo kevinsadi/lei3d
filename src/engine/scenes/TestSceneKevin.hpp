@@ -19,10 +19,10 @@ namespace lei3d {
     class SkyBox;
     class PhysicsWorld;
 
-    class TestScene : public Scene {
+    class TestSceneKevin : public Scene {
     public:
-        TestScene();
-        ~TestScene();
+        TestSceneKevin();
+        ~TestSceneKevin();
 
         void LoadObjects() override;
         void OnUpdate(float deltaTime) override;

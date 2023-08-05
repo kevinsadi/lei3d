@@ -3,7 +3,9 @@
 
 #include "Application.hpp"
 
-#include "scenes/TestScene.hpp"
+#include "scenes/TestSceneKevin.hpp"
+#include "scenes/TestSceneLogan.hpp"
+
 #include "logging/GLDebug.hpp"
 
 namespace lei3d
@@ -60,7 +62,9 @@ namespace lei3d
         Inititalize();
         
         LEI_TRACE("Loading Scene");
-        Scene* testScene = new TestScene();
+        //NOTE: This is literally so that scene loading works for my PR lamo. Once scene switching is integrated this will be irrelevant.
+        //Scene* testScene = new TestSceneKevin();
+        Scene* testScene = new TestSceneLogan();  
         LoadScene(testScene);
         LEI_ASSERT(m_ActiveScene != nullptr, "Please make sure a scene is set before running");
 
