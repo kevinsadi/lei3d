@@ -18,6 +18,13 @@ namespace lei3d {
         GLFWwindow* const win = window();
         m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 4.0f);
 
+        //Load shader (TEMPORARY)
+        m_MainShader = std::make_unique<Shader>("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
+
+        //Load physics world
+        m_PhysicsWorld = std::make_unique<PhysicsWorld>();
+        m_PhysicsWorld->Create();    //TODO: Consider if there is some better way to do this
+
         Start();
     }
 

@@ -18,10 +18,6 @@ namespace lei3d {
     }
 
     void TestScene::LoadObjects() {
-        // load shaders
-        m_MainShader = std::make_unique<Shader>("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
-        m_PhysicsWorld = std::make_unique<PhysicsWorld>();
-        m_PhysicsWorld->Create();    //TODO: Consider if there is some better way to do this
 
         // load textures
         stbi_set_flip_vertically_on_load(true);
