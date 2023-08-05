@@ -4,9 +4,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "engine/Application.hpp"
-#include "engine/Entity.hpp"
-#include "engine/FlyCamera.hpp"
+#include "core/Application.hpp"
+#include "core/Entity.hpp"
+#include "core/FlyCamera.hpp"
 #include "physics/PhysicsWorld.hpp"
 
 #include <memory>

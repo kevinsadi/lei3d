@@ -1,6 +1,6 @@
 #pragma once
 
-#include "engine/Component.hpp"
+#include "core/Component.hpp"
 #include "components/Model.hpp"
 
 namespace lei3d

@@ -4,7 +4,7 @@
 #include "Application.hpp"
 
 #include "scenes/TestScene.hpp"
-#include "util/GLDebug.hpp"
+#include "logging/GLDebug.hpp"
 
 namespace lei3d
 {

@@ -5,7 +5,7 @@
 
 #include <glm/glm.hpp>
 
-#include "engine/Shader.hpp"
+#include "rendering/Shader.hpp"
 
 namespace lei3d
 {

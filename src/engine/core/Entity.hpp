@@ -4,10 +4,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "engine/Component.hpp"
-#include "engine/Shader.hpp"
+#include "core/Component.hpp"
 
-#include "util/Log.hpp"
+#include "logging/Log.hpp"
+
+#include "rendering/Shader.hpp"
 
 #include <memory>
 #include <typeinfo>

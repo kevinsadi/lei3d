@@ -1,6 +1,6 @@
 #include "Model.hpp"
 
-#include "util/Util.hpp"
+#include "logging/LogGLM.hpp"
 
 namespace lei3d
 {

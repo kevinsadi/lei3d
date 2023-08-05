@@ -3,9 +3,9 @@
 #include "Scene.hpp"
 
 
-#include "engine/Entity.hpp"
+#include "core/Entity.hpp"
 
-#include "engine/Shader.hpp"
+#include "rendering/Shader.hpp"
 #include "components/SkyBox.hpp"
 #include "components/StaticCollider.hpp"
 #include "components/CharacterController.hpp"

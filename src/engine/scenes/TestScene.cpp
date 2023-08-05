@@ -1,9 +1,8 @@
 #include "TestScene.hpp"
 
-#include "components/Backpack.hpp"
 #include "components/Model.hpp"
 
-#include "util/GLDebug.hpp"
+#include "logging/GLDebug.hpp"
 
 #include <glm/glm.hpp>
 #include "physics/PhysicsWorld.hpp"
@@ -31,7 +30,6 @@ namespace lei3d {
         const std::string modelPath = "data/models/backpack/backpack.obj";
 
         std::unique_ptr<Entity> backpackObj = std::make_unique<Entity>();
-        backpackObj->AddComponent<Backpack>();
         Model* model = backpackObj->AddComponent<Model>();
         model->Init(modelPath, *m_MainShader);
         backpackObj->SetScale(glm::vec3(1.f, 1.f, 1.f));
@@ -53,7 +51,6 @@ namespace lei3d {
         //Test Multiple Components
         std::unique_ptr<Entity> skyboxObj = std::make_unique<Entity>();
         SkyBox* skybox = skyboxObj->AddComponent<SkyBox>();
-        skyboxObj->AddComponent<Backpack>();
         std::vector<std::string> faces
         {
             "data/skybox/anime_etheria/right.jpg",

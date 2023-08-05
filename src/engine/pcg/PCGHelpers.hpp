@@ -16,7 +16,7 @@
 #include <glad/glad.h> 
 #include <GLFW/glfw3.h>
 
-#include "util/Log.hpp"
+#include "logging/Log.hpp"
  
 namespace lei3d {
     struct PlaneMesh
