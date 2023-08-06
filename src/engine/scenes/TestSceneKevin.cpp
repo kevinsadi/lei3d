@@ -1,9 +1,8 @@
-#include "TestScene.hpp"
+#include "TestSceneKevin.hpp"
 
-#include "components/Backpack.hpp"
-#include "components/Model.hpp"
+#include "components/ModelRenderer.hpp"
 
-#include "util/GLDebug.hpp"
+#include "logging/GLDebug.hpp"
 
 #include <glm/glm.hpp>
 #include "physics/PhysicsWorld.hpp"
@@ -11,49 +10,54 @@
 
 
 namespace lei3d {
-    TestScene::TestScene() {
+    TestSceneKevin::TestSceneKevin() {
     }
 
-    TestScene::~TestScene() {
+    TestSceneKevin::~TestSceneKevin() {
 
     }
 
-    void TestScene::LoadObjects() {
-        // load shaders
-        m_MainShader = std::make_unique<Shader>("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
-        m_PhysicsWorld = std::make_unique<PhysicsWorld>();
-        m_PhysicsWorld->Create();    //TODO: Consider if there is some better way to do this
+    void TestSceneKevin::OnLoad() {
 
         // load textures
         stbi_set_flip_vertically_on_load(true);
 
-        // NOTE: We haven't implemented transform changing component stuff yet so the backpack might render weird/be really big if you uncomment.
-        const std::string modelPath = "data/models/backpack/backpack.obj";
+        // Load Models
+        const std::string backpackPath = "data/models/backpack/backpack.obj";
+        backpackModel = std::make_unique<Model>(backpackPath);
+        const std::string physicsPlaygroundPath = "data/models/leveldesign/KekkekinPlayground.obj";
+        playgroundModel = std::make_unique<Model>(physicsPlaygroundPath);
 
+        //BACKPACK (Character) ---------------------
         std::unique_ptr<Entity> backpackObj = std::make_unique<Entity>();
-        backpackObj->AddComponent<Backpack>();
-        Model* model = backpackObj->AddComponent<Model>();
-        model->Init(modelPath, *m_MainShader);
+
+        ModelRenderer* modelRender = backpackObj->AddComponent<ModelRenderer>();
+        modelRender->Init(backpackModel.get(), m_MainShader.get());
         backpackObj->SetScale(glm::vec3(1.f, 1.f, 1.f));
         backpackObj->SetPosition(glm::vec3(0.f, 200.f, 0.f));
+
         CharacterController* characterController = backpackObj->AddComponent<CharacterController>();
         characterController->Init();
+
         m_Entities.push_back(std::move(backpackObj));
 
-        const std::string physicsPlaygroundPath = "data/models/leveldesign/KekkekinPlayground.obj";
+        //PHYSICS PLAYGROUND---------------------
         std::unique_ptr<Entity> physicsPlaygroundObj = std::make_unique<Entity>();
-        Model* physicsPlaygroundModel = physicsPlaygroundObj->AddComponent<Model>();
-        physicsPlaygroundModel->Init(physicsPlaygroundPath, *m_MainShader);
+
+        ModelRenderer* playgroundRender = physicsPlaygroundObj->AddComponent<ModelRenderer>();
+        playgroundRender->Init(playgroundModel.get(), m_MainShader.get());
         physicsPlaygroundObj->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
         physicsPlaygroundObj->SetPosition(glm::vec3(0.0f, -10.f, 0.f));
+
         StaticCollider* physicsPlaygroundCollider = physicsPlaygroundObj->AddComponent<StaticCollider>();
         physicsPlaygroundCollider->Init();
+        physicsPlaygroundCollider->SetColliderToModel(*playgroundModel);
+
         m_Entities.push_back(std::move(physicsPlaygroundObj));
 
-        //Test Multiple Components
+        ////Test Multiple Components
         std::unique_ptr<Entity> skyboxObj = std::make_unique<Entity>();
         SkyBox* skybox = skyboxObj->AddComponent<SkyBox>();
-        skyboxObj->AddComponent<Backpack>();
         std::vector<std::string> faces
         {
             "data/skybox/anime_etheria/right.jpg",
@@ -65,18 +69,17 @@ namespace lei3d {
         };
         skybox->Init(faces);
         m_Entities.push_back(std::move(skyboxObj));
+    }
+
+    void TestSceneKevin::OnUpdate(float deltaTime) {
 
     }
 
-    void TestScene::OnUpdate(float deltaTime) {
-
-    }
-
-    void TestScene::OnPhysicsUpdate(float deltaTime) {
+    void TestSceneKevin::OnPhysicsUpdate(float deltaTime) {
         m_PhysicsWorld->Step(deltaTime);
     }
 
-    void TestScene::OnRender() {
+    void TestSceneKevin::OnRender() {
         //FOR TESTING, NO LONGER BEING USED IN-GAME
 
         //LEI_TRACE("Rendering Test Scene");

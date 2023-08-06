@@ -3,9 +3,9 @@
 #include "Scene.hpp"
 
 
-#include "engine/Entity.hpp"
+#include "core/Entity.hpp"
 
-#include "engine/Shader.hpp"
+#include "rendering/Shader.hpp"
 #include "components/SkyBox.hpp"
 #include "components/StaticCollider.hpp"
 #include "components/CharacterController.hpp"
@@ -19,14 +19,17 @@ namespace lei3d {
     class SkyBox;
     class PhysicsWorld;
 
-    class TestScene : public Scene {
+    class TestSceneKevin : public Scene {
     public:
-        TestScene();
-        ~TestScene();
+        TestSceneKevin();
+        ~TestSceneKevin();
 
-        void LoadObjects() override;
+        void OnLoad() override;
         void OnUpdate(float deltaTime) override;
         void OnPhysicsUpdate(float deltaTime) override;
         void OnRender() override;
+    private:
+        std::unique_ptr<Model> backpackModel;
+        std::unique_ptr<Model> playgroundModel;
     };
 }

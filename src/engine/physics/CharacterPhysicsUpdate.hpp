@@ -1,7 +1,7 @@
 #pragma once
 
 #include <btBulletDynamicsCommon.h>
-#include "engine/Application.hpp"
+#include "core/Application.hpp"
 
 namespace lei3d {
     class CharacterPhysicsUpdate : public btActionInterface {

@@ -1,6 +1,6 @@
 #include "SkyBox.hpp"
 
-#include "util/GLDebug.hpp"
+#include "logging/GLDebug.hpp"
 
 namespace lei3d
 {
@@ -11,7 +11,8 @@ namespace lei3d
     }
 
     SkyBox::~SkyBox() {
-        
+        GLCall(glDeleteBuffers(1, &skyboxVBO));
+        GLCall(glDeleteVertexArrays(1, &skyboxVBO));
     }
 
     //std::string SkyBox::GetComponentName() {
@@ -114,6 +115,7 @@ namespace lei3d
         GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW));
         GLCall(glEnableVertexAttribArray(0));
         GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0));
+        GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
         GLCall(glBindVertexArray(0));
 
         this->skyboxShader = skyboxShader;

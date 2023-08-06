@@ -4,8 +4,8 @@
  * Author: Kevin Sadi
  */
 
-#include "engine/Application.hpp"
-#include "util/Log.hpp"
+#include "core/Application.hpp"
+#include "logging/Log.hpp"
 
 using namespace lei3d;
 

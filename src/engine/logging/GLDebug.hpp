@@ -1,6 +1,6 @@
 #pragma once
 
-#include "util/Log.hpp"
+#include "logging/Log.hpp"
 
 #define GLCall(x) GLClearError();\
 	x;\

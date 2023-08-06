@@ -4,9 +4,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "engine/Application.hpp"
-#include "engine/Entity.hpp"
-#include "engine/FlyCamera.hpp"
+#include "core/Application.hpp"
+#include "core/Entity.hpp"
+#include "core/FlyCamera.hpp"
 #include "physics/PhysicsWorld.hpp"
 
 #include <memory>
@@ -25,11 +25,10 @@ namespace lei3d
         Application* m_App;
         std::vector<std::unique_ptr<Entity>> m_Entities;
 
+        //We should prob. limit how much stuff we put into the base scene.
         std::unique_ptr<FlyCamera> m_Camera = nullptr;  // every scene needs a camera
         std::unique_ptr<Shader> m_MainShader = nullptr; // THIS IS TEMPORARY
         std::unique_ptr<PhysicsWorld> m_PhysicsWorld = nullptr; // Each scene has a physics world
-
-        //glm::mat4 m_VP;
     public:
         Scene();
         ~Scene();
@@ -42,11 +41,15 @@ namespace lei3d
         void Render();
         void Destroy();
 
+        void Load();
+        void Unload();
+
         void ProcessCameraInput(float deltaTime);
 
         //TODO: Abstract scene creation/loading into files: https://trello.com/c/eC66QGuD/25-define-scene-file-format
-        //Right now we use this virtual LoadObjects function to load all the objs in code. 
-        virtual void LoadObjects() {}; //load shaders and meshes and other scene info ?
+        //Right now we use this virtual Load function to load all the objs in code. 
+        virtual void OnLoad() {}  //load shaders and meshes and other scene info ?
+        virtual void OnUnload() {}
 
         //These should rarely be used because everything is handled by ECS.
         virtual void OnUpdate(float deltaTime) {}

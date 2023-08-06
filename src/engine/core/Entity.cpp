@@ -1,7 +1,7 @@
 #include "Entity.hpp"
 
-#include "util/Log.hpp"
-#include "util/Util.hpp"
+#include "logging/Log.hpp"
+#include "logging/LogGLM.hpp"
 
 namespace lei3d
 {

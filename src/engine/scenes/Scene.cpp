@@ -1,6 +1,6 @@
 #include "scenes/Scene.hpp"
 
-#include "util/GLDebug.hpp"
+#include "logging/GLDebug.hpp"
 
 namespace lei3d {
 	Scene::Scene() {
@@ -18,12 +18,32 @@ namespace lei3d {
         GLFWwindow* const win = window();
         m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 4.0f);
 
+        //Load shader (TEMPORARY)
+        m_MainShader = std::make_unique<Shader>("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
+
+        //Load physics world
+        m_PhysicsWorld = std::make_unique<PhysicsWorld>();
+        m_PhysicsWorld->Create();    //TODO: Consider if there is some better way to do this
+
         Start();
+    }
+
+    void Scene::Load()
+    {
+        //We might want to do general scene loading things here later.
+        OnLoad();
+    }
+
+    void Scene::Unload()
+    {
+        m_Entities.clear(); //This should auto-destruct entities bc smart pointers.
+
+        OnUnload();
     }
 
     void Scene::Start() {
         LEI_TRACE("Scene Start");
-        LoadObjects();
+        Load();
 
         for (auto& entity : m_Entities) {
             entity->Start();
@@ -38,6 +58,7 @@ namespace lei3d {
 			entity->Update(deltaTime);
 		}
 
+        ProcessCameraInput(deltaTime);
 		OnUpdate(deltaTime);
 	}
 
