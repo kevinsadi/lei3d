@@ -2,6 +2,7 @@
 
 namespace lei3d
 {
+
     FlyCamera::FlyCamera(GLFWwindow* window, float yaw, float pitch, float flySpeed)
       : window{window}, // this is a member initializer list using uniform initialization C++17 feature
         yaw{yaw},
@@ -63,6 +64,44 @@ namespace lei3d
         cameraFront = glm::normalize(direction) * flySpeed;
     }
 
+    void FlyCamera::PollCameraMovementInput(float deltaTime)
+    {
+        GLFWwindow* const window = Application::Curr()->Window();
+
+        float speed = flySpeed;
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        {
+            speed *= 10.0f;
+
+            if (speed > maxFlySpeed)
+            {
+                speed = maxFlySpeed;
+            }
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        {
+            handleForward(deltaTime, speed);
+        }
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        {
+            handleBack(deltaTime, speed);
+        }
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        {
+            handleLeft(deltaTime, speed);
+        }
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        {
+            handleRight(deltaTime, speed);
+        }
+    }
+
+    void FlyCamera::OnImGuiRender()
+    {
+        ImGui::SliderFloat("Camera Speed: ", &flySpeed, minFlySpeed, maxFlySpeed, "%.2f");
+    }
+
     void FlyCamera::SetFOV(float fovDeg) {
         m_FOVDeg = fovDeg;
     }
@@ -72,24 +111,24 @@ namespace lei3d
         m_FarPlane = far;
     }
 
-    void FlyCamera::handleForward(float deltaTime)
+    void FlyCamera::handleForward(float deltaTime, float speed)
     {
-		  cameraPos += cameraFront * flySpeed * deltaTime;
+		  cameraPos += cameraFront * speed * deltaTime;
     }
 
-    void FlyCamera::handleBack(float deltaTime)
+    void FlyCamera::handleBack(float deltaTime, float speed)
     {
-		  cameraPos -= cameraFront * flySpeed * deltaTime;
+		  cameraPos -= cameraFront * speed * deltaTime;
     }
 
-    void FlyCamera::handleLeft(float deltaTime)
+    void FlyCamera::handleLeft(float deltaTime, float speed)
     {
-		  cameraPos -= glm::cross(cameraFront, cameraUp) * flySpeed * deltaTime;
+		  cameraPos -= glm::cross(cameraFront, cameraUp) * speed * deltaTime;
     }
 
-    void FlyCamera::handleRight(float deltaTime)
+    void FlyCamera::handleRight(float deltaTime, float speed)
     {
-		  cameraPos += glm::cross(cameraFront, cameraUp) * flySpeed * deltaTime;
+		  cameraPos += glm::cross(cameraFront, cameraUp) * speed * deltaTime;
     }
 
     glm::mat4 FlyCamera::GetView() 

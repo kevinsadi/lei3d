@@ -1,15 +1,17 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 
+#include "core/Application.hpp"
+
 namespace lei3d
 {
+    class Application;
+
     class FlyCamera
     {
     public:        
@@ -23,13 +25,19 @@ namespace lei3d
         void SetClipPlanes(float near, float far);
 
         void cameraMouseCallback(GLFWwindow* window, double xPosInput, double yPosInput);
+        void PollCameraMovementInput(float deltaTime);
         
-        void handleForward(float deltaTime);
-        void handleLeft(float deltaTime);
-        void handleRight(float deltaTime);
-        void handleBack(float deltaTime);
+        void handleForward(float deltaTime, float speed);
+        void handleLeft(float deltaTime, float speed);
+        void handleRight(float deltaTime, float speed);
+        void handleBack(float deltaTime, float speed);
+
+        void OnImGuiRender();
 
     private:
+        const float minFlySpeed = 1.0f;
+        const float maxFlySpeed = 200.0f;
+
         GLFWwindow* window;
         float yaw;
         float pitch;

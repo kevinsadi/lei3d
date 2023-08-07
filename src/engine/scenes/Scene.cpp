@@ -16,7 +16,7 @@ namespace lei3d {
 
         // load camera
         GLFWwindow* const win = window();
-        m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 4.0f);
+        m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 10.0f);
 
         //Load shader (TEMPORARY)
         m_MainShader = std::make_unique<Shader>("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
@@ -58,7 +58,7 @@ namespace lei3d {
 			entity->Update(deltaTime);
 		}
 
-        ProcessCameraInput(deltaTime);
+        m_Camera->PollCameraMovementInput(deltaTime);
 		OnUpdate(deltaTime);
 	}
 
@@ -83,32 +83,17 @@ namespace lei3d {
         OnRender();
 	}
 
+    void Scene::ImGUIRender()
+    {
+        ImGui::Text("Camera: ");
+        m_Camera->OnImGuiRender();
+        OnImGUIRender();
+    }
+
     void Scene::Destroy() {
         LEI_TRACE("Scene Destroy");
 
         OnDestroy();
-    }
-
-    void Scene::ProcessCameraInput(float deltaTime)
-    {
-        GLFWwindow* const window = m_App->Window();
-
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        {
-            m_Camera->handleForward(deltaTime);
-        }
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        {
-            m_Camera->handleBack(deltaTime);
-        }
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        {
-            m_Camera->handleLeft(deltaTime);
-        }
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        {
-            m_Camera->handleRight(deltaTime);
-        }
     }
 
     FlyCamera& Scene::MainCamera() {

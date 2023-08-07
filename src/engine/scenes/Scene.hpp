@@ -16,6 +16,7 @@ namespace lei3d
 {
     class Application;
     class Entity;
+    class FlyCamera;
     class PhysicsWorld;
     class Shader;
 
@@ -39,12 +40,11 @@ namespace lei3d
         void Update(float deltaTime);
         void PhysicsUpdate(float deltaTime);
         void Render();
+        void ImGUIRender();
         void Destroy();
 
         void Load();
         void Unload();
-
-        void ProcessCameraInput(float deltaTime);
 
         //TODO: Abstract scene creation/loading into files: https://trello.com/c/eC66QGuD/25-define-scene-file-format
         //Right now we use this virtual Load function to load all the objs in code. 
@@ -55,6 +55,7 @@ namespace lei3d
         virtual void OnUpdate(float deltaTime) {}
         virtual void OnPhysicsUpdate(float deltaTime) {}
         virtual void OnRender() {}
+        virtual void OnImGUIRender() {}
         virtual void OnDestroy() {}
 
         FlyCamera& MainCamera();
