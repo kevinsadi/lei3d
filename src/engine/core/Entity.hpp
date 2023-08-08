@@ -31,11 +31,14 @@ namespace lei3d
     {
     private:
         std::vector<std::unique_ptr<Component>> m_Components;
+        std::string m_Name;
     public:
         Transform m_Transform;
         Shader* m_Shader = nullptr;
 
         Entity();
+        Entity(std::string name);
+
         ~Entity();
 
         void Start();
@@ -53,6 +56,9 @@ namespace lei3d
         glm::mat4 GetRotationMat();
         glm::mat4 GetScaleMat();
         glm::mat4 GetModelMat();
+
+        const std::string& GetName();
+        void SetName(const std::string& name);
 
         /*
         * Component System:

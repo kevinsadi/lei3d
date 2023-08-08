@@ -28,6 +28,45 @@ namespace lei3d {
         Start();
     }
 
+    Entity& Scene::AddEntity(std::string name)
+    {
+        //Add number to name if multiple instances of the same name.
+        std::string entityName = name;
+        if (m_EntityNameCounts.contains(name))
+        {
+            std::string numberStr = std::to_string(m_EntityNameCounts[name]);
+            entityName.append(std::format(" {0}", numberStr));
+        }
+        else
+        {
+            m_EntityNameCounts[name] = 0;
+        }
+        m_EntityNameCounts[name]++;
+
+        std::unique_ptr<Entity> newEntity = std::make_unique<Entity>(entityName);
+        m_Entities.push_back(std::move(newEntity));
+        return *m_Entities.back();
+    }
+
+    Entity& Scene::AddEntity()
+    {
+        return AddEntity("Unnamed Entity");
+    }
+
+    Entity* Scene::GetEntity(std::string name)
+    {
+        for (auto& entity : m_Entities)
+        {
+            if (entity->GetName().compare(name) == 0)
+            {
+                return entity.get();
+            }
+        }
+
+        return nullptr;
+    }
+
+
     void Scene::Load()
     {
         //We might want to do general scene loading things here later.
@@ -106,6 +145,14 @@ namespace lei3d {
 
     GLFWwindow* Scene::window() {
         return m_App->Window();
+    }
+
+    void Scene::PrintEntityList()
+    {
+        for (auto& entity : m_Entities)
+        {
+            LEI_INFO("Entity: {0}", entity->GetName());
+        }
     }
 }
 

@@ -7,6 +7,7 @@
 #include "core/Application.hpp"
 #include "core/Entity.hpp"
 #include "core/FlyCamera.hpp"
+
 #include "physics/PhysicsWorld.hpp"
 
 #include <memory>
@@ -22,9 +23,11 @@ namespace lei3d
 
     class Scene
     {
+    private:
+        std::vector<std::unique_ptr<Entity>> m_Entities;
+        std::unordered_map<std::string, int> m_EntityNameCounts;
     protected:
         Application* m_App;
-        std::vector<std::unique_ptr<Entity>> m_Entities;
 
         //We should prob. limit how much stuff we put into the base scene.
         std::unique_ptr<FlyCamera> m_Camera = nullptr;  // every scene needs a camera
@@ -35,7 +38,13 @@ namespace lei3d
         ~Scene();
 
         void Init(Application* app);
+        
+        //Entities
+        Entity& AddEntity(std::string name);
+        Entity& AddEntity();
+        Entity* GetEntity(std::string name);
 
+        //Entity Messages
         void Start();
         void Update(float deltaTime);
         void PhysicsUpdate(float deltaTime);
@@ -60,6 +69,8 @@ namespace lei3d
 
         FlyCamera& MainCamera();
         PhysicsWorld& GetPhysicsWorld();
+
+        void PrintEntityList();
     private:
         GLFWwindow* window();
     };
