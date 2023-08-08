@@ -13,11 +13,15 @@ namespace lei3d {
     private:
         btRigidBody* m_body;
 
-        float m_airCap = 0.575;
-        float m_airAccel = 1000;
-        float m_accel = 7.62f;
-
-
-
+        float m_gravity = 15.24;
+        float m_maxAirSpeed = 0.575;
+        float m_airAccel = 15000;
+        float m_accel = 7.62;
+        float m_friction = 4;
+        float m_airFriction = 0.25;
+        float m_jumpPower = 5.112;
+        float m_jumpHeight = 1.5;
+        float m_maxSpeed = 6;
+        float m_maxVelocity = 100;
     };
 }
