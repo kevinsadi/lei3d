@@ -2,9 +2,12 @@
 
 #include <btBulletDynamicsCommon.h>
 #include "core/Application.hpp"
+#include "physics/FindGround.hpp"
 
-namespace lei3d {
-    class CharacterPhysicsUpdate : public btActionInterface {
+namespace lei3d 
+{
+    class CharacterPhysicsUpdate : public btActionInterface 
+    {
     public:
         CharacterPhysicsUpdate(btRigidBody* body);
 

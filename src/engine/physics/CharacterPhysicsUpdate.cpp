@@ -11,7 +11,7 @@ namespace lei3d
         float targetLengthSquared = glm::length(targetVector) * glm::length(targetVector);
         return targetVector * (dotProduct / targetLengthSquared);
     }
-    
+
     /**
      * CharacterPhysicsUpdate -> this is the airAccelerate function that allows airstrafing to work.
      * wishdir is the direction that the player presses on the keyboard to indicate the direction they would like to move.
@@ -21,7 +21,17 @@ namespace lei3d
      */
     void CharacterPhysicsUpdate::updateAction(btCollisionWorld* collisionWorld, btScalar deltaTime)
     {
-    
+        // Check if we are on the ground
+        FindGround callback(m_body);
+        collisionWorld->contactTest(m_body, callback);
+        bool onGround = callback.m_HaveGround;
+        bool groundPoint = callback.m_GroundPoint;
+        if (onGround)
+        {
+            std::cout << "I AM ON THE GROUND" << std::endl;
+        }
+
+        // Update velocity accordingly
         btVector3 v = m_body->getLinearVelocity();
         glm::vec3 prevVel = glm::vec3(v.x(), v.y(), v.z());
 
