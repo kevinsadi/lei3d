@@ -18,7 +18,7 @@ namespace lei3d
 
         float m_gravity = 15.24f;
         float m_maxAirSpeed = 0.575f;
-        float m_airAccel = 15000.0f;
+        float m_airAccel = 800.0f;
         float m_accel = 7.62f;
         float m_friction = 4.0f;
         float m_airFriction = 0.25f;

@@ -1,5 +1,5 @@
-# Blender 3.5.0 MTL File: 'KevWorldColor.blend'
-# www.blender.org
+# Blender MTL File: 'KevWorldColorTwo.blend'
+# Material Count: 11
 
 newmtl Material
 Ns 250.000000
@@ -10,6 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd FloorTexture.png
 
 newmtl Material.002
 Ns 250.000000
@@ -20,6 +21,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd FloorTexture.png
 
 newmtl Material.003
 Ns 250.000000
@@ -30,6 +32,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd FloorTexture.png
 
 newmtl Material.004
 Ns 250.000000
@@ -40,6 +43,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd FloorTexture.png
 
 newmtl Material.005
 Ns 250.000000
@@ -99,4 +103,12 @@ Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
+illum 2
+
+newmtl None
+Ns 500
+Ka 0.8 0.8 0.8
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
 illum 2
