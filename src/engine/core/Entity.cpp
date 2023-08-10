@@ -7,7 +7,12 @@ namespace lei3d
 {
     Entity::Entity()
     {
-        // clown emoticon
+        m_Name = "Unnamed";
+    }
+
+    Entity::Entity(std::string name)
+    {
+        m_Name = name;
     }
 
     Entity::~Entity()
@@ -40,6 +45,16 @@ namespace lei3d
     
     glm::mat4 Entity::GetScaleMat() {
         return glm::scale(glm::identity<glm::mat4>(), m_Transform.scale);
+    }
+
+    const std::string& Entity::GetName()
+    {
+        return m_Name;
+    }
+
+    void Entity::SetName(const std::string& name)
+    {
+        m_Name = name;
     }
 
     glm::mat4 Entity::GetModelMat() {

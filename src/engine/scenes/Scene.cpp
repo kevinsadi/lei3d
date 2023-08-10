@@ -16,7 +16,7 @@ namespace lei3d {
 
         // load camera
         GLFWwindow* const win = window();
-        m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 4.0f);
+        m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 10.0f);
 
         //Load shader (TEMPORARY)
         m_MainShader = std::make_unique<Shader>("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
@@ -27,6 +27,45 @@ namespace lei3d {
 
         Start();
     }
+
+    Entity& Scene::AddEntity(std::string name)
+    {
+        //Add number to name if multiple instances of the same name.
+        std::string entityName = name;
+        if (m_EntityNameCounts.contains(name))
+        {
+            std::string numberStr = std::to_string(m_EntityNameCounts[name]);
+            entityName.append(std::format(" {0}", numberStr));
+        }
+        else
+        {
+            m_EntityNameCounts[name] = 0;
+        }
+        m_EntityNameCounts[name]++;
+
+        std::unique_ptr<Entity> newEntity = std::make_unique<Entity>(entityName);
+        m_Entities.push_back(std::move(newEntity));
+        return *m_Entities.back();
+    }
+
+    Entity& Scene::AddEntity()
+    {
+        return AddEntity("Unnamed Entity");
+    }
+
+    Entity* Scene::GetEntity(std::string name)
+    {
+        for (auto& entity : m_Entities)
+        {
+            if (entity->GetName().compare(name) == 0)
+            {
+                return entity.get();
+            }
+        }
+
+        return nullptr;
+    }
+
 
     void Scene::Load()
     {
@@ -58,7 +97,7 @@ namespace lei3d {
 			entity->Update(deltaTime);
 		}
 
-        ProcessCameraInput(deltaTime);
+        m_Camera->PollCameraMovementInput(deltaTime);
 		OnUpdate(deltaTime);
 	}
 
@@ -83,32 +122,17 @@ namespace lei3d {
         OnRender();
 	}
 
+    void Scene::ImGUIRender()
+    {
+        ImGui::Text("Camera: ");
+        m_Camera->OnImGuiRender();
+        OnImGUIRender();
+    }
+
     void Scene::Destroy() {
         LEI_TRACE("Scene Destroy");
 
         OnDestroy();
-    }
-
-    void Scene::ProcessCameraInput(float deltaTime)
-    {
-        GLFWwindow* const window = m_App->Window();
-
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        {
-            m_Camera->handleForward(deltaTime);
-        }
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        {
-            m_Camera->handleBack(deltaTime);
-        }
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        {
-            m_Camera->handleLeft(deltaTime);
-        }
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        {
-            m_Camera->handleRight(deltaTime);
-        }
     }
 
     FlyCamera& Scene::MainCamera() {
@@ -121,6 +145,14 @@ namespace lei3d {
 
     GLFWwindow* Scene::window() {
         return m_App->Window();
+    }
+
+    void Scene::PrintEntityList()
+    {
+        for (auto& entity : m_Entities)
+        {
+            LEI_INFO("Entity: {0}", entity->GetName());
+        }
     }
 }
 
