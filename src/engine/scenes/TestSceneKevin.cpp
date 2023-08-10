@@ -29,35 +29,32 @@ namespace lei3d {
         playgroundModel = std::make_unique<Model>(physicsPlaygroundPath);
 
         //BACKPACK (Character) ---------------------
-        std::unique_ptr<Entity> backpackObj = std::make_unique<Entity>();
+        Entity& backpackObj = AddEntity("Backpack");
 
-        ModelRenderer* modelRender = backpackObj->AddComponent<ModelRenderer>();
+        ModelRenderer* modelRender = backpackObj.AddComponent<ModelRenderer>();
         modelRender->Init(backpackModel.get(), m_MainShader.get());
-        backpackObj->SetScale(glm::vec3(1.f, 1.f, 1.f));
-        backpackObj->SetPosition(glm::vec3(0.f, 200.f, 0.f));
+        backpackObj.SetScale(glm::vec3(1.f, 1.f, 1.f));
+        backpackObj.SetPosition(glm::vec3(0.f, 200.f, 0.f));
 
-        CharacterController* characterController = backpackObj->AddComponent<CharacterController>();
+        CharacterController* characterController = backpackObj.AddComponent<CharacterController>();
         characterController->Init();
 
-        m_Entities.push_back(std::move(backpackObj));
-
         //PHYSICS PLAYGROUND---------------------
-        std::unique_ptr<Entity> physicsPlaygroundObj = std::make_unique<Entity>();
+        Entity& physicsPlaygroundObj = AddEntity("Physics Playground");
 
-        ModelRenderer* playgroundRender = physicsPlaygroundObj->AddComponent<ModelRenderer>();
+        ModelRenderer* playgroundRender = physicsPlaygroundObj.AddComponent<ModelRenderer>();
         playgroundRender->Init(playgroundModel.get(), m_MainShader.get());
-        physicsPlaygroundObj->SetScale(glm::vec3(0.25f, 0.25f, 0.25f));
-        physicsPlaygroundObj->SetPosition(glm::vec3(0.0f, 0.f, 0.f));
+        physicsPlaygroundObj.SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
+        physicsPlaygroundObj.SetPosition(glm::vec3(0.0f, -10.f, 0.f));
 
-        StaticCollider* physicsPlaygroundCollider = physicsPlaygroundObj->AddComponent<StaticCollider>();
+        StaticCollider* physicsPlaygroundCollider = physicsPlaygroundObj.AddComponent<StaticCollider>();
         physicsPlaygroundCollider->Init();
         physicsPlaygroundCollider->SetColliderToModel(*playgroundModel);
 
-        m_Entities.push_back(std::move(physicsPlaygroundObj));
-
         ////Test Multiple Components
-        std::unique_ptr<Entity> skyboxObj = std::make_unique<Entity>();
-        SkyBox* skybox = skyboxObj->AddComponent<SkyBox>();
+        Entity& skyboxObj = AddEntity("Skybox");
+
+        SkyBox* skybox = skyboxObj.AddComponent<SkyBox>();
         std::vector<std::string> faces
         {
             "data/skybox/anime_etheria/right.jpg",
@@ -68,7 +65,6 @@ namespace lei3d {
             "data/skybox/anime_etheria/back.jpg"
         };
         skybox->Init(faces);
-        m_Entities.push_back(std::move(skyboxObj));
     }
 
     void TestSceneKevin::OnUpdate(float deltaTime) {

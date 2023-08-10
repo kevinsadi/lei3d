@@ -7,6 +7,7 @@
 #include "core/Application.hpp"
 #include "core/Entity.hpp"
 #include "core/FlyCamera.hpp"
+
 #include "physics/PhysicsWorld.hpp"
 
 #include <memory>
@@ -16,14 +17,17 @@ namespace lei3d
 {
     class Application;
     class Entity;
+    class FlyCamera;
     class PhysicsWorld;
     class Shader;
 
     class Scene
     {
+    private:
+        std::vector<std::unique_ptr<Entity>> m_Entities;
+        std::unordered_map<std::string, int> m_EntityNameCounts;
     protected:
         Application* m_App;
-        std::vector<std::unique_ptr<Entity>> m_Entities;
 
         //We should prob. limit how much stuff we put into the base scene.
         std::unique_ptr<FlyCamera> m_Camera = nullptr;  // every scene needs a camera
@@ -34,17 +38,22 @@ namespace lei3d
         ~Scene();
 
         void Init(Application* app);
+        
+        //Entities
+        Entity& AddEntity(std::string name);
+        Entity& AddEntity();
+        Entity* GetEntity(std::string name);
 
+        //Entity Messages
         void Start();
         void Update(float deltaTime);
         void PhysicsUpdate(float deltaTime);
         void Render();
+        void ImGUIRender();
         void Destroy();
 
         void Load();
         void Unload();
-
-        void ProcessCameraInput(float deltaTime);
 
         //TODO: Abstract scene creation/loading into files: https://trello.com/c/eC66QGuD/25-define-scene-file-format
         //Right now we use this virtual Load function to load all the objs in code. 
@@ -55,10 +64,13 @@ namespace lei3d
         virtual void OnUpdate(float deltaTime) {}
         virtual void OnPhysicsUpdate(float deltaTime) {}
         virtual void OnRender() {}
+        virtual void OnImGUIRender() {}
         virtual void OnDestroy() {}
 
         FlyCamera& MainCamera();
         PhysicsWorld& GetPhysicsWorld();
+
+        void PrintEntityList();
     private:
         GLFWwindow* window();
     };

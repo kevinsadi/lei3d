@@ -30,28 +30,30 @@ namespace lei3d {
         backpackModel = std::make_unique<Model>(backpackPath);
 
         //BACKPACK ---------------------
-        std::unique_ptr<Entity> backpackObj = std::make_unique<Entity>();
+        Entity& backpackObj = AddEntity("Backpack");
 
-        ModelRenderer* modelRender = backpackObj->AddComponent<ModelRenderer>();
+        ModelRenderer* modelRender = backpackObj.AddComponent<ModelRenderer>();
         modelRender->Init(backpackModel.get(), m_MainShader.get());
-        backpackObj->SetScale(glm::vec3(1.25f, 1.25f, 1.25f));
-        backpackObj->SetPosition(glm::vec3(0.f, 0.f, 0.f));
-
-        m_Entities.push_back(std::move(backpackObj));
+        backpackObj.SetScale(glm::vec3(1.25f, 1.25f, 1.25f));
+        backpackObj.SetPosition(glm::vec3(0.f, 0.f, 0.f));
 
         //BACKPACK 2 ---------------------
-        std::unique_ptr<Entity> backpackObj2 = std::make_unique<Entity>();
+        Entity& backpackObj2 = AddEntity("Backpack");
          
-        ModelRenderer* modelRender2 = backpackObj2->AddComponent<ModelRenderer>();
+        ModelRenderer* modelRender2 = backpackObj2.AddComponent<ModelRenderer>();
         modelRender2->Init(backpackModel.get(), m_MainShader.get());
-        backpackObj2->SetScale(glm::vec3(0.25f, 0.25f, 0.25f));
-        backpackObj2->SetPosition(glm::vec3(10.f, 0.f, 0.f));
-         
-        m_Entities.push_back(std::move(backpackObj2));
+        backpackObj2.SetScale(glm::vec3(0.25f, 0.25f, 0.25f));
+        backpackObj2.SetPosition(glm::vec3(10.f, 0.f, 0.f));       
+        
+        Entity& backpackObj3 = AddEntity("Backpack");
+        Entity& backpackObj4 = AddEntity("Backpack");
+
+        Entity& dummy1 = AddEntity("Dummy");
+        Entity& dummy2 = AddEntity("Dummy");    
 
         ////Test Multiple Components
-        std::unique_ptr<Entity> skyboxObj = std::make_unique<Entity>();
-        SkyBox* skybox = skyboxObj->AddComponent<SkyBox>();
+        Entity& skyboxObj = AddEntity("Skybox");
+        SkyBox* skybox = skyboxObj.AddComponent<SkyBox>();
         std::vector<std::string> faces
         {
             "data/skybox/anime_etheria/right.jpg",
@@ -62,7 +64,8 @@ namespace lei3d {
             "data/skybox/anime_etheria/back.jpg"
         };
         skybox->Init(faces);
-        m_Entities.push_back(std::move(skyboxObj));
+
+        PrintEntityList();
     }
 
     void TestSceneLogan::OnUpdate(float deltaTime) {
