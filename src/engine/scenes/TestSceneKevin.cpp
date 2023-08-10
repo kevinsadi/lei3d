@@ -25,7 +25,7 @@ namespace lei3d {
         // Load Models
         const std::string backpackPath = "data/models/backpack/backpack.obj";
         backpackModel = std::make_unique<Model>(backpackPath);
-        const std::string physicsPlaygroundPath = "data/models/leveldesign/KevLevel.obj";
+        const std::string physicsPlaygroundPath = "data/models/leveldesign/KevWorldColor.obj";
         playgroundModel = std::make_unique<Model>(physicsPlaygroundPath);
 
         //BACKPACK (Character) ---------------------
@@ -44,8 +44,8 @@ namespace lei3d {
 
         ModelRenderer* playgroundRender = physicsPlaygroundObj.AddComponent<ModelRenderer>();
         playgroundRender->Init(playgroundModel.get(), m_MainShader.get());
-        physicsPlaygroundObj.SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
-        physicsPlaygroundObj.SetPosition(glm::vec3(0.0f, -10.f, 0.f));
+        physicsPlaygroundObj.SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
+        physicsPlaygroundObj.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 
         StaticCollider* physicsPlaygroundCollider = physicsPlaygroundObj.AddComponent<StaticCollider>();
         physicsPlaygroundCollider->Init();
@@ -68,7 +68,8 @@ namespace lei3d {
     }
 
     void TestSceneKevin::OnUpdate(float deltaTime) {
-
+        
+	
     }
 
     void TestSceneKevin::OnPhysicsUpdate(float deltaTime) {
