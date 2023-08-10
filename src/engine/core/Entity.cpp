@@ -104,4 +104,55 @@ namespace lei3d
             component->OnDestroy();
         }
     }
+
+    void Entity::ShowInspectorGUI()
+    {
+        ImGui::Begin("Inspector");
+
+        //NAME
+        const int maxNameSize = 100;
+        const int currLength = m_Name.length();
+        char buffer[maxNameSize+1] = {};
+
+        m_Name.copy(buffer, currLength); 
+        m_Name[currLength] = '\0';
+        if (ImGui::InputText("Name", &buffer[0], maxNameSize))
+        {
+            std::string newName = std::string(buffer);
+            if (newName.length() > maxNameSize)
+            {
+                newName = newName.substr(0, maxNameSize);
+            }
+            if (newName.length() == 0)
+            {
+                newName = "";
+            }
+            SetName(newName);
+        }
+
+        //TRANSFORM
+        if (ImGui::CollapsingHeader("Transform"))
+        {
+            ImGui::Text("Position");
+            float x = m_Transform.position.x;
+            float y = m_Transform.position.y;
+            float z = m_Transform.position.z;
+
+            const float stepFine = 0.5f;
+            const float stepFast = 10.0f;   //Hold down Ctrl to scroll faster.
+
+            ImGui::InputFloat("x", &x, stepFine, stepFast);
+            //ImGui::SameLine();            
+            ImGui::InputFloat("y", &y, stepFine, stepFast);
+            //ImGui::SameLine();            
+            ImGui::InputFloat("z", &z, stepFine, stepFast);
+
+            //NOTE: If the position is not changing, it's probably because the physics engine (or something else) is overwriting it)
+            SetPosition(glm::vec3(x, y, z));
+        }
+
+        ImGui::SetWindowSize(ImVec2(300, 800), ImGuiCond_Once);
+        ImGui::SetWindowPos(ImVec2(300, 0), ImGuiCond_Once);
+        ImGui::End();
+    }
 }

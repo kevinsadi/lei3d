@@ -105,5 +105,7 @@ namespace lei3d
             //Note: We cannot use c since it got moved into the list.
             return static_cast<C*>(m_Components.back().get());
         }
+
+        void ShowInspectorGUI();
     };
 }

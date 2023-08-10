@@ -126,6 +126,68 @@ namespace lei3d {
     {
         ImGui::Text("Camera: ");
         m_Camera->OnImGuiRender();
+
+        static int currentEntityI = -1; // Here we store our selection data as an index.
+        if (ImGui::TreeNode("Entities"))
+        {
+            // Using the generic BeginListBox() API, you have full control over how to display the combo contents.
+            // (your selection data could be an index, a pointer to the object, an id for the object, a flag intrusively
+            // stored in the object itself, etc.)
+            std::vector<std::string> entityNames;
+            for (auto& entity : m_Entities)
+            {
+                entityNames.push_back(entity->GetName());
+            }
+
+            //LEI_INFO("Number of Entities: {0}", entityNames.size());
+
+            if (ImGui::BeginListBox("Entities"))
+            {
+                for (int i = 0; i < entityNames.size(); i++)
+                {
+                    const char* label = entityNames[i] == "" ? "Unnamed" : entityNames[i].c_str();
+                    const bool is_selected = (currentEntityI == i);
+                    if (ImGui::Selectable(label, is_selected))
+                    {
+                        currentEntityI = i;
+                    }
+
+                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                    if (is_selected)
+                    {
+                        ImGui::SetItemDefaultFocus();
+                    }
+                }
+                ImGui::EndListBox();
+            }
+
+            // Custom size: use all width, 5 items tall
+            //ImGui::Text("Full-width:");
+            //if (ImGui::BeginListBox("##listbox 2", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
+            //{
+            //    for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+            //    {
+            //        const bool is_selected = (item_current_idx == n);
+            //        if (ImGui::Selectable(items[n], is_selected))
+            //            item_current_idx = n;
+
+            //        // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+            //        if (is_selected)
+            //            ImGui::SetItemDefaultFocus();
+            //    }
+            //    ImGui::EndListBox();
+            //}
+
+            ImGui::TreePop();
+        }
+
+        //Create an inspector for the entity if one is selected
+        if (currentEntityI >= 0)
+        {
+            Entity& entity = *m_Entities[currentEntityI];
+            entity.ShowInspectorGUI();
+        }
+
         OnImGUIRender();
     }
 
