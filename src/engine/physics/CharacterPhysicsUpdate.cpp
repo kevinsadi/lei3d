@@ -30,6 +30,7 @@ namespace lei3d
         // Update velocity accordingly
         btVector3 v = m_body->getLinearVelocity();
         glm::vec3 prevVel = glm::vec3(v.x(), v.y(), v.z());
+        //std::cout << "prevVel is: " << prevVel.x << " " << prevVel.y << " " << prevVel.z << std::endl;
 
         // Calculate 
         glm::vec3 wishdir{0.0f, 0.0f, 0.0f};
@@ -56,7 +57,13 @@ namespace lei3d
         if (wishdir != glm::vec3(0.0, 0.0, 0.0)) {
             wishdir = glm::normalize(wishdir);
         }
-        //std::cout << "wishdir is: " << wishdir.x << " " << wishdir.y << " " << wishdir.z << std::endl;
+        /*
+        if (onGround) {
+            std::cout << "on ground" << std::endl;
+        } else {
+            std::cout << "not on ground" << std::endl;
+        }
+        */
 
         if (onGround) {
             glm::vec3 outputVel = GroundAcceleration(wishdir, prevVel);
@@ -78,32 +85,15 @@ namespace lei3d
 
     glm::vec3 CharacterPhysicsUpdate::Accelerate(glm::vec3 wishDir, glm::vec3 prevVel, float acceleration, float maxVelocity)
     {
-        glm::vec3 outputVelocity = prevVel;
-
-        // project current velocity onto the direction we wish to move
-        glm::vec3 projVel = projectVector(prevVel, wishDir);
-
-        // check if the wish direction is towards or away from the projected velocity
-        bool isAway = glm::dot(wishDir, projVel) <= 0;
-        float projectedVectorMagnitude = glm::length(projVel);
-
-        // only apply force (add speed) if moving away from velocity or velocity is below maxairspeed
-        if (projectedVectorMagnitude < maxVelocity || isAway)
-        {
-            // calculate the ideal movement force
-            glm::vec3 vc = wishDir * acceleration; // NEEDS WISHDIR TO BE NORMALIZED
-            float vcMagnitude = glm::length(vc);
-            // cap the velocity if it would accelerate beyond maxairspeed in direction of velocity
-            if (!isAway) {
-                if (vcMagnitude > maxVelocity - projectedVectorMagnitude) 
-                    vc = (vc / vcMagnitude) * maxVelocity - projectedVectorMagnitude;
-            } else {
-                if (vcMagnitude > maxVelocity + projectedVectorMagnitude) 
-                    vc = (vc / vcMagnitude) * maxVelocity + projectedVectorMagnitude;
-            }
-            outputVelocity = vc;
+        float projectedSpeed = glm::dot(prevVel, wishDir);
+        float wishSpeed = acceleration * Application::Curr()->DeltaTime(); // this is the wish speed (MIGHT NEED DELTA TIME TO FIX THIS????
+        
+        // If necessary, truncate the new speed so it doesn't exceed max velocity
+        if (projectedSpeed + wishSpeed > maxVelocity) {
+            wishSpeed = maxVelocity - projectedSpeed;
         }
-        return outputVelocity;
+
+        return prevVel + wishDir * wishSpeed;
     }
 
     glm::vec3 CharacterPhysicsUpdate::AirAcceleration(glm::vec3 wishDir, glm::vec3 prevVelocity)
@@ -113,10 +103,10 @@ namespace lei3d
 
     glm::vec3 CharacterPhysicsUpdate::GroundAcceleration(glm::vec3 wishDir, glm::vec3 prevVelocity)
     {
-        float speed = prevVelocity.length();
+        float speed = glm::length(prevVelocity);
         if (speed != 0)
         {
-            float drop = speed * m_friction; // THIS MIGHT HAVE TO BE MULTIPLIED BY DELTA TIME??
+            float drop = speed * m_friction * Application::Curr()->DeltaTime(); // THIS MIGHT HAVE TO BE MULTIPLIED BY DELTA TIME??
             prevVelocity *= std::max(speed - drop, 0.0f) / speed; // Friction fall off
         }
 
