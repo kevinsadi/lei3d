@@ -70,8 +70,6 @@ namespace lei3d
         void Render(); // render UI and scene
         void ImGuiRender();
 
-        void RenderUI();
-
         void SetupInputCallbacks();
         void ProcessKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods);
     };
