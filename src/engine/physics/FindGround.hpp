@@ -7,12 +7,12 @@ namespace lei3d
     class FindGround : public btCollisionWorld::ContactResultCallback 
     {
     public:
-        btRigidBody* m_Me;
+        btRigidBody* m_RigidBody;
         float m_ShapeHalfHeight = 1.5; // DEFINED IN CHARACTER CONTROLLER COMPONENT 
         float m_ShapeRadius = 1; // DEFINED IN CHARACTER CONTROLLER COMPONENT 
         float m_RadiusThreshold = 1e-2;
         float m_MaxCosGround = -SIMDSQRT12; // approx SQRT(1/2) = sqrt(2)/2 , defined by Bullet3
-        bool m_HaveGround = false;
+        bool m_Grounded = false;
         btVector3 m_GroundPoint;
 
         FindGround(btRigidBody* characterBody);

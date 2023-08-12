@@ -24,7 +24,7 @@ namespace lei3d
         // Check if we are on the ground
         FindGround callback(m_body);
         collisionWorld->contactTest(m_body, callback);
-        bool onGround = callback.m_HaveGround;
+        bool onGround = callback.m_Grounded;
         bool groundPoint = callback.m_GroundPoint;
 
         // Update velocity accordingly
@@ -53,7 +53,10 @@ namespace lei3d
             wishdir = wishdir + glm::vec3(0.0, 0.0, 1.0);
         }
 
-        wishdir = glm::normalize(wishdir);
+        if (wishdir != glm::vec3(0.0, 0.0, 0.0)) {
+            wishdir = glm::normalize(wishdir);
+        }
+        //std::cout << "wishdir is: " << wishdir.x << " " << wishdir.y << " " << wishdir.z << std::endl;
 
         if (onGround) {
             glm::vec3 outputVel = GroundAcceleration(wishdir, prevVel);
