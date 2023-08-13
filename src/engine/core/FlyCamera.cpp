@@ -10,7 +10,7 @@ namespace lei3d
         m_FlySpeed{flySpeed},
         m_FOVDeg{45.0f},
         m_NearPlane{0.1f},
-        m_FarPlane{400.0f}
+        m_FarPlane{700.0f}
     {
       m_MouseEnterFlag = true; // the first time the mouse is entered onto the screen, do not flick
 
@@ -65,7 +65,7 @@ namespace lei3d
 
     void FlyCamera::PollCameraMovementInput()
     {
-        GLFWwindow* const window = Application::Curr().Window();
+        GLFWwindow* const window = Application::Window();
 
         float speed = m_FlySpeed;
         if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
@@ -112,22 +112,22 @@ namespace lei3d
 
     void FlyCamera::handleForward(float speed)
     {
-		  m_CameraPos += m_CameraFront * speed * Application::Curr().DeltaTime();
+		  m_CameraPos += m_CameraFront * speed * Application::DeltaTime();
     }
 
     void FlyCamera::handleBack(float speed)
     {
-		  m_CameraPos -= m_CameraFront * speed * Application::Curr().DeltaTime();
+		  m_CameraPos -= m_CameraFront * speed * Application::DeltaTime();
     }
 
     void FlyCamera::handleLeft(float speed)
     {
-		  m_CameraPos -= glm::cross(m_CameraFront, m_CameraUp) * speed * Application::Curr().DeltaTime();
+		  m_CameraPos -= glm::cross(m_CameraFront, m_CameraUp) * speed * Application::DeltaTime();
     }
 
     void FlyCamera::handleRight(float speed)
     {
-		  m_CameraPos += glm::cross(m_CameraFront, m_CameraUp) * speed * Application::Curr().DeltaTime();
+		  m_CameraPos += glm::cross(m_CameraFront, m_CameraUp) * speed * Application::DeltaTime();
     }
 
     glm::mat4 FlyCamera::GetView() 

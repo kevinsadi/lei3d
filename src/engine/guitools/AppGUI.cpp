@@ -72,7 +72,7 @@ namespace lei3d {
 
         if (ImGui::CollapsingHeader("Game Info"))
         {
-            ImGui::Text("fps = %f", 1.0f / Application::Curr().DeltaTime());
+            ImGui::Text("fps = %f", 1.0f / Application::DeltaTime());
         }
 
         ImGui::SetWindowSize(ImVec2(400, 400), ImGuiCond_Once);

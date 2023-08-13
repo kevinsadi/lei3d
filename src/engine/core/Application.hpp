@@ -41,14 +41,12 @@ namespace lei3d
         Application();
         ~Application();
 
-        static Application& Curr();
-
         void Run(); // Run the app.
 
         void SetUIActive(bool uiActive);
 
-        GLFWwindow* Window() const;
-        float DeltaTime() const;
+        static GLFWwindow* Window();
+        static float DeltaTime();
     private:
 
         void Initialize(); // Start the App

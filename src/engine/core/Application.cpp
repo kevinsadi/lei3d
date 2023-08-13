@@ -259,17 +259,12 @@ namespace lei3d
         }
     }
 
-    Application& Application::Curr() {
-        LEI_ASSERT(s_Instance != nullptr, "Application singleton not set. This shouldn't happen!");
-        return *s_Instance;
-    }
-
-    GLFWwindow* Application::Window() const
+    GLFWwindow* Application::Window()
     {
-        return m_Window;
+        return s_Instance->m_Window;
     }
 
-    float Application::DeltaTime() const {
-        return m_DeltaTime;
+    float Application::DeltaTime() {
+        return s_Instance->m_DeltaTime;
     }
 }

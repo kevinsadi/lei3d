@@ -13,7 +13,7 @@ namespace lei3d {
 
     void Scene::Load() {
         // load camera
-        GLFWwindow* const win = Application::Curr().Window();
+        GLFWwindow* const win = Application::Window();
         m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 10.0f);
 
         //Load shader (TEMPORARY)
