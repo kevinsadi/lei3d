@@ -10,7 +10,7 @@ namespace lei3d
         flySpeed{flySpeed},
         m_FOVDeg{45.0f},
         m_NearPlane{0.1f},
-        m_FarPlane{400.0f}
+        m_FarPlane{700.0f}
     {
       firstMouse = true; // the first time the mouse is entered onto the screen, do not flick
 
