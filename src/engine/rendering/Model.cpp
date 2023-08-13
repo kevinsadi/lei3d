@@ -15,9 +15,9 @@ namespace lei3d
 
     void Model::Draw(Shader& shader)
     {
-        for (unsigned int i = 0; i < this->meshes.size(); i++)
+        for (unsigned int i = 0; i < this->m_Meshes.size(); i++)
         {
-            meshes[i].Draw(shader);
+            m_Meshes[i].Draw(shader);
         }
     }
 
@@ -32,7 +32,7 @@ namespace lei3d
             LEI_WARN("ERROR::ASSIMP::" + errorString);
             return;
         }
-        directory = path.substr(0, path.find_last_of('/'));
+        m_Directory = path.substr(0, path.find_last_of('/'));
 
         processNode(scene->mRootNode, scene);
     }
@@ -44,7 +44,7 @@ namespace lei3d
         for (unsigned int i = 0; i < node->mNumMeshes; i++)
         {
             aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-            meshes.push_back(processMesh(mesh, scene));
+            m_Meshes.push_back(processMesh(mesh, scene));
         }
 
         // process node children
@@ -146,9 +146,9 @@ namespace lei3d
             mat->GetTexture(type, i, &str);
 
             bool skip = false;
-            for (unsigned int j = 0; j < textures_loaded.size(); j++) // for every texture we've loaded so far
+            for (unsigned int j = 0; j < m_TexturesLoaded.size(); j++) // for every texture we've loaded so far
             {
-                if (std::strcmp(str.C_Str(), textures_loaded[j].path.c_str()) == 0)
+                if (std::strcmp(str.C_Str(), m_TexturesLoaded[j].path.c_str()) == 0)
                 {
                     skip = true;
                 }
@@ -157,11 +157,11 @@ namespace lei3d
             if (!skip)
             {
                 Texture texture;
-                texture.id = TextureFromFile(str.C_Str(), directory);
+                texture.id = TextureFromFile(str.C_Str(), m_Directory);
                 texture.type = typeName;
                 texture.path = str.C_Str();
                 textures.push_back(texture);
-                textures_loaded.push_back(texture);
+                m_TexturesLoaded.push_back(texture);
             }
         }
         return textures;
@@ -179,7 +179,7 @@ namespace lei3d
     {
         std::vector<btTriangleMesh*> collisionMeshList;
 
-        for (Mesh mesh : meshes)
+        for (Mesh mesh : m_Meshes)
         {
             btTriangleMesh* curCollisionMesh = new btTriangleMesh();
 

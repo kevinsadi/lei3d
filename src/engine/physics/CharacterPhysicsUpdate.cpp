@@ -14,7 +14,7 @@ namespace lei3d
         //glm::vec3 wo{0.0f, 0.0f, 0.0f};
 
         // here is where we apply our constraints during the update
-        GLFWwindow* window = Application::Curr()->Window();
+        GLFWwindow* window = Application::Curr().Window();
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
             velocity = velocity + btVector3(-0.5, 0.0, 0.0);

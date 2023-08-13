@@ -66,7 +66,7 @@ namespace lei3d
             if (m_SceneChanged)
             {
                 m_ActiveScene = m_NextScene;
-                LoadScene(m_ActiveScene);
+                LoadScene(*m_ActiveScene);
                 m_SceneChanged = false;
             }
             FrameTick();
@@ -75,9 +75,9 @@ namespace lei3d
         LEI_TRACE("Gracefully Closing and Cleaning Up Data");
     }
 
-    void Application::ChangeScenes(Scene* scene)
+    void Application::ChangeScenes(Scene& scene)
     {
-        m_NextScene = scene;
+        m_NextScene = &scene;
         m_SceneChanged = true;
     }
 
@@ -141,19 +141,19 @@ namespace lei3d
 
         LEI_TRACE("Loading Default Scene");
         Scene* defaultScene = m_AllScenes[0].second.get(); //This just gets the first scene we added
-        ChangeScenes(defaultScene);
+        ChangeScenes(*defaultScene);
 
         SetupInputCallbacks();
     }
 
-    void Application::LoadScene(Scene* scene)
+    void Application::LoadScene(Scene& scene)
     {
         if (m_ActiveScene != nullptr)
         {
             m_ActiveScene->Unload();
         }
 
-        m_ActiveScene = scene;
+        m_ActiveScene = &scene;
         m_ActiveScene->Init(this);
     }
 
@@ -187,8 +187,8 @@ namespace lei3d
     }
 
     void Application::Update() {
-        m_ActiveScene->Update(m_DeltaTime);
-        m_ActiveScene->PhysicsUpdate(m_DeltaTime);    //idk how often we need to do this.
+        m_ActiveScene->Update();
+        m_ActiveScene->PhysicsUpdate();    //idk how often we need to do this.
     }
 
     void Application::SetUIActive(bool uiActive)
@@ -246,7 +246,7 @@ namespace lei3d
                     if (self)
                     {
                         if (cursorDisabled) {
-                            self->m_ActiveScene->MainCamera().cameraMouseCallback(window, x, y);
+                            self->m_ActiveScene->MainCamera().cameraMouseCallback(x, y);
                         }
                     }
                 }
@@ -291,25 +291,27 @@ namespace lei3d
         }
     }
 
-    Application* Application::Curr() {
-        return s_Instance;
+    Application& Application::Curr() {
+        LEI_ASSERT(s_Instance != nullptr, "Application singleton not set. This shouldn't happen!");
+        return *s_Instance;
     }
 
-    GLFWwindow* Application::Window()
+    GLFWwindow* Application::Window() const
     {
         return m_Window;
     }
 
-    Scene* Application::ActiveScene() {
-        return m_ActiveScene;
+    Scene& Application::ActiveScene() const {
+        LEI_ASSERT(m_ActiveScene, "Attempt to access active scene when there wasn't one.");
+        return *m_ActiveScene;
     }
 
-    const std::vector<std::pair<std::string, std::unique_ptr<Scene>>>& Application::GetScenes()
+    const std::vector<std::pair<std::string, std::unique_ptr<Scene>>>& Application::GetScenes() const
     {
         return m_AllScenes;
     }
 
-    float Application::DeltaTime() {
+    float Application::DeltaTime() const {
         return m_DeltaTime;
     }
 }

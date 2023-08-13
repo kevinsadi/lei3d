@@ -20,7 +20,7 @@ namespace lei3d
         Model* m_Model;
         Shader* m_Shader;    //This is temporary. We want to abstract the shader system eventually to handle them better.
         
-        ModelRenderer(Entity* entity);
+        ModelRenderer(Entity& entity);
         ~ModelRenderer();
         
         void Init(Model* model, Shader* shader);

@@ -34,7 +34,7 @@ namespace lei3d
         Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures); // I'm a pass by reference man now
         ~Mesh();
 
-        void Draw(Shader &shader); // taking value by reference for funsies, might switch it up back to pointers
+        void Draw(Shader &shader) const; // taking value by reference for funsies, might switch it up back to pointers
     private:
         unsigned int VAO, VBO, EBO;
 

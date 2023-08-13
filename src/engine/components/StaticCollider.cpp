@@ -3,7 +3,7 @@
 
 namespace lei3d
 {
-    StaticCollider::StaticCollider(Entity* entity) : Component(entity) {
+    StaticCollider::StaticCollider(Entity& entity) : Component(entity) {
 
     }
 
@@ -22,24 +22,26 @@ namespace lei3d
         std::vector<btTriangleMesh*> modelMeshes = model.GetCollisionMeshes();
         for (auto triMesh: modelMeshes)
         {
-            AddCollisionsFromTriangleMesh(triMesh, m_Entity->m_Transform);
+            AddCollisionsFromTriangleMesh(triMesh, m_Entity.m_Transform);
         }
     }
 
     /**
      * @brief Mutates values in PhysicsWorld to add the triMesh to the dynamicsWorldScene
      *  
+     * NOTE: triMesh not passed by const bc btBvhTriangleMeshShape does n ot  take in const
+     * 
      * @param triMesh
      * @param transform
      */
-    void StaticCollider::AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, Transform transform)
+    void StaticCollider::AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, const Transform& transform)
     {
         btVector3 scaleVector{transform.scale.x, transform.scale.y, transform.scale.z};
         btBvhTriangleMeshShape* nonScaledMeshShape = new btBvhTriangleMeshShape(triMesh, true, true);
         btScaledBvhTriangleMeshShape* meshShape = new btScaledBvhTriangleMeshShape(nonScaledMeshShape, scaleVector);
 
         // now add this mesh to our physics world.
-        ActiveScene().GetPhysicsWorld().m_collisionShapes.push_back(meshShape);
+        Application::Curr().ActiveScene().GetPhysicsWorld().m_collisionShapes.push_back(meshShape);
 
         btTransform meshTransform;
         meshTransform.setIdentity();
@@ -53,7 +55,7 @@ namespace lei3d
         btRigidBody::btRigidBodyConstructionInfo rbMeshInfo{meshMass, myMotionState, meshShape, meshLocalInertia};
         btRigidBody* meshBody = new btRigidBody(rbMeshInfo);
 
-        ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addRigidBody(meshBody);
+        Application::Curr().ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addRigidBody(meshBody);
     }
 
 }

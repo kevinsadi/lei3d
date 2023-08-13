@@ -4,25 +4,25 @@ namespace lei3d
 {
 
     FlyCamera::FlyCamera(GLFWwindow* window, float yaw, float pitch, float flySpeed)
-      : window{window}, // this is a member initializer list using uniform initialization C++17 feature
-        yaw{yaw},
-        pitch{pitch},
-        flySpeed{flySpeed},
+    // this is a member initializer list using uniform initialization C++17 feature
+      : m_Yaw{yaw}, 
+        m_Pitch{pitch},
+        m_FlySpeed{flySpeed},
         m_FOVDeg{45.0f},
         m_NearPlane{0.1f},
         m_FarPlane{400.0f}
     {
-      firstMouse = true; // the first time the mouse is entered onto the screen, do not flick
+      m_MouseEnterFlag = true; // the first time the mouse is entered onto the screen, do not flick
 
       int screenWidth, screenHeight;
       glfwGetWindowSize(window, &screenWidth, &screenHeight);
-      lastX = screenWidth / 2.0f;  
-      lastY = screenHeight / 2.0f; 
+      m_PrevX = screenWidth / 2.0f;  
+      m_PrevY = screenHeight / 2.0f; 
       m_Aspect = (float) screenWidth / screenHeight;
 
-      cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-      cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-      cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+      m_CameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+      m_CameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+      m_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
     }
 
     FlyCamera::~FlyCamera()
@@ -30,76 +30,75 @@ namespace lei3d
         // no need rn
     }
 
-    void FlyCamera::cameraMouseCallback(GLFWwindow* window, double xPosInput, double yPosInput)
+    void FlyCamera::cameraMouseCallback(double xPosInput, double yPosInput)
     {
         float xpos = static_cast<float>(xPosInput);
         float ypos = static_cast<float>(yPosInput);
 
-        if (firstMouse)
+        if (m_MouseEnterFlag)
         {
-            lastX = xpos;
-            lastY = ypos;
-            firstMouse = false;
+            m_PrevX = xpos;
+            m_PrevY = ypos;
+            m_MouseEnterFlag = false;
         }
 
-        float xoffset = xpos - lastX;
-        float yoffset = lastY - ypos; // openGL inverted y
-        lastX = xpos;
-        lastY = ypos;
+        float xoffset = xpos - m_PrevX;
+        float yoffset = m_PrevY - ypos; // openGL inverted y
+        m_PrevX = xpos;
+        m_PrevY = ypos;
 
-        const float mouseSensitivity = 0.1f;
-        xoffset *= mouseSensitivity;
-        yoffset *= mouseSensitivity;
+        xoffset *= MOUSE_SENSITIVITY;
+        yoffset *= MOUSE_SENSITIVITY;
 
-        yaw += xoffset;
-        pitch += yoffset;
+        m_Yaw += xoffset;
+        m_Pitch += yoffset;
 
-        if (pitch > 89.0f) pitch = 89.0f;
-        if (pitch < -89.0f) pitch = -89.0f;
+        if (m_Pitch > MAX_PITCH) m_Pitch = MAX_PITCH;
+        if (m_Pitch < -MAX_PITCH) m_Pitch = -MAX_PITCH;
 
         glm::vec3 direction;
-        direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        direction.y = sin(glm::radians(pitch));
-        direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-        cameraFront = glm::normalize(direction) * flySpeed;
+        direction.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+        direction.y = sin(glm::radians(m_Pitch));
+        direction.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+        m_CameraFront = glm::normalize(direction) * m_FlySpeed;
     }
 
-    void FlyCamera::PollCameraMovementInput(float deltaTime)
+    void FlyCamera::PollCameraMovementInput()
     {
-        GLFWwindow* const window = Application::Curr()->Window();
+        GLFWwindow* const window = Application::Curr().Window();
 
-        float speed = flySpeed;
+        float speed = m_FlySpeed;
         if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
         {
             speed *= 10.0f;
 
-            if (speed > maxFlySpeed)
+            if (speed > MAX_FLY_SPEED)
             {
-                speed = maxFlySpeed;
+                speed = MAX_FLY_SPEED;
             }
         }
 
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {
-            handleForward(deltaTime, speed);
+            handleForward(speed);
         }
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         {
-            handleBack(deltaTime, speed);
+            handleBack(speed);
         }
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         {
-            handleLeft(deltaTime, speed);
+            handleLeft(speed);
         }
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         {
-            handleRight(deltaTime, speed);
+            handleRight(speed);
         }
     }
 
     void FlyCamera::OnImGuiRender()
     {
-        ImGui::SliderFloat("Camera Speed: ", &flySpeed, minFlySpeed, maxFlySpeed, "%.2f");
+        ImGui::SliderFloat("Camera Speed: ", &m_FlySpeed, MIN_FLY_SPEED, MAX_FLY_SPEED, "%.2f");
     }
 
     void FlyCamera::SetFOV(float fovDeg) {
@@ -111,29 +110,29 @@ namespace lei3d
         m_FarPlane = far;
     }
 
-    void FlyCamera::handleForward(float deltaTime, float speed)
+    void FlyCamera::handleForward(float speed)
     {
-		  cameraPos += cameraFront * speed * deltaTime;
+		  m_CameraPos += m_CameraFront * speed * Application::Curr().DeltaTime();
     }
 
-    void FlyCamera::handleBack(float deltaTime, float speed)
+    void FlyCamera::handleBack(float speed)
     {
-		  cameraPos -= cameraFront * speed * deltaTime;
+		  m_CameraPos -= m_CameraFront * speed * Application::Curr().DeltaTime();
     }
 
-    void FlyCamera::handleLeft(float deltaTime, float speed)
+    void FlyCamera::handleLeft(float speed)
     {
-		  cameraPos -= glm::cross(cameraFront, cameraUp) * speed * deltaTime;
+		  m_CameraPos -= glm::cross(m_CameraFront, m_CameraUp) * speed * Application::Curr().DeltaTime();
     }
 
-    void FlyCamera::handleRight(float deltaTime, float speed)
+    void FlyCamera::handleRight(float speed)
     {
-		  cameraPos += glm::cross(cameraFront, cameraUp) * speed * deltaTime;
+		  m_CameraPos += glm::cross(m_CameraFront, m_CameraUp) * speed * Application::Curr().DeltaTime();
     }
 
     glm::mat4 FlyCamera::GetView() 
     {
-        return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        return glm::lookAt(m_CameraPos, m_CameraPos + m_CameraFront, m_CameraUp);
     }
 
     glm::mat4 FlyCamera::GetProj()

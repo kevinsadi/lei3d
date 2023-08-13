@@ -15,7 +15,7 @@ namespace lei3d {
         m_App = runningApp;
 
         // load camera
-        GLFWwindow* const win = window();
+        GLFWwindow* const win = Application::Curr().Window();
         m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 10.0f);
 
         //Load shader (TEMPORARY)
@@ -53,7 +53,7 @@ namespace lei3d {
         return AddEntity("Unnamed Entity");
     }
 
-    Entity* Scene::GetEntity(std::string name)
+    Entity* Scene::GetEntity(std::string name) const
     {
         for (auto& entity : m_Entities)
         {
@@ -89,25 +89,25 @@ namespace lei3d {
         }
     }
 
-	void Scene::Update(float deltaTime) {
+	void Scene::Update() {
         //m_VP = m_Camera->GetProj() * m_Camera->GetView();
 
         //LEI_TRACE("Scene Update");
 		for (auto& entity : m_Entities) {
-			entity->Update(deltaTime);
+			entity->Update();
 		}
 
-        m_Camera->PollCameraMovementInput(deltaTime);
-		OnUpdate(deltaTime);
+        m_Camera->PollCameraMovementInput();
+		OnUpdate();
 	}
 
-    void Scene::PhysicsUpdate(float deltaTime) {
+    void Scene::PhysicsUpdate() {
         //LEI_TRACE("Scene Physics Update");
         for (auto& entity : m_Entities) {
-            entity->PhysicsUpdate(deltaTime);
+            entity->PhysicsUpdate();
         }
 
-        OnPhysicsUpdate(deltaTime);
+        OnPhysicsUpdate();
     }
 
 	void Scene::Render() {
@@ -197,19 +197,15 @@ namespace lei3d {
         OnDestroy();
     }
 
-    FlyCamera& Scene::MainCamera() {
+    FlyCamera& Scene::MainCamera() const {
         return *m_Camera;
     }
 
-    PhysicsWorld& Scene::GetPhysicsWorld() {
+    PhysicsWorld& Scene::GetPhysicsWorld() const {
         return *m_PhysicsWorld;
     }
 
-    GLFWwindow* Scene::window() {
-        return m_App->Window();
-    }
-
-    void Scene::PrintEntityList()
+    void Scene::PrintEntityList() const
     {
         for (auto& entity : m_Entities)
         {

@@ -67,12 +67,12 @@ namespace lei3d {
         skybox->Init(faces);
     }
 
-    void TestSceneKevin::OnUpdate(float deltaTime) {
+    void TestSceneKevin::OnUpdate() {
 
     }
 
-    void TestSceneKevin::OnPhysicsUpdate(float deltaTime) {
-        m_PhysicsWorld->Step(deltaTime);
+    void TestSceneKevin::OnPhysicsUpdate() {
+        m_PhysicsWorld->Step(Application::Curr().DeltaTime());
     }
 
     void TestSceneKevin::OnRender() {

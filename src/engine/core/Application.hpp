@@ -25,21 +25,6 @@ namespace lei3d
 
     class Application
     {
-    public:
-        Application();
-        ~Application();
-
-        static Application* Curr();
-
-        void Run(); // Run the app.
-
-        void SetUIActive(bool uiActive);
-        void ChangeScenes(Scene* scene);
-
-        GLFWwindow* Window();
-        const std::vector<std::pair<std::string, std::unique_ptr<Scene>>>& GetScenes();
-        Scene* ActiveScene();
-        float DeltaTime();
     private:
         static Application* s_Instance;
 
@@ -49,25 +34,41 @@ namespace lei3d
         //SceneGUI* m_Menu = nullptr;
         Scene* m_ActiveScene = nullptr;
         Scene* m_NextScene = nullptr;
+        
         //std::map<std::string, std::unique_ptr<Scene>> m_AllScenes;
         std::vector<std::pair<std::string, std::unique_ptr<Scene>>> m_AllScenes;
         std::unique_ptr<AppGUI> m_AppGUI;
 
         //NOTE: Don't modify this directly. Use SetUIActive.
         bool m_UIActive = false;
-
         bool m_SceneChanged = false;    //Flags the app to load another scene in sync with render loop.
 
         float m_LastFrameTime = 0.0f; // used to keep track of delta time
         float m_DeltaTime = 0.0f; //Total time for last frame. 
         float m_DesiredFPS = 120.0f;   //FPS will be capped to this value. (current bug means that the FPS cap is half, not sure why)
+    public:
+        Application();
+        ~Application();
+
+        static Application& Curr();
+
+        void Run(); // Run the app.
+
+        void SetUIActive(bool uiActive);
+        void ChangeScenes(Scene& scene);
+
+        GLFWwindow* Window() const;
+        const std::vector<std::pair<std::string, std::unique_ptr<Scene>>>& GetScenes() const;
+        Scene& ActiveScene() const;
+        float DeltaTime() const;
+    private:
 
         void Inititalize(); // Start the App
         void FrameTick();   //Called every frame
-        void LoadScene(Scene* scene);
+        void LoadScene(Scene& scene);
 
         void Update();
-        void Render(); // render UI and scene
+        void Render();
         void ImGuiRender();
 
         void SetupInputCallbacks();

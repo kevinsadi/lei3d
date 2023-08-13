@@ -25,6 +25,8 @@ namespace lei3d
         
         void Create();
         void Step(float deltaTime);
+       
+       //Not marked const bc of bullet weirdness where getters aren't const in the API
         glm::vec3 GetFirstColliderPosition();
     };
 

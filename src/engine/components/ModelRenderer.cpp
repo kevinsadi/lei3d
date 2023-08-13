@@ -4,7 +4,7 @@
 
 namespace lei3d
 {
-    ModelRenderer::ModelRenderer(Entity* entity) : Component(entity)
+    ModelRenderer::ModelRenderer(Entity& entity) : Component(entity)
     {      
     }
 
@@ -19,8 +19,8 @@ namespace lei3d
 
     void ModelRenderer::Render()
     {
-        glm::mat4 model = m_Entity->GetModelMat();
-        FlyCamera& camera = ActiveScene().MainCamera();
+        glm::mat4 model = m_Entity.GetModelMat();
+        FlyCamera& camera = Application::Curr().ActiveScene().MainCamera();
         glm::mat4 view = camera.GetView();
         glm::mat4 proj = camera.GetProj();
         m_Shader->setUniformMat4("u_Model", model);

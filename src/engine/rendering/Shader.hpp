@@ -22,10 +22,10 @@ namespace lei3d
 		Shader(const char* vertexShaderPath, const char* fragShaderPath);
 		
 		// compile and link shader, then activate the shader
-		void bind();
-		void unbind();
+		void bind() const;
+		void unbind() const;
 		
-		void setUniformMat4(const std::string& name, glm::mat4& matrix);
+		void setUniformMat4(const std::string& name, const glm::mat4& matrix);
 		void setInt(const std::string &name, int value); // set string value in shader to an int
 
 	private:

@@ -97,15 +97,15 @@ namespace lei3d
 	/** 
 	 * Set OpenGL to use this shader. 
 	 */
-	void Shader::bind() {
+	void Shader::bind() const {
 		GLCall(glUseProgram(m_ShaderID));
 	}
 
-	void Shader::unbind() {
+	void Shader::unbind() const {
 		GLCall(glUseProgram(0));
 	}
 
-	void Shader::setUniformMat4(const std::string& name, glm::mat4& matrix)
+	void Shader::setUniformMat4(const std::string& name, const glm::mat4& matrix)
 	{
 		bind();
 		GLCall(glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix)));

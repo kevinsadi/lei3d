@@ -25,15 +25,15 @@ namespace lei3d
         Shader skyboxShader;
         unsigned int cubeMapTexture;
 
-        SkyBox(Entity* entity);
+        SkyBox(Entity& entity);
         ~SkyBox();
 
         //std::string GetComponentName() override;
-        void Init(std::vector<std::string> faces);
+        void Init(const std::vector<std::string>& faces);
 
         void Render() override;
 
     private:
-        void loadCubemap(std::vector<std::string> faces);
+        void loadCubemap(const std::vector<std::string>& faces);
     };
 }

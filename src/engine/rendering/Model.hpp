@@ -22,10 +22,12 @@ namespace lei3d
 
     class Model
     {
-    public:
-        std::vector<Texture> textures_loaded;
-        Shader* m_Shader;    //This is temporary. We want to abstract the shader system eventually to handle them better.
-        
+    private:
+        // model data
+        std::vector<Mesh> m_Meshes;
+        std::string m_Directory;
+        std::vector<Texture> m_TexturesLoaded;
+    public:   
         Model(const std::string& modelPath);
         ~Model();
 
@@ -33,15 +35,12 @@ namespace lei3d
 
         std::vector<btTriangleMesh*> GetCollisionMeshes() const;
     private:
-        // model data
-        std::vector<Mesh> meshes;
-        std::string directory;
-
         void loadModel(const std::string& path);
         void processNode(aiNode *node, const aiScene *scene);
         Mesh processMesh(aiMesh *mesh, const aiScene *scene);
         std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string& typeName);
     };
 
+    //TODO: Use Abstract Texture in "Texture.cpp"
     unsigned int TextureFromFile(const char *path, const std::string& directory, bool gamma = false);
 }

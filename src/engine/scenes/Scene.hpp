@@ -42,12 +42,11 @@ namespace lei3d
         //Entities
         Entity& AddEntity(std::string name);
         Entity& AddEntity();
-        Entity* GetEntity(std::string name);
 
         //Entity Messages
         void Start();
-        void Update(float deltaTime);
-        void PhysicsUpdate(float deltaTime);
+        void Update();
+        void PhysicsUpdate();
         void Render();
         void ImGUIRender();
         void Destroy();
@@ -61,17 +60,16 @@ namespace lei3d
         virtual void OnUnload() {}
 
         //These should rarely be used because everything is handled by ECS.
-        virtual void OnUpdate(float deltaTime) {}
-        virtual void OnPhysicsUpdate(float deltaTime) {}
+        virtual void OnUpdate() {}
+        virtual void OnPhysicsUpdate() {}
         virtual void OnRender() {}
         virtual void OnImGUIRender() {}
         virtual void OnDestroy() {}
 
-        FlyCamera& MainCamera();
-        PhysicsWorld& GetPhysicsWorld();
+        Entity* GetEntity(std::string name) const;
+        FlyCamera& MainCamera() const;
+        PhysicsWorld& GetPhysicsWorld() const;
 
-        void PrintEntityList();
-    private:
-        GLFWwindow* window();
+        void PrintEntityList() const;   //For Debugging
     };
 }

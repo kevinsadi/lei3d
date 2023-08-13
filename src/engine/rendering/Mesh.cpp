@@ -66,7 +66,7 @@ namespace lei3d
     * 
     * AND SO ON. HOPEFULLY I WILL HAVE DEFAULT SHADER TYPES TO MAKE OUR LIFE EASIER.
     */
-    void Mesh::Draw(Shader &shader)
+    void Mesh::Draw(Shader &shader) const
     {
         unsigned int textureNum = 1;
 
