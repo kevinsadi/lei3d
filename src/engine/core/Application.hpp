@@ -12,11 +12,9 @@
 #include <map>
 #include <vector>
 
-#include "pcg/PCGHelpers.hpp"
+#include "core/Scene.hpp"
 
 #include "guitools/AppGUI.hpp"
-
-#include "scenes/Scene.hpp"
 
 namespace lei3d
 {
@@ -30,8 +28,6 @@ namespace lei3d
 
         GLFWwindow* m_Window = nullptr;
 
-        //PlaneMesh* groundPlane = nullptr;   //TODO: Convert this to entity or get rid of it.
-        //SceneGUI* m_Menu = nullptr;
         Scene* m_ActiveScene = nullptr;
         Scene* m_NextScene = nullptr;
         

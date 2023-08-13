@@ -1,4 +1,4 @@
-#include "scenes/Scene.hpp"
+#include "core/Scene.hpp"
 
 #include "logging/GLDebug.hpp"
 

@@ -1,9 +1,7 @@
 #pragma once 
 
-#include "Scene.hpp"
-
-
 #include "core/Entity.hpp"
+#include "core/Scene.hpp"
 
 #include "rendering/Shader.hpp"
 #include "components/SkyBox.hpp"

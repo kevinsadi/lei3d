@@ -33,14 +33,6 @@ namespace lei3d
     {
         s_Instance = nullptr;
 
-        //if (groundPlane)
-        //{
-        //    GLCall(glDeleteBuffers(1, &(groundPlane->planeVAO)));
-        //    GLCall(glDeleteBuffers(1, &(groundPlane->planeEBO)));
-        //    GLCall(glDeleteBuffers(1, &(groundPlane->planeVBO)));
-        //    delete groundPlane;
-        //}
-
         // Shutdown GLFW
         glfwDestroyWindow(m_Window);
         glfwTerminate();

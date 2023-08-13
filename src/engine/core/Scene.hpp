@@ -11,6 +11,7 @@
 #include "physics/PhysicsWorld.hpp"
 
 #include <memory>
+#include <unordered_map>
 #include <vector>
 
 namespace lei3d
