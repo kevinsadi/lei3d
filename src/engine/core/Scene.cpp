@@ -31,11 +31,12 @@ namespace lei3d {
     Entity& Scene::AddEntity(std::string name)
     {
         //Add number to name if multiple instances of the same name.
-        std::string entityName = name;
+        std::stringstream entityNameSS;
+        entityNameSS << name;
         if (m_EntityNameCounts.contains(name))
         {
-            std::string numberStr = std::to_string(m_EntityNameCounts[name]);
-            entityName.append(std::format(" {0}", numberStr));
+            const std::string numberStr = std::to_string(m_EntityNameCounts[name]);
+            entityNameSS << numberStr;
         }
         else
         {
@@ -43,7 +44,7 @@ namespace lei3d {
         }
         m_EntityNameCounts[name]++;
 
-        std::unique_ptr<Entity> newEntity = std::make_unique<Entity>(entityName);
+        std::unique_ptr<Entity> newEntity = std::make_unique<Entity>(entityNameSS.str());
         m_Entities.push_back(std::move(newEntity));
         return *m_Entities.back();
     }
