@@ -23,7 +23,6 @@ namespace lei3d {
         ~TestSceneLogan();
 
         void OnLoad() override;
-        void OnUpdate() override;
         void OnPhysicsUpdate() override;
     private:
         std::unique_ptr<Model> backpackModel;

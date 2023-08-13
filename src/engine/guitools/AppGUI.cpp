@@ -50,24 +50,21 @@ namespace lei3d {
         {
             static int selectedScene = 0;
             int sceneI = 0;
-            for (auto& sceneInfo : Application::Curr().GetScenes())
+            for (std::string& name : SceneManager::GetSceneNames())
             {
-                std::string name = sceneInfo.first;
-                Scene* scene = sceneInfo.second.get();
-
-                int oldSelectedScene = selectedScene;
+                const int oldSelectedScene = selectedScene;
                 if (ImGui::RadioButton(name.c_str(), &selectedScene, sceneI))
                 {
                     if (selectedScene != oldSelectedScene)
                     {
-                        Application::Curr().ChangeScenes(*scene);
+                        SceneManager::SetScene(name);
                     }
                 }
                 sceneI++;
             }
         }
 
-        Scene& scene = Application::Curr().ActiveScene();
+        Scene& scene = SceneManager::ActiveScene();
         if (ImGui::CollapsingHeader("Scene Data"));
         {
             scene.ImGUIRender();

@@ -41,7 +41,7 @@ namespace lei3d
         btScaledBvhTriangleMeshShape* meshShape = new btScaledBvhTriangleMeshShape(nonScaledMeshShape, scaleVector);
 
         // now add this mesh to our physics world.
-        Application::Curr().ActiveScene().GetPhysicsWorld().m_collisionShapes.push_back(meshShape);
+        SceneManager::ActiveScene().GetPhysicsWorld().m_collisionShapes.push_back(meshShape);
 
         btTransform meshTransform;
         meshTransform.setIdentity();
@@ -55,7 +55,7 @@ namespace lei3d
         btRigidBody::btRigidBodyConstructionInfo rbMeshInfo{meshMass, myMotionState, meshShape, meshLocalInertia};
         btRigidBody* meshBody = new btRigidBody(rbMeshInfo);
 
-        Application::Curr().ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addRigidBody(meshBody);
+        SceneManager::ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addRigidBody(meshBody);
     }
 
 }

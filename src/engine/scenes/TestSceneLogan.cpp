@@ -68,10 +68,6 @@ namespace lei3d {
         PrintEntityList();
     }
 
-    void TestSceneLogan::OnUpdate() {
-
-    }
-
     void TestSceneLogan::OnPhysicsUpdate() {
         m_PhysicsWorld->Step(Application::Curr().DeltaTime());
     }

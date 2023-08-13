@@ -11,9 +11,7 @@ namespace lei3d {
         Destroy();
 	}
 
-    void Scene::Init(Application* runningApp) {
-        m_App = runningApp;
-
+    void Scene::Load() {
         // load camera
         GLFWwindow* const win = Application::Curr().Window();
         m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 10.0f);
@@ -25,7 +23,7 @@ namespace lei3d {
         m_PhysicsWorld = std::make_unique<PhysicsWorld>();
         m_PhysicsWorld->Create();    //TODO: Consider if there is some better way to do this
 
-        Start();
+        OnLoad();
     }
 
     Entity& Scene::AddEntity(std::string name)
@@ -67,13 +65,6 @@ namespace lei3d {
         return nullptr;
     }
 
-
-    void Scene::Load()
-    {
-        //We might want to do general scene loading things here later.
-        OnLoad();
-    }
-
     void Scene::Unload()
     {
         m_Entities.clear(); //This should auto-destruct entities bc smart pointers.
@@ -83,11 +74,12 @@ namespace lei3d {
 
     void Scene::Start() {
         LEI_TRACE("Scene Start");
-        Load();
 
         for (auto& entity : m_Entities) {
             entity->Start();
         }
+
+        OnStart();
     }
 
 	void Scene::Update() {

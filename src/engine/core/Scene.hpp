@@ -28,7 +28,6 @@ namespace lei3d
         std::vector<std::unique_ptr<Entity>> m_Entities;
         std::unordered_map<std::string, int> m_EntityNameCounts;
     protected:
-        Application* m_App;
 
         //We should prob. limit how much stuff we put into the base scene.
         std::unique_ptr<FlyCamera> m_Camera = nullptr;  // every scene needs a camera
@@ -37,8 +36,6 @@ namespace lei3d
     public:
         Scene();
         ~Scene();
-
-        void Init(Application* app);
         
         //Entities
         Entity& AddEntity(std::string name);
@@ -57,10 +54,11 @@ namespace lei3d
 
         //TODO: Abstract scene creation/loading into files: https://trello.com/c/eC66QGuD/25-define-scene-file-format
         //Right now we use this virtual Load function to load all the objs in code. 
-        virtual void OnLoad() {}  //load shaders and meshes and other scene info ?
+        virtual void OnLoad() {}
         virtual void OnUnload() {}
 
         //These should rarely be used because everything is handled by ECS.
+        virtual void OnStart() {}
         virtual void OnUpdate() {}
         virtual void OnPhysicsUpdate() {}
         virtual void OnRender() {}

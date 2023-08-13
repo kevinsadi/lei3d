@@ -35,17 +35,17 @@ namespace lei3d {
         btRigidBody* characterBody = new btRigidBody(rbInfo);
         characterBody->setSleepingThresholds(0.0, 0.0);
         characterBody->setAngularFactor(0.0);
-        Application::Curr().ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addRigidBody(characterBody);
-        Application::Curr().ActiveScene().GetPhysicsWorld().m_collisionShapes.push_back(character);
+        SceneManager::ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addRigidBody(characterBody);
+        SceneManager::ActiveScene().GetPhysicsWorld().m_collisionShapes.push_back(character);
         
         // WITHIN THIS CUSTOM PHYSICS UPDATE IS THE MAGIC THAT MAKES AIRSTRAFING / SURF POSSIBLE
         CharacterPhysicsUpdate* customCharacterPhysicsUpdate = new CharacterPhysicsUpdate(characterBody);
-        Application::Curr().ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addAction(customCharacterPhysicsUpdate);
+        SceneManager::ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addAction(customCharacterPhysicsUpdate);
     }
 
     void CharacterController::PhysicsUpdate()
     {
-        m_Entity.m_Transform.position = Application::Curr().ActiveScene().GetPhysicsWorld().GetFirstColliderPosition();
+        m_Entity.m_Transform.position = SceneManager::ActiveScene().GetPhysicsWorld().GetFirstColliderPosition();
     }
 
 }

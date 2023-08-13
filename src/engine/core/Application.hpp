@@ -12,14 +12,14 @@
 #include <map>
 #include <vector>
 
-#include "core/Scene.hpp"
+#include "core/SceneManager.hpp"
 
 #include "guitools/AppGUI.hpp"
 
 namespace lei3d
 {
     class AppGUI;
-    class Scene;
+    class SceneManager;
 
     class Application
     {
@@ -27,17 +27,12 @@ namespace lei3d
         static Application* s_Instance;
 
         GLFWwindow* m_Window = nullptr;
-
-        Scene* m_ActiveScene = nullptr;
-        Scene* m_NextScene = nullptr;
         
-        //std::map<std::string, std::unique_ptr<Scene>> m_AllScenes;
-        std::vector<std::pair<std::string, std::unique_ptr<Scene>>> m_AllScenes;
         std::unique_ptr<AppGUI> m_AppGUI;
+        std::unique_ptr<SceneManager> m_SceneManager;
 
         //NOTE: Don't modify this directly. Use SetUIActive.
         bool m_UIActive = false;
-        bool m_SceneChanged = false;    //Flags the app to load another scene in sync with render loop.
 
         float m_LastFrameTime = 0.0f; // used to keep track of delta time
         float m_DeltaTime = 0.0f; //Total time for last frame. 
@@ -51,17 +46,13 @@ namespace lei3d
         void Run(); // Run the app.
 
         void SetUIActive(bool uiActive);
-        void ChangeScenes(Scene& scene);
 
         GLFWwindow* Window() const;
-        const std::vector<std::pair<std::string, std::unique_ptr<Scene>>>& GetScenes() const;
-        Scene& ActiveScene() const;
         float DeltaTime() const;
     private:
 
-        void Inititalize(); // Start the App
+        void Initialize(); // Start the App
         void FrameTick();   //Called every frame
-        void LoadScene(Scene& scene);
 
         void Update();
         void Render();

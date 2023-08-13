@@ -20,7 +20,7 @@ namespace lei3d
     void ModelRenderer::Render()
     {
         glm::mat4 model = m_Entity.GetModelMat();
-        FlyCamera& camera = Application::Curr().ActiveScene().MainCamera();
+        FlyCamera& camera = SceneManager::ActiveScene().MainCamera();
         glm::mat4 view = camera.GetView();
         glm::mat4 proj = camera.GetProj();
         m_Shader->setUniformMat4("u_Model", model);
