@@ -8,7 +8,7 @@
 #include "scenes/TestSceneLogan.hpp"
 
 #include "logging/GLDebug.hpp"
-
+#include "core/FlyCamera.hpp"
 
 namespace lei3d
 {
@@ -143,6 +143,8 @@ namespace lei3d
         Scene* defaultScene = m_AllScenes[0].second.get(); //This just gets the first scene we added
         ChangeScenes(defaultScene);
 
+        renderer.initialize(screenWidth, screenHeight);
+
         SetupInputCallbacks();
     }
 
@@ -200,7 +202,7 @@ namespace lei3d
 
     void Application::Render()
     {
-        m_ActiveScene->Render();
+        renderer.draw(*m_ActiveScene);
     }
 
     void Application::ImGuiRender() {

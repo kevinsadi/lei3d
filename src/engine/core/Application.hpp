@@ -17,11 +17,11 @@
 #include "guitools/AppGUI.hpp"
 
 #include "scenes/Scene.hpp"
+#include "rendering/RenderSystem.hpp"
 
 namespace lei3d
 {
     class AppGUI;
-    class Scene;
 
     class Application
     {
@@ -52,6 +52,8 @@ namespace lei3d
         //std::map<std::string, std::unique_ptr<Scene>> m_AllScenes;
         std::vector<std::pair<std::string, std::unique_ptr<Scene>>> m_AllScenes;
         std::unique_ptr<AppGUI> m_AppGUI;
+
+        RenderSystem renderer;
 
         //NOTE: Don't modify this directly. Use SetUIActive.
         bool m_UIActive = false;

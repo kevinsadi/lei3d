@@ -97,31 +97,42 @@ namespace lei3d
 	/** 
 	 * Set OpenGL to use this shader. 
 	 */
-	void Shader::bind() {
+	void Shader::bind() const {
 		GLCall(glUseProgram(m_ShaderID));
 	}
 
-	void Shader::unbind() {
+	void Shader::unbind() const {
 		GLCall(glUseProgram(0));
 	}
 
-	void Shader::setUniformMat4(const std::string& name, glm::mat4& matrix)
-	{
-		bind();
+	void Shader::setUniformMat4(const std::string& name, glm::mat4& matrix) const {
 		GLCall(glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix)));
-		unbind();
 	}
 
-	void Shader::setInt(const std::string &name, int value)
-    { 
-		bind();
-        glUniform1i(glGetUniformLocation(m_ShaderID, name.c_str()), value); 
-		unbind();
+	void Shader::setInt(const std::string &name, int value) const {
+        glUniform1i(glGetUniformLocation(m_ShaderID, name.c_str()), value);
     }
 
-	int Shader::getUniformLocation(const std::string& name) {
-		if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end()) {
-			return m_UniformLocationCache[name];
+    void Shader::setBool(const std::string &name, bool value) const {
+        glUniform1i(glGetUniformLocation(m_ShaderID, name.c_str()), (int)value);
+    }
+
+    void Shader::setFloat(const std::string &name, float value) const {
+        glUniform1f(glGetUniformLocation(m_ShaderID, name.c_str()), value);
+    }
+
+    void Shader::setVec3(const std::string &name, const glm::vec3 &value) const {
+        glUniform3f(glGetUniformLocation(m_ShaderID, name.c_str()), value.x, value.y, value.z);
+    }
+
+    void Shader::setVec2(const std::string &name, const glm::vec2 &value) const {
+        glUniform2f(glGetUniformLocation(m_ShaderID, name.c_str()), value.x, value.y);
+    }
+
+	int Shader::getUniformLocation(const std::string& name) const {
+        auto it = m_UniformLocationCache.find(name);
+        if (it != m_UniformLocationCache.end()) {
+			return it->second;
 		}
 
 		GLCall(int location = glGetUniformLocation(m_ShaderID, name.c_str()));

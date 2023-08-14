@@ -1,6 +1,7 @@
 #include "scenes/Scene.hpp"
 
 #include "logging/GLDebug.hpp"
+#include "core/Application.hpp"
 
 namespace lei3d {
 	Scene::Scene() {
@@ -197,7 +198,7 @@ namespace lei3d {
         OnDestroy();
     }
 
-    FlyCamera& Scene::MainCamera() {
+    FlyCamera& Scene::MainCamera() const {
         return *m_Camera;
     }
 
