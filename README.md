@@ -82,11 +82,17 @@ tab to unlock cursor to interact with the gui
 
 ## Showcase
 
+![image](https://github.com/kevinsadi/lei3d/assets/34428034/a5e09d77-9d18-467e-a7a4-339d13dfaf77)
 
-https://github.com/kevinsadi/lei3d/assets/34428034/aa5ea3b3-0151-4f35-8f73-911fa94d8c9a
+
+https://github.com/kevinsadi/lei3d/assets/34428034/03b79d4f-4c9a-4242-a1af-bd24f0827ae5
 
 
-https://github.com/kevinsadi/lei3d/assets/34428034/8bb4486a-66a1-429d-a42a-c4a8afaf8f15
+
+https://github.com/kevinsadi/lei3d/assets/34428034/15107ca3-2cdf-4669-b7b0-aa62eae0ce57
+
+
+
 
 
 
