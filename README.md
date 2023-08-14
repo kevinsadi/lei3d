@@ -2,7 +2,7 @@
 ![lei3d logo](screenshots/lei.png)
 
 ## About
-This is a dual repo to support the custom game engine Lei3D and the game that implements it, SkyLei.  
+This is a dual repo to support the custom game engine Lei3D and the game that implements it, [SkyLei](https://docs.google.com/document/d/1Ktms7R8Q_NFXl61THuaZg5ugdS3S1yB7YlfEAdG3e6E/edit).  
 
 ## Features
 * Build System for Windows, Mac, Linux - CMake
@@ -69,7 +69,7 @@ Graphics card that support OpenGL 4.6
 ![SkyLei logo](screenshots/SkyLei.png)
 
 ## Overview
-SkyLei is a game that presents a unique twist in the world of speed running games by focusing on slowing down.
+[SkyLei](https://docs.google.com/document/d/1Ktms7R8Q_NFXl61THuaZg5ugdS3S1yB7YlfEAdG3e6E/edit) is a game that presents a unique twist in the world of speed running games by focusing on slowing down.
 
 In a world that is shattered to pieces and taken to islands in the sky, SkyLei follows the exhilarating plight of Leilani Leaf through a colorless, once beautiful world. Primary gameplay consists of racing around and exploring a surreal-dreamlike world with physics-based movement. The levels of the world add new features that inspire new routes and discovery of the world. This adds challenge and enjoyment to players of any skill-level. At the very end of each level, Leilani brings color back to the world when she discovers the beauty of all that surrounds her. 
 
@@ -84,17 +84,6 @@ tab to unlock cursor to interact with the gui
 
 ![image](https://github.com/kevinsadi/lei3d/assets/34428034/a5e09d77-9d18-467e-a7a4-339d13dfaf77)
 
-
 https://github.com/kevinsadi/lei3d/assets/34428034/03b79d4f-4c9a-4242-a1af-bd24f0827ae5
 
-
-
 https://github.com/kevinsadi/lei3d/assets/34428034/15107ca3-2cdf-4669-b7b0-aa62eae0ce57
-
-
-
-
-
-
-
-
