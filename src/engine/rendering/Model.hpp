@@ -14,7 +14,7 @@
 #include "core/Component.hpp"
 #include "rendering/Shader.hpp"
 #include "rendering/Mesh.hpp"
-#include "logging/Log.hpp";
+#include "logging/Log.hpp"
 
 namespace lei3d
 {

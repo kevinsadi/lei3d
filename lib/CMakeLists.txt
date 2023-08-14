@@ -107,6 +107,9 @@ FetchContent_Declare(
 )
 
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_WARNINGS_AS_ERRORS OFF CACHE INTERNAL "" FORCE)
+set(ASSIMP_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE INTERNAL "" FORCE)
 
 FetchContent_GetProperties(assimp)
 if(NOT assimp_POPULATED)
@@ -250,4 +253,40 @@ if(NOT bullet_POPULATED)
     export(EXPORT Bullet3Targets
         FILE "${CMAKE_CURRENT_BINARY_DIR}/Bullet3Targets.cmake"
     )
+endif()
+
+#-------------------------------------------------------------------------------------
+
+FetchContent_Declare(
+    miniaudio
+    GIT_REPOSITORY  https://github.com/mackron/miniaudio.git
+    GIT_TAG         master
+    GIT_SHALLOW     TRUE
+    GIT_PROGRESS    TRUE
+)
+FetchContent_GetProperties(miniaudio)
+if(NOT miniaudio_POPULATED)
+    FetchContent_Populate(miniaudio)
+    message("Fetching miniaudio")
+
+    add_library(miniaudio INTERFACE ${miniaudio_SOURCE_DIR}/miniaudio.h)
+    target_include_directories(miniaudio INTERFACE ${miniaudio_SOURCE_DIR})
+endif()
+
+#-------------------------------------------------------------------------------------
+
+FetchContent_Declare(
+    miniaudio
+    GIT_REPOSITORY  https://github.com/mackron/miniaudio.git
+    GIT_TAG         master
+    GIT_SHALLOW     TRUE
+    GIT_PROGRESS    TRUE
+)
+FetchContent_GetProperties(miniaudio)
+if(NOT miniaudio_POPULATED)
+    FetchContent_Populate(miniaudio)
+    message("Fetching miniaudio")
+
+    add_library(miniaudio INTERFACE ${miniaudio_SOURCE_DIR}/miniaudio.h)
+    target_include_directories(miniaudio INTERFACE ${miniaudio_SOURCE_DIR})
 endif()
