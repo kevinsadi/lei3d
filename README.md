@@ -1,38 +1,33 @@
+# lei3D
 ![lei3d logo](screenshots/lei.png)
-# lei3d
 
-lei3d is a graphics engine I'm developing using OpenGL and C++. It's express purpose has been to model 3D terrain generation through GANs and as the properietary engine for the game SkyLei.
+## About
+This is a dual repo to support the custom game engine Lei3D and the game that implements it, SkyLei.  
 
-lei3d has originally been created using Visual Studio 2022 on Windows. It has been tested on other platforms, to compile, please follow the instructions below to use CMake to create a build for whatever system you are currently running on. 
-
-## File Structure
-```
-lei3d/
-├─ data/                   # assets
-│  ├─ shaders/                 # all the shaders for the engine
-│  ├─ textures/                # any necessary textures
-├─ lib/                    # Cmake pulls in any necessary requirements
-├─ screenshots/            # screenshots for the readme
-├─ src/                    # main meat of the code
-│  ├─ include/                 # All the header files are here            
-│  │  ├─ engine/ 
-│  │  │  ├─ Engine.hpp/            # Initialization, Loading, and main render loop logic
-│  │  │  ├─ FlyCamera.hpp/         # Flight Camera, soon will have FPS camera
-│  │  │  ├─ Shader.hpp/            # Shader code
-│  │  ├─ pcg/ 
-│  │  │  ├─ PCGHelpers.hpp/        # Helpers to create PCG meshes
-│  ├─ engine/              # All the source files are here
-│  │  ├─ Engine.cpp          
-│  │  ├─ FlyCamera.cpp
-│  │  ├─ main.cpp   
-│  │  ├─ PCGHelpers.cpp        
-│  │  ├─ Shader.cpp
-│  ├─ lib/                 # More necessary requirements for engine
-
-├─ README.md
-```
+## Features
+* Build System for Windows, Mac, Linux - CMake
+* Rendering of meshes and scenes - Assimp
+  * Support imports from Blender in .obj format
+* Physics, Quake-like air strafing and bunny hopping. Rigid Body Collisions - Bullet3
+* GUI and dev tools - imgui
+  * Level Editor
+  * User Interface
+  * Frames Per Second (FPS) counter
+  * Frame Limiter
+  * Level Switching
+  * Scene Edit/Play mode & Pausing/Resetting Levels
+* Player Controller / Input System
+* Entity Component System (ECS)
+  * Includes naming for entities
+* Forward Rendering 
+  * Point Lights
+  * Multi-Render Passes
+  * Shadows and Post Processing 
+  * Skybox Rendering
 
 ## Build
+
+lei3d has originally been created using Visual Studio 2022 on Windows. It has been tested on other platforms, to compile, please follow the instructions below to use CMake to create a build for whatever system you are currently running on. 
 
 ### Windows
 1) Download [CMake](https://cmake.org/download/). Ensure to set Cmake available on path to all users.
@@ -62,7 +57,7 @@ lei3d/
 6) cd `/src/engine`
 7) `./lei3d`
 
-## Requirements
+## requirements
 Graphics card that support OpenGL 4.6
 
 * GLFW library - https://www.glfw.org
@@ -71,9 +66,13 @@ Graphics card that support OpenGL 4.6
 * stb image library - https://github.com/nothings/stb/blob/master/stb_image.h
 
 # SkyLei - Surf The Sky Islands
-SkyLei is a first person 3D surfing game heavily inspired by the airstrafing mechanic born out of the Quake Engine. 
+![SkyLei logo](screenshots/SkyLei.png)
 
-In a world that is shattered to pieces and taken to islands in the sky, SkyLei follows the exhilarating plight of Leilani Leaf through a colorless, apocalyptic world. As a part of the SkyLeis, a group of vigilante freedom fighters, Leilani’s objective is to fly around the world and bring color back to the environment. Primary gameplay consists of surfing through the world as quickly as possible using lei's embued with magical powers, and successfully bringing color and life back to each level of the world!
+## Overview
+SkyLei is a game that presents a unique twist in the world of speed running games by focusing on slowing down.
+
+In a world that is shattered to pieces and taken to islands in the sky, SkyLei follows the exhilarating plight of Leilani Leaf through a colorless, once beautiful world. Primary gameplay consists of racing around and exploring a surreal-dreamlike world with physics-based movement. The levels of the world add new features that inspire new routes and discovery of the world. This adds challenge and enjoyment to players of any skill-level. At the very end of each level, Leilani brings color back to the world when she discovers the beauty of all that surrounds her. 
+
 
 ## Controls:
 WASD - movement 
@@ -81,7 +80,7 @@ look around the scene by moving mouse
 tab to unlock cursor to interact with the gui
 
 
-## Screenshots
+## Showcase
 
 
 https://github.com/kevinsadi/lei3d/assets/34428034/aa5ea3b3-0151-4f35-8f73-911fa94d8c9a
