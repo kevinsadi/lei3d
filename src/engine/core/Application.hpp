@@ -43,6 +43,8 @@ namespace lei3d
     private:
         static Application* s_Instance;
 
+        const unsigned int screenWidth = 1200;
+        const unsigned int screenHeight = 1000;
         GLFWwindow* m_Window = nullptr;
 
         //PlaneMesh* groundPlane = nullptr;   //TODO: Convert this to entity or get rid of it.

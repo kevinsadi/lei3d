@@ -85,7 +85,7 @@ namespace lei3d
                 }
             }
 
-            LEI_ERROR("Could not find component.");
+            //LEI_ERROR("Could not find component.");
             return nullptr;
         }
         

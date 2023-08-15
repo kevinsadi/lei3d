@@ -94,21 +94,17 @@ namespace lei3d {
         glClearColor(0.f, 0.f, 0.f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1200.0f / 1000.0f, 0.1f, 400.0f);
+        glm::mat4 projection = camera.GetProj();
         forwardShader.setUniformMat4("projection", projection);
         glm::mat4 view = camera.GetView();
         forwardShader.setUniformMat4("view", view);
 
-        glm::mat4 model = glm::mat4(1.0f);
-//    model = glm::scale(model, object.transform.scale);
-//    model = glm::translate(model, object.transform.position);
-        forwardShader.setUniformMat4("model", model);
-
         forwardShader.setVec3("camPos", camera.GetPosition());
 
-//        forwardShader.setVec3("dirLight.direction", directionalLight.direction);
-//        forwardShader.setVec3("dirLight.color", directionalLight.color);
-//        forwardShader.setFloat("dirLight.intensity", directionalLight.intensity);
+        // TODO: mock light parameters
+        forwardShader.setVec3("dirLight.direction", {0.1, -0.5, -0.45});
+        forwardShader.setVec3("dirLight.color", {1.f, 1.f, 1.f});
+        forwardShader.setFloat("dirLight.intensity", 1.f);
 
         for (auto& obj : objects) {
             obj->Draw(&forwardShader);
@@ -124,7 +120,7 @@ namespace lei3d {
         skyBox.skyboxShader.bind();
         glm::mat4 view = glm::mat4(glm::mat3(camera.GetView()));
         skyBox.skyboxShader.setUniformMat4("view", view);
-        glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1200.0f / 1000.0f, 0.1f, 400.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)scwidth / (float)scheight, 0.1f, 400.0f);
         skyBox.skyboxShader.setUniformMat4("projection", projection);
         // -- render the skybox cube
         GLCall(glBindVertexArray(skyBox.skyboxVAO));

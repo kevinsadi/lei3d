@@ -93,9 +93,6 @@ namespace lei3d
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-        int screenWidth = 1200;
-        int screenHeight = 1000;
-
         m_Window = glfwCreateWindow(screenWidth, screenHeight, "lei3d", NULL, NULL);
         if (m_Window == NULL)
         {

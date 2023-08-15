@@ -75,17 +75,17 @@ void main() {
     }
 
     vec3 lightColor = dirLight.color * dirLight.intensity;
-    vec3 outColor = lightColor * albedo.rgb;
-    float NdotL = dot(-dirLight.direction, N);
+    vec3 combColor = lightColor * albedo.rgb;
+    float NdotL = max(dot(-dirLight.direction, N), 0);
     vec4 thresholds = vec4(0.25, 0.5, 0.95, 1);
     vec4 res = step(NdotL, thresholds);
     int layer = 3 - int(res.x + res.y + res.z + res.w);
-    outColor = outColor * toon_factors[layer];
+    vec3 outColor = combColor * toon_factors[layer];
     FragOut = outColor;
 
     // TODO: temporary, mock position and radius of color source
     vec3 srcPos = vec3(0, 0.5, 1.2);
-    float srcR = 1.5;
+    float srcR = 100;
     float distToSrc = distance(srcPos, FragPos);
     float satFactor = clamp(inverseLerp(distToSrc, srcR + 0.5, srcR), 0, 1);
     SaturationOut = vec3(satFactor);

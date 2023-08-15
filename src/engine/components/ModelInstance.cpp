@@ -18,7 +18,7 @@ namespace lei3d
 
     void ModelInstance::Draw(Shader* shader) {
         glm::mat4 model = m_Entity->GetModelMat();
-        shader->setUniformMat4("u_Model", model);
+        shader->setUniformMat4("model", model);
         
         if (m_Model) {
             m_Model->Draw(*shader);
