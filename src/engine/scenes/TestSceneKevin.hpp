@@ -12,6 +12,8 @@
 
 #include "physics/PhysicsWorld.hpp"
 
+#include "audio/AudioPlayer.hpp"
+
 namespace lei3d {
     class Entity;
     class Model;
@@ -31,5 +33,6 @@ namespace lei3d {
     private:
         std::unique_ptr<Model> backpackModel;
         std::unique_ptr<Model> playgroundModel;
+        std::unique_ptr<AudioPlayer> m_AudioPlayer;
     };
 }

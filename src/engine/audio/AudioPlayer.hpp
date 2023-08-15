@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include "miniaudio.h"
 #include "logging/Log.hpp"
 
 namespace lei3d

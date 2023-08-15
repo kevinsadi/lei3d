@@ -1,6 +1,4 @@
 #define MINIAUDIO_IMPLEMENTATION
-#include "miniaudio.h"
-
 #include "audio/AudioPlayer.hpp"
 
 namespace lei3d
