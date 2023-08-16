@@ -116,12 +116,15 @@ namespace lei3d {
 
     void RenderSystem::environmentPass(const SkyBox& skyBox, FlyCamera& camera) {
         glEnable(GL_DEPTH_TEST);
-        GLCall(glDepthFunc(GL_LEQUAL)); // we change the depth function here to it passes when testingdepth value is equal to what is current stored
+        GLCall(glDepthFunc(GL_LEQUAL)); // we change the depth function here to it passes when testing depth value is equal to what is current stored
         skyBox.skyboxShader.bind();
         glm::mat4 view = glm::mat4(glm::mat3(camera.GetView()));
         skyBox.skyboxShader.setUniformMat4("view", view);
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)scwidth / (float)scheight, 0.1f, 400.0f);
         skyBox.skyboxShader.setUniformMat4("projection", projection);
+        glm::mat4 model = glm::identity<glm::mat4>();
+        skyBox.skyboxShader.setUniformMat4("model", model);
+        skyBox.skyboxShader.setInt("skyboxSampler", 0);
         // -- render the skybox cube
         GLCall(glBindVertexArray(skyBox.skyboxVAO));
         GLCall(glActiveTexture(GL_TEXTURE0)); //! could be the problem
