@@ -103,7 +103,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd D:\\Art\\3D Art\\Blender\\SkyLei\\Floor\\FloorTexture.png
+map_Kd FloorTexture.png
 
 newmtl None
 Ns 500

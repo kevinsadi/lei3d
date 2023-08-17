@@ -2,9 +2,9 @@
 out vec4 FragColor;
 
 in vec3 TexCoords; // direction vector representing a 3D texture coordinate
-uniform samplerCube u_TexSkybox; // cubemap texture sampler
+uniform samplerCube skyboxSampler; // cubemap texture sampler
 
 void main()
 {
-    FragColor = texture(u_TexSkybox, TexCoords);
+    FragColor = texture(skyboxSampler, TexCoords);
 }

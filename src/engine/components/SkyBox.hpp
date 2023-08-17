@@ -15,7 +15,6 @@
 
 namespace lei3d
 {
-    class Component;
 
     class SkyBox : public Component
     {
