@@ -1,5 +1,6 @@
 #include "SkyBox.hpp"
 
+#include "core/SceneManager.hpp"
 #include "logging/GLDebug.hpp"
 
 namespace lei3d

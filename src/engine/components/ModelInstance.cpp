@@ -4,7 +4,7 @@
 
 namespace lei3d
 {
-    ModelInstance::ModelInstance(Entity* entity) : Component(entity)
+    ModelInstance::ModelInstance(Entity& entity) : Component(entity)
     {      
     }
 
@@ -17,7 +17,7 @@ namespace lei3d
     }
 
     void ModelInstance::Draw(Shader* shader) {
-        glm::mat4 model = m_Entity->GetModelMat();
+        glm::mat4 model = m_Entity.GetModelMat();
         shader->setUniformMat4("model", model);
         
         if (m_Model) {

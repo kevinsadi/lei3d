@@ -1,4 +1,6 @@
 #include "StaticCollider.hpp"
+
+#include "core/SceneManager.hpp"
 #include "logging/Log.hpp"
 
 namespace lei3d

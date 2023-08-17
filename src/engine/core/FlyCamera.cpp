@@ -20,7 +20,7 @@ namespace lei3d
       glfwGetWindowSize(window, &screenWidth, &screenHeight);
       m_PrevX = screenWidth / 2.0f;  
       m_PrevY = screenHeight / 2.0f; 
-      m_Aspect = (float) screenWidth / screenHeight;
+      m_Aspect = static_cast<float>(screenWidth) / static_cast<float>(screenHeight);
 
       m_CameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
       m_CameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -139,12 +139,10 @@ namespace lei3d
 
     glm::mat4 FlyCamera::GetProj()
     {
-        int screenWidth, screenHeight;
-        glfwGetWindowSize(window, &screenWidth, &screenHeight);
-        return glm::perspective(glm::radians(m_FOVDeg), (float)screenWidth / (float)screenHeight, m_NearPlane, m_FarPlane);
+        return glm::perspective(glm::radians(m_FOVDeg), m_Aspect, m_NearPlane, m_FarPlane);
     }
 
     glm::vec3 FlyCamera::GetPosition() {
-        return cameraPos;
+        return m_CameraPos;
     }
 }
