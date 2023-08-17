@@ -1,6 +1,6 @@
 #include "TestSceneKevin.hpp"
 
-#include "components/ModelRenderer.hpp"
+#include "components/ModelInstance.hpp"
 
 #include "logging/GLDebug.hpp"
 
@@ -31,8 +31,8 @@ namespace lei3d {
         //BACKPACK (Character) ---------------------
         Entity& backpackObj = AddEntity("Backpack");
 
-        ModelRenderer* modelRender = backpackObj.AddComponent<ModelRenderer>();
-        modelRender->Init(backpackModel.get(), m_MainShader.get());
+        ModelInstance* modelRender = backpackObj.AddComponent<ModelInstance>();
+        modelRender->Init(backpackModel.get());
         backpackObj.SetScale(glm::vec3(1.f, 1.f, 1.f));
         backpackObj.SetPosition(glm::vec3(0.f, 200.f, 0.f));
 
@@ -42,8 +42,8 @@ namespace lei3d {
         //PHYSICS PLAYGROUND---------------------
         Entity& physicsPlaygroundObj = AddEntity("Physics Playground");
 
-        ModelRenderer* playgroundRender = physicsPlaygroundObj.AddComponent<ModelRenderer>();
-        playgroundRender->Init(playgroundModel.get(), m_MainShader.get());
+        ModelInstance* playgroundRender = physicsPlaygroundObj.AddComponent<ModelInstance>();
+        playgroundRender->Init(playgroundModel.get());
         physicsPlaygroundObj.SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
         physicsPlaygroundObj.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 

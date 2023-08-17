@@ -106,7 +106,6 @@ namespace lei3d
             1.0f, -1.0f,  1.0f
         };
 
-
         unsigned int skyboxVAO, skyboxVBO;
         GLCall(glGenVertexArrays(1, &skyboxVAO));
         GLCall(glGenBuffers(1, &skyboxVBO));
@@ -118,7 +117,6 @@ namespace lei3d
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
         GLCall(glBindVertexArray(0));
 
-        this->skyboxShader = skyboxShader;
         this->cubeMapTexture = textureID;
         this->skyboxVAO = skyboxVAO;
         this->skyboxVBO = skyboxVBO;

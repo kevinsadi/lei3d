@@ -11,10 +11,10 @@
 #include <stb_image.h>
 #endif
 
-#include "core/Component.hpp"
 #include "rendering/Shader.hpp"
 #include "rendering/Mesh.hpp"
-#include "logging/Log.hpp";
+#include "logging/Log.hpp"
+#include "BulletCollision/CollisionShapes/btTriangleMesh.h"
 
 namespace lei3d
 {
@@ -27,7 +27,10 @@ namespace lei3d
         std::vector<Mesh> m_Meshes;
         std::string m_Directory;
         std::vector<Texture> m_TexturesLoaded;
-    public:   
+    public:
+        std::vector<std::shared_ptr<Texture>> textures;
+        std::vector<std::shared_ptr<Material>> materials;
+
         Model(const std::string& modelPath);
         ~Model();
 
@@ -35,10 +38,12 @@ namespace lei3d
 
         std::vector<btTriangleMesh*> GetCollisionMeshes() const;
     private:
+
+        void loadMaterials(const aiScene* scene);
         void loadModel(const std::string& path);
         void processNode(aiNode *node, const aiScene *scene);
         Mesh processMesh(aiMesh *mesh, const aiScene *scene);
-        std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, const std::string& typeName);
+        std::shared_ptr<Texture> loadMaterialTexture(const aiMaterial *mat, aiTextureType type, const std::string& typeName);
     };
 
     //TODO: Use Abstract Texture in "Texture.cpp"

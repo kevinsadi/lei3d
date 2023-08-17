@@ -4,7 +4,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "core/Application.hpp"
 #include "core/Entity.hpp"
 #include "core/FlyCamera.hpp"
 
@@ -13,6 +12,7 @@
 #include <memory>
 #include <unordered_map>
 #include <vector>
+#include <unordered_map>
 
 namespace lei3d
 {
@@ -21,10 +21,13 @@ namespace lei3d
     class FlyCamera;
     class PhysicsWorld;
     class Shader;
+    class RenderSystem;
 
     class Scene
     {
     private:
+        friend RenderSystem;
+
         std::vector<std::unique_ptr<Entity>> m_Entities;
         std::unordered_map<std::string, int> m_EntityNameCounts;
     protected:

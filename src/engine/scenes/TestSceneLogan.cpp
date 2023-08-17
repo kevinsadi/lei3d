@@ -1,6 +1,6 @@
 #include "TestSceneLogan.hpp"
 
-#include "components/ModelRenderer.hpp"
+#include "components/ModelInstance.hpp"
 
 #include "logging/GLDebug.hpp"
 
@@ -32,16 +32,16 @@ namespace lei3d {
         //BACKPACK ---------------------
         Entity& backpackObj = AddEntity("Backpack");
 
-        ModelRenderer* modelRender = backpackObj.AddComponent<ModelRenderer>();
-        modelRender->Init(backpackModel.get(), m_MainShader.get());
+        ModelInstance* modelRender = backpackObj.AddComponent<ModelInstance>();
+        modelRender->Init(backpackModel.get());
         backpackObj.SetScale(glm::vec3(1.25f, 1.25f, 1.25f));
         backpackObj.SetPosition(glm::vec3(0.f, 0.f, 0.f));
 
         //BACKPACK 2 ---------------------
         Entity& backpackObj2 = AddEntity("Backpack");
          
-        ModelRenderer* modelRender2 = backpackObj2.AddComponent<ModelRenderer>();
-        modelRender2->Init(backpackModel.get(), m_MainShader.get());
+        ModelInstance* modelRender2 = backpackObj2.AddComponent<ModelInstance>();
+        modelRender2->Init(backpackModel.get());
         backpackObj2.SetScale(glm::vec3(0.25f, 0.25f, 0.25f));
         backpackObj2.SetPosition(glm::vec3(10.f, 0.f, 0.f));       
         

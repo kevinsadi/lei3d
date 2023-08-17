@@ -1,6 +1,7 @@
 #include "core/Scene.hpp"
 
 #include "logging/GLDebug.hpp"
+#include "core/Application.hpp"
 
 namespace lei3d {
 	Scene::Scene() {

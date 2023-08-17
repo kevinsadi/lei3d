@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-#include "core/Application.hpp"
+struct GLFWwindow;
 
 namespace lei3d
 {
@@ -41,6 +41,7 @@ namespace lei3d
 
         glm::mat4 GetView();
         glm::mat4 GetProj();
+        glm::vec3 GetPosition();
 
         void cameraMouseCallback(double xPosInput, double yPosInput);
         void PollCameraMovementInput();

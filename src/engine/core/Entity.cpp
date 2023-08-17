@@ -3,6 +3,8 @@
 #include "logging/Log.hpp"
 #include "logging/LogGLM.hpp"
 
+#include <imgui.h>
+
 namespace lei3d
 {
     Entity::Entity()

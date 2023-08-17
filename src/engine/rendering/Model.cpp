@@ -24,7 +24,7 @@ namespace lei3d
     void Model::loadModel(const std::string& path)
     {
         Assimp::Importer importer;
-        const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_CalcTangentSpace | aiProcess_FlipUVs);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
         {
@@ -34,10 +34,10 @@ namespace lei3d
         }
         m_Directory = path.substr(0, path.find_last_of('/'));
 
+        loadMaterials(scene);
         processNode(scene->mRootNode, scene);
     }
 
-    // REFER BACK TO THIS WHEN WE ARE MAKING ECS
     void Model::processNode(aiNode* node, const aiScene* scene)
     {
         // process node's meshes
@@ -63,12 +63,11 @@ namespace lei3d
     {
         std::vector<Vertex> vertices;
         std::vector<unsigned int> indices;
-        std::vector<Texture> textures;
 
         // process vertices from assimp to our own mesh component
         for (unsigned int i = 0; i < mesh->mNumVertices; i++)
         {
-            Vertex vertex;
+            Vertex vertex{};
 
             glm::vec3 pos;
             pos.x = mesh->mVertices[i].x;
@@ -97,6 +96,11 @@ namespace lei3d
                 vertex.TexCoords = glm::vec2(0.0f, 0.0f);  
             }
 
+            if (mesh->mTangents) {
+                glm::vec3 tangent(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
+                vertex.Tangent = tangent;
+            }
+
             vertices.push_back(vertex);
         }
 
@@ -111,60 +115,52 @@ namespace lei3d
         }
 
         // finally load all the materials we want
+        std::shared_ptr<Material> material = nullptr;
         if(mesh->mMaterialIndex >= 0)
         {
-            // here is where our assumption of sampler names matters when we create our mesh
-            // create materials
-            aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex]; // refer to assimp data structures
+            material = materials[mesh->mMaterialIndex];
+        }
 
-            // this is a bit wonky, we're gonna have to experiment with this as we import more detailed meshes. ***BLENDER_USERS***
-            // 1. diffuse maps
-            std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-            textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-            // 2. specular maps
-            std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-            textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-            // 3. normal maps
-            std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
-            textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-            // 4. height maps
-            std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-            textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
-        }  
-        
         // return a mesh object created from the extracted mesh data
-        return Mesh(vertices, indices, textures);
+        return {vertices, indices, material};
     }
 
     // get the materials that we want from the assimp mat and convert it to textures array that is returned
-    std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& typeName)
+    std::shared_ptr<Texture> Model::loadMaterialTexture(const aiMaterial *mat, aiTextureType type, const std::string& typeName)
     {
-        std::vector<Texture> textures;
-        for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+        std::shared_ptr<Texture> texture;
+
+        if (mat->GetTextureCount(type) < 1) {
+            // no textures of this type
+            return nullptr;
+        }
+        if (mat->GetTextureCount(type) > 1) {
+            std::cout << "Found more than 1 texture for type " << aiTextureTypeToString(type) << " in material " << mat->GetName().C_Str() << "\n";
+        }
+
+        // only select the first texture
+        aiString str;
+        mat->GetTexture(type, 0, &str);
+
+        bool skip = false;
+        for (const auto& tex : textures) // for every texture we've loaded so far
         {
-            aiString str;
-            mat->GetTexture(type, i, &str);
-
-            bool skip = false;
-            for (unsigned int j = 0; j < m_TexturesLoaded.size(); j++) // for every texture we've loaded so far
+            if (std::strcmp(str.C_Str(), tex->path.c_str()) == 0)
             {
-                if (std::strcmp(str.C_Str(), m_TexturesLoaded[j].path.c_str()) == 0)
-                {
-                    skip = true;
-                }
-            }
-
-            if (!skip)
-            {
-                Texture texture;
-                texture.id = TextureFromFile(str.C_Str(), m_Directory);
-                texture.type = typeName;
-                texture.path = str.C_Str();
-                textures.push_back(texture);
-                m_TexturesLoaded.push_back(texture);
+                skip = true;
             }
         }
-        return textures;
+
+        if (!skip)
+        {
+            texture = std::make_shared<Texture>();
+            texture->id = TextureFromFile(str.C_Str(), m_Directory);
+            texture->type = typeName;
+            texture->path = str.C_Str();
+            textures.push_back(texture);
+        }
+
+        return texture;
     }
 
     /**
@@ -179,7 +175,7 @@ namespace lei3d
     {
         std::vector<btTriangleMesh*> collisionMeshList;
 
-        for (Mesh mesh : m_Meshes)
+        for (const Mesh& mesh : m_Meshes)
         {
             btTriangleMesh* curCollisionMesh = new btTriangleMesh();
 
@@ -201,7 +197,49 @@ namespace lei3d
         }
 
         return collisionMeshList;
-    }    
+    }
+
+    void Model::loadMaterials(const aiScene *scene) {
+        for (size_t i = 0; i < scene->mNumMaterials; i++) {
+            const aiMaterial* aimaterial = scene->mMaterials[i];
+
+            std::shared_ptr<Material> newMaterial = std::make_shared<Material>();
+
+            aiColor3D color;
+            if (aimaterial->Get(AI_MATKEY_BASE_COLOR, color) == AI_SUCCESS) {
+                newMaterial->albedo = glm::vec3(color.r, color.g, color.b);
+            }
+            if (aimaterial->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS) {
+                newMaterial->albedo = glm::vec3(color.r, color.g, color.b);
+            }
+
+            if (aimaterial->Get(AI_MATKEY_METALLIC_FACTOR, newMaterial->metallic) != AI_SUCCESS) {
+                aimaterial->Get(AI_MATKEY_SPECULAR_FACTOR, newMaterial->metallic);
+            }
+            if (aimaterial->Get(AI_MATKEY_ROUGHNESS_FACTOR, newMaterial->roughness) != AI_SUCCESS) {
+                if (aimaterial->Get(AI_MATKEY_GLOSSINESS_FACTOR, newMaterial->roughness) == AI_SUCCESS) {
+                    newMaterial->roughness = 1 - newMaterial->roughness;
+                }
+            }
+
+            newMaterial->albedo_texture = loadMaterialTexture(aimaterial, aiTextureType_DIFFUSE, "texture_diffuse");
+            newMaterial->metallic_texture = loadMaterialTexture(aimaterial, aiTextureType_METALNESS, "texture_metallic");
+            newMaterial->roughness_texture = loadMaterialTexture(aimaterial, aiTextureType_DIFFUSE_ROUGHNESS, "texture_roughness");
+            newMaterial->ao_texture = loadMaterialTexture(aimaterial, aiTextureType_AMBIENT_OCCLUSION, "texture_ao");
+
+            newMaterial->normal_map = loadMaterialTexture(aimaterial, aiTextureType_NORMALS, "texture_normal");
+            newMaterial->bump_map = loadMaterialTexture(aimaterial, aiTextureType_HEIGHT, "texture_bump");
+
+            newMaterial->use_albedo_map = newMaterial->albedo_texture != nullptr;
+            newMaterial->use_metallic_map = newMaterial->metallic_texture != nullptr;
+            newMaterial->use_roughness_map = newMaterial->roughness_texture != nullptr;
+            newMaterial->use_ao_map = newMaterial->ao_texture != nullptr;
+            newMaterial->use_normal_map = newMaterial->normal_map != nullptr;
+            newMaterial->use_bump_map = newMaterial->bump_map != nullptr;
+
+            materials.push_back(newMaterial);
+        }
+    }
 
     // from https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/model.h
     unsigned int TextureFromFile(const char* path, const std::string& directory, bool gamma)

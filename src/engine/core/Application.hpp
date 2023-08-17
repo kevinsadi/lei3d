@@ -15,9 +15,10 @@
 #include "core/SceneManager.hpp"
 
 #include "guitools/AppGUI.hpp"
+#include "rendering/RenderSystem.hpp"
 
 namespace lei3d
-{
+{ 
     class AppGUI;
     class SceneManager;
 
@@ -26,10 +27,14 @@ namespace lei3d
     private:
         static Application* s_Instance;
 
+        const unsigned int screenWidth = 1200;
+        const unsigned int screenHeight = 1000;
         GLFWwindow* m_Window = nullptr;
         
         std::unique_ptr<AppGUI> m_AppGUI;
         std::unique_ptr<SceneManager> m_SceneManager;
+
+        RenderSystem renderer;
 
         //NOTE: Don't modify this directly. Use SetUIActive.
         bool m_UIActive = false;
