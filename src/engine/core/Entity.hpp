@@ -34,23 +34,20 @@ namespace lei3d
         std::string m_Name;
     public:
         Transform m_Transform;
-        Shader* m_Shader = nullptr;
 
         Entity();
-        Entity(std::string name);
+        Entity(const std::string& name);
 
         ~Entity();
 
         void Start();
-        void Update(float deltaTime);
-        void PhysicsUpdate(float deltaTime);
+        void Update();
+        void PhysicsUpdate();
         void Render();
         void OnDestroy();
 
-        void SetPosition(glm::vec3 translation);
-        void SetScale(glm::vec3 scale);
-
-        void SetShader(Shader* shader);
+        void SetPosition(const glm::vec3& position);
+        void SetScale(const glm::vec3& scale);
 
         glm::mat4 GetTranslationMat();
         glm::mat4 GetRotationMat();
@@ -85,7 +82,7 @@ namespace lei3d
                 }
             }
 
-            LEI_ERROR("Could not find component.");
+            //LEI_ERROR("Could not find component.");
             return nullptr;
         }
         
@@ -99,7 +96,7 @@ namespace lei3d
             //If this is hitting, check that your component is using "public" for inheritance.
             static_assert(std::is_convertible<C, Component>::value, "C must be a component type.");
 
-            std::unique_ptr<C> c = std::make_unique<C>(this);
+            std::unique_ptr<C> c = std::make_unique<C>(*this);
             m_Components.push_back(std::move(c));
             //The element was just added at the back of the component list, so we retrieve it from the back here. 
             //Note: We cannot use c since it got moved into the list.

@@ -1,12 +1,7 @@
 #include "AppGUI.hpp"
 
 namespace lei3d {
-    void AppGUI::AddScene(std::string name, const Scene& scene)
-    {
-
-    }
-
-	void AppGUI::RenderUI() {
+	void AppGUI::RenderUI() const {
 
         if (m_ShowDemoWindow) 
         {
@@ -55,32 +50,29 @@ namespace lei3d {
         {
             static int selectedScene = 0;
             int sceneI = 0;
-            for (auto& sceneInfo : Application::Curr()->GetScenes())
+            for (std::string& name : SceneManager::GetSceneNames())
             {
-                std::string name = sceneInfo.first;
-                Scene* scene = sceneInfo.second.get();
-
-                int oldSelectedScene = selectedScene;
+                const int oldSelectedScene = selectedScene;
                 if (ImGui::RadioButton(name.c_str(), &selectedScene, sceneI))
                 {
                     if (selectedScene != oldSelectedScene)
                     {
-                        Application::Curr()->ChangeScenes(scene);
+                        SceneManager::SetScene(name);
                     }
                 }
                 sceneI++;
             }
         }
 
-        Scene* scene = Application::Curr()->ActiveScene();
-        if (scene != nullptr && ImGui::CollapsingHeader("Scene Data"));
+        Scene& scene = SceneManager::ActiveScene();
+        if (ImGui::CollapsingHeader("Scene Data"));
         {
-            scene->ImGUIRender();
+            scene.ImGUIRender();
         }
 
         if (ImGui::CollapsingHeader("Game Info"))
         {
-            ImGui::Text("fps = %f", 1.0f / Application::Curr()->DeltaTime());
+            ImGui::Text("fps = %f", 1.0f / Application::DeltaTime());
         }
 
         ImGui::SetWindowSize(ImVec2(400, 400), ImGuiCond_Once);

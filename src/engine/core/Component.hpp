@@ -2,7 +2,7 @@
 
 #include "Entity.hpp"
 
-#include "scenes/Scene.hpp"
+#include "core/Scene.hpp"
 
 #include <string>
 
@@ -20,16 +20,14 @@ namespace lei3d
     class Component
     {
     protected:
-        Entity* m_Entity;
+        Entity& m_Entity;
     public:
-        Component(Entity* entity);
+        Component(Entity& entity);
 
         virtual void Start() {}
-        virtual void Update(float deltaTime) {}
-        virtual void PhysicsUpdate(float deltaTime) {}
+        virtual void Update() {}
+        virtual void PhysicsUpdate() {}
         virtual void Render() {}
         virtual void OnDestroy() {}
-
-        Scene& ActiveScene();
     };
 }

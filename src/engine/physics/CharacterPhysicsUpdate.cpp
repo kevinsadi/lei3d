@@ -36,7 +36,7 @@ namespace lei3d
         glm::vec3 wishdir{0.0f, 0.0f, 0.0f};
 
         // here is where we apply our constraints during the update
-        GLFWwindow* window = Application::Curr()->Window();
+        GLFWwindow* window = Application::Window();
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         {
             wishdir = wishdir + glm::vec3(1.0, 0.0, 0.0);
@@ -86,7 +86,7 @@ namespace lei3d
     glm::vec3 CharacterPhysicsUpdate::Accelerate(glm::vec3 wishDir, glm::vec3 prevVel, float acceleration, float maxVelocity)
     {
         float projectedSpeed = glm::dot(prevVel, wishDir);
-        float wishSpeed = acceleration * Application::Curr()->DeltaTime(); // this is the wish speed (MIGHT NEED DELTA TIME TO FIX THIS????
+        float wishSpeed = acceleration * Application::DeltaTime(); // this is the wish speed (MIGHT NEED DELTA TIME TO FIX THIS????
         
         // If necessary, truncate the new speed so it doesn't exceed max velocity
         if (projectedSpeed + wishSpeed > maxVelocity) {
@@ -106,7 +106,7 @@ namespace lei3d
         float speed = glm::length(prevVelocity);
         if (speed != 0)
         {
-            float drop = speed * m_friction * Application::Curr()->DeltaTime(); // THIS MIGHT HAVE TO BE MULTIPLIED BY DELTA TIME??
+            float drop = speed * m_friction * Application::DeltaTime(); // THIS MIGHT HAVE TO BE MULTIPLIED BY DELTA TIME??
             prevVelocity *= std::max(speed - drop, 0.0f) / speed; // Friction fall off
         }
 

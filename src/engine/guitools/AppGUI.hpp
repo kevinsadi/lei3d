@@ -12,7 +12,6 @@ namespace lei3d {
 	private:
 		bool m_ShowDemoWindow = false;
 	public:
-		void RenderUI();
-		void AddScene(std::string name, const Scene& scene);
+		void RenderUI() const;
 	};
 }

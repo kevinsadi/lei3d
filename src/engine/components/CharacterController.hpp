@@ -11,12 +11,11 @@ namespace lei3d
     class CharacterController : public Component
     {
     public:
-        CharacterController(Entity* entity);
-
-        //std::string GetComponentName() override;
+        CharacterController(Entity& entity);
 
         void Start() override;
-        void PhysicsUpdate(float deltaTime) override;
+        void PhysicsUpdate() override;
+        
         void Init();
     };
 }
