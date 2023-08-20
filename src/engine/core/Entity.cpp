@@ -12,7 +12,7 @@ namespace lei3d
         m_Name = "Unnamed";
     }
 
-    Entity::Entity(std::string name)
+    Entity::Entity(const std::string& name)
     {
         m_Name = name;
     }
@@ -22,18 +22,14 @@ namespace lei3d
         OnDestroy();
     }
 
-    void Entity::SetPosition(glm::vec3 position)
+    void Entity::SetPosition(const glm::vec3& position)
     {
         m_Transform.position = position; 
     }
 
-    void Entity::SetScale(glm::vec3 scale)
+    void Entity::SetScale(const glm::vec3& scale)
     {
         m_Transform.scale = scale;
-    }
-
-    void Entity::SetShader(Shader* shader) {
-        m_Shader = shader;
     }
 
     glm::mat4 Entity::GetTranslationMat() {
@@ -83,15 +79,15 @@ namespace lei3d
         }
     }
 
-    void Entity::Update(float deltaTime) {
+    void Entity::Update() {
         for (auto& component : m_Components) {
-            component->Update(deltaTime);
+            component->Update();
         }
     }
 
-    void Entity::PhysicsUpdate(float deltaTime) {
+    void Entity::PhysicsUpdate() {
         for (auto& component : m_Components) {
-            component->PhysicsUpdate(deltaTime);
+            component->PhysicsUpdate();
         }
     }
 

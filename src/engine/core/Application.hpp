@@ -12,66 +12,53 @@
 #include <map>
 #include <vector>
 
-#include "pcg/PCGHelpers.hpp"
+#include "core/SceneManager.hpp"
 
 #include "guitools/AppGUI.hpp"
-
-#include "scenes/Scene.hpp"
 #include "rendering/RenderSystem.hpp"
 
 namespace lei3d
-{
+{ 
     class AppGUI;
+    class SceneManager;
 
     class Application
     {
-    public:
-        Application();
-        ~Application();
-
-        static Application* Curr();
-
-        void Run(); // Run the app.
-
-        void SetUIActive(bool uiActive);
-        void ChangeScenes(Scene* scene);
-
-        GLFWwindow* Window();
-        const std::vector<std::pair<std::string, std::unique_ptr<Scene>>>& GetScenes();
-        Scene* ActiveScene();
-        float DeltaTime();
     private:
         static Application* s_Instance;
 
         const unsigned int screenWidth = 1200;
         const unsigned int screenHeight = 1000;
         GLFWwindow* m_Window = nullptr;
-
-        //PlaneMesh* groundPlane = nullptr;   //TODO: Convert this to entity or get rid of it.
-        //SceneGUI* m_Menu = nullptr;
-        Scene* m_ActiveScene = nullptr;
-        Scene* m_NextScene = nullptr;
-        //std::map<std::string, std::unique_ptr<Scene>> m_AllScenes;
-        std::vector<std::pair<std::string, std::unique_ptr<Scene>>> m_AllScenes;
+        
         std::unique_ptr<AppGUI> m_AppGUI;
+        std::unique_ptr<SceneManager> m_SceneManager;
 
         RenderSystem renderer;
 
         //NOTE: Don't modify this directly. Use SetUIActive.
         bool m_UIActive = false;
 
-        bool m_SceneChanged = false;    //Flags the app to load another scene in sync with render loop.
-
         float m_LastFrameTime = 0.0f; // used to keep track of delta time
         float m_DeltaTime = 0.0f; //Total time for last frame. 
         float m_DesiredFPS = 120.0f;   //FPS will be capped to this value. (current bug means that the FPS cap is half, not sure why)
+    public:
+        Application();
+        ~Application();
 
-        void Inititalize(); // Start the App
+        void Run(); // Run the app.
+
+        void SetUIActive(bool uiActive);
+
+        static GLFWwindow* Window();
+        static float DeltaTime();
+    private:
+
+        void Initialize(); // Start the App
         void FrameTick();   //Called every frame
-        void LoadScene(Scene* scene);
 
         void Update();
-        void Render(); // render UI and scene
+        void Render();
         void ImGuiRender();
 
         void SetupInputCallbacks();

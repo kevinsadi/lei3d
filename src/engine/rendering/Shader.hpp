@@ -31,7 +31,7 @@ namespace lei3d
 
         void setVec2(const std::string& name, const glm::vec2& value) const;
         void setVec3(const std::string& name, const glm::vec3& value) const;
-        void setUniformMat4(const std::string& name, glm::mat4& matrix) const;
+        void setUniformMat4(const std::string& name, const glm::mat4& matrix) const;
 
 	private:
 		int getUniformLocation(const std::string& name) const;

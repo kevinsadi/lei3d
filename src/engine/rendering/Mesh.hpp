@@ -29,7 +29,7 @@ namespace lei3d
         Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::shared_ptr<Material>& material);
         ~Mesh();
 
-        void Draw(Shader &shader); // taking value by reference for funsies, might switch it up back to pointers
+        void Draw(Shader &shader) const; // taking value by reference for funsies, might switch it up back to pointers
     private:
         unsigned int VAO, VBO, EBO;
 

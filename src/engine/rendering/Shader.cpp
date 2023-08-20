@@ -105,28 +105,35 @@ namespace lei3d
 		GLCall(glUseProgram(0));
 	}
 
-	void Shader::setUniformMat4(const std::string& name, glm::mat4& matrix) const {
+	void Shader::setUniformMat4(const std::string& name, const glm::mat4& matrix) const
+	{
+		bind();
 		GLCall(glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix)));
 	}
 
 	void Shader::setInt(const std::string &name, int value) const {
-        glUniform1i(glGetUniformLocation(m_ShaderID, name.c_str()), value);
+		bind();
+        GLCall(glUniform1i(getUniformLocation(name), value));
     }
 
     void Shader::setBool(const std::string &name, bool value) const {
-        glUniform1i(glGetUniformLocation(m_ShaderID, name.c_str()), (int)value);
+		bind();
+		GLCall(glUniform1i(getUniformLocation(name), static_cast<int>(value)));
     }
 
     void Shader::setFloat(const std::string &name, float value) const {
-        glUniform1f(glGetUniformLocation(m_ShaderID, name.c_str()), value);
+		bind();
+		GLCall(glUniform1f(getUniformLocation(name), value));
     }
 
     void Shader::setVec3(const std::string &name, const glm::vec3 &value) const {
-        glUniform3f(glGetUniformLocation(m_ShaderID, name.c_str()), value.x, value.y, value.z);
+		bind();
+        GLCall(glUniform3f(getUniformLocation(name), value.x, value.y, value.z));
     }
 
     void Shader::setVec2(const std::string &name, const glm::vec2 &value) const {
-        glUniform2f(glGetUniformLocation(m_ShaderID, name.c_str()), value.x, value.y);
+		bind();
+        GLCall(glUniform2f(getUniformLocation(name), value.x, value.y));
     }
 
 	int Shader::getUniformLocation(const std::string& name) const {
@@ -135,7 +142,7 @@ namespace lei3d
 			return it->second;
 		}
 
-		GLCall(int location = glGetUniformLocation(m_ShaderID, name.c_str()));
+		GLCall(const int location = glGetUniformLocation(m_ShaderID, name.c_str()));
 		if (location == -1) {
 			LEI_ERROR("Uniform does not exist: " + name);
 		}

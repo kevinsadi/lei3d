@@ -3,10 +3,6 @@
 
 #include "Application.hpp"
 
-#include "scenes/EmptyScene.hpp"
-#include "scenes/TestSceneKevin.hpp"
-#include "scenes/TestSceneLogan.hpp"
-
 #include "logging/GLDebug.hpp"
 #include "core/FlyCamera.hpp"
 
@@ -33,14 +29,6 @@ namespace lei3d
     {
         s_Instance = nullptr;
 
-        //if (groundPlane)
-        //{
-        //    GLCall(glDeleteBuffers(1, &(groundPlane->planeVAO)));
-        //    GLCall(glDeleteBuffers(1, &(groundPlane->planeEBO)));
-        //    GLCall(glDeleteBuffers(1, &(groundPlane->planeVBO)));
-        //    delete groundPlane;
-        //}
-
         // Shutdown GLFW
         glfwDestroyWindow(m_Window);
         glfwTerminate();
@@ -54,7 +42,7 @@ namespace lei3d
     void Application::Run()
     {
         LEI_TRACE("Initializing Engine");
-        Inititalize();
+        Initialize();
 
         LEI_ASSERT(m_ActiveScene != nullptr, "Please make sure a scene is set before running");
 
@@ -63,11 +51,9 @@ namespace lei3d
         {
             //We need to block frame ticking until the new scene has been loaded
             //Not the most optimal scene loader (may need to look into async loading), but works for now.
-            if (m_SceneChanged)
+            if (m_SceneManager->NeedsSceneSwitch())
             {
-                m_ActiveScene = m_NextScene;
-                LoadScene(m_ActiveScene);
-                m_SceneChanged = false;
+                m_SceneManager->LoadNextScene();
             }
             FrameTick();
         }
@@ -75,13 +61,7 @@ namespace lei3d
         LEI_TRACE("Gracefully Closing and Cleaning Up Data");
     }
 
-    void Application::ChangeScenes(Scene* scene)
-    {
-        m_NextScene = scene;
-        m_SceneChanged = true;
-    }
-
-    void Application::Inititalize()
+    void Application::Initialize()
     {
         // GLFW INITIALIZE --------------------------------
         glfwInit();
@@ -132,34 +112,22 @@ namespace lei3d
         SetUIActive(false);
 
         //CREATE SCENES --------------------------------
-        m_AllScenes.push_back({ "Test Kevin", std::make_unique<TestSceneKevin>() });
-        m_AllScenes.push_back({ "Test Logan", std::make_unique<TestSceneLogan>() });
-        m_AllScenes.push_back({ "Empty", std::make_unique<EmptyScene>() });
+        m_SceneManager = std::make_unique<SceneManager>();
+        m_SceneManager->Init();
 
         LEI_TRACE("Loading Default Scene");
-        Scene* defaultScene = m_AllScenes[0].second.get(); //This just gets the first scene we added
-        ChangeScenes(defaultScene);
+        m_SceneManager->SetScene("Test Kevin");
+        m_SceneManager->LoadNextScene();
 
         renderer.initialize(screenWidth, screenHeight);
 
         SetupInputCallbacks();
     }
 
-    void Application::LoadScene(Scene* scene)
-    {
-        if (m_ActiveScene != nullptr)
-        {
-            m_ActiveScene->Unload();
-        }
-
-        m_ActiveScene = scene;
-        m_ActiveScene->Init(this);
-    }
-
     void Application::FrameTick() {
         //This is called every frame and controls the execution order of everything and frame syncing.
 
-        const float currentTime = (float)glfwGetTime();
+        const auto currentTime = static_cast<float>(glfwGetTime());
 
         m_DeltaTime = currentTime - m_LastFrameTime;
         m_LastFrameTime = currentTime;
@@ -177,7 +145,7 @@ namespace lei3d
 
         typedef std::chrono::duration<int, std::milli> ms;
 
-        ms sleepDuration = ms((int) (sleepTime * 1000));
+        const ms sleepDuration = ms((int) (sleepTime * 1000));
         if (sleepTime > 0.0f) {
             //Note: Need to fix, currently doesn't cap at the right fps.
             std::this_thread::sleep_for(sleepDuration);
@@ -186,8 +154,8 @@ namespace lei3d
     }
 
     void Application::Update() {
-        m_ActiveScene->Update(m_DeltaTime);
-        m_ActiveScene->PhysicsUpdate(m_DeltaTime);    //idk how often we need to do this.
+        m_SceneManager->ActiveScene().Update();
+        m_SceneManager->ActiveScene().PhysicsUpdate();
     }
 
     void Application::SetUIActive(bool uiActive)
@@ -199,7 +167,7 @@ namespace lei3d
 
     void Application::Render()
     {
-        renderer.draw(*m_ActiveScene);
+        renderer.draw(m_SceneManager->ActiveScene());
     }
 
     void Application::ImGuiRender() {
@@ -245,7 +213,7 @@ namespace lei3d
                     if (self)
                     {
                         if (cursorDisabled) {
-                            self->m_ActiveScene->MainCamera().cameraMouseCallback(window, x, y);
+                            SceneManager::ActiveScene().MainCamera().cameraMouseCallback(x, y);
                         }
                     }
                 }
@@ -290,25 +258,12 @@ namespace lei3d
         }
     }
 
-    Application* Application::Curr() {
-        return s_Instance;
-    }
-
     GLFWwindow* Application::Window()
     {
-        return m_Window;
-    }
-
-    Scene* Application::ActiveScene() {
-        return m_ActiveScene;
-    }
-
-    const std::vector<std::pair<std::string, std::unique_ptr<Scene>>>& Application::GetScenes()
-    {
-        return m_AllScenes;
+        return s_Instance->m_Window;
     }
 
     float Application::DeltaTime() {
-        return m_DeltaTime;
+        return s_Instance->m_DeltaTime;
     }
 }

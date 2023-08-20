@@ -11,11 +11,11 @@ namespace lei3d
     class StaticCollider : public Component
     {
     public:
-        StaticCollider(Entity* entity);
+        StaticCollider(Entity& entity);
 
         void Init();
         void SetColliderToModel(const Model& model);
     private:
-        void AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, Transform transform);
+        void AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, const Transform& transform);
     };
 }

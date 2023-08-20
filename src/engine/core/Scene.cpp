@@ -1,4 +1,4 @@
-#include "scenes/Scene.hpp"
+#include "core/Scene.hpp"
 
 #include "logging/GLDebug.hpp"
 #include "core/Application.hpp"
@@ -12,11 +12,9 @@ namespace lei3d {
         Destroy();
 	}
 
-    void Scene::Init(Application* runningApp) {
-        m_App = runningApp;
-
+    void Scene::Load() {
         // load camera
-        GLFWwindow* const win = window();
+        GLFWwindow* const win = Application::Window();
         m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 10.0f);
 
         //Load shader (TEMPORARY)
@@ -26,17 +24,18 @@ namespace lei3d {
         m_PhysicsWorld = std::make_unique<PhysicsWorld>();
         m_PhysicsWorld->Create();    //TODO: Consider if there is some better way to do this
 
-        Start();
+        OnLoad();
     }
 
     Entity& Scene::AddEntity(std::string name)
     {
         //Add number to name if multiple instances of the same name.
-        std::string entityName = name;
+        std::stringstream entityNameSS;
+        entityNameSS << name;
         if (m_EntityNameCounts.contains(name))
         {
-            std::string numberStr = std::to_string(m_EntityNameCounts[name]);
-            entityName.append(std::format(" {0}", numberStr));
+            const std::string numberStr = std::to_string(m_EntityNameCounts[name]);
+            entityNameSS << numberStr;
         }
         else
         {
@@ -44,7 +43,7 @@ namespace lei3d {
         }
         m_EntityNameCounts[name]++;
 
-        std::unique_ptr<Entity> newEntity = std::make_unique<Entity>(entityName);
+        std::unique_ptr<Entity> newEntity = std::make_unique<Entity>(entityNameSS.str());
         m_Entities.push_back(std::move(newEntity));
         return *m_Entities.back();
     }
@@ -54,7 +53,7 @@ namespace lei3d {
         return AddEntity("Unnamed Entity");
     }
 
-    Entity* Scene::GetEntity(std::string name)
+    Entity* Scene::GetEntity(std::string name) const
     {
         for (auto& entity : m_Entities)
         {
@@ -67,13 +66,6 @@ namespace lei3d {
         return nullptr;
     }
 
-
-    void Scene::Load()
-    {
-        //We might want to do general scene loading things here later.
-        OnLoad();
-    }
-
     void Scene::Unload()
     {
         m_Entities.clear(); //This should auto-destruct entities bc smart pointers.
@@ -83,32 +75,33 @@ namespace lei3d {
 
     void Scene::Start() {
         LEI_TRACE("Scene Start");
-        Load();
 
         for (auto& entity : m_Entities) {
             entity->Start();
         }
+
+        OnStart();
     }
 
-	void Scene::Update(float deltaTime) {
+	void Scene::Update() {
         //m_VP = m_Camera->GetProj() * m_Camera->GetView();
 
         //LEI_TRACE("Scene Update");
 		for (auto& entity : m_Entities) {
-			entity->Update(deltaTime);
+			entity->Update();
 		}
 
-        m_Camera->PollCameraMovementInput(deltaTime);
-		OnUpdate(deltaTime);
+        m_Camera->PollCameraMovementInput();
+		OnUpdate();
 	}
 
-    void Scene::PhysicsUpdate(float deltaTime) {
+    void Scene::PhysicsUpdate() {
         //LEI_TRACE("Scene Physics Update");
         for (auto& entity : m_Entities) {
-            entity->PhysicsUpdate(deltaTime);
+            entity->PhysicsUpdate();
         }
 
-        OnPhysicsUpdate(deltaTime);
+        OnPhysicsUpdate();
     }
 
 	void Scene::Render() {
@@ -162,23 +155,6 @@ namespace lei3d {
                 ImGui::EndListBox();
             }
 
-            // Custom size: use all width, 5 items tall
-            //ImGui::Text("Full-width:");
-            //if (ImGui::BeginListBox("##listbox 2", ImVec2(-FLT_MIN, 5 * ImGui::GetTextLineHeightWithSpacing())))
-            //{
-            //    for (int n = 0; n < IM_ARRAYSIZE(items); n++)
-            //    {
-            //        const bool is_selected = (item_current_idx == n);
-            //        if (ImGui::Selectable(items[n], is_selected))
-            //            item_current_idx = n;
-
-            //        // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-            //        if (is_selected)
-            //            ImGui::SetItemDefaultFocus();
-            //    }
-            //    ImGui::EndListBox();
-            //}
-
             ImGui::TreePop();
         }
 
@@ -202,15 +178,11 @@ namespace lei3d {
         return *m_Camera;
     }
 
-    PhysicsWorld& Scene::GetPhysicsWorld() {
+    PhysicsWorld& Scene::GetPhysicsWorld() const {
         return *m_PhysicsWorld;
     }
 
-    GLFWwindow* Scene::window() {
-        return m_App->Window();
-    }
-
-    void Scene::PrintEntityList()
+    void Scene::PrintEntityList() const
     {
         for (auto& entity : m_Entities)
         {

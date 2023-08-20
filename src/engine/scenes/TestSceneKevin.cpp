@@ -67,11 +67,9 @@ namespace lei3d {
         skybox->Init(faces);
     }
 
-    void TestSceneKevin::OnUpdate(float deltaTime) {
-        GLFWwindow* const window = Application::Curr()->Window();
-        
+    void TestSceneKevin::OnUpdate() {
 
-        if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+        if (glfwGetKey(Application::Window(), GLFW_KEY_R) == GLFW_PRESS)
         {
             Entity* backpackEntity = GetEntity("Backpack");
             if (backpackEntity)
@@ -83,8 +81,8 @@ namespace lei3d {
 	
     }
 
-    void TestSceneKevin::OnPhysicsUpdate(float deltaTime) {
-        m_PhysicsWorld->Step(deltaTime);
+    void TestSceneKevin::OnPhysicsUpdate() {
+        m_PhysicsWorld->Step(Application::DeltaTime());
     }
 
     void TestSceneKevin::OnRender() {}

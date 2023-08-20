@@ -17,7 +17,7 @@ namespace lei3d
     public:
         Model* m_Model;
 
-        ModelInstance(Entity* entity);
+        ModelInstance(Entity& entity);
         ~ModelInstance();
         
         void Init(Model* model);

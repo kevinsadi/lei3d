@@ -3,7 +3,7 @@
 namespace lei3d {
     // DEFINE_COMPONENT(Backpack, "Backpack");
 
-    CharacterController::CharacterController(Entity* entity) : Component(entity) {
+    CharacterController::CharacterController(Entity& entity) : Component(entity) {
 
     }
 
@@ -26,7 +26,7 @@ namespace lei3d {
         btScalar mass{1.f};
         btVector3 localInertia{0.0f, 0.0f, 0.0f};
         character->calculateLocalInertia(mass, localInertia);
-        Transform transform = m_Entity->m_Transform;
+        Transform transform = m_Entity.m_Transform;
         startTransform.setOrigin(btVector3{transform.position.x, transform.position.y, transform.position.z});
         
         //THIS IS A MEMORY LEAK, FIX!!
@@ -35,17 +35,17 @@ namespace lei3d {
         btRigidBody* characterBody = new btRigidBody(rbInfo);
         characterBody->setSleepingThresholds(0.0, 0.0);
         characterBody->setAngularFactor(0.0);
-        ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addRigidBody(characterBody);
-        ActiveScene().GetPhysicsWorld().m_collisionShapes.push_back(character);
+        SceneManager::ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addRigidBody(characterBody);
+        SceneManager::ActiveScene().GetPhysicsWorld().m_collisionShapes.push_back(character);
         
         // WITHIN THIS CUSTOM PHYSICS UPDATE IS THE MAGIC THAT MAKES AIRSTRAFING / SURF POSSIBLE
         CharacterPhysicsUpdate* customCharacterPhysicsUpdate = new CharacterPhysicsUpdate(characterBody);
-        ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addAction(customCharacterPhysicsUpdate);
+        SceneManager::ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addAction(customCharacterPhysicsUpdate);
     }
 
-    void CharacterController::PhysicsUpdate(float deltaTime)
+    void CharacterController::PhysicsUpdate()
     {
-        m_Entity->m_Transform.position = ActiveScene().GetPhysicsWorld().GetFirstColliderPosition();
+        m_Entity.m_Transform.position = SceneManager::ActiveScene().GetPhysicsWorld().GetFirstColliderPosition();
     }
 
 }

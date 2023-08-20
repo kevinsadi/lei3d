@@ -1,12 +1,13 @@
 #include "SkyBox.hpp"
 
+#include "core/SceneManager.hpp"
 #include "logging/GLDebug.hpp"
 
 namespace lei3d
 {
     // DEFINE_COMPONENT(SkyBox, "SkyBox");
 
-    SkyBox::SkyBox(Entity* entity) : Component(entity)
+    SkyBox::SkyBox(Entity& entity) : Component(entity)
     {
     }
 
@@ -19,13 +20,13 @@ namespace lei3d
     //    return "SkyBox";
     //}
 
-    void SkyBox::Init(std::vector<std::string> faces) {
+    void SkyBox::Init(const std::vector<std::string>& faces) {
         loadCubemap(faces);
 
         skyboxShader.setInt("u_TexSkybox", 0);
     }
 
-    void SkyBox::loadCubemap(std::vector<std::string> faces)
+    void SkyBox::loadCubemap(const std::vector<std::string>& faces)
     {
         // load cubemap textures
         stbi_set_flip_vertically_on_load(false);
@@ -124,7 +125,7 @@ namespace lei3d
 
     void SkyBox::Render()
     {
-        auto camera = ActiveScene().MainCamera();
+        auto camera = SceneManager::ActiveScene().MainCamera();
 
         //C++ doesn't like it if you don't declare these beforehand (initial ref. to non-const value)
         glm::mat4 proj = camera.GetProj();

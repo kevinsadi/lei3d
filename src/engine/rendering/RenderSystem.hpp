@@ -3,7 +3,7 @@
 #include "core/Component.hpp"
 #include "rendering/Shader.hpp"
 #include "core/FlyCamera.hpp"
-#include "scenes/Scene.hpp"
+#include "core/Scene.hpp"
 
 namespace lei3d {
 

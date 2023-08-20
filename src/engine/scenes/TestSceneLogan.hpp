@@ -1,9 +1,7 @@
 #pragma once 
 
-#include "Scene.hpp"
-
-
 #include "core/Entity.hpp"
+#include "core/Scene.hpp"
 
 #include "rendering/Shader.hpp"
 #include "components/SkyBox.hpp"
@@ -25,8 +23,7 @@ namespace lei3d {
         ~TestSceneLogan();
 
         void OnLoad() override;
-        void OnUpdate(float deltaTime) override;
-        void OnPhysicsUpdate(float deltaTime) override;
+        void OnPhysicsUpdate() override;
     private:
         std::unique_ptr<Model> backpackModel;
     };
