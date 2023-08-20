@@ -65,9 +65,6 @@ namespace lei3d {
             "data/skybox/anime_etheria/back.jpg"
         };
         skybox->Init(faces);
-
-        // THIS IS TEMPORARY AND FOR TESTING
-        m_AudioPlayer = std::make_unique<AudioPlayer>(); 
     }
 
     void TestSceneKevin::OnUpdate() {

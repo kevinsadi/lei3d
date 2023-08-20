@@ -118,9 +118,14 @@ namespace lei3d
         LEI_TRACE("Loading Default Scene");
         m_SceneManager->SetScene("Test Kevin");
         m_SceneManager->LoadNextScene();
+        
+        //INIT AUDIO ENGINE ------------------------------
+        m_AudioPlayer = std::make_unique<AudioPlayer>();
 
+        //INIT RENDERER -----------------------------
         renderer.initialize(screenWidth, screenHeight);
 
+        //INPUT CALLBACKS ------------------------------
         SetupInputCallbacks();
     }
 

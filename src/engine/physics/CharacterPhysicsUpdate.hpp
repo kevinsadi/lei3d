@@ -3,6 +3,7 @@
 #include <btBulletDynamicsCommon.h>
 #include "core/Application.hpp"
 #include "physics/FindGround.hpp"
+#include "audio/AudioPlayer.hpp"
 
 namespace lei3d 
 {
@@ -26,6 +27,8 @@ namespace lei3d
         float m_jumpHeight = 1.5f;
         float m_maxSpeed = 40.0f;
         //float m_maxVelocity = 100;
+
+        bool m_IncludeSFX = true;
 
         glm::vec3 Accelerate(glm::vec3 wishDir, glm::vec3 prevVelocity, float acceleration, float maxVelocity);
         glm::vec3 AirAcceleration(glm::vec3 wishDir, glm::vec3 prevVelocity);

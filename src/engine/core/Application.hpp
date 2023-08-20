@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "core/SceneManager.hpp"
+#include "audio/AudioPlayer.hpp"
 
 #include "guitools/AppGUI.hpp"
 #include "rendering/RenderSystem.hpp"
@@ -33,6 +34,7 @@ namespace lei3d
         
         std::unique_ptr<AppGUI> m_AppGUI;
         std::unique_ptr<SceneManager> m_SceneManager;
+        std::unique_ptr<AudioPlayer> m_AudioPlayer;
 
         RenderSystem renderer;
 
