@@ -24,7 +24,13 @@ namespace lei3d
         // Check if we are on the ground
         FindGround callback(m_body);
         collisionWorld->contactTest(m_body, callback);
-        bool onGround = callback.m_Grounded;
+
+        if (m_IncludeSFX && callback.m_Grounded == true && m_OnGround == false)
+        {
+            AudioPlayer::PlaySFX("landing"); //.PlaySound("landing");
+        }
+
+        m_OnGround = callback.m_Grounded;
         bool groundPoint = callback.m_GroundPoint;
 
         // Update velocity accordingly
@@ -65,7 +71,7 @@ namespace lei3d
         }
         */
 
-        if (onGround) {
+        if (m_OnGround) {
             glm::vec3 outputVel = GroundAcceleration(wishdir, prevVel);
             v = btVector3(outputVel.x, outputVel.y, outputVel.z);
         } else {
@@ -73,7 +79,7 @@ namespace lei3d
             v = btVector3(outputVel.x, outputVel.y, outputVel.z);
         }
 
-        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && onGround)
+        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && m_OnGround)
         {
             v = v + btVector3(0.0, 4.75, 0.0);
         }

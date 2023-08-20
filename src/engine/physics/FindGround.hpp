@@ -1,6 +1,7 @@
 #pragma once
 
 #include <btBulletDynamicsCommon.h>
+#include "audio/AudioPlayer.hpp"
 
 namespace lei3d 
 {

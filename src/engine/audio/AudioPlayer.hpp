@@ -15,7 +15,8 @@ namespace lei3d
         ~AudioPlayer();
 
         static AudioPlayer& GetAudioPlayer();
-        void PlaySound(const std::string& sfxName) const;
+        
+        static void PlaySFX(const std::string& sfxName);
 
         std::unique_ptr<ma_engine> m_AudioEngine;
     };
