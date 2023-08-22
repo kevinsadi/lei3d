@@ -22,7 +22,7 @@ SkyBox::~SkyBox() {
 void SkyBox::Init(const std::vector<std::string>& faces) {
 	loadCubemap(faces);
 
-	skyboxShader.setInt("u_TexSkybox", 0);
+	skyboxShader.setInt("skyboxSampler", 0);
 }
 
 void SkyBox::loadCubemap(const std::vector<std::string>& faces) {

@@ -53,13 +53,13 @@ void Material::bind(Shader &shader, unsigned int tex_offset) {
 	texture_count = curr_offset;
 
 	///< if someone knows how to add shader defines instead, pls replace
-	shader.setBool("material.m_UseAlbedoMap", m_UseAlbedoMap);
-	shader.setBool("material.m_UseMetallicMap", m_UseMetallicMap);
-	shader.setBool("material.m_UseRoughnessMap", m_UseRoughnessMap);
-	shader.setBool("material.m_UseAmbientMap", m_UseAmbientMap);
+	shader.setBool("material.use_albedo_map", m_UseAlbedoMap);
+	shader.setBool("material.use_metallic_map", m_UseMetallicMap);
+	shader.setBool("material.use_roughness_map", m_UseRoughnessMap);
+	shader.setBool("material.use_ao_map", m_UseAmbientMap);
 
-	shader.setBool("material.m_UseNormalMap", m_UseNormalMap);
-	shader.setBool("material.m_UseBumpMap", m_UseBumpMap);
+	shader.setBool("material.use_normal_map", m_UseNormalMap);
+	shader.setBool("material.use_bump_map", m_UseBumpMap);
 }
 
 void Material::unbind(unsigned int tex_offset) {
