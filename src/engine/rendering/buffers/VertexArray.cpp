@@ -1,23 +1,20 @@
 #include "VertexArray.hpp"
 
-#include "logging/Log.hpp"
 #include "logging/GLDebug.hpp"
+#include "logging/Log.hpp"
 
 #include <glad/glad.h>
 
-VertexArray::VertexArray()
-{
+VertexArray::VertexArray() {
 	GLCall(glGenVertexArrays(1, &m_ArrayID));
 }
 
-VertexArray::~VertexArray()
-{
+VertexArray::~VertexArray() {
 	GLCall(glDeleteVertexArrays(1, &m_ArrayID));
 }
 
-void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout)
-{
-	//Bind the vertex array and the buffer
+void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout) {
+	// Bind the vertex array and the buffer
 	bind();
 	vb.bind();
 
@@ -35,21 +32,19 @@ void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
 		pointer - The byte offset of the attribute inside the vertex
 		*/
 
-		GLCall(glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.getStride(), (const void*) offset));
+		GLCall(glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.getStride(), (const void*)offset));
 
-		//Enables the attribute at the given index
+		// Enables the attribute at the given index
 		GLCall(glEnableVertexAttribArray(i));
 
 		offset += element.count * VertexBufferAttribute::getSizeOfType(element.type);
 	}
 }
 
-void VertexArray::bind() const
-{
+void VertexArray::bind() const {
 	GLCall(glBindVertexArray(m_ArrayID));
 }
 
-void VertexArray::unbind() const
-{
+void VertexArray::unbind() const {
 	GLCall(glBindVertexArray(0));
 }

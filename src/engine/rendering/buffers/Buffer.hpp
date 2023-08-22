@@ -1,4 +1,4 @@
 #pragma once
 
-#include "VertexArray.hpp"
 #include "IndexBuffer.hpp"
+#include "VertexArray.hpp"

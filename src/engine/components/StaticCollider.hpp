@@ -3,19 +3,18 @@
 #include "core/Component.hpp"
 #include "rendering/Model.hpp"
 
-namespace lei3d
-{
-    class Entity;
-    class Component;
+namespace lei3d {
+class Entity;
+class Component;
 
-    class StaticCollider : public Component
-    {
-    public:
-        StaticCollider(Entity& entity);
+class StaticCollider : public Component {
+public:
+	StaticCollider(Entity& entity);
 
-        void Init();
-        void SetColliderToModel(const Model& model);
-    private:
-        void AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, const Transform& transform);
-    };
-}
+	void Init();
+	void SetColliderToModel(const Model& model);
+
+private:
+	void AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, const Transform& transform);
+};
+}  // namespace lei3d
