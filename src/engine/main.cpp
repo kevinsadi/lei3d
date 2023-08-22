@@ -14,7 +14,8 @@ using namespace lei3d;
  *
  * Creates window, loads textures, loads vertices, has main render loop
  */
-int main() {
+int main()
+{
 	Log::Init();
 	LEI_TRACE("Initialized Logger");
 

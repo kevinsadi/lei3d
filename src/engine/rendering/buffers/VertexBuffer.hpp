@@ -2,9 +2,10 @@
 
 #include <glad/glad.h>
 
-class VertexBuffer {
+class VertexBuffer
+{
 private:
-	unsigned int m_BufferID;  // Location of the buffer in memory
+	unsigned int m_BufferID; // Location of the buffer in memory
 public:
 	VertexBuffer(const void* data, unsigned int size, GLenum usage);
 	~VertexBuffer();

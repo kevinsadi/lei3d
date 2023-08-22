@@ -5,44 +5,48 @@
 #include "core/Scene.hpp"
 #include "rendering/Shader.hpp"
 
-namespace lei3d {
+namespace lei3d
+{
 
-class ModelInstance;
-class SkyBox;
+	class ModelInstance;
+	class SkyBox;
 
-class RenderSystem {
-public:
-	RenderSystem() {
-	}
+	class RenderSystem
+	{
+	public:
+		RenderSystem()
+		{
+		}
 
-	~RenderSystem() {
-	}
+		~RenderSystem()
+		{
+		}
 
-	void initialize(int width, int height);
+		void initialize(int width, int height);
 
-	void draw(const Scene &scene);
+		void draw(const Scene& scene);
 
-private:
-	void lightingPass(const std::vector<ModelInstance *> &objects, FlyCamera &camera);
+	private:
+		void lightingPass(const std::vector<ModelInstance*>& objects, FlyCamera& camera);
 
-	void environmentPass(const SkyBox &skyBox, FlyCamera &camera);
+		void environmentPass(const SkyBox& skyBox, FlyCamera& camera);
 
-	void postprocessPass();
+		void postprocessPass();
 
-	// offscreen render target objects
-	unsigned int FBO;
-	unsigned int rawTexture;
-	unsigned int saturationMask;
-	unsigned int depthStencilTexture;
-	unsigned int finalTexture;
+		// offscreen render target objects
+		unsigned int FBO;
+		unsigned int rawTexture;
+		unsigned int saturationMask;
+		unsigned int depthStencilTexture;
+		unsigned int finalTexture;
 
-	unsigned int dummyVAO;	// used to draw full-screen "quad"
+		unsigned int dummyVAO; // used to draw full-screen "quad"
 
-	int scwidth, scheight;
+		int scwidth, scheight;
 
-	// shaders
-	Shader forwardShader;
-	Shader postprocessShader;
-};
+		// shaders
+		Shader forwardShader;
+		Shader postprocessShader;
+	};
 
-}  // namespace lei3d
+} // namespace lei3d

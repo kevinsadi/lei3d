@@ -8,19 +8,21 @@
 #include <string>
 #include <vector>
 
-namespace lei3d {
-class ModelInstance : public Component {
-public:
-	Model* m_Model;
+namespace lei3d
+{
+	class ModelInstance : public Component
+	{
+	public:
+		Model* m_Model;
 
-	ModelInstance(Entity& entity);
-	~ModelInstance();
+		ModelInstance(Entity& entity);
+		~ModelInstance();
 
-	void Init(Model* model);
+		void Init(Model* model);
 
-	void Draw(Shader* shader);
+		void Draw(Shader* shader);
 
-private:
-};
+	private:
+	};
 
-}  // namespace lei3d
+} // namespace lei3d

@@ -5,22 +5,26 @@
 
 #include <glad/glad.h>
 
-VertexArray::VertexArray() {
+VertexArray::VertexArray()
+{
 	GLCall(glGenVertexArrays(1, &m_ArrayID));
 }
 
-VertexArray::~VertexArray() {
+VertexArray::~VertexArray()
+{
 	GLCall(glDeleteVertexArrays(1, &m_ArrayID));
 }
 
-void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout) {
+void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout)
+{
 	// Bind the vertex array and the buffer
 	bind();
 	vb.bind();
 
 	std::vector<VertexBufferAttribute> elements = layout.getElements();
-	unsigned int offset = 0;
-	for (unsigned int i = 0; i < elements.size(); i++) {
+	unsigned int					   offset = 0;
+	for (unsigned int i = 0; i < elements.size(); i++)
+	{
 		const VertexBufferAttribute& element = elements[i];
 
 		/*For an attribute:
@@ -41,10 +45,12 @@ void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
 	}
 }
 
-void VertexArray::bind() const {
+void VertexArray::bind() const
+{
 	GLCall(glBindVertexArray(m_ArrayID));
 }
 
-void VertexArray::unbind() const {
+void VertexArray::unbind() const
+{
 	GLCall(glBindVertexArray(0));
 }

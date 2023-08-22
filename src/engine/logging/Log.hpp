@@ -12,28 +12,31 @@
 
 #ifdef LEI_ENABLE_ASSERTS
 
-#define LEI_ASSERT(x, ...)                                   \
-	{                                                        \
-		if (!(x)) {                                          \
-			LEI_ERROR("Assertion Failed: {0}", __VA_ARGS__); \
-			__debugbreak();                                  \
-		}                                                    \
-	}
+	#define LEI_ASSERT(x, ...)                                   \
+		{                                                        \
+			if (!(x))                                            \
+			{                                                    \
+				LEI_ERROR("Assertion Failed: {0}", __VA_ARGS__); \
+				__debugbreak();                                  \
+			}                                                    \
+		}
 
 #else
 
-#define LEI_ASSERT(x, ...)
+	#define LEI_ASSERT(x, ...)
 
 #endif
 
-namespace lei3d {
-class Log {
-public:
-	static void Init();
+namespace lei3d
+{
+	class Log
+	{
+	public:
+		static void Init();
 
-	inline static spdlog::logger* GetLogger() { return s_Logger.get(); }
+		inline static spdlog::logger* GetLogger() { return s_Logger.get(); }
 
-private:
-	static std::shared_ptr<spdlog::logger> s_Logger;
-};
-}  // namespace lei3d
+	private:
+		static std::shared_ptr<spdlog::logger> s_Logger;
+	};
+} // namespace lei3d

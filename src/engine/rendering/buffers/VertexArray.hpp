@@ -4,7 +4,8 @@
 #include "VertexBufferLayout.hpp"
 
 // Specifies a vertex buffer and how it's layout (how the vertex attributes are arranged inside the buffer
-class VertexArray {
+class VertexArray
+{
 private:
 	unsigned int m_ArrayID;
 

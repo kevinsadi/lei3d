@@ -8,24 +8,26 @@
 #include "physics/PhysicsWorld.hpp"
 #include "rendering/Shader.hpp"
 
-namespace lei3d {
+namespace lei3d
+{
 
-class Entity;
-class Model;
-class Shader;
-class SkyBox;
-class PhysicsWorld;
+	class Entity;
+	class Model;
+	class Shader;
+	class SkyBox;
+	class PhysicsWorld;
 
-class TestSceneLogan : public Scene {
-public:
-	TestSceneLogan();
-	~TestSceneLogan();
+	class TestSceneLogan : public Scene
+	{
+	public:
+		TestSceneLogan();
+		~TestSceneLogan();
 
-	void OnLoad() override;
-	void OnPhysicsUpdate() override;
+		void OnLoad() override;
+		void OnPhysicsUpdate() override;
 
-private:
-	std::unique_ptr<Model> backpackModel;
-};
+	private:
+		std::unique_ptr<Model> backpackModel;
+	};
 
-}  // namespace lei3d
+} // namespace lei3d
