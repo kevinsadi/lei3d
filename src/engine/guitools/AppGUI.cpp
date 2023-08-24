@@ -71,12 +71,6 @@ namespace lei3d
 			scene.ImGUIRender();
 		}
 
-        Scene& scene = SceneManager::ActiveScene();
-        if (ImGui::CollapsingHeader("Scene Data"))
-        {
-            scene.ImGUIRender();
-        }
-
 		if (ImGui::CollapsingHeader("Game Info"))
 		{
 			ImGui::Text("fps = %f", 1.0f / Application::DeltaTime());
