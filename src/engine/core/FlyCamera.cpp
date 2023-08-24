@@ -105,10 +105,10 @@ namespace lei3d
 		m_FOVDeg = fovDeg;
 	}
 
-	void FlyCamera::SetClipPlanes(float near, float far)
+	void FlyCamera::SetClipPlanes(float nearClip, float farClip)
 	{
-		m_NearPlane = near;
-		m_FarPlane = far;
+		m_NearPlane = nearClip;
+		m_FarPlane = farClip;
 	}
 
 	void FlyCamera::handleForward(float speed)
