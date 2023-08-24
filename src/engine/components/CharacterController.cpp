@@ -9,6 +9,13 @@ namespace lei3d
 	{
 	}
 
+	CharacterController::~CharacterController()
+	{
+		delete m_Collider;
+		delete m_MotionState;
+		delete m_RigidBody;
+	}
+
 	void CharacterController::Start()
 	{
 		LEI_TRACE("Character Controller started");
@@ -22,29 +29,29 @@ namespace lei3d
 	void CharacterController::Init()
 	{
 		// CHARACTER--------------------
-		// std::unique_ptr<btCollisionShape> character = std::make_unique<btCapsuleShape>(btScalar{1.0f}, btScalar{3.0f});
-		btCollisionShape* character = new btCapsuleShape(btScalar{ 1.0f }, btScalar{ 3.0f });
-		btTransform		  startTransform;
+		m_Collider = new btCapsuleShape(btScalar{ 1.0f }, btScalar{ 3.0f });
+		btTransform startTransform;
 		startTransform.setIdentity();
 
 		btScalar  mass{ 1.f };
 		btVector3 localInertia{ 0.0f, 0.0f, 0.0f };
-		character->calculateLocalInertia(mass, localInertia);
+		m_Collider->calculateLocalInertia(mass, localInertia);
 		Transform transform = m_Entity.m_Transform;
 		startTransform.setOrigin(btVector3{ transform.position.x, transform.position.y, transform.position.z });
 
-		// THIS IS A MEMORY LEAK, FIX!!
-		btDefaultMotionState*					 charMotionState = new btDefaultMotionState(startTransform);
-		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, charMotionState, character, localInertia);
-		btRigidBody*							 characterBody = new btRigidBody(rbInfo);
-		characterBody->setSleepingThresholds(0.0, 0.0);
-		characterBody->setAngularFactor(0.0);
-		SceneManager::ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addRigidBody(characterBody);
-		SceneManager::ActiveScene().GetPhysicsWorld().m_collisionShapes.push_back(character);
+		m_MotionState = new btDefaultMotionState(startTransform);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_MotionState, m_Collider, localInertia);
+		m_RigidBody = new btRigidBody(rbInfo);
+		m_RigidBody->setSleepingThresholds(0.0, 0.0);
+		m_RigidBody->setAngularFactor(0.0);
+
+		PhysicsWorld& world = SceneManager::ActiveScene().GetPhysicsWorld();
+		world.m_dynamicsWorld->addRigidBody(m_RigidBody);
+		world.m_collisionShapes.push_back(m_Collider);
 
 		// WITHIN THIS CUSTOM PHYSICS UPDATE IS THE MAGIC THAT MAKES AIRSTRAFING / SURF POSSIBLE
-		CharacterPhysicsUpdate* customCharacterPhysicsUpdate = new CharacterPhysicsUpdate(characterBody);
-		SceneManager::ActiveScene().GetPhysicsWorld().m_dynamicsWorld->addAction(customCharacterPhysicsUpdate);
+		CharacterPhysicsUpdate* customCharacterPhysicsUpdate = new CharacterPhysicsUpdate(m_RigidBody);
+		world.m_dynamicsWorld->addAction(customCharacterPhysicsUpdate);
 	}
 
 	void CharacterController::PhysicsUpdate()

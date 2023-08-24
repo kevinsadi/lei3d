@@ -10,8 +10,14 @@ namespace lei3d
 
 	class CharacterController : public Component
 	{
+	private:
+		btCollisionShape*	  m_Collider;
+		btDefaultMotionState* m_MotionState;
+		btRigidBody*		  m_RigidBody;
+
 	public:
 		CharacterController(Entity& entity);
+		~CharacterController();
 
 		void Start() override;
 		void PhysicsUpdate() override;

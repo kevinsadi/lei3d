@@ -12,6 +12,10 @@ namespace lei3d
 
 	Model::~Model()
 	{
+		for (btTriangleMesh* mesh : m_BTMeshes)
+		{
+			delete mesh;
+		}
 	}
 
 	void Model::Draw(Shader& shader)
@@ -175,32 +179,33 @@ namespace lei3d
 	 *
 	 * @return std::vector<btTriangleMesh>
 	 */
-	std::vector<btTriangleMesh*> Model::GetCollisionMeshes() const
+	std::vector<btTriangleMesh*>& Model::GetCollisionMeshes()
 	{
-		std::vector<btTriangleMesh*> collisionMeshList;
-
-		for (const Mesh& mesh : m_Meshes)
+		if (m_BTMeshes.empty())
 		{
-			btTriangleMesh* curCollisionMesh = new btTriangleMesh();
-
-			std::vector<Vertex>		  vertices = mesh.vertices;
-			std::vector<unsigned int> indices = mesh.indices;
-
-			for (int i = 0; i < indices.size(); i += 3)
+			for (const Mesh& mesh : m_Meshes)
 			{
-				glm::vec3 vert1 = vertices[indices[i]].Position;
-				btVector3 bvert1(vert1.x, vert1.y, vert1.z);
-				glm::vec3 vert2 = vertices[indices[i + 1]].Position;
-				btVector3 bvert2(vert2.x, vert2.y, vert2.z);
-				glm::vec3 vert3 = vertices[indices[i + 2]].Position;
-				btVector3 bvert3(vert3.x, vert3.y, vert3.z);
+				btTriangleMesh* curCollisionMesh = new btTriangleMesh();
 
-				curCollisionMesh->addTriangle(bvert1, bvert2, bvert3);
+				std::vector<Vertex>		  vertices = mesh.vertices;
+				std::vector<unsigned int> indices = mesh.indices;
+
+				for (int i = 0; i < indices.size(); i += 3)
+				{
+					glm::vec3 vert1 = vertices[indices[i]].Position;
+					btVector3 bvert1(vert1.x, vert1.y, vert1.z);
+					glm::vec3 vert2 = vertices[indices[i + 1]].Position;
+					btVector3 bvert2(vert2.x, vert2.y, vert2.z);
+					glm::vec3 vert3 = vertices[indices[i + 2]].Position;
+					btVector3 bvert3(vert3.x, vert3.y, vert3.z);
+
+					curCollisionMesh->addTriangle(bvert1, bvert2, bvert3);
+				}
+				m_BTMeshes.push_back(curCollisionMesh);
 			}
-			collisionMeshList.push_back(curCollisionMesh);
 		}
 
-		return collisionMeshList;
+		return m_BTMeshes;
 	}
 
 	void Model::loadMaterials(const aiScene* scene)
