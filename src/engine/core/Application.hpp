@@ -15,6 +15,8 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 namespace lei3d
 {
@@ -41,7 +43,7 @@ namespace lei3d
 		float m_LastFrameTime = 0.0f; // used to keep track of delta time
 		float m_DeltaTime = 0.0f;	  // Total time for last frame.
 		float m_DesiredFPS =
-			120.0f;					  // FPS will be capped to this value. (current bug means that the FPS cap is half, not sure why)
+			120.0f; // FPS will be capped to this value. (current bug means that the FPS cap is half, not sure why)
 	public:
 		Application();
 		~Application();

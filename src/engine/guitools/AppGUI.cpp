@@ -67,7 +67,6 @@ namespace lei3d
 
 		Scene& scene = SceneManager::ActiveScene();
 		if (ImGui::CollapsingHeader("Scene Data"))
-			;
 		{
 			scene.ImGUIRender();
 		}

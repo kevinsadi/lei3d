@@ -49,7 +49,7 @@ namespace lei3d
 		void OnImGuiRender();
 
 		void SetFOV(float fov);
-		void SetClipPlanes(float near, float far);
+		void SetClipPlanes(float nearClip, float farClip);
 
 	private:
 		void handleForward(float speed);

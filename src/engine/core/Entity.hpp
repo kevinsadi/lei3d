@@ -72,16 +72,14 @@ namespace lei3d
 		{
 			static_assert(std::is_convertible<C, Component>::value, "C must be a component type");
 
-			//(may need GetComponents if we have multiple)
-			for (auto& c : m_Components)
-			{
-				// Component& cRef = *c;
-				if (typeid(*c) == typeid(C))
-				{
-					// returns the first match
-					return static_cast<C*>(c.get());
-				}
-			}
+            //(may need GetComponents if we have multiple)
+            for (auto& c : m_Components) {
+                //Component& cRef = *c;
+                if (auto* casted = dynamic_cast<C*>(c.get())) {
+                    //returns the first match
+                    return static_cast<C*>(c.get());
+                }
+            }
 
 			// LEI_ERROR("Could not find component.");
 			return nullptr;
