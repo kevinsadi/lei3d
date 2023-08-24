@@ -1,42 +1,52 @@
 #pragma once
 
 #include "core/Component.hpp"
-#include "rendering/Shader.hpp"
 #include "core/FlyCamera.hpp"
 #include "core/Scene.hpp"
+#include "rendering/Shader.hpp"
 
-namespace lei3d {
+namespace lei3d
+{
 
-    class ModelInstance;
-    class SkyBox;
+	class ModelInstance;
+	class SkyBox;
 
-class RenderSystem {
-    public:
-        RenderSystem() {}
-        ~RenderSystem() {}
+	class RenderSystem
+	{
+	public:
+		RenderSystem()
+		{
+		}
 
-        void initialize(int width, int height);
-        void draw(const Scene& scene);
+		~RenderSystem()
+		{
+		}
 
-    private:
-        void lightingPass(const std::vector<ModelInstance*>& objects, FlyCamera& camera);
-        void environmentPass(const SkyBox& skyBox, FlyCamera& camera);
-        void postprocessPass();
+		void initialize(int width, int height);
 
-        // offscreen render target objects
-        unsigned int FBO;
-        unsigned int rawTexture;
-        unsigned int saturationMask;
-        unsigned int depthStencilTexture;
-        unsigned int finalTexture;
+		void draw(const Scene& scene);
 
-        unsigned int dummyVAO;  // used to draw full-screen "quad"
+	private:
+		void lightingPass(const std::vector<ModelInstance*>& objects, FlyCamera& camera);
 
-        int scwidth, scheight;
+		void environmentPass(const SkyBox& skyBox, FlyCamera& camera);
 
-        // shaders
-        Shader forwardShader;
-        Shader postprocessShader;
-};
+		void postprocessPass();
 
-} // lei3d
+		// offscreen render target objects
+		unsigned int FBO;
+		unsigned int rawTexture;
+		unsigned int saturationMask;
+		unsigned int depthStencilTexture;
+		unsigned int finalTexture;
+
+		unsigned int dummyVAO; // used to draw full-screen "quad"
+
+		int scwidth, scheight;
+
+		// shaders
+		Shader forwardShader;
+		Shader postprocessShader;
+	};
+
+} // namespace lei3d

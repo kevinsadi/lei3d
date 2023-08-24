@@ -1,31 +1,28 @@
 #pragma once
 
-#include <vector>
-#include <string>
-
 #include "core/Component.hpp"
-
+#include "logging/Log.hpp"
 #include "rendering/Model.hpp"
 #include "rendering/Shader.hpp"
 
-#include "logging/Log.hpp"
+#include <string>
+#include <vector>
 
 namespace lei3d
 {
-    class ModelInstance : public Component
-    {
-    public:
-        Model* m_Model;
+	class ModelInstance : public Component
+	{
+	public:
+		Model* m_Model;
 
-        ModelInstance(Entity& entity);
-        ~ModelInstance();
-        
-        void Init(Model* model);
+		ModelInstance(Entity& entity);
+		~ModelInstance();
 
-        void Draw(Shader* shader);
+		void Init(Model* model);
 
-    private:
-    };
+		void Draw(Shader* shader);
 
+	private:
+	};
 
-}
+} // namespace lei3d

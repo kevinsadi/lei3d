@@ -1,7 +1,7 @@
 #include "VertexArray.hpp"
 
-#include "logging/Log.hpp"
 #include "logging/GLDebug.hpp"
+#include "logging/Log.hpp"
 
 #include <glad/glad.h>
 
@@ -17,13 +17,14 @@ VertexArray::~VertexArray()
 
 void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout)
 {
-	//Bind the vertex array and the buffer
+	// Bind the vertex array and the buffer
 	bind();
 	vb.bind();
 
 	std::vector<VertexBufferAttribute> elements = layout.getElements();
-	unsigned int offset = 0;
-	for (unsigned int i = 0; i < elements.size(); i++) {
+	unsigned int					   offset = 0;
+	for (unsigned int i = 0; i < elements.size(); i++)
+	{
 		const VertexBufferAttribute& element = elements[i];
 
 		/*For an attribute:
@@ -35,9 +36,9 @@ void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
 		pointer - The byte offset of the attribute inside the vertex
 		*/
 
-		GLCall(glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.getStride(), (const void*) offset));
+		GLCall(glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.getStride(), (const void*)offset));
 
-		//Enables the attribute at the given index
+		// Enables the attribute at the given index
 		GLCall(glEnableVertexAttribArray(i));
 
 		offset += element.count * VertexBufferAttribute::getSizeOfType(element.type);
