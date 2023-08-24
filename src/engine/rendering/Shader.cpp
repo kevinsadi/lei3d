@@ -1,8 +1,10 @@
 ﻿#include "Shader.hpp"
+
 #include "logging/GLDebug.hpp"
 
-namespace lei3d 
+namespace lei3d
 {
+
 	Shader::Shader()
 	{
 		// another clown emoji
@@ -10,9 +12,9 @@ namespace lei3d
 
 	Shader::Shader(const char* vertexShaderPath, const char* fragShaderPath)
 	{
-		// read from the files 
-		std::string vertexCode;
-		std::string fragmentCode;
+		// read from the files
+		std::string	  vertexCode;
+		std::string	  fragmentCode;
 		std::ifstream vShaderFile;
 		std::ifstream fShaderFile;
 		fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -94,14 +96,16 @@ namespace lei3d
 		glDeleteShader(fragmentShaderID);
 	}
 
-	/** 
-	 * Set OpenGL to use this shader. 
+	/**
+	 * Set OpenGL to use this shader.
 	 */
-	void Shader::bind() const {
+	void Shader::bind() const
+	{
 		GLCall(glUseProgram(m_ShaderID));
 	}
 
-	void Shader::unbind() const {
+	void Shader::unbind() const
+	{
 		GLCall(glUseProgram(0));
 	}
 
@@ -111,41 +115,50 @@ namespace lei3d
 		GLCall(glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix)));
 	}
 
-	void Shader::setInt(const std::string &name, int value) const {
+	void Shader::setInt(const std::string& name, int value) const
+	{
 		bind();
-        GLCall(glUniform1i(getUniformLocation(name), value));
-    }
+		GLCall(glUniform1i(getUniformLocation(name), value));
+	}
 
-    void Shader::setBool(const std::string &name, bool value) const {
+	void Shader::setBool(const std::string& name, bool value) const
+	{
 		bind();
 		GLCall(glUniform1i(getUniformLocation(name), static_cast<int>(value)));
-    }
+	}
 
-    void Shader::setFloat(const std::string &name, float value) const {
+	void Shader::setFloat(const std::string& name, float value) const
+	{
 		bind();
 		GLCall(glUniform1f(getUniformLocation(name), value));
-    }
+	}
 
-    void Shader::setVec3(const std::string &name, const glm::vec3 &value) const {
+	void Shader::setVec3(const std::string& name, const glm::vec3& value) const
+	{
 		bind();
-        GLCall(glUniform3f(getUniformLocation(name), value.x, value.y, value.z));
-    }
+		GLCall(glUniform3f(getUniformLocation(name), value.x, value.y, value.z));
+	}
 
-    void Shader::setVec2(const std::string &name, const glm::vec2 &value) const {
+	void Shader::setVec2(const std::string& name, const glm::vec2& value) const
+	{
 		bind();
-        GLCall(glUniform2f(getUniformLocation(name), value.x, value.y));
-    }
+		GLCall(glUniform2f(getUniformLocation(name), value.x, value.y));
+	}
 
-	int Shader::getUniformLocation(const std::string& name) const {
-        auto it = m_UniformLocationCache.find(name);
-        if (it != m_UniformLocationCache.end()) {
+	int Shader::getUniformLocation(const std::string& name) const
+	{
+		auto it = m_UniformLocationCache.find(name);
+		if (it != m_UniformLocationCache.end())
+		{
 			return it->second;
 		}
 
 		GLCall(const int location = glGetUniformLocation(m_ShaderID, name.c_str()));
-		if (location == -1) {
+		if (location == -1)
+		{
 			LEI_ERROR("Uniform does not exist: " + name);
 		}
 		return location;
 	}
-}
+
+} // namespace lei3d

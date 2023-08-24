@@ -1,77 +1,76 @@
 #pragma once
 
+#include "core/Component.hpp"
+#include "logging/Log.hpp"
+#include "rendering/Shader.hpp"
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include "core/Component.hpp"
-
-#include "logging/Log.hpp"
-
-#include "rendering/Shader.hpp"
-
 #include <memory>
+#include <string>
 #include <typeinfo>
 #include <unordered_map>
-#include <string>
 
 namespace lei3d
 {
-    struct Transform
-    {
-        glm::vec3 position;
-        //glm::vec3 rotation;       
-        glm::vec3 scale;
-    };
+	struct Transform
+	{
+		glm::vec3 position;
+		// glm::vec3 rotation;
+		glm::vec3 scale;
+	};
 
-    class Component;
-    class Shader;
+	class Component;
+	class Shader;
 
-    class Entity
-    {
-    private:
-        std::vector<std::unique_ptr<Component>> m_Components;
-        std::string m_Name;
-    public:
-        Transform m_Transform;
+	class Entity
+	{
+	private:
+		std::vector<std::unique_ptr<Component>> m_Components;
+		std::string								m_Name;
 
-        Entity();
-        Entity(const std::string& name);
+	public:
+		Transform m_Transform;
 
-        ~Entity();
+		Entity();
+		Entity(const std::string& name);
 
-        void Start();
-        void Update();
-        void PhysicsUpdate();
-        void Render();
-        void OnDestroy();
+		~Entity();
 
-        void SetPosition(const glm::vec3& position);
-        void SetScale(const glm::vec3& scale);
+		void Start();
+		void Update();
+		void PhysicsUpdate();
+		void Render();
+		void OnDestroy();
 
-        glm::mat4 GetTranslationMat();
-        glm::mat4 GetRotationMat();
-        glm::mat4 GetScaleMat();
-        glm::mat4 GetModelMat();
+		void SetPosition(const glm::vec3& position);
+		void SetScale(const glm::vec3& scale);
 
-        const std::string& GetName();
-        void SetName(const std::string& name);
+		glm::mat4 GetTranslationMat();
+		glm::mat4 GetRotationMat();
+		glm::mat4 GetScaleMat();
+		glm::mat4 GetModelMat();
 
-        /*
-        * Component System:
-        * Components should always be added through AddComponent<C> and returned through GetComponent<C>.
-        * These work essentially the same as in Unity. 
-        * DO NOT Call the Constructor for a Component or any of it's subclasses. Always use add Component.
-        * If you need to initialize a component with data, use an Init function (see SkyBox.cpp for an example)
-        */
+		const std::string& GetName();
+		void			   SetName(const std::string& name);
 
-        /*
-        * Will return component attached to this entity of type C.
-        * If there are multiple components of the same type, it will return the first one found. 
-        */
-        template<typename C>
-        C* GetComponent() {
-            static_assert(std::is_convertible<C, Component>::value, "C must be a component type");
+		/*
+		 * Component System:
+		 * Components should always be added through AddComponent<C> and returned through GetComponent<C>.
+		 * These work essentially the same as in Unity.
+		 * DO NOT Call the Constructor for a Component or any of it's subclasses. Always use add Component.
+		 * If you need to initialize a component with data, use an Init function (see SkyBox.cpp for an example)
+		 */
+
+		/*
+		 * Will return component attached to this entity of type C.
+		 * If there are multiple components of the same type, it will return the first one found.
+		 */
+		template <typename C>
+		C* GetComponent()
+		{
+			static_assert(std::is_convertible<C, Component>::value, "C must be a component type");
 
             //(may need GetComponents if we have multiple)
             for (auto& c : m_Components) {
@@ -82,27 +81,27 @@ namespace lei3d
                 }
             }
 
-            //LEI_ERROR("Could not find component.");
-            return nullptr;
-        }
-        
-        /*
-        * Creates and adds a component of type C and returns a reference to it.
-        * Internally calls the component constructor.
-        */
-        template<typename C> 
-        C* AddComponent() {
+			// LEI_ERROR("Could not find component.");
+			return nullptr;
+		}
 
-            //If this is hitting, check that your component is using "public" for inheritance.
-            static_assert(std::is_convertible<C, Component>::value, "C must be a component type.");
+		/*
+		 * Creates and adds a component of type C and returns a reference to it.
+		 * Internally calls the component constructor.
+		 */
+		template <typename C>
+		C* AddComponent()
+		{
+			// If this is hitting, check that your component is using "public" for inheritance.
+			static_assert(std::is_convertible<C, Component>::value, "C must be a component type.");
 
-            std::unique_ptr<C> c = std::make_unique<C>(*this);
-            m_Components.push_back(std::move(c));
-            //The element was just added at the back of the component list, so we retrieve it from the back here. 
-            //Note: We cannot use c since it got moved into the list.
-            return static_cast<C*>(m_Components.back().get());
-        }
+			std::unique_ptr<C> c = std::make_unique<C>(*this);
+			m_Components.push_back(std::move(c));
+			// The element was just added at the back of the component list, so we retrieve it from the back here.
+			// Note: We cannot use c since it got moved into the list.
+			return static_cast<C*>(m_Components.back().get());
+		}
 
-        void ShowInspectorGUI();
-    };
-}
+		void ShowInspectorGUI();
+	};
+} // namespace lei3d

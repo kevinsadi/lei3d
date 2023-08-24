@@ -3,45 +3,48 @@
 #include <glm/glm.hpp>
 #include <rendering/Shader.hpp>
 
-namespace lei3d {
+namespace lei3d
+{
 
-    struct Texture {
-        unsigned int id;
-        std::string type;
-        std::string path;
-    };
+	struct Texture
+	{
+		unsigned int id;
+		std::string	 type;
+		std::string	 path;
+	};
 
-    class Material {
-    public:
-        Material() {}
+	class Material
+	{
+	public:
+		Material() {}
 
-        void bind(Shader& shader, unsigned int tex_offset);
-        void unbind(unsigned int tex_offset);
+		void bind(Shader& shader, unsigned int tex_offset);
+		void unbind(unsigned int tex_offset);
 
-        glm::vec3 albedo{0.8f, 0.8f, 0.8f};
-        float metallic = 0.f;
-        float roughness = 0.5f;
-        float ambient = 1.f;
+		glm::vec3 m_Albedo{ 0.8f, 0.8f, 0.8f };
+		float	  m_Metallic = 0.f;
+		float	  m_Roughness = 0.5f;
+		float	  m_Ambient = 1.f;
 
-        std::shared_ptr<Texture> albedo_texture = nullptr;
-        std::shared_ptr<Texture> metallic_texture = nullptr;
-        std::shared_ptr<Texture> roughness_texture = nullptr;
-        std::shared_ptr<Texture> ao_texture = nullptr;
+		std::shared_ptr<Texture> m_AlbedoTexture = nullptr;
+		std::shared_ptr<Texture> m_MetallicTexture = nullptr;
+		std::shared_ptr<Texture> m_RoughnessTexture = nullptr;
+		std::shared_ptr<Texture> m_AmbientTexture = nullptr;
 
-        std::shared_ptr<Texture> normal_map = nullptr;
-        std::shared_ptr<Texture> bump_map = nullptr;
+		std::shared_ptr<Texture> m_NormalMap = nullptr;
+		std::shared_ptr<Texture> m_BumpMap = nullptr;
 
-        bool use_albedo_map = false;
-        bool use_metallic_map = false;
-        bool use_roughness_map = false;
-        bool is_glossy_rough = false;
-        bool use_ao_map = false;
-        bool use_normal_map = false;
-        bool use_bump_map = false;
-        float bump_scale = 0.1f;
+		bool  m_UseAlbedoMap = false;
+		bool  m_UseMetallicMap = false;
+		bool  m_UseRoughnessMap = false;
+		bool  m_IsGlossyRough = false;
+		bool  m_UseAmbientMap = false;
+		bool  m_UseNormalMap = false;
+		bool  m_UseBumpMap = false;
+		float m_BumpScale = 0.1f;
 
-    private:
-        int texture_count = 0;
-    };
+	private:
+		int texture_count = 0;
+	};
 
-} // lei3d
+} // namespace lei3d

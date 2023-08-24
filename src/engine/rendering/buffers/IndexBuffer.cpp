@@ -1,7 +1,7 @@
 #include "IndexBuffer.hpp"
 
-#include "logging/Log.hpp"
 #include "logging/GLDebug.hpp"
+#include "logging/Log.hpp"
 
 IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count, GLenum usage)
 	: m_Count(count)

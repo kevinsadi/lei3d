@@ -1,7 +1,7 @@
 #include "VertexBuffer.hpp"
 
-#include "logging/Log.hpp"
 #include "logging/GLDebug.hpp"
+#include "logging/Log.hpp"
 
 VertexBuffer::VertexBuffer(const void* data, unsigned int size, GLenum usage)
 {
@@ -15,7 +15,8 @@ VertexBuffer::~VertexBuffer()
 	GLCall(glDeleteBuffers(1, &m_BufferID));
 }
 
-void VertexBuffer::updateBuffer(GLintptr offset, GLsizeiptr size, GLvoid * data) {
+void VertexBuffer::updateBuffer(GLintptr offset, GLsizeiptr size, GLvoid* data)
+{
 	GLCall(glBufferSubData(GL_ARRAY_BUFFER, offset, size, data));
 }
 
