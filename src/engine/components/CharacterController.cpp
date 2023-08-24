@@ -1,5 +1,7 @@
 #include "CharacterController.hpp"
 
+#include "util/BulletUtil.hpp"
+
 namespace lei3d
 {
 	// DEFINE_COMPONENT(Backpack, "Backpack");
@@ -56,7 +58,9 @@ namespace lei3d
 
 	void CharacterController::PhysicsUpdate()
 	{
-		m_Entity.m_Transform.position = SceneManager::ActiveScene().GetPhysicsWorld().GetFirstColliderPosition();
+		btTransform trans;
+		m_MotionState->getWorldTransform(trans);
+		m_Entity.m_Transform.position = btTransformToVec3(trans);
 	}
 
 } // namespace lei3d
