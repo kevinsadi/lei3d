@@ -20,7 +20,8 @@ namespace lei3d
 		std::unique_ptr<btBroadphaseInterface>				 m_overlappingPairCache = nullptr;
 		std::unique_ptr<btSequentialImpulseConstraintSolver> m_solver = nullptr;
 		std::unique_ptr<btDiscreteDynamicsWorld>			 m_dynamicsWorld = nullptr;
-		btAlignedObjectArray<btCollisionShape*> m_collisionShapes;	//Can we get rid of this??
+		std::unique_ptr<btIDebugDraw>						 m_debugDrawer = nullptr;
+		//btAlignedObjectArray<btCollisionShape*> m_collisionShapes;	//Can we get rid of this??
 
 		PhysicsWorld();
 
@@ -29,6 +30,8 @@ namespace lei3d
 
 		// Not marked const bc of bullet weirdness where getters aren't const in the API
 		glm::vec3 GetFirstColliderPosition();
+
+		void OnImGuiRender();
 	};
 
 } // namespace lei3d

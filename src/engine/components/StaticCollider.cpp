@@ -53,7 +53,7 @@ namespace lei3d
 
 		// now add this mesh to our physics world.
 		PhysicsWorld& world = SceneManager::ActiveScene().GetPhysicsWorld();
-		world.m_collisionShapes.push_back(m_Collider);
+		//.m_collisionShapes.push_back(m_Collider);
 
 		btTransform meshTransform;
 		meshTransform.setIdentity();

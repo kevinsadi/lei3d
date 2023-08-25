@@ -1,5 +1,7 @@
 #include "PhysicsWorld.hpp"
 
+#include "LeiDebugDrawer.hpp"
+
 namespace lei3d
 {
 	PhysicsWorld::PhysicsWorld()
@@ -7,12 +9,16 @@ namespace lei3d
 		// this is just the default setup, we can make this fancier if we want
 		m_collisionConfiguration = std::make_unique<btDefaultCollisionConfiguration>();
 		m_dispatcher = std::make_unique<btCollisionDispatcher>(m_collisionConfiguration.get());
+
 		// good general purpose broadphase, we cna also use btAxis3Sweep
 		m_overlappingPairCache = std::make_unique<btDbvtBroadphase>();
 		m_solver = std::make_unique<btSequentialImpulseConstraintSolver>();
-		m_dynamicsWorld = std::make_unique<btDiscreteDynamicsWorld>(m_dispatcher.get(), m_overlappingPairCache.get(), m_solver.get(), m_collisionConfiguration.get());
 
+		m_dynamicsWorld = std::make_unique<btDiscreteDynamicsWorld>(m_dispatcher.get(), m_overlappingPairCache.get(), m_solver.get(), m_collisionConfiguration.get());
 		m_dynamicsWorld->setGravity(btVector3(0, -10, 0));
+
+		m_debugDrawer = std::make_unique<LeiDebugDrawer>();
+		m_dynamicsWorld->setDebugDrawer(m_debugDrawer.get());
 	}
 
 	void PhysicsWorld::Create()
@@ -75,4 +81,8 @@ namespace lei3d
 		return position;
 	}
 
+	void PhysicsWorld::OnImGuiRender()
+	{
+		
+	}
 } // namespace lei3d

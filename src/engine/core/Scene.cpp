@@ -191,6 +191,9 @@ namespace lei3d
         ImGui::Text("Camera: ");
         m_Camera->OnImGuiRender();
 
+		ImGui::Text("Physics World: ");
+		m_PhysicsWorld->OnImGuiRender();
+
         static int currentEntityI = -1; // Here we store our selection data as an index.
         if (ImGui::TreeNode("Entities"))
         {

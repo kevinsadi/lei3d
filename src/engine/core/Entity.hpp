@@ -4,6 +4,8 @@
 #include "logging/Log.hpp"
 #include "rendering/Shader.hpp"
 
+#include <btBulletCollisionCommon.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -54,13 +56,16 @@ namespace lei3d
         void SetPosition(const glm::vec3& position);
         void SetScale(const glm::vec3& scale);
 
+		btTransform getBTTransform();
+		void		setFromBTTransform(const btTransform& btTrans);
+
+		const std::string& GetName() const;
+		void			   SetName(const std::string& name);
+
         //TODO: Consider refactoring Editor GUIs to separate class
         void NameGUI();
         void TransformGUI();
         void ShowInspectorGUI();
-
-		const std::string& GetName() const;
-		void			   SetName(const std::string& name);
 
 		/*
 		 * Component System:
@@ -79,14 +84,16 @@ namespace lei3d
 		{
 			static_assert(std::is_convertible<C, Component>::value, "C must be a component type");
 
-            //(may need GetComponents if we have multiple)
-            for (auto& c : m_Components) {
-                //Component& cRef = *c;
-                if (auto* casted = dynamic_cast<C*>(c.get())) {
-                    //returns the first match
-                    return static_cast<C*>(c.get());
-                }
-            }
+			//(may need GetComponents if we have multiple)
+			for (auto& c : m_Components)
+			{
+				// Component& cRef = *c;
+				if (auto* casted = dynamic_cast<C*>(c.get()))
+				{
+					// returns the first match
+					return static_cast<C*>(c.get());
+				}
+			}
 
 			// LEI_ERROR("Could not find component.");
 			return nullptr;

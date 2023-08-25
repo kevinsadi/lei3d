@@ -4,8 +4,6 @@
 
 namespace lei3d
 {
-	// DEFINE_COMPONENT(Backpack, "Backpack");
-
 	CharacterController::CharacterController(Entity& entity)
 		: Component(entity)
 	{
@@ -16,6 +14,9 @@ namespace lei3d
 		delete m_Collider;
 		delete m_MotionState;
 		delete m_RigidBody;
+
+		delete m_GroundCheckCollider;
+		delete m_GroundCheckObj;
 	}
 
 	void CharacterController::Start()
@@ -28,20 +29,23 @@ namespace lei3d
 	 * Also cannot change the size of the graphics mesh of the character controller for proper collisions.
 	 *
 	 */
-	void CharacterController::Init()
+	void CharacterController::Init(float width, float height, float groundCheckDist, glm::vec3 groundCheckLocalPos)
 	{
 		// CHARACTER--------------------
-		m_Collider = new btCapsuleShape(btScalar{ 1.0f }, btScalar{ 3.0f });
-		btTransform startTransform;
-		startTransform.setIdentity();
+		m_Width = width;
+		m_Height = height;
+		m_GroundCheckDist = groundCheckDist;
+		m_GroundCheckLocalPos = glmToBTVec3(groundCheckLocalPos);
+
+		m_Collider = new btCapsuleShape(btScalar{ width }, btScalar{ height });
 
 		btScalar  mass{ 1.f };
 		btVector3 localInertia{ 0.0f, 0.0f, 0.0f };
 		m_Collider->calculateLocalInertia(mass, localInertia);
-		Transform transform = m_Entity.m_Transform;
-		startTransform.setOrigin(btVector3{ transform.position.x, transform.position.y, transform.position.z });
 
+		btTransform startTransform = m_Entity.getBTTransform();
 		m_MotionState = new btDefaultMotionState(startTransform);
+
 		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, m_MotionState, m_Collider, localInertia);
 		m_RigidBody = new btRigidBody(rbInfo);
 		m_RigidBody->setSleepingThresholds(0.0, 0.0);
@@ -49,18 +53,38 @@ namespace lei3d
 
 		PhysicsWorld& world = SceneManager::ActiveScene().GetPhysicsWorld();
 		world.m_dynamicsWorld->addRigidBody(m_RigidBody);
-		world.m_collisionShapes.push_back(m_Collider);
+		// world.m_collisionShapes.push_back(m_Collider);
+
+		// GROUND CHECK ------------------
+		btTransform groundCheckTrans = getGroundCheckTransform(startTransform);
+
+		m_GroundCheckCollider = new btSphereShape(m_GroundCheckDist);
+		m_GroundCheckObj = new btCollisionObject();
+		m_GroundCheckObj->setCollisionShape(m_GroundCheckCollider);
+		m_GroundCheckObj->setWorldTransform(groundCheckTrans);
 
 		// WITHIN THIS CUSTOM PHYSICS UPDATE IS THE MAGIC THAT MAKES AIRSTRAFING / SURF POSSIBLE
-		CharacterPhysicsUpdate* customCharacterPhysicsUpdate = new CharacterPhysicsUpdate(m_RigidBody);
+		CharacterPhysicsUpdate* customCharacterPhysicsUpdate = new CharacterPhysicsUpdate(m_RigidBody, m_GroundCheckObj);
 		world.m_dynamicsWorld->addAction(customCharacterPhysicsUpdate);
 	}
 
 	void CharacterController::PhysicsUpdate()
 	{
-		btTransform trans;
-		m_MotionState->getWorldTransform(trans);
-		m_Entity.m_Transform.position = btTransformToVec3(trans);
+		btTransform characterTrans;
+		m_MotionState->getWorldTransform(characterTrans);
+		m_GroundCheckObj->setWorldTransform(getGroundCheckTransform(characterTrans));
+
+		m_Entity.setFromBTTransform(characterTrans);
+	}
+
+	btTransform CharacterController::getGroundCheckTransform(const btTransform& parentTransform)
+	{
+		btTransform groundCheckTrans;
+		groundCheckTrans.setIdentity();
+		groundCheckTrans.setOrigin(m_GroundCheckLocalPos);
+		groundCheckTrans.mult(parentTransform, groundCheckTrans);
+
+		return groundCheckTrans;
 	}
 
 } // namespace lei3d

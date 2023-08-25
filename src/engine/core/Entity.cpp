@@ -3,6 +3,8 @@
 #include "logging/Log.hpp"
 #include "logging/LogGLM.hpp"
 
+#include "util/BulletUtil.hpp"
+
 #include <imgui.h>
 
 namespace lei3d
@@ -168,6 +170,19 @@ namespace lei3d
             SetPosition(glm::vec3(x, y, z));
         }
     }
+
+	btTransform Entity::getBTTransform()
+	{
+		btTransform btTrans;
+		btTrans.setIdentity();
+		btTrans.setOrigin(btVector3{ m_Transform.position.x, m_Transform.position.y, m_Transform.position.z });
+		return btTrans;
+	}
+
+	void Entity::setFromBTTransform(const btTransform& btTrans)
+	{
+		m_Transform.position = btTransformToVec3(btTrans);
+	}
 
     void Entity::ShowInspectorGUI()
     {

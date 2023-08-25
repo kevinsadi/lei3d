@@ -1,7 +1,6 @@
 #pragma once
 
 #include "core/Application.hpp"
-#include "physics/FindGround.hpp"
 
 #include <btBulletDynamicsCommon.h>
 
@@ -10,13 +9,14 @@ namespace lei3d
 	class CharacterPhysicsUpdate : public btActionInterface
 	{
 	public:
-		CharacterPhysicsUpdate(btRigidBody* body);
+		CharacterPhysicsUpdate(btRigidBody* character, btCollisionObject* groundCheck);
 
 		void updateAction(btCollisionWorld* collisionWorld, btScalar deltaTime) override;
 		void debugDraw(btIDebugDraw* debugDrawer) override;
 
 	private:
-		btRigidBody* m_body;
+		btRigidBody* m_Character;
+		btCollisionObject* m_GroundCheck;
 
 		float m_gravity = 15.24f;
 		float m_maxAirSpeed = 0.575f;
