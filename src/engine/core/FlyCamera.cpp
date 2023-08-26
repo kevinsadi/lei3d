@@ -145,4 +145,14 @@ namespace lei3d
 	{
 		return m_CameraPos;
 	}
+
+	glm::vec3 FlyCamera::Front() const
+	{
+		return m_CameraFront;
+	}
+
+	glm::vec3 FlyCamera::Up() const
+	{
+		return m_CameraUp;	
+	}
 } // namespace lei3d

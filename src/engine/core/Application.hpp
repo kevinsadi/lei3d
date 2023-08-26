@@ -2,6 +2,7 @@
 
 #include "core/SceneManager.hpp"
 #include "guitools/AppGUI.hpp"
+#include "rendering/PrimitiveRenderer.hpp"
 #include "rendering/RenderSystem.hpp"
 
 #include <glad/glad.h>
@@ -36,6 +37,7 @@ namespace lei3d
 		std::unique_ptr<SceneManager> m_SceneManager;
 
 		RenderSystem renderer;
+		PrimitiveRenderer m_PrimitiveRenderer;
 
 		// NOTE: Don't modify this directly. Use SetUIActive.
 		bool m_UIActive = false;

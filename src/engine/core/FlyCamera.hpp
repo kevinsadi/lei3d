@@ -51,6 +51,10 @@ namespace lei3d
 		void SetFOV(float fov);
 		void SetClipPlanes(float nearClip, float farClip);
 
+		glm::vec3 Pos() const;
+		glm::vec3 Front() const;
+		glm::vec3 Up() const;
+
 	private:
 		void handleForward(float speed);
 		void handleLeft(float speed);

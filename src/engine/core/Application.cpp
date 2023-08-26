@@ -122,6 +122,7 @@ namespace lei3d
 		m_SceneManager->LoadNextScene();
 
 		renderer.initialize(screenWidth, screenHeight);
+		m_PrimitiveRenderer.initialize(screenWidth, screenHeight);
 
 		SetupInputCallbacks();
 	}
@@ -173,6 +174,12 @@ namespace lei3d
 	void Application::Render()
 	{
 		renderer.draw(m_SceneManager->ActiveScene());
+
+		//TEST DEBUG CODE
+		//glm::vec3 from = { 0.f, 0.f, 0.f };
+		//glm::vec3 to = { 10.f, 0.f, 0.f };
+		//glm::vec3 color = { 1.f, 0.f, 0.f };
+		//m_PrimitiveRenderer.drawLine(SceneManager::ActiveScene().MainCamera(), from, to, color);
 	}
 
 	void Application::ImGuiRender()
