@@ -111,6 +111,11 @@ namespace lei3d
 		m_FarPlane = farClip;
 	}
 
+	void FlyCamera::SetPosition(glm::vec3 pos)
+	{
+		m_CameraPos = pos;
+	}
+
 	void FlyCamera::handleForward(float speed)
 	{
 		m_CameraPos += m_CameraFront * speed * Application::DeltaTime();
@@ -141,7 +146,7 @@ namespace lei3d
 		return glm::perspective(glm::radians(m_FOVDeg), m_Aspect, m_NearPlane, m_FarPlane);
 	}
 
-	glm::vec3 FlyCamera::GetPosition()
+	glm::vec3 FlyCamera::GetPosition() const
 	{
 		return m_CameraPos;
 	}

@@ -1,6 +1,10 @@
 #include "PhysicsWorld.hpp"
 
+#include "logging/Log.hpp"
+
 #include "LeiDebugDrawer.hpp"
+
+#include <imgui.h>
 
 namespace lei3d
 {
@@ -18,6 +22,7 @@ namespace lei3d
 		m_dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
 		m_debugDrawer = std::make_unique<LeiDebugDrawer>();
+		m_debugDrawer->setDebugMode(btIDebugDraw::DBG_DrawAabb | btIDebugDraw::DBG_DrawWireframe);
 		m_dynamicsWorld->setDebugDrawer(m_debugDrawer.get());
 	}
 
@@ -61,6 +66,11 @@ namespace lei3d
 				trans = obj->getWorldTransform();
 			}
 		}
+
+		if (m_Debug)
+		{
+			m_dynamicsWorld->debugDrawWorld();
+		}
 	}
 
 	//We ideally shouldn't use this. Better to store the collider in an object and get the position than assume array order
@@ -83,5 +93,6 @@ namespace lei3d
 
 	void PhysicsWorld::OnImGuiRender()
 	{
+		ImGui::Checkbox("Debug Mode", &m_Debug);
 	}
 } // namespace lei3d

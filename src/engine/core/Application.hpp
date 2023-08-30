@@ -56,6 +56,7 @@ namespace lei3d
 
 		static GLFWwindow* Window();
 		static float	   DeltaTime();
+		static PrimitiveRenderer& PrimitiveRenderer();
 
 	private:
 		void Initialize(); // Start the App

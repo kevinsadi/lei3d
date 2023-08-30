@@ -28,6 +28,7 @@ namespace lei3d
 
 	private:
 		std::unique_ptr<Model> backpackModel;
+		std::unique_ptr<Model> playgroundModel;
 	};
 
 } // namespace lei3d

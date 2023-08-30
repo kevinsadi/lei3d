@@ -176,10 +176,10 @@ namespace lei3d
 		renderer.draw(m_SceneManager->ActiveScene());
 
 		//TEST DEBUG CODE
-		//glm::vec3 from = { 0.f, 0.f, 0.f };
-		//glm::vec3 to = { 10.f, 0.f, 0.f };
-		//glm::vec3 color = { 1.f, 0.f, 0.f };
-		//m_PrimitiveRenderer.drawLine(SceneManager::ActiveScene().MainCamera(), from, to, color);
+		glm::vec3 from = { 0.f, 0.f, 0.f };
+		glm::vec3 to = { 50.f, 0.f, 0.f };
+		glm::vec3 color = { 1.f, 0.f, 0.f };
+		m_PrimitiveRenderer.drawLine(SceneManager::ActiveScene().MainCamera(), from, to, color, 1.f);
 	}
 
 	void Application::ImGuiRender()
@@ -198,6 +198,12 @@ namespace lei3d
 		ImGui_ImplOpenGL3_RenderDrawData(drawData);
 		ImGui::EndFrame();
 	}
+
+	PrimitiveRenderer& Application::PrimitiveRenderer()
+	{
+		return s_Instance->m_PrimitiveRenderer;
+	}
+
 
 	// TODO: Put into input class
 	void Application::SetupInputCallbacks()

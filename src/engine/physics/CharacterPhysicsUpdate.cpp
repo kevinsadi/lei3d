@@ -4,8 +4,8 @@
 
 namespace lei3d
 {
-	CharacterPhysicsUpdate::CharacterPhysicsUpdate(btRigidBody* character, btCollisionObject* groundCheck)
-		: m_Character(character), m_GroundCheck(groundCheck) {}
+	CharacterPhysicsUpdate::CharacterPhysicsUpdate(btRigidBody* character, btCollisionObject* groundCheck, float groundCheckDist)
+		: m_Character(character), m_GroundCheck(groundCheck), m_GroundCheckDist(groundCheckDist) {}
 
 	glm::vec3 projectVector(glm::vec3& vecToProject, glm::vec3& targetVector)
 	{
@@ -91,11 +91,12 @@ namespace lei3d
 	void CharacterPhysicsUpdate::debugDraw(btIDebugDraw* debugDrawer)
 	{
 		//Draw Ground Check
-		btVector3 center;
-		btScalar  radius;
-		m_GroundCheck->getCollisionShape()->getBoundingSphere(center, radius);
-		btVector3 groundCheckColor = btVector3(0.f, 1.f, 0.f); //green
-		debugDrawer->drawSphere(center, radius, groundCheckColor);
+		const btVector3 center = m_GroundCheck->getWorldTransform().getOrigin();
+		const btScalar  radius = m_GroundCheckDist;
+		const btVector3 groundCheckColor = btVector3(0.f, 1.f, 0.f);	//green
+
+		debugDrawer->drawLine({ 0.f, 0.f, 0.f }, { 10.f, 0.f, 0.f }, { 1.f, 0.f, 0.f });
+		//debugDrawer->drawSphere(center, radius, groundCheckColor); 
 	}
 
 	glm::vec3 CharacterPhysicsUpdate::Accelerate(glm::vec3 wishDir, glm::vec3 prevVel, float acceleration, float maxVelocity)
