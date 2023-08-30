@@ -46,12 +46,6 @@ namespace lei3d
 		backpackObj2.SetScale(glm::vec3(0.25f, 0.25f, 0.25f));
 		backpackObj2.SetPosition(glm::vec3(10.f, 0.f, 0.f));
 
-		Entity& backpackObj3 = AddEntity("Backpack");
-		Entity& backpackObj4 = AddEntity("Backpack");
-
-		Entity& dummy1 = AddEntity("Dummy");
-		Entity& dummy2 = AddEntity("Dummy");
-
 		////Test Multiple Components
 		Entity&					 skyboxObj = AddEntity("Skybox");
 		SkyBox*					 skybox = skyboxObj.AddComponent<SkyBox>();

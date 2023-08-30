@@ -17,11 +17,10 @@ namespace lei3d
 		btRigidBody*		  m_RigidBody;
 
 		// GROUND CHECK
-		btVector3		  m_GroundCheckLocalPos;
-		btScalar			  m_GroundCheckDist;
-		btCollisionShape* m_GroundCheckCollider;
+		btVector3		   m_GroundCheckLocalPos;
+		btScalar		   m_GroundCheckDist;
+		btCollisionShape*  m_GroundCheckCollider;
 		btCollisionObject* m_GroundCheckObj;
-
 
 	public:
 		CharacterController(Entity& entity);
