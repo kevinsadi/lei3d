@@ -15,7 +15,7 @@ namespace lei3d
 		void debugDraw(btIDebugDraw* debugDrawer) override;
 
 	private:
-		btRigidBody* m_Character;
+		btRigidBody*	   m_Character;
 		btCollisionObject* m_GroundCheck;
 
 		float m_gravity = 15.24f;

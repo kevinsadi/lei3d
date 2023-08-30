@@ -14,8 +14,8 @@ namespace lei3d
 		//float		 m_RadiusThreshold = 1e-2f;
 		//float		 m_MaxCosGround = -SIMDSQRT12; // approx SQRT(1/2) = sqrt(2)/2 , defined by Bullet3
 		btCollisionObject* m_AttachedObj;
-		bool		 m_Grounded = false;
-		btVector3	 m_GroundPoint;
+		bool			   m_Grounded = false;
+		btVector3		   m_GroundPoint;
 
 		//GroundedCallback(btRigidBody* characterBody);
 		GroundedCallback(btCollisionObject* attachedObj);

@@ -27,10 +27,10 @@ namespace lei3d
 		m_PhysicsWorld = std::make_unique<PhysicsWorld>();
 		m_PhysicsWorld->Create(); // TODO: Consider if there is some better way to do this
 
-        OnLoad();
+		OnLoad();
 
-        m_State = SCENE_START;
-    }
+		m_State = SCENE_PLAYING;
+	}
 
 	Entity& Scene::AddEntity(std::string name)
 	{
@@ -78,25 +78,26 @@ namespace lei3d
 		OnUnload();
 	}
 
-    void Scene::Play()
-    {
-        m_State = SCENE_PLAYING;
-    }
+	void Scene::Play()
+	{
+		m_State = SCENE_PLAYING;
+	}
 
-    void Scene::Pause()
-    {
-        m_State = SCENE_PAUSED;
-    }
+	void Scene::Pause()
+	{
+		m_State = SCENE_PAUSED;
+	}
 
-    void Scene::Reset()
-    {
-        //We have to do some tricky things to get the scene to reset all the objs and physics and stuff.
-        m_State = SCENE_START;
+	void Scene::Reset()
+	{
+		//We have to do some tricky things to get the scene to reset all the objs and physics and stuff.
+		m_State = SCENE_START;
 		Load(); //This is inefficient
-    }
+	}
 
-    void Scene::Start() {
-        LEI_TRACE("Scene Start");
+	void Scene::Start()
+	{
+		LEI_TRACE("Scene Start");
 
 		for (auto& entity : m_Entities)
 		{
@@ -106,33 +107,36 @@ namespace lei3d
 		OnStart();
 	}
 
-	void Scene::Update() {
-        if (m_State == SCENE_PLAYING)
-        {
+	void Scene::Update()
+	{
+		if (m_State == SCENE_PLAYING)
+		{
 			//LEI_TRACE("Scene Update");
 
-            for (auto& entity : m_Entities)
-            {
-                entity->Update();
-            }
+			for (auto& entity : m_Entities)
+			{
+				entity->Update();
+			}
 
-            OnUpdate();
-        }
+			OnUpdate();
+		}
 
-        m_Camera->PollCameraMovementInput();
+		m_Camera->PollCameraMovementInput();
 	}
 
-    void Scene::PhysicsUpdate() {
-        if (m_State == SCENE_PLAYING) {
-            //LEI_TRACE("Scene Physics Update");
-            for (auto& entity : m_Entities)
-            {
-                entity->PhysicsUpdate();
-            }
+	void Scene::PhysicsUpdate()
+	{
+		if (m_State == SCENE_PLAYING)
+		{
+			//LEI_TRACE("Scene Physics Update");
+			for (auto& entity : m_Entities)
+			{
+				entity->PhysicsUpdate();
+			}
 
-            OnPhysicsUpdate();
-        }
-    }
+			OnPhysicsUpdate();
+		}
+	}
 
 	void Scene::Render()
 	{
@@ -148,63 +152,63 @@ namespace lei3d
 		OnRender();
 	}
 
-    //yucky
-    std::string Scene::StateToString() const
+	//yucky
+	std::string Scene::StateToString() const
 	{
 		switch (m_State)
 		{
-		case SCENE_PLAYING:
-            return "Playing";
-        case SCENE_PAUSED:
-            return "Paused";
-		case SCENE_START:
-        default:
-            return "Ready To Start";
+			case SCENE_PLAYING:
+				return "Playing";
+			case SCENE_PAUSED:
+				return "Paused";
+			case SCENE_START:
+			default:
+				return "Ready To Start";
 		}
 	}
 
-    void Scene::ImGUIRender()
-    {
-        //Scene Control Widgets
-        std::stringstream ss;
-        ss << "State: ";
-        ss << StateToString();
-        ImGui::Text(ss.str().c_str());
-		
-        if (ImGui::Button("Play"))
-        {
-            Play();
-        }
+	void Scene::ImGUIRender()
+	{
+		//Scene Control Widgets
+		std::stringstream ss;
+		ss << "State: ";
+		ss << StateToString();
+		ImGui::Text(ss.str().c_str());
 
-        ImGui::SameLine();
-        if (ImGui::Button("Pause"))
-        {
-            Pause();
-        }
+		if (ImGui::Button("Play"))
+		{
+			Play();
+		}
 
-        //ImGui::SameLine();
-        //if (ImGui::Button("Reset"))
-        //{
-        //    Reset();
-        //}
+		ImGui::SameLine();
+		if (ImGui::Button("Pause"))
+		{
+			Pause();
+		}
 
-        ImGui::Text("Camera: ");
-        m_Camera->OnImGuiRender();
+		//ImGui::SameLine();
+		//if (ImGui::Button("Reset"))
+		//{
+		//    Reset();
+		//}
+
+		ImGui::Text("Camera: ");
+		m_Camera->OnImGuiRender();
 
 		ImGui::Text("Physics World: ");
 		m_PhysicsWorld->OnImGuiRender();
 
-        static int currentEntityI = -1; // Here we store our selection data as an index.
-        if (ImGui::TreeNode("Entities"))
-        {
-            // Using the generic BeginListBox() API, you have full control over how to display the combo contents.
-            // (your selection data could be an index, a pointer to the object, an id for the object, a flag intrusively
-            // stored in the object itself, etc.)
-            std::vector<std::string> entityNames;
-            for (auto& entity : m_Entities)
-            {
-                entityNames.push_back(entity->GetName());
-            }
+		static int currentEntityI = -1; // Here we store our selection data as an index.
+		if (ImGui::TreeNode("Entities"))
+		{
+			// Using the generic BeginListBox() API, you have full control over how to display the combo contents.
+			// (your selection data could be an index, a pointer to the object, an id for the object, a flag intrusively
+			// stored in the object itself, etc.)
+			std::vector<std::string> entityNames;
+			for (auto& entity : m_Entities)
+			{
+				entityNames.push_back(entity->GetName());
+			}
 
 			// LEI_INFO("Number of Entities: {0}", entityNames.size());
 

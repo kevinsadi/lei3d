@@ -7,9 +7,10 @@ namespace lei3d
 	//GroundedCallback::GroundedCallback(btRigidBody* body)
 	//	: m_RigidBody(body) {}
 
-	GroundedCallback::GroundedCallback(btCollisionObject* attachedObj) : 
-		m_AttachedObj(attachedObj), m_Grounded(false)
-	{}
+	GroundedCallback::GroundedCallback(btCollisionObject* attachedObj)
+		: m_AttachedObj(attachedObj), m_Grounded(false)
+	{
+	}
 
 	//NOTE: THIS IS ONLY CALLED WHEN A COLLISION OCCURS!
 	btScalar GroundedCallback::addSingleResult(btManifoldPoint& cp,
