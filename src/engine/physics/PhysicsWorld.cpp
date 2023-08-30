@@ -22,7 +22,7 @@ namespace lei3d
 		m_dynamicsWorld->setGravity(btVector3(0, -10, 0));
 
 		m_debugDrawer = std::make_unique<LeiDebugDrawer>();
-		m_debugDrawer->setDebugMode(btIDebugDraw::DBG_DrawAabb | btIDebugDraw::DBG_DrawWireframe);
+		m_debugDrawer->setDebugMode(btIDebugDraw::DBG_DrawAabb);
 		m_dynamicsWorld->setDebugDrawer(m_debugDrawer.get());
 	}
 

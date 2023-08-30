@@ -92,10 +92,15 @@ namespace lei3d
 	{
 		//Draw Ground Check
 		const btVector3 center = m_GroundCheck->getWorldTransform().getOrigin();
-		const btScalar  radius = m_GroundCheckDist;
-		const btVector3 groundCheckColor = btVector3(0.f, 1.f, 0.f);	//green
+		const btScalar	radius = m_GroundCheckDist;
+		const btVector3 groundCheckColor = btVector3(0.f, 0.f, 1.f);
 
-		debugDrawer->drawLine({ 0.f, 0.f, 0.f }, { 10.f, 0.f, 0.f }, { 1.f, 0.f, 0.f });
+		btVector3 from = { 0.f, 0.f, 0.f };
+		btVector3 to = { 50.f, 0.f, 0.f };
+		btVector3 color = { 1.f, 0.f, 0.f };
+		debugDrawer->drawSphere(center, radius, groundCheckColor);
+		//debugDrawer->drawLine(from, to, color);
+		//debugDrawer->drawLine({ 0.f, 0.f, 0.f }, { 10.f, 0.f, 0.f }, { 1.f, 0.f, 0.f });
 		//debugDrawer->drawSphere(center, radius, groundCheckColor); 
 	}
 

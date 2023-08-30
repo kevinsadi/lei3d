@@ -8,7 +8,7 @@ namespace lei3d
 {
 	void LeiDebugDrawer::drawLine(const btVector3& from, const btVector3& to, const btVector3& color)
 	{
-		Application::PrimitiveRenderer().drawLine(SceneManager::ActiveScene().MainCamera(), btToGLMVec3(from), btToGLMVec3(to), btToGLMVec3(color));
+		Application::PrimitiveRenderer().pushLine(SceneManager::ActiveScene().MainCamera(), btToGLMVec3(from), btToGLMVec3(to), btToGLMVec3(color), 0.5f);
 	}
 
 	int LeiDebugDrawer::getDebugMode() const
