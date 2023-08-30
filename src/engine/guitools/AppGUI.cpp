@@ -2,7 +2,7 @@
 
 namespace lei3d
 {
-	void AppGUI::RenderUI() const
+	void AppGUI::RenderUI()
 	{
 		if (m_ShowDemoWindow)
 		{

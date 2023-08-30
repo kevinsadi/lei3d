@@ -29,6 +29,8 @@ namespace lei3d
 		std::string			 m_Directory;
 		std::vector<Texture> m_TexturesLoaded;
 
+		std::vector<btTriangleMesh*> m_BTMeshes; // NEED TO DEALLOCATE THIS IN DESTRUCTOR!
+
 	public:
 		std::vector<std::shared_ptr<Texture>>  textures;
 		std::vector<std::shared_ptr<Material>> materials;
@@ -38,7 +40,7 @@ namespace lei3d
 
 		void Draw(Shader& shader);
 
-		std::vector<btTriangleMesh*> GetCollisionMeshes() const;
+		std::vector<btTriangleMesh*>& GetCollisionMeshes();
 
 	private:
 		void					 loadMaterials(const aiScene* scene);

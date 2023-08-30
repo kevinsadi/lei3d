@@ -1,9 +1,11 @@
 #include "CharacterPhysicsUpdate.hpp"
 
+#include "physics/GroundedCallback.hpp"
+
 namespace lei3d
 {
-	CharacterPhysicsUpdate::CharacterPhysicsUpdate(btRigidBody* body)
-		: m_body(body) {}
+	CharacterPhysicsUpdate::CharacterPhysicsUpdate(btRigidBody* character, btCollisionObject* groundCheck)
+		: m_Character(character), m_GroundCheck(groundCheck) {}
 
 	glm::vec3 projectVector(glm::vec3& vecToProject, glm::vec3& targetVector)
 	{
@@ -22,13 +24,14 @@ namespace lei3d
 	void CharacterPhysicsUpdate::updateAction(btCollisionWorld* collisionWorld, btScalar deltaTime)
 	{
 		// Check if we are on the ground
-		FindGround callback(m_body);
-		collisionWorld->contactTest(m_body, callback);
+		GroundedCallback callback(m_Character);
+		collisionWorld->contactTest(m_GroundCheck, callback);
 		bool onGround = callback.m_Grounded;
 		bool groundPoint = callback.m_GroundPoint;
+		//LEI_INFO("On Ground: {0}", onGround ? "True" : "False");
 
 		// Update velocity accordingly
-		btVector3 v = m_body->getLinearVelocity();
+		btVector3 v = m_Character->getLinearVelocity();
 		glm::vec3 prevVel = glm::vec3(v.x(), v.y(), v.z());
 		// std::cout << "prevVel is: " << prevVel.x << " " << prevVel.y << " " << prevVel.z << std::endl;
 
@@ -82,10 +85,18 @@ namespace lei3d
 			v = v + btVector3(0.0, 4.75, 0.0);
 		}
 
-		m_body->setLinearVelocity(v);
+		m_Character->setLinearVelocity(v);
 	}
 
-	void CharacterPhysicsUpdate::debugDraw(btIDebugDraw* debugDrawer) {}
+	void CharacterPhysicsUpdate::debugDraw(btIDebugDraw* debugDrawer)
+	{
+		//Draw Ground Check
+		btVector3 center;
+		btScalar  radius;
+		m_GroundCheck->getCollisionShape()->getBoundingSphere(center, radius);
+		btVector3 groundCheckColor = btVector3(0.f, 1.f, 0.f); //green
+		debugDrawer->drawSphere(center, radius, groundCheckColor);
+	}
 
 	glm::vec3 CharacterPhysicsUpdate::Accelerate(glm::vec3 wishDir, glm::vec3 prevVel, float acceleration, float maxVelocity)
 	{

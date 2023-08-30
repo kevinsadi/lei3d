@@ -22,6 +22,13 @@ namespace lei3d
 
 	class Scene
 	{
+		enum SceneState
+		{
+			SCENE_PLAYING,
+			SCENE_PAUSED,
+			SCENE_START,
+		};
+
 	private:
 		friend RenderSystem;
 
@@ -29,15 +36,18 @@ namespace lei3d
 		std::unordered_map<std::string, int> m_EntityNameCounts;
 
 	protected:
-		// We should prob. limit how much stuff we put into the base scene.
+		//We should prob. limit how much stuff we put into the base scene.
 		std::unique_ptr<FlyCamera>	  m_Camera = nullptr;		// every scene needs a camera
 		std::unique_ptr<Shader>		  m_MainShader = nullptr;	// THIS IS TEMPORARY
 		std::unique_ptr<PhysicsWorld> m_PhysicsWorld = nullptr; // Each scene has a physics world
+
+		SceneState m_State;
+
 	public:
 		Scene();
 		~Scene();
 
-		// Entities
+		//Entities
 		Entity& AddEntity(std::string name);
 		Entity& AddEntity();
 
@@ -48,6 +58,11 @@ namespace lei3d
 		void Render();
 		void ImGUIRender();
 		void Destroy();
+
+		//Scene State Changers
+		void Play();
+		void Pause();
+		void Reset();
 
 		void Load();
 		void Unload();
@@ -70,5 +85,8 @@ namespace lei3d
 		PhysicsWorld& GetPhysicsWorld() const;
 
 		void PrintEntityList() const; // For Debugging
+
+	private:
+		std::string StateToString() const;
 	};
 } // namespace lei3d

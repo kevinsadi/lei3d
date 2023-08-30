@@ -37,7 +37,7 @@ namespace lei3d
 		backpackObj.SetPosition(glm::vec3(0.f, 200.f, 0.f));
 
 		CharacterController* characterController = backpackObj.AddComponent<CharacterController>();
-		characterController->Init();
+		characterController->Init(1.f, 3.f);
 
 		// PHYSICS PLAYGROUND---------------------
 		Entity& physicsPlaygroundObj = AddEntity("Physics Playground");

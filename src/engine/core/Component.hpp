@@ -7,11 +7,6 @@
 
 namespace lei3d
 {
-
-	//#define DEFINE_COMPONENT(type, name) \
-//template<> \
-//std::string GetComponentName<type>() { return std::string(name); }
-
 	class Entity;
 	class Scene;
 
@@ -28,5 +23,7 @@ namespace lei3d
 		virtual void PhysicsUpdate() {}
 		virtual void Render() {}
 		virtual void OnDestroy() {}
+
+		virtual void OnEditorUpdate() {}
 	};
 } // namespace lei3d

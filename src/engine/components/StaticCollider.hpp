@@ -10,11 +10,18 @@ namespace lei3d
 
 	class StaticCollider : public Component
 	{
+	private:
+		btScaledBvhTriangleMeshShape* m_Collider;
+		btBvhTriangleMeshShape*		  m_NonScaledCollider;
+		btMotionState*				  m_MotionState;
+		btRigidBody*				  m_RigidBody;
+
 	public:
 		StaticCollider(Entity& entity);
+		~StaticCollider();
 
 		void Init();
-		void SetColliderToModel(const Model& model);
+		void SetColliderToModel(Model& model);
 
 	private:
 		void AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, const Transform& transform);
