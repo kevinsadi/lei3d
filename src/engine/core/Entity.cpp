@@ -194,6 +194,11 @@ namespace lei3d
 		NameGUI();
 		TransformGUI();
 
+		for (auto& component : m_Components)
+		{
+			component->OnImGuiRender();
+		}
+
 		ImGui::SetWindowSize(ImVec2(300, 800), ImGuiCond_Once);
 		ImGui::SetWindowPos(ImVec2(300, 0), ImGuiCond_Once);
 		ImGui::End();
