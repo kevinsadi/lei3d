@@ -5,17 +5,25 @@
 
 namespace lei3d
 {
-    class Entity;
-    class Component;
+	class Entity;
+	class Component;
 
-    class StaticCollider : public Component
-    {
-    public:
-        StaticCollider(Entity& entity);
+	class StaticCollider : public Component
+	{
+	private:
+		btScaledBvhTriangleMeshShape* m_Collider;
+		btBvhTriangleMeshShape*		  m_NonScaledCollider;
+		btMotionState*				  m_MotionState;
+		btRigidBody*				  m_RigidBody;
 
-        void Init();
-        void SetColliderToModel(const Model& model);
-    private:
-        void AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, const Transform& transform);
-    };
-}
+	public:
+		StaticCollider(Entity& entity);
+		~StaticCollider();
+
+		void Init();
+		void SetColliderToModel(Model& model);
+
+	private:
+		void AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, const Transform& transform);
+	};
+} // namespace lei3d

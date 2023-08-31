@@ -1,17 +1,20 @@
 #pragma once
 
-#include <imgui.h>
-
 #include "core/Application.hpp"
 
-namespace lei3d {
+#include <imgui.h>
+
+namespace lei3d
+{
 	class Application;
 	class Scene;
 
-	class AppGUI {
+	class AppGUI
+	{
 	private:
 		bool m_ShowDemoWindow = false;
+
 	public:
-		void RenderUI() const;
+		void RenderUI(); //DON"T MAKE THIS CONST
 	};
-}
+} // namespace lei3d
