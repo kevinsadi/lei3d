@@ -6,6 +6,9 @@ option(GLFW_BUILD_TESTS "" OFF)
 option(GLFW_BUILD_DOCS "" OFF)
 option(GLFW_INSTALL "" OFF)
 option(GLFW_BUILD_EXAMPLES "" OFF)
+if (WIN32)
+    set (GLFW_USE_HYBRID_HPG ON CACHE BOOL "" FORCE)
+endif ()
 FetchContent_Declare(
         glfw
         GIT_REPOSITORY https://github.com/glfw/glfw

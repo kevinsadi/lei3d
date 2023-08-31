@@ -26,7 +26,9 @@ namespace lei3d
 	{
 		loadCubemap(faces);
 
-		skyboxShader.setInt("skyboxSampler", 0);
+		skyboxShader.bind();
+		skyboxShader.setInt("skyboxCubemap", 0);
+		skyboxShader.unbind();
 	}
 
 	void SkyBox::loadCubemap(const std::vector<std::string>& faces)

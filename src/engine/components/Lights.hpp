@@ -14,6 +14,8 @@ namespace lei3d
 		glm::vec3 direction;
 		glm::vec3 color;
 		float	  intensity;
+
+		float nearPlane, farPlane;
 	};
 
 } // namespace lei3d

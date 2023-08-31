@@ -18,6 +18,13 @@ namespace lei3d
 		glm::vec3 Tangent;
 	};
 
+	enum RenderFlag {
+		None = 0x00000000,
+		BindImages = 0x00000001,
+		Opaque = 0x00000002,
+		AlphaMask = 0x00000004
+	};
+
 	class Mesh
 	{
 	public:
@@ -29,7 +36,8 @@ namespace lei3d
 		Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::shared_ptr<Material>& material);
 		~Mesh();
 
-		void Draw(Shader& shader) const; // taking value by reference for funsies, might switch it up back to pointers
+		void Draw(Shader& shader, RenderFlag flags, uint32_t bindLocation) const;
+
 	private:
 		unsigned int VAO, VBO, EBO;
 

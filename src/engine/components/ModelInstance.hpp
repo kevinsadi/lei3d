@@ -20,7 +20,7 @@ namespace lei3d
 
 		void Init(Model* model);
 
-		void Draw(Shader* shader);
+		void Draw(Shader* shader, RenderFlag flags, uint32_t bindLocation);
 
 	private:
 	};

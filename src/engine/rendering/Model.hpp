@@ -38,7 +38,7 @@ namespace lei3d
 		Model(const std::string& modelPath);
 		~Model();
 
-		void Draw(Shader& shader);
+		void Draw(Shader& shader, RenderFlag flags, uint32_t bindLocation);
 
 		std::vector<btTriangleMesh*>& GetCollisionMeshes();
 
