@@ -26,9 +26,15 @@ namespace lei3d
 		// Check if we are on the ground
 		GroundedCallback callback(m_Character);
 		collisionWorld->contactTest(m_GroundCheck, callback);
+
 		bool onGround = callback.m_Grounded;
 		bool groundPoint = callback.m_GroundPoint;
 		//LEI_INFO("On Ground: {0}", onGround ? "True" : "False");
+
+		if (m_IncludeSFX && callback.m_Grounded == true && onGround == false)
+		{
+			AudioPlayer::PlaySFX("landing_2"); //.PlaySound("landing");
+		}
 
 		// Update velocity accordingly
 		btVector3 v = m_Character->getLinearVelocity();
