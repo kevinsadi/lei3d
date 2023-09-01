@@ -75,7 +75,7 @@ namespace lei3d
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-		m_Window = glfwCreateWindow(screenWidth, screenHeight, "lei3d", NULL, NULL);
+		m_Window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "lei3d", NULL, NULL);
 		if (m_Window == NULL)
 		{
 			LEI_WARN("failed to create GLFW window");
@@ -90,7 +90,7 @@ namespace lei3d
 			return;
 		}
 
-		GLCall(glViewport(0, 0, screenWidth, screenHeight));
+		GLCall(glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
 
 		// resize the openGL context if a user changes the window size
 		glfwSetFramebufferSizeCallback(m_Window, framebuffer_size_callback);
@@ -121,13 +121,14 @@ namespace lei3d
 		m_SceneManager->SetScene("Test Kevin");
 		m_SceneManager->LoadNextScene();
 
-		//INIT AUDIO ENGINE ------------------------------
+		// INIT AUDIO ENGINE ------------------------------
 		m_AudioPlayer = std::make_unique<AudioPlayer>();
 
-		//INIT RENDERER -----------------------------
-		renderer.initialize(screenWidth, screenHeight);
+		// INIT RENDERER -----------------------------
+		m_Renderer.initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
+		m_PrimitiveRenderer.initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-		//INPUT CALLBACKS ------------------------------
+		// INPUT CALLBACKS ------------------------------
 		SetupInputCallbacks();
 	}
 
@@ -177,7 +178,15 @@ namespace lei3d
 
 	void Application::Render()
 	{
-		renderer.draw(m_SceneManager->ActiveScene());
+		m_Renderer.draw(SceneManager::ActiveScene());
+
+		// TEST DEBUG CODE
+		// glm::vec3 from = { 0.f, 0.f, 0.f };
+		// glm::vec3 to = { 50.f, 0.f, 0.f };
+		// glm::vec3 color = { 1.f, 0.f, 0.f };
+		// m_PrimitiveRenderer.pushLine(SceneManager::ActiveScene().MainCamera(), from, to, color, 1.f);
+
+		m_PrimitiveRenderer.drawAll(SceneManager::ActiveScene().MainCamera());
 	}
 
 	void Application::ImGuiRender()
@@ -195,6 +204,11 @@ namespace lei3d
 		ImDrawData* drawData = ImGui::GetDrawData();
 		ImGui_ImplOpenGL3_RenderDrawData(drawData);
 		ImGui::EndFrame();
+	}
+
+	PrimitiveRenderer& Application::PrimitiveRenderer()
+	{
+		return s_Instance->m_PrimitiveRenderer;
 	}
 
 	// TODO: Put into input class

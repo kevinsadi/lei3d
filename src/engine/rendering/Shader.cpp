@@ -59,13 +59,13 @@ namespace lei3d
 
 		GLCall(unsigned int vertexShaderID = glCreateShader(GL_VERTEX_SHADER));
 		GLCall(glShaderSource(vertexShaderID, 1, &vShaderCode, NULL));
-		glCompileShader(vertexShaderID);
+		GLCall(glCompileShader(vertexShaderID));
 
 		int success;
-		glGetShaderiv(vertexShaderID, GL_COMPILE_STATUS, &success);
+		GLCall(glGetShaderiv(vertexShaderID, GL_COMPILE_STATUS, &success));
 		if (!success)
 		{
-			glGetShaderInfoLog(vertexShaderID, 512, NULL, infoLog);
+			GLCall(glGetShaderInfoLog(vertexShaderID, 512, NULL, infoLog));
 			LEI_ERROR("VERTEX SHADER COMPILATION FAILED\n\n" + std::string(infoLog));
 		}
 
