@@ -64,7 +64,7 @@ namespace lei3d
 		m_GroundCheckObj->setWorldTransform(groundCheckTrans);
 
 		// WITHIN THIS CUSTOM PHYSICS UPDATE IS THE MAGIC THAT MAKES AIRSTRAFING / SURF POSSIBLE
-		CharacterPhysicsUpdate* customCharacterPhysicsUpdate = new CharacterPhysicsUpdate(m_RigidBody, m_GroundCheckObj);
+		CharacterPhysicsUpdate* customCharacterPhysicsUpdate = new CharacterPhysicsUpdate(m_RigidBody, m_GroundCheckObj, m_GroundCheckDist);
 		world.m_dynamicsWorld->addAction(customCharacterPhysicsUpdate);
 	}
 

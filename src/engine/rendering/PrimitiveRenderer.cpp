@@ -12,10 +12,14 @@ namespace lei3d
 	{
 		m_Width = width;
 		m_Height = height;
+		while (!m_DrawCalls.empty())
+		{
+			m_DrawCalls.pop();
+		}
 
 		m_PrimitiveShader = Shader("./data/shaders/primitive.vert", "./data/shaders/primitive.frag");
 	}
-	void PrimitiveRenderer::drawLine(FlyCamera& camera, const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float thickness)
+	void PrimitiveRenderer::pushLine(FlyCamera& camera, const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float thickness)
 	{
 		//Construct line of some thickness that always faces the camera.
 		glm::vec3 lineDir = to - from;
@@ -33,20 +37,31 @@ namespace lei3d
 
 		unsigned int indices[] = { 0, 1, 2, 2, 3, 0 };
 
-		VertexArray		   vao;
-		VertexBuffer	   vbo(vertices, 4 * 3 * sizeof(GL_FLOAT), GL_STATIC_DRAW);
+		DrawData		   data;
+		data.m_VAO = std::make_unique<VertexArray>();
+		data.m_VBO = std::make_unique<VertexBuffer>(vertices, 4 * 3 * sizeof(GL_FLOAT), GL_STATIC_DRAW);
+		data.m_IBO = std::make_unique<IndexBuffer>(indices, 6, GL_STATIC_DRAW);
+		data.u_Color = color;
+		;
 		VertexBufferLayout vbLayout;
 		vbLayout.push<float>(3);
-		vao.addBuffer(vbo, vbLayout);
+		data.m_VAO->addBuffer(*data.m_VBO, vbLayout);
 
-		IndexBuffer ibo(indices, 6, GL_STATIC_DRAW);
+		m_DrawCalls.push(std::move(data));
+	}
 
+	void PrimitiveRenderer::drawAll(FlyCamera& camera)
+	{
 		m_PrimitiveShader.setUniformMat4("u_Proj", camera.GetProj());
 		m_PrimitiveShader.setUniformMat4("u_View", camera.GetView());
 		m_PrimitiveShader.setUniformMat4("u_Model", glm::identity<glm::mat4>());
-
-		m_PrimitiveShader.setVec3("u_Color", color);
-		draw(vao, ibo);
+		while (!m_DrawCalls.empty())
+		{
+			DrawData& data = m_DrawCalls.front();
+			m_PrimitiveShader.setVec3("u_Color", data.u_Color);
+			draw(*data.m_VAO, *data.m_IBO);
+			m_DrawCalls.pop();
+		}
 	}
 
 	void PrimitiveRenderer::draw(const VertexArray& va, const IndexBuffer& ib) const

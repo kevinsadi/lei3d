@@ -31,15 +31,16 @@ namespace lei3d
 	private:
 		static Application* s_Instance;
 
-		const unsigned int screenWidth = 1200;
-		const unsigned int screenHeight = 1000;
+		const unsigned int SCREEN_WIDTH = 1200;
+		const unsigned int SCREEN_HEIGHT = 1000;
+
 		GLFWwindow*		   m_Window = nullptr;
 
 		std::unique_ptr<AppGUI>		  m_AppGUI;
 		std::unique_ptr<SceneManager> m_SceneManager;
 		std::unique_ptr<AudioPlayer>  m_AudioPlayer;
 
-		RenderSystem renderer;
+		RenderSystem m_Renderer;
 		PrimitiveRenderer m_PrimitiveRenderer;
 
 		// NOTE: Don't modify this directly. Use SetUIActive.
@@ -59,6 +60,7 @@ namespace lei3d
 
 		static GLFWwindow* Window();
 		static float	   DeltaTime();
+		static PrimitiveRenderer& PrimitiveRenderer();
 
 	private:
 		void Initialize(); // Start the App

@@ -41,7 +41,7 @@ namespace lei3d
 
 		glm::mat4 GetView();
 		glm::mat4 GetProj();
-		glm::vec3 GetPosition();
+		glm::vec3 GetPosition() const;
 
 		void cameraMouseCallback(double xPosInput, double yPosInput);
 		void PollCameraMovementInput();
@@ -50,8 +50,8 @@ namespace lei3d
 
 		void SetFOV(float fov);
 		void SetClipPlanes(float nearClip, float farClip);
+		void SetPosition(glm::vec3 pos);
 
-		glm::vec3 Pos() const;
 		glm::vec3 Front() const;
 		glm::vec3 Up() const;
 
