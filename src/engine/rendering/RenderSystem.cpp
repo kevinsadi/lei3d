@@ -69,7 +69,7 @@ namespace lei3d
 		glClearColor(0.2f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		FlyCamera&					camera = scene.MainCamera();
+		FirstPersonCamera&			camera = scene.MainCamera();
 		SkyBox*						skyBox = nullptr;
 		std::vector<ModelInstance*> modelEntities;
 		for (auto& entity : scene.m_Entities)
@@ -92,7 +92,7 @@ namespace lei3d
 		postprocessPass();
 	}
 
-	void RenderSystem::lightingPass(const std::vector<ModelInstance*>& objects, FlyCamera& camera)
+	void RenderSystem::lightingPass(const std::vector<ModelInstance*>& objects, FirstPersonCamera& camera)
 	{
 		forwardShader.bind();
 
@@ -126,7 +126,7 @@ namespace lei3d
 		glDisable(GL_DEPTH_TEST);
 	}
 
-	void RenderSystem::environmentPass(const SkyBox& skyBox, FlyCamera& camera)
+	void RenderSystem::environmentPass(const SkyBox& skyBox, FirstPersonCamera& camera)
 	{
 		glEnable(GL_DEPTH_TEST);
 		GLCall(glDepthFunc(GL_LEQUAL)); // we change the depth function here to it passes when testing depth value is equal
@@ -157,9 +157,9 @@ namespace lei3d
 
 		// draw a full screen quad, sample from rendered textures
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, rawTexture);	   // 0
+		glBindTexture(GL_TEXTURE_2D, rawTexture); // 0
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, saturationMask);  // 1
+		glBindTexture(GL_TEXTURE_2D, saturationMask); // 1
 		postprocessShader.setInt("RawFinalImage", 0);
 		postprocessShader.setInt("SaturationMask", 1); // match active texture bindings
 

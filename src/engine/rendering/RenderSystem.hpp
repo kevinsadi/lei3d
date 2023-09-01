@@ -2,6 +2,7 @@
 
 #include "core/Component.hpp"
 #include "core/FlyCamera.hpp"
+#include "core/FirstPersonCamera.hpp"
 #include "core/Scene.hpp"
 #include "rendering/Shader.hpp"
 
@@ -27,9 +28,9 @@ namespace lei3d
 		void draw(const Scene& scene);
 
 	private:
-		void lightingPass(const std::vector<ModelInstance*>& objects, FlyCamera& camera);
+		void lightingPass(const std::vector<ModelInstance*>& objects, FirstPersonCamera& camera);
 
-		void environmentPass(const SkyBox& skyBox, FlyCamera& camera);
+		void environmentPass(const SkyBox& skyBox, FirstPersonCamera& camera);
 
 		void postprocessPass();
 

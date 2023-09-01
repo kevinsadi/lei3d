@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/FlyCamera.hpp"
+#include "core/FirstPersonCamera.hpp"
 
 #include "rendering/Shader.hpp"
 #include "rendering/buffers/Buffer.hpp"
@@ -24,15 +25,14 @@ namespace lei3d
 	* to do primitive rendering after everything else so that it is not blocked by other objects.
 	*/
 
-
 	class PrimitiveRenderer
 	{
 		struct DrawData
 		{
 			//These can't be on the stack due to glDeleteBuffers getting called in destructor.
-			std::unique_ptr<VertexArray> m_VAO;
-			std::unique_ptr<VertexBuffer> m_VBO;	//It is really important that VertexBuffer stays in scope even though it is not an argument to Draw.
-			std::unique_ptr<IndexBuffer> m_IBO;
+			std::unique_ptr<VertexArray>  m_VAO;
+			std::unique_ptr<VertexBuffer> m_VBO; //It is really important that VertexBuffer stays in scope even though it is not an argument to Draw.
+			std::unique_ptr<IndexBuffer>  m_IBO;
 
 			//Add Uniform Types Here
 			glm::vec3 u_Color;
@@ -44,17 +44,15 @@ namespace lei3d
 
 		std::queue<DrawData> m_DrawCalls;
 
-
 	public:
 		PrimitiveRenderer();
 		void initialize(float width, float height);
 
-		void drawAll(FlyCamera& camera);
+		void drawAll(FirstPersonCamera& camera);
 
-		void pushLine(FlyCamera& camera, const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float thickness = 0.1f);
+		void pushLine(FirstPersonCamera& camera, const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float thickness = 0.1f);
 
 		Shader& GetShader();
-
 
 	private:
 		void draw(const VertexArray& va, const IndexBuffer& ib) const;

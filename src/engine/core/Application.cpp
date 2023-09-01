@@ -1,7 +1,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "Application.hpp"
 
-#include "core/FlyCamera.hpp"
 #include "logging/GLDebug.hpp"
 
 #include <stb_image.h>

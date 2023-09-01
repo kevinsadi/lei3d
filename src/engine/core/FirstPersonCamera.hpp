@@ -5,14 +5,11 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
-#include <components/CharacterController.hpp>
-
 struct GLFWwindow;
 
 namespace lei3d
 {
 	class Application;
-	class CharacterController;
 
 	class FirstPersonCamera
 	{
@@ -41,8 +38,6 @@ namespace lei3d
 	public:
 		FirstPersonCamera(GLFWwindow* window, float yaw, float pitch, float flySpeed);
 		~FirstPersonCamera();
-
-		std::shared_ptr<CharacterController> m_CharacterController;
 
 		glm::mat4 GetView();
 		glm::mat4 GetProj();
