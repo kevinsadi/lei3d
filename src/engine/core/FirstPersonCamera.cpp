@@ -48,6 +48,7 @@ namespace lei3d
 		yoffset *= MOUSE_SENSITIVITY;
 
 		m_Pitch += yoffset;
+		RotatePlayer(xoffset);
 
 		if (m_Pitch > MAX_PITCH)
 			m_Pitch = MAX_PITCH;
@@ -164,14 +165,14 @@ namespace lei3d
 	 * @brief Given a Character Controller attached to the camera, rotate its entity according to player input
 	 * 
 	 */
-	void FirstPersonCamera::RotatePlayer(float yoffset)
+	void FirstPersonCamera::RotatePlayer(float xoffset)
 	{
-		/*
-		if (m_CharacterController != NULL)
+		// TODO: THE NAME OF THE PLAYER ENTITY IS HARDCODED FOR NOW. THIS IS BAD, PLS FIX.
+		Entity* playerEntity = SceneManager::ActiveScene().GetEntity("Backpack");
+		if (playerEntity)
 		{
-			LEI_TRACE("yuh yuh yuh yuh yuh yuh");
+			LEI_TRACE("yo yo yo ");
 		}
-		*/
 	}
 
 } // namespace lei3d

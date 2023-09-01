@@ -61,6 +61,6 @@ namespace lei3d
 		void handleRight(float speed);
 		void handleBack(float speed);
 
-		void RotatePlayer(float yoffset);
+		void RotatePlayer(float xoffset);
 	};
 } // namespace lei3d
