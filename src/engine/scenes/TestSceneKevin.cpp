@@ -10,6 +10,10 @@
 
 namespace lei3d
 {
+	std::unique_ptr<Scene> MakeTestSceneKevin()
+	{
+		return std::make_unique<TestSceneKevin>();
+	}
 
 	TestSceneKevin::TestSceneKevin()
 	{

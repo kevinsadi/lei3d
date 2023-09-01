@@ -4,9 +4,20 @@
 #include "scenes/TestSceneKevin.hpp"
 #include "scenes/TestSceneLogan.hpp"
 
+#include "util/StringUtil.hpp"
+
 namespace lei3d
 {
 	SceneManager* SceneManager::s_Instance = nullptr;
+	
+	/* Need to implement these function pointers manually in TestScene.hpp / TestScene.cpp 
+	* bc you can't cast from std::unique_ptr<TestBlaBlaScene> (*) () to std::unique_ptr<Scene> (*) () 
+	* so we do this stinky boiler plate instead
+	* */
+	std::unordered_map<std::string, std::unique_ptr<Scene> (*)()> SceneManager::s_SceneConstructors = {
+		{ "Test Kevin", MakeTestSceneKevin },
+		{ "Test Logan", MakeTestSceneLogan },
+	};
 
 	SceneManager::SceneManager()
 	{
@@ -20,9 +31,43 @@ namespace lei3d
 
 	void SceneManager::Init()
 	{
-		m_AllScenes.push_back({ "Test Kevin", std::make_unique<TestSceneKevin>() });
-		m_AllScenes.push_back({ "Test Logan", std::make_unique<TestSceneLogan>() });
-		m_AllScenes.push_back({ "Empty", std::make_unique<EmptyScene>() });
+		BuildScenesFromFile("data/config/Build.config");
+		//m_AllScenes.push_back({ "Test Kevin", std::make_unique<TestSceneKevin>() });
+		//m_AllScenes.push_back({ "Test Logan", std::make_unique<TestSceneLogan>() });
+		//m_AllScenes.push_back({ "Empty", std::make_unique<EmptyScene>() });
+	}
+
+	void SceneManager::BuildScenesFromFile(std::string filepath)
+	{
+		LEI_INFO("LOADING SCENES");
+		std::ifstream fileStream(filepath, std::ifstream::in);
+
+		std::string line;
+
+		while (fileStream.good() && std::getline(fileStream, line))
+		{
+			LEI_INFO(line);
+
+			 //auto tokens = tokenize(line, ' ');
+			// if (tokens.empty())
+			//{
+			//     continue;
+			// }
+
+			std::string sceneName = strTrim(line);
+
+			LEI_INFO(sceneName);
+			
+			if (!sceneName.empty())
+			{
+				m_AllScenes.push_back({ sceneName, s_SceneConstructors[sceneName]() });
+			}
+		}
+	}
+
+	bool SceneManager::HasScenes()
+	{
+		return !s_Instance->m_AllScenes.empty();
 	}
 
 	void SceneManager::SetScene(int sceneIndex)

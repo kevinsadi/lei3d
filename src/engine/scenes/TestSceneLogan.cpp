@@ -9,6 +9,10 @@
 
 namespace lei3d
 {
+	std::unique_ptr<Scene> MakeTestSceneLogan()
+	{
+		return std::make_unique<TestSceneLogan>();
+	}
 
 	TestSceneLogan::TestSceneLogan()
 	{
