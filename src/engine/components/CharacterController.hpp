@@ -1,7 +1,6 @@
 #pragma once
 
 #include "core/Component.hpp"
-#include "physics/CharacterPhysicsUpdate.hpp"
 
 namespace lei3d
 {
@@ -61,6 +60,7 @@ namespace lei3d
 		btCollisionObject* m_GroundCheckObj;
 
 		bool m_Grounded;
+		bool m_IncludeSFX = true;
 	public:
 		CharacterController(Entity& entity);
 		~CharacterController();

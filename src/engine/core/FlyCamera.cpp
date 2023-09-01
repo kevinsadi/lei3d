@@ -158,6 +158,6 @@ namespace lei3d
 
 	glm::vec3 FlyCamera::Up() const
 	{
-		return m_CameraUp;	
+		return m_CameraUp;
 	}
 } // namespace lei3d

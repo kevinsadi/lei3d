@@ -1,6 +1,12 @@
 #include "components/CharacterController.hpp"
 
+#include "core/Application.hpp"
+
 #include "physics/GroundedCallback.hpp"
+
+#include <algorithm>
+
+#include <GLFW/glfw3.h>
 
 namespace lei3d
 {
@@ -26,11 +32,15 @@ namespace lei3d
 		// Check if we are on the ground
 		GroundedCallback callback(m_Character);
 		collisionWorld->contactTest(m_GroundCheck, callback);
+
 		bool onGround = callback.m_Grounded;
 		bool groundPoint = callback.m_GroundPoint;
 		m_Controller.m_Grounded = onGround;
 
-		LEI_INFO("GROUNDED: {0}", onGround ? "TRUE" : "FALSE");
+		if (m_Controller.m_IncludeSFX && callback.m_Grounded == true && onGround == false)
+		{
+			AudioPlayer::PlaySFX("landing_2"); //.PlaySound("landing");
+		}
 
 		// Update velocity accordingly
 		btVector3 v = m_Character->getLinearVelocity();
@@ -85,18 +95,12 @@ namespace lei3d
 
 	void CharacterController::CharacterPhysicsUpdate::debugDraw(btIDebugDraw* debugDrawer)
 	{
-		//Draw Ground Check
+		// Draw Ground Check
 		const btVector3 center = m_GroundCheck->getWorldTransform().getOrigin();
 		const btScalar	radius = m_GroundCheckDist;
 		const btVector3 groundCheckColor = btVector3(0.f, 0.f, 1.f);
 
-		btVector3 from = { 0.f, 0.f, 0.f };
-		btVector3 to = { 50.f, 0.f, 0.f };
-		btVector3 color = { 1.f, 0.f, 0.f };
 		debugDrawer->drawSphere(center, radius, groundCheckColor);
-		//debugDrawer->drawLine(from, to, color);
-		//debugDrawer->drawLine({ 0.f, 0.f, 0.f }, { 10.f, 0.f, 0.f }, { 1.f, 0.f, 0.f });
-		//debugDrawer->drawSphere(center, radius, groundCheckColor); 
 	}
 
 	glm::vec3 CharacterController::CharacterPhysicsUpdate::Accelerate(glm::vec3 wishDir, glm::vec3 prevVel, float acceleration, float maxVelocity)

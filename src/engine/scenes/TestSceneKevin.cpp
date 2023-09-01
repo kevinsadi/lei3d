@@ -1,5 +1,7 @@
 #include "TestSceneKevin.hpp"
 
+#include "core/Application.hpp"
+
 #include "components/ModelInstance.hpp"
 #include "logging/GLDebug.hpp"
 #include "physics/PhysicsWorld.hpp"
@@ -25,7 +27,7 @@ namespace lei3d
 		// Load Models
 		const std::string backpackPath = "data/models/backpack/backpack.obj";
 		backpackModel = std::make_unique<Model>(backpackPath);
-		const std::string physicsPlaygroundPath = "data/models/leveldesign/KevWorldColorFive.obj";
+		const std::string physicsPlaygroundPath = "data/models/leveldesign/KevWorldClouds.obj";
 		playgroundModel = std::make_unique<Model>(physicsPlaygroundPath);
 
 		// BACKPACK (Character) ---------------------

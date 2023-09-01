@@ -16,6 +16,7 @@ namespace lei3d
 	{
 	private:
 		bool m_Debug = false;
+
 	public:
 		std::unique_ptr<btDefaultCollisionConfiguration>	 m_collisionConfiguration = nullptr;
 		std::unique_ptr<btCollisionDispatcher>				 m_dispatcher = nullptr;
@@ -23,7 +24,7 @@ namespace lei3d
 		std::unique_ptr<btSequentialImpulseConstraintSolver> m_solver = nullptr;
 		std::unique_ptr<btDiscreteDynamicsWorld>			 m_dynamicsWorld = nullptr;
 		std::unique_ptr<btIDebugDraw>						 m_debugDrawer = nullptr;
-		//btAlignedObjectArray<btCollisionShape*> m_collisionShapes;	//Can we get rid of this??
+		// btAlignedObjectArray<btCollisionShape*> m_collisionShapes;	//Can we get rid of this??
 
 		PhysicsWorld();
 

@@ -1,5 +1,6 @@
 #include "TestSceneLogan.hpp"
 
+#include "core/Application.hpp"
 #include "components/ModelInstance.hpp"
 #include "logging/GLDebug.hpp"
 #include "physics/PhysicsWorld.hpp"

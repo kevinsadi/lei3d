@@ -1,6 +1,10 @@
 #include "CharacterController.hpp"
 
+#include "core/SceneManager.hpp"
+
 #include "util/BulletUtil.hpp"
+
+#include <imgui.h>
 
 namespace lei3d
 {

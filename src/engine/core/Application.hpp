@@ -16,6 +16,8 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include "audio/AudioPlayer.hpp"
+
 #include <chrono>
 #include <thread>
 
@@ -36,6 +38,7 @@ namespace lei3d
 
 		std::unique_ptr<AppGUI>		  m_AppGUI;
 		std::unique_ptr<SceneManager> m_SceneManager;
+		std::unique_ptr<AudioPlayer>  m_AudioPlayer;
 
 		RenderSystem m_Renderer;
 		PrimitiveRenderer m_PrimitiveRenderer;

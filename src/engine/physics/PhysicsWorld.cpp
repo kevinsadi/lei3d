@@ -73,7 +73,7 @@ namespace lei3d
 		}
 	}
 
-	//We ideally shouldn't use this. Better to store the collider in an object and get the position than assume array order
+	// We ideally shouldn't use this. Better to store the collider in an object and get the position than assume array order
 	glm::vec3 PhysicsWorld::GetFirstColliderPosition()
 	{
 		btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[0];

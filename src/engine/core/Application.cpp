@@ -121,9 +121,14 @@ namespace lei3d
 		m_SceneManager->SetScene("Test Kevin");
 		m_SceneManager->LoadNextScene();
 
+		// INIT AUDIO ENGINE ------------------------------
+		m_AudioPlayer = std::make_unique<AudioPlayer>();
+
+		// INIT RENDERER -----------------------------
 		m_Renderer.initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 		m_PrimitiveRenderer.initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
 
+		// INPUT CALLBACKS ------------------------------
 		SetupInputCallbacks();
 	}
 
@@ -175,11 +180,11 @@ namespace lei3d
 	{
 		m_Renderer.draw(SceneManager::ActiveScene());
 
-		//TEST DEBUG CODE
-		//glm::vec3 from = { 0.f, 0.f, 0.f };
-		//glm::vec3 to = { 50.f, 0.f, 0.f };
-		//glm::vec3 color = { 1.f, 0.f, 0.f };
-		//m_PrimitiveRenderer.pushLine(SceneManager::ActiveScene().MainCamera(), from, to, color, 1.f);
+		// TEST DEBUG CODE
+		// glm::vec3 from = { 0.f, 0.f, 0.f };
+		// glm::vec3 to = { 50.f, 0.f, 0.f };
+		// glm::vec3 color = { 1.f, 0.f, 0.f };
+		// m_PrimitiveRenderer.pushLine(SceneManager::ActiveScene().MainCamera(), from, to, color, 1.f);
 
 		m_PrimitiveRenderer.drawAll(SceneManager::ActiveScene().MainCamera());
 	}
@@ -205,7 +210,6 @@ namespace lei3d
 	{
 		return s_Instance->m_PrimitiveRenderer;
 	}
-
 
 	// TODO: Put into input class
 	void Application::SetupInputCallbacks()
