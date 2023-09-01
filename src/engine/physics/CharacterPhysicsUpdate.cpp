@@ -29,7 +29,7 @@ namespace lei3d
 
 		bool onGround = callback.m_Grounded;
 		bool groundPoint = callback.m_GroundPoint;
-		//LEI_INFO("On Ground: {0}", onGround ? "True" : "False");
+		// LEI_INFO("On Ground: {0}", onGround ? "True" : "False");
 
 		if (m_IncludeSFX && callback.m_Grounded == true && onGround == false)
 		{
@@ -96,11 +96,11 @@ namespace lei3d
 
 	void CharacterPhysicsUpdate::debugDraw(btIDebugDraw* debugDrawer)
 	{
-		//Draw Ground Check
+		// Draw Ground Check
 		btVector3 center;
 		btScalar  radius;
 		m_GroundCheck->getCollisionShape()->getBoundingSphere(center, radius);
-		btVector3 groundCheckColor = btVector3(0.f, 1.f, 0.f); //green
+		btVector3 groundCheckColor = btVector3(0.f, 1.f, 0.f); // green
 		debugDrawer->drawSphere(center, radius, groundCheckColor);
 	}
 
