@@ -101,7 +101,7 @@ namespace lei3d
 
 	glm::mat4 Entity::GetRotationMat() const
 	{
-		//TODO: Implement quaternion.
+		// TODO: Implement quaternion.
 		return glm::identity<glm::mat4>();
 	}
 
@@ -116,14 +116,14 @@ namespace lei3d
 		glm::mat4 rotate = GetRotationMat();
 		glm::mat4 scale = GetScaleMat();
 		glm::mat4 model = translate * rotate * scale;
-		//LEI_INFO("TRANSLATE:");
-		//PrintMat4(translate);
-		//LEI_INFO("ROTATE:");
-		//PrintMat4(rotate);
-		//LEI_INFO("SCALE:");
-		//PrintMat4(scale);
-		//LEI_INFO("MODEL: ");
-		//PrintMat4(model);
+		// LEI_INFO("TRANSLATE:");
+		// PrintMat4(translate);
+		// LEI_INFO("ROTATE:");
+		// PrintMat4(rotate);
+		// LEI_INFO("SCALE:");
+		// PrintMat4(scale);
+		// LEI_INFO("MODEL: ");
+		// PrintMat4(model);
 		return model;
 	}
 
@@ -152,7 +152,7 @@ namespace lei3d
 
 	void Entity::TransformGUI()
 	{
-		//TRANSFORM
+		// TRANSFORM
 		if (ImGui::CollapsingHeader("Transform"))
 		{
 			ImGui::Text("Position");
@@ -161,15 +161,15 @@ namespace lei3d
 			float z = m_Transform.position.z;
 
 			constexpr float STEP_FINE = 0.5f;
-			constexpr float STEP_FAST = 10.0f; //Hold down Ctrl to scroll faster.
+			constexpr float STEP_FAST = 10.0f; // Hold down Ctrl to scroll faster.
 
 			ImGui::InputFloat("x", &x, STEP_FINE, STEP_FAST);
-			//ImGui::SameLine();
+			// ImGui::SameLine();
 			ImGui::InputFloat("y", &y, STEP_FINE, STEP_FAST);
-			//ImGui::SameLine();
+			// ImGui::SameLine();
 			ImGui::InputFloat("z", &z, STEP_FINE, STEP_FAST);
 
-			//NOTE: If the position is not changing, it's probably because the physics engine (or something else) is overwriting it)
+			// NOTE: If the position is not changing, it's probably because the physics engine (or something else) is overwriting it)
 			SetPosition(glm::vec3(x, y, z));
 		}
 	}

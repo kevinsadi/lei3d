@@ -10,7 +10,7 @@ namespace lei3d
 	class CharacterController : public Component
 	{
 	public:
-		//CHARACTER CONTROLLER PARAMETERS
+		// CHARACTER CONTROLLER PARAMETERS
 		float m_gravity = 15.24f;
 
 		float m_accel = 50.0f;
@@ -24,8 +24,8 @@ namespace lei3d
 		float m_jumpPower = 2.f;
 		float m_jumpHeight = 1.f;
 
-		//float m_maxSpeed = 40.0f;
-		// float m_maxVelocity = 100;
+		// float m_maxSpeed = 40.0f;
+		//  float m_maxVelocity = 100;
 	private:
 		class CharacterPhysicsUpdate : public btActionInterface
 		{
@@ -61,6 +61,7 @@ namespace lei3d
 
 		bool m_Grounded;
 		bool m_IncludeSFX = true;
+
 	public:
 		CharacterController(Entity& entity);
 		~CharacterController();
@@ -72,6 +73,7 @@ namespace lei3d
 		void OnImGuiRender() override;
 
 		bool IsGrounded() const;
+
 	private:
 		btTransform getGroundCheckTransform(const btTransform& parentTransform);
 	};

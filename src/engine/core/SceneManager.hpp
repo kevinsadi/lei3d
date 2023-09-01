@@ -12,7 +12,7 @@ namespace lei3d
 	class SceneManager
 	{
 	private:
-		static SceneManager* s_Instance;
+		static SceneManager*												 s_Instance;
 		static std::unordered_map<std::string, std::unique_ptr<Scene> (*)()> s_SceneConstructors;
 
 		std::vector<std::pair<std::string, std::unique_ptr<Scene>>> m_AllScenes;

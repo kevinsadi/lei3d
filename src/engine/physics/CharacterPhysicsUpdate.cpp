@@ -128,7 +128,7 @@ namespace lei3d
 		if (speed != 0)
 		{
 			float drop = speed * m_Controller.m_friction * Application::DeltaTime(); // THIS MIGHT HAVE TO BE MULTIPLIED BY DELTA TIME??
-			prevVelocity *= std::max(speed - drop, 0.0f) / speed;		// Friction fall off
+			prevVelocity *= std::max(speed - drop, 0.0f) / speed;					 // Friction fall off
 		}
 
 		return Accelerate(wishDir, prevVelocity, m_Controller.m_accel, m_Controller.m_maxSpeed);
