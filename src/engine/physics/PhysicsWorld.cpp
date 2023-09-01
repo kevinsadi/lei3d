@@ -83,6 +83,5 @@ namespace lei3d
 
 	void PhysicsWorld::OnImGuiRender()
 	{
-		
 	}
 } // namespace lei3d

@@ -46,15 +46,15 @@ namespace lei3d
 		void Render();
 		void OnDestroy();
 
-        void OnEditorUpdate();
+		void OnEditorUpdate();
 
-        glm::mat4 GetTranslationMat() const;
-        glm::mat4 GetRotationMat() const;
-        glm::mat4 GetScaleMat() const;
-        glm::mat4 GetModelMat() const;
+		glm::mat4 GetTranslationMat() const;
+		glm::mat4 GetRotationMat() const;
+		glm::mat4 GetScaleMat() const;
+		glm::mat4 GetModelMat() const;
 
-        void SetPosition(const glm::vec3& position);
-        void SetScale(const glm::vec3& scale);
+		void SetPosition(const glm::vec3& position);
+		void SetScale(const glm::vec3& scale);
 
 		btTransform getBTTransform();
 		void		setFromBTTransform(const btTransform& btTrans);
@@ -62,10 +62,10 @@ namespace lei3d
 		const std::string& GetName() const;
 		void			   SetName(const std::string& name);
 
-        //TODO: Consider refactoring Editor GUIs to separate class
-        void NameGUI();
-        void TransformGUI();
-        void ShowInspectorGUI();
+		//TODO: Consider refactoring Editor GUIs to separate class
+		void NameGUI();
+		void TransformGUI();
+		void ShowInspectorGUI();
 
 		/*
 		 * Component System:

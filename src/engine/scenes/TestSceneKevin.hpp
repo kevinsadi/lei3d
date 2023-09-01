@@ -6,6 +6,8 @@
 #include "core/Entity.hpp"
 #include "core/Scene.hpp"
 #include "physics/PhysicsWorld.hpp"
+
+#include "audio/AudioPlayer.hpp"
 #include "rendering/Shader.hpp"
 
 namespace lei3d

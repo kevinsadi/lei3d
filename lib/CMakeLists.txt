@@ -254,3 +254,39 @@ if(NOT bullet_POPULATED)
         FILE "${CMAKE_CURRENT_BINARY_DIR}/Bullet3Targets.cmake"
     )
 endif()
+
+#-------------------------------------------------------------------------------------
+
+FetchContent_Declare(
+    miniaudio
+    GIT_REPOSITORY  https://github.com/mackron/miniaudio.git
+    GIT_TAG         master
+    GIT_SHALLOW     TRUE
+    GIT_PROGRESS    TRUE
+)
+FetchContent_GetProperties(miniaudio)
+if(NOT miniaudio_POPULATED)
+    FetchContent_Populate(miniaudio)
+    message("Fetching miniaudio")
+
+    add_library(miniaudio INTERFACE ${miniaudio_SOURCE_DIR}/miniaudio.h)
+    target_include_directories(miniaudio INTERFACE ${miniaudio_SOURCE_DIR})
+endif()
+
+#-------------------------------------------------------------------------------------
+
+FetchContent_Declare(
+    miniaudio
+    GIT_REPOSITORY  https://github.com/mackron/miniaudio.git
+    GIT_TAG         master
+    GIT_SHALLOW     TRUE
+    GIT_PROGRESS    TRUE
+)
+FetchContent_GetProperties(miniaudio)
+if(NOT miniaudio_POPULATED)
+    FetchContent_Populate(miniaudio)
+    message("Fetching miniaudio")
+
+    add_library(miniaudio INTERFACE ${miniaudio_SOURCE_DIR}/miniaudio.h)
+    target_include_directories(miniaudio INTERFACE ${miniaudio_SOURCE_DIR})
+endif()
