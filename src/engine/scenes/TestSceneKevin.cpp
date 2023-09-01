@@ -35,6 +35,7 @@ namespace lei3d
 		modelRender->Init(backpackModel.get());
 		backpackObj.SetScale(glm::vec3(1.f, 1.f, 1.f));
 		backpackObj.SetPosition(glm::vec3(0.f, 200.f, 0.f));
+		backpackObj.SetYawRotation(0);
 
 		CharacterController* characterController = backpackObj.AddComponent<CharacterController>();
 		characterController->Init(1.f, 3.f);

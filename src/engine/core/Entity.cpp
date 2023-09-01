@@ -94,6 +94,11 @@ namespace lei3d
 		m_Transform.scale = scale;
 	}
 
+	void Entity::SetYawRotation(const float yawRotation)
+	{
+		m_Transform.yawRotation = yawRotation;
+	}
+
 	glm::mat4 Entity::GetTranslationMat() const
 	{
 		return glm::translate(glm::identity<glm::mat4>(), m_Transform.position);
@@ -102,7 +107,8 @@ namespace lei3d
 	glm::mat4 Entity::GetRotationMat() const
 	{
 		//TODO: Implement quaternion.
-		return glm::identity<glm::mat4>();
+		// we currently only support axis angle rotation around the y axis
+		return glm::rotate(glm::identity<glm::mat4>(), glm::radians(m_Transform.yawRotation), glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
 	glm::mat4 Entity::GetScaleMat() const

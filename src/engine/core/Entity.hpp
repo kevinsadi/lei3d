@@ -19,7 +19,7 @@ namespace lei3d
 	struct Transform
 	{
 		glm::vec3 position;
-		// glm::vec3 rotation;
+		float	  yawRotation;
 		glm::vec3 scale;
 	};
 
@@ -55,6 +55,7 @@ namespace lei3d
 
 		void SetPosition(const glm::vec3& position);
 		void SetScale(const glm::vec3& scale);
+		void SetYawRotation(const float yawRotation);
 
 		btTransform getBTTransform();
 		void		setFromBTTransform(const btTransform& btTrans);

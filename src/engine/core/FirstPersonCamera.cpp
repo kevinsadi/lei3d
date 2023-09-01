@@ -161,17 +161,14 @@ namespace lei3d
 		return m_CameraUp;
 	}
 
-	/**
-	 * @brief Given a Character Controller attached to the camera, rotate its entity according to player input
-	 * 
-	 */
 	void FirstPersonCamera::RotatePlayer(float xoffset)
 	{
 		// TODO: THE NAME OF THE PLAYER ENTITY IS HARDCODED FOR NOW. THIS IS BAD, PLS FIX.
 		Entity* playerEntity = SceneManager::ActiveScene().GetEntity("Backpack");
 		if (playerEntity)
 		{
-			LEI_TRACE("yo yo yo ");
+			playerEntity->m_Transform.yawRotation += xoffset;
+			LEI_TRACE(playerEntity->m_Transform.yawRotation);
 		}
 	}
 
