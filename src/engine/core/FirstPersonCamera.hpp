@@ -61,6 +61,7 @@ namespace lei3d
 		void handleRight(float speed);
 		void handleBack(float speed);
 
-		void RotatePlayer(float xoffset);
+		void	  RotatePlayer(float xoffset);
+		glm::vec3 GetPlayerPos() const;
 	};
 } // namespace lei3d

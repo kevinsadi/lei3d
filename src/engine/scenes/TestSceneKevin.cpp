@@ -31,8 +31,8 @@ namespace lei3d
 		// BACKPACK (Character) ---------------------
 		Entity& backpackObj = AddEntity("Backpack");
 
-		ModelInstance* modelRender = backpackObj.AddComponent<ModelInstance>();
-		modelRender->Init(backpackModel.get());
+		//ModelInstance* modelRender = backpackObj.AddComponent<ModelInstance>();
+		//modelRender->Init(backpackModel.get());
 		backpackObj.SetScale(glm::vec3(1.f, 1.f, 1.f));
 		backpackObj.SetPosition(glm::vec3(0.f, 200.f, 0.f));
 		backpackObj.SetYawRotation(0);

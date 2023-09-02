@@ -75,6 +75,7 @@ namespace lei3d
 		m_GroundCheckObj->setWorldTransform(getGroundCheckTransform(characterTrans));
 
 		m_Entity.setFromBTTransform(characterTrans);
+		SceneManager::ActiveScene().MainCamera().SetPosition(btTransformToVec3(characterTrans) + glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
 	btTransform CharacterController::getGroundCheckTransform(const btTransform& parentTransform)

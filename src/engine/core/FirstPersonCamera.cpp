@@ -48,6 +48,7 @@ namespace lei3d
 		yoffset *= MOUSE_SENSITIVITY;
 
 		m_Pitch += yoffset;
+		m_Yaw += xoffset;
 		RotatePlayer(xoffset);
 
 		if (m_Pitch > MAX_PITCH)
@@ -168,8 +169,18 @@ namespace lei3d
 		if (playerEntity)
 		{
 			playerEntity->m_Transform.yawRotation += xoffset;
-			LEI_TRACE(playerEntity->m_Transform.yawRotation);
 		}
+	}
+
+	glm::vec3 FirstPersonCamera::GetPlayerPos() const
+	{
+		// TODO: THE NAME OF THE PLAYER ENTITY IS HARDCODED FOR NOW. THIS IS BAD, PLS FIX.
+		Entity* playerEntity = SceneManager::ActiveScene().GetEntity("Backpack");
+		if (playerEntity)
+		{
+			return playerEntity->m_Transform.position;
+		}
+		return glm::vec3(0.0f, 0.0f, 0.0f);
 	}
 
 } // namespace lei3d
