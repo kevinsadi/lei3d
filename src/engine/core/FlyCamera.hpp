@@ -41,8 +41,7 @@ namespace lei3d
 
 		glm::mat4 GetView();
 		glm::mat4 GetProj();
-		glm::vec3 GetPosition();
-		float GetFOV();
+		float GetFOV() const;
 		glm::vec3 GetPosition() const;
 
 		void cameraMouseCallback(double xPosInput, double yPosInput);

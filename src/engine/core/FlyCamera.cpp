@@ -151,7 +151,7 @@ namespace lei3d
 		return m_CameraPos;
 	}
 
-	float FlyCamera::GetFOV()
+	float FlyCamera::GetFOV() const
 	{
 		return m_FOVDeg;
 	}
