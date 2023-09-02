@@ -12,9 +12,15 @@ namespace lei3d
 			v.x, v.y, v.z
 		};
 	}
+
+	inline glm::vec3 btToGLMVec3(const btVector3& v)
+	{
+		return {v.getX(), v.getY(), v.getZ()};
+	}
+
 	inline glm::vec3 btTransformToVec3(const btTransform& trans)
 	{
 		const btVector3& origin = trans.getOrigin();
-		return glm::vec3(float(origin.getX()), float(origin.getY()), float(origin.getZ()));
+		return { float(origin.getX()), float(origin.getY()), float(origin.getZ()) };
 	}
 } // namespace lei3d
