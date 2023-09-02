@@ -47,6 +47,7 @@ namespace lei3d
 		playgroundRender->Init(playgroundModel.get());
 		physicsPlaygroundObj.SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
 		physicsPlaygroundObj.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		physicsPlaygroundObj.SetYawRotation(0);
 
 		StaticCollider* physicsPlaygroundCollider = physicsPlaygroundObj.AddComponent<StaticCollider>();
 		physicsPlaygroundCollider->Init();

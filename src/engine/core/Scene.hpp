@@ -46,7 +46,7 @@ namespace lei3d
 
 	public:
 		Scene();
-		~Scene();
+		~Scene();	
 
 		//Entities
 		Entity& AddEntity(std::string name);

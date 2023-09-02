@@ -108,7 +108,12 @@ namespace lei3d
 	{
 		//TODO: Implement quaternion.
 		// we currently only support axis angle rotation around the y axis
-		return glm::rotate(glm::identity<glm::mat4>(), glm::radians(m_Transform.yawRotation), glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 potentialMatrix = glm::rotate(glm::identity<glm::mat4>(), glm::radians(m_Transform.yawRotation), glm::vec3(0.0f, 1.0f, 0.0f));
+		potentialMatrix = glm::identity<glm::mat4>();
+		potentialMatrix = glm::rotate(glm::identity<glm::mat4>(), glm::radians(10.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		potentialMatrix = glm::rotate(glm::identity<glm::mat4>(), glm::radians(m_Transform.yawRotation), glm::vec3(0.0f, 1.0f, 0.0f));
+
+		return potentialMatrix;
 	}
 
 	glm::mat4 Entity::GetScaleMat() const

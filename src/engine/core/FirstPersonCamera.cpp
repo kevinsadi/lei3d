@@ -170,6 +170,10 @@ namespace lei3d
 		{
 			playerEntity->m_Transform.yawRotation += xoffset;
 		}
+		else
+		{
+			LEI_WARN("FirstPersonCamera: Unable to find Player Entity, ensure it is named correctly in `RotatePlayer`");
+		}
 	}
 
 	glm::vec3 FirstPersonCamera::GetPlayerPos() const
