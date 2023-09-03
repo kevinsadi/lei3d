@@ -118,8 +118,14 @@ namespace lei3d
 		m_SceneManager->Init();
 
 		LEI_TRACE("Loading Default Scene");
-		m_SceneManager->SetScene("Test Kevin");
-		m_SceneManager->LoadNextScene();
+		if (SceneManager::HasScenes())
+		{
+			m_SceneManager->SetScene(0);
+		}
+		else
+		{
+			LEI_WARN("NO SCENES SET (Check Build.config)");
+		}
 
 		// INIT AUDIO ENGINE ------------------------------
 		m_AudioPlayer = std::make_unique<AudioPlayer>();

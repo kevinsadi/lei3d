@@ -31,4 +31,5 @@ namespace lei3d
 		std::unique_ptr<Model> playgroundModel;
 	};
 
+	extern std::unique_ptr<Scene> MakeTestSceneLogan();
 } // namespace lei3d
