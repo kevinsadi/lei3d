@@ -44,7 +44,7 @@ namespace lei3d
 		data.u_Color = color;
 		;
 		VertexBufferLayout vbLayout;
-		vbLayout.push<float>(3);
+		vbLayout.push(3, GL_FLOAT);
 		data.m_VAO->addBuffer(*data.m_VBO, vbLayout);
 
 		m_DrawCalls.push(std::move(data));
