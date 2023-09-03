@@ -1,5 +1,6 @@
 #include "TestSceneLogan.hpp"
 
+#include "core/Application.hpp"
 #include "components/ModelInstance.hpp"
 #include "logging/GLDebug.hpp"
 #include "physics/PhysicsWorld.hpp"
@@ -8,6 +9,10 @@
 
 namespace lei3d
 {
+	std::unique_ptr<Scene> MakeTestSceneLogan()
+	{
+		return std::make_unique<TestSceneLogan>();
+	}
 
 	TestSceneLogan::TestSceneLogan()
 	{
@@ -19,7 +24,7 @@ namespace lei3d
 
 	void TestSceneLogan::OnLoad()
 	{
-		m_Camera->SetPosition({ 0.f, 50.f, 0.f });
+		m_Camera->SetPosition({ 0.f, 80.f, -60.f });
 		// load textures
 		stbi_set_flip_vertically_on_load(true);
 
