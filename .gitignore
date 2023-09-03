@@ -5,6 +5,8 @@ build-linux/
 buildtest/
 .vscode/
 .vs/
+cmake-build-debug/
+.idea/
 .cache
 
 # `git rm --cached -r .`  to remove files added to a git commit but in the .gitignore

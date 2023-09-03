@@ -213,7 +213,7 @@ namespace lei3d
 		ImGui::EndFrame();
 	}
 
-	PrimitiveRenderer& Application::PrimitiveRenderer()
+	PrimitiveRenderer& Application::GetPrimitiveRenderer()
 	{
 		return s_Instance->m_PrimitiveRenderer;
 	}

@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <rendering/Shader.hpp>
+#include <memory>
 
 namespace lei3d
 {
