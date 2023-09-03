@@ -5,6 +5,7 @@ build-linux/
 buildtest/
 .vscode/
 .vs/
+.cache
 cmake-build-debug/
 .idea/
 
