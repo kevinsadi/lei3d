@@ -85,6 +85,11 @@ namespace lei3d
 		}
 		glfwMakeContextCurrent(m_Window);
 
+		// Removes 60 fps cap set by GLFW without having to use a single buffer
+		// Apparently vendor/GPU specific if it works or not
+		// https://stackoverflow.com/questions/50412575/is-there-a-way-to-remove-60-fps-cap-in-glfw 
+		glfwSwapInterval(0);
+
 		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		{
 			LEI_WARN("failed to initialize GLAD");
