@@ -144,8 +144,8 @@ namespace lei3d
 		forwardShader.setVec3("dirLight.direction", light->direction);
 		forwardShader.setVec3("dirLight.color", light->color);
 		forwardShader.setFloat("dirLight.intensity", light->intensity);
-		forwardShader.setFloat("dirLight.nearPlane", light->nearPlane);
-		forwardShader.setFloat("dirLight.farPlane", light->farPlane);
+//		forwardShader.setFloat("dirLight.nearPlane", light->nearPlane);
+//		forwardShader.setFloat("dirLight.farPlane", light->farPlane);
 		forwardShader.setUniformMat4("lightSpaceMatrix", lightSpaceMat);
 
 		forwardShader.setInt("shadowMoments", 1);
