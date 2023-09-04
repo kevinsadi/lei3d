@@ -73,6 +73,7 @@ namespace lei3d
 
 #ifdef __APPLE__
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
 #endif
 
 		m_Window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "lei3d", NULL, NULL);
@@ -212,7 +213,7 @@ namespace lei3d
 		ImGui::EndFrame();
 	}
 
-	PrimitiveRenderer& Application::PrimitiveRenderer()
+	PrimitiveRenderer& Application::GetPrimitiveRenderer()
 	{
 		return s_Instance->m_PrimitiveRenderer;
 	}
