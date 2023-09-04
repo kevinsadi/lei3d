@@ -3,13 +3,14 @@
 #include "core/Application.hpp"
 
 #include <btBulletDynamicsCommon.h>
+#include <cmath>
 
 namespace lei3d
 {
 	class CharacterPhysicsUpdate : public btActionInterface
 	{
 	public:
-		CharacterPhysicsUpdate(btRigidBody* character, btCollisionObject* groundCheck, float groundCheckDist);
+		CharacterPhysicsUpdate(btRigidBody* character, btCollisionObject* groundCheck, float groundCheckDist, Entity& playerEntity);
 
 		void updateAction(btCollisionWorld* collisionWorld, btScalar deltaTime) override;
 		void debugDraw(btIDebugDraw* debugDrawer) override;
@@ -18,6 +19,7 @@ namespace lei3d
 		btRigidBody*	   m_Character;
 		btCollisionObject* m_GroundCheck;
 		float			   m_GroundCheckDist;
+		Entity&			   m_PlayerEntity;
 
 		float m_gravity = 15.24f;
 		float m_maxAirSpeed = 0.575f;

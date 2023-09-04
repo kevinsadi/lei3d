@@ -4,8 +4,8 @@
 
 namespace lei3d
 {
-	CharacterPhysicsUpdate::CharacterPhysicsUpdate(btRigidBody* character, btCollisionObject* groundCheck, float groundCheckDist)
-		: m_Character(character), m_GroundCheck(groundCheck), m_GroundCheckDist(groundCheckDist) {}
+	CharacterPhysicsUpdate::CharacterPhysicsUpdate(btRigidBody* character, btCollisionObject* groundCheck, float groundCheckDist, Entity& playerEntity)
+		: m_Character(character), m_GroundCheck(groundCheck), m_GroundCheckDist(groundCheckDist), m_PlayerEntity(playerEntity) {}
 
 	glm::vec3 projectVector(glm::vec3& vecToProject, glm::vec3& targetVector)
 	{
@@ -43,24 +43,29 @@ namespace lei3d
 
 		// Calculate
 		glm::vec3 wishdir{ 0.0f, 0.0f, 0.0f };
+		float	  yawRotationRadian = glm::radians(m_PlayerEntity.m_Transform.yawRotation);
 
 		// here is where we apply our constraints during the update
 		GLFWwindow* window = Application::Window();
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 		{
-			wishdir = wishdir + glm::vec3(1.0, 0.0, 0.0);
+			glm::vec3 forwardVec = glm::normalize(glm::vec3(-sin(yawRotationRadian), 0, cos(yawRotationRadian)));
+			wishdir = wishdir + forwardVec;
 		}
 		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		{
-			wishdir = wishdir + glm::vec3(-1.0, 0.0, 0.0);
+			glm::vec3 forwardVec = glm::normalize(glm::vec3(-sin(yawRotationRadian), 0, cos(yawRotationRadian)));
+			wishdir = wishdir - forwardVec;
 		}
 		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
 		{
-			wishdir = wishdir + glm::vec3(0.0, 0.0, -1.0);
+			glm::vec3 rightVec = glm::normalize(glm::vec3(cos(yawRotationRadian), 0, sin(yawRotationRadian)));
+			wishdir = wishdir + rightVec;
 		}
 		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		{
-			wishdir = wishdir + glm::vec3(0.0, 0.0, 1.0);
+			glm::vec3 rightVec = glm::normalize(glm::vec3(cos(yawRotationRadian), 0, sin(yawRotationRadian)));
+			wishdir = wishdir - rightVec;
 		}
 
 		if (wishdir != glm::vec3(0.0, 0.0, 0.0))
