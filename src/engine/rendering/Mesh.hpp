@@ -30,10 +30,10 @@ namespace lei3d
 	public:
 		std::vector<Vertex>		  vertices;
 		std::vector<unsigned int> indices;
-		std::shared_ptr<Material> material;
+		Material* material;
 
 		Mesh();
-		Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::shared_ptr<Material>& material);
+		Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, Material* material);
 		~Mesh();
 
 		void Draw(Shader& shader, RenderFlag flags, uint32_t bindLocation) const;

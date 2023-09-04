@@ -32,8 +32,8 @@ namespace lei3d
 		std::vector<btTriangleMesh*> m_BTMeshes; // NEED TO DEALLOCATE THIS IN DESTRUCTOR!
 
 	public:
-		std::vector<std::shared_ptr<Texture>>  textures;
-		std::vector<std::shared_ptr<Material>> materials;
+		std::vector<std::unique_ptr<Texture>>  textures;
+		std::vector<std::unique_ptr<Material>> materials;
 
 		Model(const std::string& modelPath);
 		~Model();
@@ -47,7 +47,7 @@ namespace lei3d
 		void					 loadModel(const std::string& path);
 		void					 processNode(aiNode* node, const aiScene* scene);
 		Mesh					 processMesh(aiMesh* mesh, const aiScene* scene);
-		std::shared_ptr<Texture> loadMaterialTexture(const aiMaterial* mat, aiTextureType type, const std::string& typeName);
+		Texture* loadMaterialTexture(const aiMaterial* mat, aiTextureType type, const std::string& typeName);
 	};
 
 	// TODO: Use Abstract Texture in "Texture.cpp"

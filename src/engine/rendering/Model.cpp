@@ -121,10 +121,10 @@ namespace lei3d
 		}
 
 		// finally load all the materials we want
-		std::shared_ptr<Material> material = nullptr;
+		Material* material = nullptr;
 		if (mesh->mMaterialIndex >= 0)
 		{
-			material = materials[mesh->mMaterialIndex];
+			material = materials[mesh->mMaterialIndex].get();
 		}
 
 		// return a mesh object created from the extracted mesh data
@@ -132,9 +132,9 @@ namespace lei3d
 	}
 
 	// get the materials that we want from the assimp mat and convert it to textures array that is returned
-	std::shared_ptr<Texture> Model::loadMaterialTexture(const aiMaterial* mat, aiTextureType type, const std::string& typeName)
+	Texture* Model::loadMaterialTexture(const aiMaterial* mat, aiTextureType type, const std::string& typeName)
 	{
-		std::shared_ptr<Texture> texture;
+		Texture* texture;
 
 		if (mat->GetTextureCount(type) < 1)
 		{
@@ -155,17 +155,19 @@ namespace lei3d
 		{
 			if (std::strcmp(str.C_Str(), tex->path.c_str()) == 0)
 			{
+				texture = tex.get();
 				skip = true;
 			}
 		}
 
 		if (!skip)
 		{
-			texture = std::make_shared<Texture>();
+			texture = new Texture();
 			texture->id = TextureFromFile(str.C_Str(), m_Directory);
 			texture->type = typeName;
 			texture->path = str.C_Str();
-			textures.push_back(texture);
+			textures.emplace_back(texture);
+			texture = textures.back().get();
 		}
 
 		return texture;
@@ -214,7 +216,7 @@ namespace lei3d
 		{
 			const aiMaterial* aimaterial = scene->mMaterials[i];
 
-			std::shared_ptr<Material> newMaterial = std::make_shared<Material>();
+			Material* newMaterial = new Material();
 
 			aiColor3D color;
 			if (aimaterial->Get(AI_MATKEY_BASE_COLOR, color) == AI_SUCCESS)
@@ -253,7 +255,7 @@ namespace lei3d
 			newMaterial->m_UseNormalMap = newMaterial->m_NormalMap != nullptr;
 			newMaterial->m_UseBumpMap = newMaterial->m_BumpMap != nullptr;
 
-			materials.push_back(newMaterial);
+			materials.emplace_back(newMaterial);
 		}
 	}
 

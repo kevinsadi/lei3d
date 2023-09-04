@@ -10,7 +10,7 @@ namespace lei3d
 		// ::clown emoticon::
 	}
 
-	Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::shared_ptr<Material>& material)
+	Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, Material* material)
 	{
 		this->vertices = vertices;
 		this->indices = indices;
