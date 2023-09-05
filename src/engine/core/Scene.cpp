@@ -20,9 +20,6 @@ namespace lei3d
 		GLFWwindow* const win = Application::Window();
 		m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 10.0f);
 
-		// Load shader (TEMPORARY)
-		m_MainShader = std::make_unique<Shader>("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
-
 		// Load physics world
 		m_PhysicsWorld = std::make_unique<PhysicsWorld>();
 		m_PhysicsWorld->Create(); // TODO: Consider if there is some better way to do this
@@ -80,6 +77,7 @@ namespace lei3d
 		m_Entities.clear(); // This should auto-destruct entities bc smart pointers.
 
 		OnUnload();
+		Destroy();
 	}
 
 	void Scene::Play()
@@ -252,6 +250,11 @@ namespace lei3d
 	void Scene::Destroy()
 	{
 		LEI_TRACE("Scene Destroy");
+
+		m_Camera.reset();
+		m_PhysicsWorld.reset();
+
+		m_DirectionalLight.reset();
 
 		OnDestroy();
 	}
