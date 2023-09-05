@@ -17,10 +17,12 @@ namespace lei3d
 		m_PrevY = screenHeight / 2.0f;
 		m_Aspect = static_cast<float>(screenWidth) / static_cast<float>(screenHeight);
 
+		m_UseMinecraftControls = false;
+
 		m_CameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-		m_CameraFront = glm::vec3(0.0f, 0.0f, -1.0f) * m_FlySpeed;
-		m_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f) * m_FlySpeed;
-		m_CameraRight = glm::vec3(1.0f, 0.0f, 0.0f) * m_FlySpeed;
+		m_CameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+		m_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+		m_CameraRight = glm::vec3(1.0f, 0.0f, 0.0f);
 	}
 
 	FlyCamera::~FlyCamera()
@@ -60,8 +62,8 @@ namespace lei3d
 		direction.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
 		direction.y = sin(glm::radians(m_Pitch));
 		direction.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-		m_CameraFront = glm::normalize(direction) * m_FlySpeed;
-		m_CameraRight = glm::normalize(glm::cross(m_CameraFront, m_CameraUp)) * m_FlySpeed;
+		m_CameraFront = glm::normalize(direction);
+		m_CameraRight = glm::normalize(glm::cross(m_CameraFront, m_CameraUp));
 	}
 
 	void FlyCamera::PollCameraMovementInput()
@@ -108,6 +110,7 @@ namespace lei3d
 	void FlyCamera::OnImGuiRender()
 	{
 		ImGui::SliderFloat("Camera Speed: ", &m_FlySpeed, MIN_FLY_SPEED, MAX_FLY_SPEED, "%.2f");
+		ImGui::Checkbox("Use 'Minecraft' Camera Controls: ", &m_UseMinecraftControls);
 	}
 
 	void FlyCamera::SetFOV(float fovDeg)
@@ -128,12 +131,22 @@ namespace lei3d
 
 	void FlyCamera::handleForward(float speed)
 	{
-		m_CameraPos += m_CameraFront * speed * Application::DeltaTime();
+		if (m_UseMinecraftControls) {
+			//should move in m_CameraFront's direction, with no change in height
+			m_CameraPos += glm::normalize(glm::vec3(m_CameraFront.x, 0, m_CameraFront.z)) * speed * Application::DeltaTime();
+		} else {
+			m_CameraPos += m_CameraFront * speed * Application::DeltaTime();
+		}
 	}
 
 	void FlyCamera::handleBack(float speed)
 	{
-		m_CameraPos -= m_CameraFront * speed * Application::DeltaTime();
+		if (m_UseMinecraftControls) {
+			//should move opposite to m_CameraFront's direction, with no change in height
+			m_CameraPos -= glm::normalize(glm::vec3(m_CameraFront.x, 0, m_CameraFront.z)) * speed * Application::DeltaTime();
+		} else {
+			m_CameraPos -= m_CameraFront * speed * Application::DeltaTime();
+		}
 	}
 
 	void FlyCamera::handleLeft(float speed)

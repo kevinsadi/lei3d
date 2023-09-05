@@ -31,6 +31,8 @@ namespace lei3d
 		int m_PrevX;
 		int m_PrevY;
 
+		bool m_UseMinecraftControls;
+
 		glm::vec3 m_CameraPos;
 		glm::vec3 m_CameraFront;
 		glm::vec3 m_CameraUp;
