@@ -34,6 +34,7 @@ namespace lei3d
 		glm::vec3 m_CameraPos;
 		glm::vec3 m_CameraFront;
 		glm::vec3 m_CameraUp;
+		glm::vec3 m_CameraRight;
 
 	public:
 		FlyCamera(GLFWwindow* window, float yaw, float pitch, float flySpeed);
@@ -55,11 +56,14 @@ namespace lei3d
 
 		glm::vec3 Front() const;
 		glm::vec3 Up() const;
+		glm::vec3 Right() const;
 
 	private:
 		void handleForward(float speed);
 		void handleLeft(float speed);
 		void handleRight(float speed);
 		void handleBack(float speed);
+		void handleUp(float speed);
+		void handleDown(float speed);
 	};
 } // namespace lei3d
