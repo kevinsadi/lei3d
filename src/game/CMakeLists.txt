@@ -1,21 +1,22 @@
 cmake_minimum_required(VERSION 3.14)
 project(lei3d)
 
-file(GLOB_RECURSE ENGINE_SOURCE
+file(GLOB_RECURSE GAME_SOURCE
         "*.cpp"
         )
 
-file(GLOB_RECURSE ENGINE_HEADER
+file(GLOB_RECURSE GAME_HEADER
         "*.hpp"
         )
 
-add_library(lei3d_lib
-        ${ENGINE_HEADER}
-        ${ENGINE_SOURCE}
+add_library(skylei_lib
+        ${GAME_HEADER}
+        ${GAME_SOURCE}
         )
 
-target_include_directories(lei3d_lib PUBLIC
+target_include_directories(skylei_lib PUBLIC
         .
+        ../engine
         ${GLFW_INCLUDE}
         ${GLAD_INCLUDE}
         ${IMGUI_INCLUDE}
@@ -25,9 +26,9 @@ target_include_directories(lei3d_lib PUBLIC
         ${STB_INCLUDE}
         ${ASSIMP_INCLUDE}
         ${GLM_INCLUDE}
-)
+        )
 
 if (WIN32)
     # Avoid a name clash when building on Visual Studio
-    set_target_properties(lei3d_lib PROPERTIES OUTPUT_NAME liblei3d)
+    set_target_properties(skylei_lib PROPERTIES OUTPUT_NAME libskylei)
 endif()
