@@ -69,7 +69,7 @@ namespace lei3d
 		glClearColor(0.2f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		FirstPersonCamera&			camera = scene.MainCamera();
+		Camera&			camera = scene.MainCamera();
 		SkyBox*						skyBox = nullptr;
 		std::vector<ModelInstance*> modelEntities;
 		for (auto& entity : scene.m_Entities)
@@ -92,7 +92,7 @@ namespace lei3d
 		postprocessPass();
 	}
 
-	void RenderSystem::lightingPass(const std::vector<ModelInstance*>& objects, FirstPersonCamera& camera)
+	void RenderSystem::lightingPass(const std::vector<ModelInstance*>& objects, Camera& camera)
 	{
 		forwardShader.bind();
 
@@ -126,7 +126,7 @@ namespace lei3d
 		glDisable(GL_DEPTH_TEST);
 	}
 
-	void RenderSystem::environmentPass(const SkyBox& skyBox, FirstPersonCamera& camera)
+	void RenderSystem::environmentPass(const SkyBox& skyBox, Camera& camera)
 	{
 		glEnable(GL_DEPTH_TEST);
 		GLCall(glDepthFunc(GL_LEQUAL)); // we change the depth function here to it passes when testing depth value is equal

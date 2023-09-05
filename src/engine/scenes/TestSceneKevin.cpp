@@ -1,8 +1,15 @@
 #include "TestSceneKevin.hpp"
 
 #include "components/ModelInstance.hpp"
+#include "components/CharacterController.hpp"
+#include "components/SkyBox.hpp"
+#include "components/StaticCollider.hpp"
+#include "components/FirstPersonCamera.hpp"
+
 #include "logging/GLDebug.hpp"
 #include "physics/PhysicsWorld.hpp"
+
+#include "audio/AudioPlayer.hpp"
 
 #include <glm/glm.hpp>
 
@@ -31,14 +38,18 @@ namespace lei3d
 		// BACKPACK (Character) ---------------------
 		Entity& backpackObj = AddEntity("Backpack");
 
-		//ModelInstance* modelRender = backpackObj.AddComponent<ModelInstance>();
-		//modelRender->Init(backpackModel.get());
+		// ModelInstance* modelRender = backpackObj.AddComponent<ModelInstance>();
+		// modelRender->Init(backpackModel.get());
 		backpackObj.SetScale(glm::vec3(1.f, 1.f, 1.f));
 		backpackObj.SetPosition(glm::vec3(0.f, 200.f, 0.f));
 		backpackObj.SetYawRotation(0);
 
 		CharacterController* characterController = backpackObj.AddComponent<CharacterController>();
 		characterController->Init(1.f, 3.f);
+
+		Entity&			   fpCameraObj = AddEntity("FP Camera");
+		FirstPersonCamera* fpCamera = fpCameraObj.AddComponent<FirstPersonCamera>();
+		fpCamera->Init(Application::Window(), 90.0f, 0.0f, &backpackObj, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		// PHYSICS PLAYGROUND---------------------
 		Entity& physicsPlaygroundObj = AddEntity("Physics Playground");

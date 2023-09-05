@@ -19,13 +19,13 @@ namespace lei3d
 
 		m_PrimitiveShader = Shader("./data/shaders/primitive.vert", "./data/shaders/primitive.frag");
 	}
-	void PrimitiveRenderer::pushLine(FirstPersonCamera& camera, const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float thickness)
+	void PrimitiveRenderer::pushLine(Camera& camera, const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float thickness)
 	{
 		//Construct line of some thickness that always faces the camera.
 		glm::vec3 lineDir = to - from;
 		lineDir = glm::normalize(lineDir);
 
-		glm::vec3 vOffset = glm::cross(lineDir, camera.Front());
+		glm::vec3 vOffset = glm::cross(lineDir, camera.GetFront());
 		vOffset = 0.5f * thickness * glm::normalize(vOffset);
 
 		glm::vec3 vertices[] = {
@@ -50,7 +50,7 @@ namespace lei3d
 		m_DrawCalls.push(std::move(data));
 	}
 
-	void PrimitiveRenderer::drawAll(FirstPersonCamera& camera)
+	void PrimitiveRenderer::drawAll(Camera& camera)
 	{
 		m_PrimitiveShader.setUniformMat4("u_Proj", camera.GetProj());
 		m_PrimitiveShader.setUniformMat4("u_View", camera.GetView());

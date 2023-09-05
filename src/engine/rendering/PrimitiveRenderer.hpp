@@ -1,7 +1,6 @@
 #pragma once
 
-#include "core/FlyCamera.hpp"
-#include "core/FirstPersonCamera.hpp"
+#include "components/Camera.hpp"
 
 #include "rendering/Shader.hpp"
 #include "rendering/buffers/Buffer.hpp"
@@ -48,9 +47,9 @@ namespace lei3d
 		PrimitiveRenderer();
 		void initialize(float width, float height);
 
-		void drawAll(FirstPersonCamera& camera);
+		void drawAll(Camera& camera);
 
-		void pushLine(FirstPersonCamera& camera, const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float thickness = 0.1f);
+		void pushLine(Camera& camera, const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float thickness = 0.1f);
 
 		Shader& GetShader();
 

@@ -1,22 +1,10 @@
 #pragma once
 
-#include "components/CharacterController.hpp"
-#include "components/SkyBox.hpp"
-#include "components/StaticCollider.hpp"
-#include "core/Entity.hpp"
 #include "core/Scene.hpp"
-#include "physics/PhysicsWorld.hpp"
-
-#include "audio/AudioPlayer.hpp"
-#include "rendering/Shader.hpp"
 
 namespace lei3d
 {
-	class Entity;
 	class Model;
-	class Shader;
-	class SkyBox;
-	class PhysicsWorld;
 
 	class TestSceneKevin : public Scene
 	{

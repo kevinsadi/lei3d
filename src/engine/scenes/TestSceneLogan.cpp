@@ -19,7 +19,8 @@ namespace lei3d
 
 	void TestSceneLogan::OnLoad()
 	{
-		m_Camera->SetPosition({ 0.f, 50.f, 0.f });
+		m_MainCamera->SetPosition({ 0.f, 50.f, 0.f });
+
 		// load textures
 		stbi_set_flip_vertically_on_load(true);
 

@@ -1,14 +1,12 @@
 #pragma once
 
 #include "Entity.hpp"
-#include "core/Scene.hpp"
 
 #include <string>
 
 namespace lei3d
 {
 	class Entity;
-	class Scene;
 
 	class Component
 	{

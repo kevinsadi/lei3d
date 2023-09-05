@@ -1,6 +1,9 @@
 #include "core/Scene.hpp"
 
 #include "core/Application.hpp"
+
+#include "components/FlyCamera.hpp"
+
 #include "logging/GLDebug.hpp"
 
 namespace lei3d
@@ -18,10 +21,12 @@ namespace lei3d
 	{
 		// load camera
 		GLFWwindow* const win = Application::Window();
-		m_Camera = std::make_unique<FirstPersonCamera>(win, 90.0f, 0.0f, 10.0f);
 
-		// Load shader (TEMPORARY)
-		m_MainShader = std::make_unique<Shader>("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
+		// Add Default Fly Camera
+		Entity&	   camera = AddEntity("Fly Camera");
+		FlyCamera* flyCam = camera.AddComponent<FlyCamera>();
+		flyCam->Init(win, 90.0f, 0.0f, 10.0f);
+		m_MainCamera = flyCam;
 
 		// Load physics world
 		m_PhysicsWorld = std::make_unique<PhysicsWorld>();
@@ -90,9 +95,9 @@ namespace lei3d
 
 	void Scene::Reset()
 	{
-		//We have to do some tricky things to get the scene to reset all the objs and physics and stuff.
+		// We have to do some tricky things to get the scene to reset all the objs and physics and stuff.
 		m_State = SCENE_START;
-		Load(); //This is inefficient
+		Load(); // This is inefficient
 	}
 
 	void Scene::Start()
@@ -111,7 +116,7 @@ namespace lei3d
 	{
 		if (m_State == SCENE_PLAYING)
 		{
-			//LEI_TRACE("Scene Update");
+			// LEI_TRACE("Scene Update");
 
 			for (auto& entity : m_Entities)
 			{
@@ -121,14 +126,14 @@ namespace lei3d
 			OnUpdate();
 		}
 
-		m_Camera->PollCameraMovementInput();
+		MainCamera().PollCameraMovementInput();
 	}
 
 	void Scene::PhysicsUpdate()
 	{
 		if (m_State == SCENE_PLAYING)
 		{
-			//LEI_TRACE("Scene Physics Update");
+			// LEI_TRACE("Scene Physics Update");
 			for (auto& entity : m_Entities)
 			{
 				entity->PhysicsUpdate();
@@ -152,7 +157,7 @@ namespace lei3d
 		OnRender();
 	}
 
-	//yucky
+	// yucky
 	std::string Scene::StateToString() const
 	{
 		switch (m_State)
@@ -169,7 +174,7 @@ namespace lei3d
 
 	void Scene::ImGUIRender()
 	{
-		//Scene Control Widgets
+		// Scene Control Widgets
 		std::stringstream ss;
 		ss << "State: ";
 		ss << StateToString();
@@ -186,14 +191,14 @@ namespace lei3d
 			Pause();
 		}
 
-		//ImGui::SameLine();
-		//if (ImGui::Button("Reset"))
+		// ImGui::SameLine();
+		// if (ImGui::Button("Reset"))
 		//{
-		//    Reset();
-		//}
+		//     Reset();
+		// }
 
 		ImGui::Text("Camera: ");
-		m_Camera->OnImGuiRender();
+		m_MainCamera->OnImGuiRender();
 
 		ImGui::Text("Physics World: ");
 		m_PhysicsWorld->OnImGuiRender();
@@ -252,9 +257,9 @@ namespace lei3d
 		OnDestroy();
 	}
 
-	FirstPersonCamera& Scene::MainCamera() const
+	Camera& Scene::MainCamera() const
 	{
-		return *m_Camera;
+		return *m_MainCamera;
 	}
 
 	PhysicsWorld& Scene::GetPhysicsWorld() const

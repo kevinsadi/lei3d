@@ -1,8 +1,9 @@
 #pragma once
 
 #include "core/Entity.hpp"
-#include "core/FlyCamera.hpp"
-#include "core/FirstPersonCamera.hpp"
+
+#include "components/Camera.hpp"
+
 #include "physics/PhysicsWorld.hpp"
 
 #include <glm/glm.hpp>
@@ -14,11 +15,9 @@
 
 namespace lei3d
 {
-	class Application;
 	class Entity;
-	class FirstPersonCamera;
+	class Camera;
 	class PhysicsWorld;
-	class Shader;
 	class RenderSystem;
 
 	class Scene
@@ -37,18 +36,17 @@ namespace lei3d
 		std::unordered_map<std::string, int> m_EntityNameCounts;
 
 	protected:
-		//We should prob. limit how much stuff we put into the base scene.
-		std::unique_ptr<FirstPersonCamera> m_Camera = nullptr;		 // every scene needs a camera
-		std::unique_ptr<Shader>			   m_MainShader = nullptr;	 // THIS IS TEMPORARY
-		std::unique_ptr<PhysicsWorld>	   m_PhysicsWorld = nullptr; // Each scene has a physics world
+		// We should prob. limit how much stuff we put into the base scene.
+		Camera*						  m_MainCamera = nullptr;	// every scene needs a camera
+		std::unique_ptr<PhysicsWorld> m_PhysicsWorld = nullptr; // Each scene has a physics world
 
 		SceneState m_State;
 
 	public:
 		Scene();
-		~Scene();	
+		~Scene();
 
-		//Entities
+		// Entities
 		Entity& AddEntity(std::string name);
 		Entity& AddEntity();
 
@@ -60,7 +58,7 @@ namespace lei3d
 		void ImGUIRender();
 		void Destroy();
 
-		//Scene State Changers
+		// Scene State Changers
 		void Play();
 		void Pause();
 		void Reset();
@@ -81,9 +79,9 @@ namespace lei3d
 		virtual void OnImGUIRender() {}
 		virtual void OnDestroy() {}
 
-		Entity*			   GetEntity(std::string name) const;
-		FirstPersonCamera& MainCamera() const;
-		PhysicsWorld&	   GetPhysicsWorld() const;
+		Entity*		  GetEntity(std::string name) const;
+		Camera&		  MainCamera() const;
+		PhysicsWorld& GetPhysicsWorld() const;
 
 		void PrintEntityList() const; // For Debugging
 
