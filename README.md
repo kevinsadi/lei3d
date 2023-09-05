@@ -57,6 +57,10 @@ lei3d has originally been created using Visual Studio 2022 on Windows. It has be
 6) cd `/src/engine`
 7) `./lei3d`
 
+### Build Types
+Depending on your needs with the engine, there are multiple ways you can build the engine. If you want to build a Debug build, include 
+`cmake -DCMAKE_BUILD_TYPE=Debug` when you first run CMake. You can specify the same cmake parameter for Release builds. 
+
 ## requirements
 Graphics card that support OpenGL 4.6
 
