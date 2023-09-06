@@ -41,6 +41,7 @@ namespace lei3d
 		glm::vec3 GetPosition() const;
 		glm::vec3 GetFront() const;
 		glm::vec3 GetUp() const;
+		float GetFOV() const;
 
 		virtual void OnImGuiRender() {}
 		virtual void cameraMouseCallback(double xPosInput, double yPosInput) {}

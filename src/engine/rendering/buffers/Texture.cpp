@@ -37,7 +37,7 @@ namespace lei3d
 
 	void Texture::setParameteri(GLenum name, GLint value) const
 	{
-		GLCall(glTexParameteri(GL_TEXTURE_2D, name, value))
+		GLCall(glTexParameteri(GL_TEXTURE_2D, name, value));
 	}
 
 	void Texture::bind() const

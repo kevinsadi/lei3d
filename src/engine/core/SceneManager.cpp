@@ -127,8 +127,7 @@ namespace lei3d
 			return;
 		}
 
-		m_ActiveScene = m_NextScene;
-		LoadScene(*m_ActiveScene);
+		LoadScene(*m_NextScene);
 		m_NeedsSceneSwitch = false;
 	}
 

@@ -5,6 +5,7 @@
 #include "components/Camera.hpp"
 
 #include "physics/PhysicsWorld.hpp"
+#include "components/Lights.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -39,6 +40,8 @@ namespace lei3d
 		// We should prob. limit how much stuff we put into the base scene.
 		Camera*						  m_FlyCamera = nullptr;	// every scene has the default fly camera
 		std::unique_ptr<PhysicsWorld> m_PhysicsWorld = nullptr; // Each scene has a physics world
+
+		std::unique_ptr<DirectionalLight> m_DirectionalLight = nullptr;
 
 		SceneState m_State;
 
@@ -79,9 +82,9 @@ namespace lei3d
 
 		virtual Camera& GetMainCamera() const = 0;
 
-		Entity*			GetEntity(std::string name) const;
-		Camera&			GetFlyCamera() const;
-		PhysicsWorld&	GetPhysicsWorld() const;
+		Entity*		  GetEntity(std::string name) const;
+		Camera&		  GetFlyCamera() const;
+		PhysicsWorld& GetPhysicsWorld() const;
 
 		void PrintEntityList() const; // For Debugging
 

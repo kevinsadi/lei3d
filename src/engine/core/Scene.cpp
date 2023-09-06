@@ -32,9 +32,13 @@ namespace lei3d
 		m_PhysicsWorld = std::make_unique<PhysicsWorld>();
 		m_PhysicsWorld->Create(); // TODO: Consider if there is some better way to do this
 
+		// Default light, TODO: needs to load from scene file
+		DirectionalLight* dirLight = new DirectionalLight({ 0.1, -0.5, -0.45 }, { 1.f, 1.f, 1.f }, 1.f);
+		m_DirectionalLight = std::unique_ptr<DirectionalLight>(dirLight);
+
 		OnLoad();
 
-		m_State = SCENE_START;	//Scene ready to start by default.
+		m_State = SCENE_START; //Scene ready to start by default.
 	}
 
 	Entity& Scene::AddEntity(std::string name)
@@ -81,6 +85,7 @@ namespace lei3d
 		m_Entities.clear(); // This should auto-destruct entities bc smart pointers.
 
 		OnUnload();
+		Destroy();
 	}
 
 	void Scene::Play()
@@ -160,7 +165,6 @@ namespace lei3d
 
 	void Scene::ImGUIRender()
 	{
-
 		// ImGui::SameLine();
 		// if (ImGui::Button("Reset"))
 		//{
@@ -223,6 +227,9 @@ namespace lei3d
 	void Scene::Destroy()
 	{
 		LEI_TRACE("Scene Destroy");
+
+		m_PhysicsWorld.reset();
+		m_DirectionalLight.reset();
 
 		OnDestroy();
 	}

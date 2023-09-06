@@ -33,8 +33,16 @@ namespace lei3d
 
 		// Load Models
 		const std::string backpackPath = "data/models/backpack/backpack.obj";
+		if (backpackModel)
+		{
+			backpackModel.reset();
+		}
 		backpackModel = std::make_unique<Model>(backpackPath);
 		const std::string physicsPlaygroundPath = "data/models/leveldesign/KevWorldColorFive.obj";
+		if (playgroundModel)
+		{
+			playgroundModel.reset();
+		}
 		playgroundModel = std::make_unique<Model>(physicsPlaygroundPath);
 
 		// BACKPACK (Character) ---------------------
@@ -67,7 +75,7 @@ namespace lei3d
 		////Test Multiple Components
 		Entity& skyboxObj = AddEntity("Skybox");
 
-		SkyBox*					 skybox = skyboxObj.AddComponent<SkyBox>();
+		SkyBox*	skybox = skyboxObj.AddComponent<SkyBox>();
 		std::vector<std::string> faces{ "data/skybox/anime_etheria/right.jpg", "data/skybox/anime_etheria/left.jpg",
 			"data/skybox/anime_etheria/up.jpg", "data/skybox/anime_etheria/down.jpg",
 			"data/skybox/anime_etheria/front.jpg", "data/skybox/anime_etheria/back.jpg" };

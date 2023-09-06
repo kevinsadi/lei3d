@@ -207,7 +207,6 @@ namespace lei3d
 		ImGui::Render();
 		ImDrawData* drawData = ImGui::GetDrawData();
 		ImGui_ImplOpenGL3_RenderDrawData(drawData);
-		ImGui::EndFrame();
 	}
 
 	SceneView& Application::GetSceneView()

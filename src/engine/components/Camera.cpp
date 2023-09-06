@@ -57,6 +57,11 @@ namespace lei3d
 		return m_CameraUp;
 	}
 
+	float Camera::GetFOV() const
+	{
+		return m_FOVDeg;
+	}
+
 	void Camera::SetFOV(float fovDeg)
 	{
 		m_FOVDeg = fovDeg;

@@ -52,6 +52,7 @@ namespace lei3d
 
 	void PrimitiveRenderer::drawAll(Camera& camera)
 	{
+		m_PrimitiveShader.bind();
 		m_PrimitiveShader.setUniformMat4("u_Proj", camera.GetProj());
 		m_PrimitiveShader.setUniformMat4("u_View", camera.GetView());
 		m_PrimitiveShader.setUniformMat4("u_Model", glm::identity<glm::mat4>());
@@ -62,17 +63,16 @@ namespace lei3d
 			draw(*data.m_VAO, *data.m_IBO);
 			m_DrawCalls.pop();
 		}
+		m_PrimitiveShader.unbind();
 	}
 
 	void PrimitiveRenderer::draw(const VertexArray& va, const IndexBuffer& ib) const
 	{
 		va.bind();
 		ib.bind();
-		m_PrimitiveShader.bind();
 
 		GLCall(glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr));
 
-		m_PrimitiveShader.unbind();
 		ib.unbind();
 		va.unbind();
 	}

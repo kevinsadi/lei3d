@@ -10,7 +10,7 @@ namespace lei3d
 		// ::clown emoticon::
 	}
 
-	Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::shared_ptr<Material>& material)
+	Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, Material* material)
 	{
 		this->vertices = vertices;
 		this->indices = indices;
@@ -70,18 +70,22 @@ namespace lei3d
 	 *
 	 * AND SO ON. HOPEFULLY I WILL HAVE DEFAULT SHADER TYPES TO MAKE OUR LIFE EASIER.
 	 */
-	void Mesh::Draw(Shader& shader) const
+	void Mesh::Draw(Shader& shader, RenderFlag flags, uint32_t bindLocation) const
 	{
-		unsigned int textureNum = 1;
-
-		material->bind(shader, textureNum);
+		if (flags & RenderFlag::BindImages)
+		{
+			material->bind(shader, bindLocation);
+		}
 
 		// actually draw the mesh now
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, nullptr);
 		glBindVertexArray(0);
 
-		material->unbind(textureNum);
+		if (flags & RenderFlag::BindImages)
+		{
+			material->unbind(bindLocation);
+		}
 		// set back to default
 		glActiveTexture(GL_TEXTURE0);
 	}
