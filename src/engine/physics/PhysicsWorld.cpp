@@ -1,5 +1,7 @@
 #include "PhysicsWorld.hpp"
 
+#include "core/Application.hpp"
+
 #include "logging/Log.hpp"
 
 #include "LeiDebugDrawer.hpp"
@@ -28,23 +30,6 @@ namespace lei3d
 
 	void PhysicsWorld::Create()
 	{
-		// CHARACTER--------------------
-		// std::unique_ptr<btCollisionShape> character = std::make_unique<btCapsuleShape>(btScalar{1.0f}, btScalar{3.0f});
-		//  btCollisionShape* character = new btCapsuleShape(btScalar{1.0f}, btScalar{3.0f});
-		//  btTransform startTransform;
-		//  startTransform.setIdentity();
-
-		// btScalar mass{1.f};
-		// btVector3 localInertia{0.0f, 0.0f, 0.0f};
-		// character->calculateLocalInertia(mass, localInertia);
-		// startTransform.setOrigin(btVector3{3.0f, 50.0f, 0.0f});
-
-		// //THIS IS A MEMORY LEAK, FIX!!
-		// btDefaultMotionState* charMotionState = new btDefaultMotionState(startTransform);
-		// btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, charMotionState, character, localInertia);
-		// btRigidBody* characterBody = new btRigidBody(rbInfo);
-		// m_dynamicsWorld->addRigidBody(characterBody);
-		// m_collisionShapes.push_back(character);
 	}
 
 	void PhysicsWorld::Step(float deltaTime)
@@ -66,11 +51,6 @@ namespace lei3d
 				trans = obj->getWorldTransform();
 			}
 		}
-
-		if (m_Debug)
-		{
-			m_dynamicsWorld->debugDrawWorld();
-		}
 	}
 
 	// We ideally shouldn't use this. Better to store the collider in an object and get the position than assume array order
@@ -91,8 +71,21 @@ namespace lei3d
 		return position;
 	}
 
+	bool PhysicsWorld::ShouldShowDebug()
+	{
+		// Don't show physics stuff in game view 
+		const bool inGameView = Application::GetSceneView().GetMode() == SceneView::ModeGame;
+		return m_Debug && !inGameView;
+	}
+
 	void PhysicsWorld::OnImGuiRender()
 	{
 		ImGui::Checkbox("Debug Mode", &m_Debug);
+
+		// TODO: This only runs when in GUI. Move this to separate OnDebugRender() or smth. Show only in SceneView and also when scene is paused.
+		if (ShouldShowDebug())
+		{
+			m_dynamicsWorld->debugDrawWorld();
+		}
 	}
 } // namespace lei3d

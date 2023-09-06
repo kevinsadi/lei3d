@@ -1,7 +1,10 @@
 #pragma once
 
 #include "core/SceneManager.hpp"
-#include "guitools/AppGUI.hpp"
+#include "core/SceneView.hpp"
+
+#include "guitools/EditorGUI.hpp"
+
 #include "rendering/PrimitiveRenderer.hpp"
 #include "rendering/RenderSystem.hpp"
 
@@ -34,13 +37,15 @@ namespace lei3d
 		const unsigned int SCREEN_WIDTH = 1200;
 		const unsigned int SCREEN_HEIGHT = 1000;
 
-		GLFWwindow*		   m_Window = nullptr;
+		GLFWwindow* m_Window = nullptr;
 
-		std::unique_ptr<AppGUI>		  m_AppGUI;
+		// TODO: Refactor things into editor/game
+		std::unique_ptr<EditorGUI>	  m_EditorGUI;
 		std::unique_ptr<SceneManager> m_SceneManager;
 		std::unique_ptr<AudioPlayer>  m_AudioPlayer;
 
-		RenderSystem m_Renderer;
+		SceneView		  m_SceneView;
+		RenderSystem	  m_Renderer;
 		PrimitiveRenderer m_PrimitiveRenderer;
 
 		// NOTE: Don't modify this directly. Use SetUIActive.
@@ -58,9 +63,15 @@ namespace lei3d
 
 		void SetUIActive(bool uiActive);
 
-		static GLFWwindow* Window();
-		static float	   DeltaTime();
+		static GLFWwindow*		  Window();
+		static float			  DeltaTime();
+		static SceneView&		  GetSceneView();
 		static PrimitiveRenderer& GetPrimitiveRenderer();
+
+		static inline Camera& GetSceneCamera()
+		{
+			return GetSceneView().ActiveCamera(SceneManager::ActiveScene());
+		}
 
 	private:
 		void Initialize(); // Start the App

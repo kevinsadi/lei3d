@@ -60,7 +60,7 @@ namespace lei3d
 		///< error checks
 	}
 
-	void RenderSystem::draw(const Scene& scene)
+	void RenderSystem::draw(const Scene& scene, const SceneView& view)
 	{
 		// clear the blit image
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
@@ -69,7 +69,7 @@ namespace lei3d
 		glClearColor(0.2f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		Camera&			camera = scene.MainCamera();
+		Camera&						camera = view.ActiveCamera(scene);
 		SkyBox*						skyBox = nullptr;
 		std::vector<ModelInstance*> modelEntities;
 		for (auto& entity : scene.m_Entities)

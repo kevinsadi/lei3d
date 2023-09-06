@@ -110,7 +110,7 @@ namespace lei3d
 		ImGui_ImplOpenGL3_Init();
 
 		// AppGUI --------------------------------
-		m_AppGUI = std::make_unique<AppGUI>();
+		m_EditorGUI = std::make_unique<EditorGUI>();
 		SetUIActive(false);
 
 		// CREATE SCENES --------------------------------
@@ -126,6 +126,9 @@ namespace lei3d
 		{
 			LEI_WARN("NO SCENES SET (Check Build.config)");
 		}
+
+		// INIT SCENE VIEWER ------------------------------
+		m_SceneView.SetMode(SceneView::ModeScene);
 
 		// INIT AUDIO ENGINE ------------------------------
 		m_AudioPlayer = std::make_unique<AudioPlayer>();
@@ -184,15 +187,10 @@ namespace lei3d
 
 	void Application::Render()
 	{
-		m_Renderer.draw(SceneManager::ActiveScene());
+		m_Renderer.draw(SceneManager::ActiveScene(), m_SceneView);
 
-		// TEST DEBUG CODE
-		// glm::vec3 from = { 0.f, 0.f, 0.f };
-		// glm::vec3 to = { 50.f, 0.f, 0.f };
-		// glm::vec3 color = { 1.f, 0.f, 0.f };
-		// m_PrimitiveRenderer.pushLine(SceneManager::ActiveScene().MainCamera(), from, to, color, 1.f);
-
-		m_PrimitiveRenderer.drawAll(SceneManager::ActiveScene().MainCamera());
+		Camera& sceneCamera = m_SceneView.ActiveCamera(SceneManager::ActiveScene());
+		m_PrimitiveRenderer.drawAll(sceneCamera);
 	}
 
 	void Application::ImGuiRender()
@@ -203,13 +201,18 @@ namespace lei3d
 
 		if (m_UIActive)
 		{
-			m_AppGUI->RenderUI();
+			m_EditorGUI->RenderUI();
 		}
 
 		ImGui::Render();
 		ImDrawData* drawData = ImGui::GetDrawData();
 		ImGui_ImplOpenGL3_RenderDrawData(drawData);
 		ImGui::EndFrame();
+	}
+
+	SceneView& Application::GetSceneView()
+	{
+		return s_Instance->m_SceneView;
 	}
 
 	PrimitiveRenderer& Application::GetPrimitiveRenderer()
@@ -247,7 +250,8 @@ namespace lei3d
 				{
 					if (cursorDisabled)
 					{
-						SceneManager::ActiveScene().MainCamera().cameraMouseCallback(x, y);
+						Camera& sceneCamera = Application::GetSceneCamera();
+						sceneCamera.cameraMouseCallback(x, y);
 					}
 				}
 			}
@@ -286,9 +290,16 @@ namespace lei3d
 		{
 			glfwSetWindowShouldClose(window, true);
 		}
+
+		//Editor Specific Controls
 		if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
 		{
 			SetUIActive(!m_UIActive);
+		}
+
+		if (key == GLFW_KEY_P && action == GLFW_PRESS)
+		{
+			m_SceneView.TogglePlayPause(SceneManager::ActiveScene());
 		}
 	}
 

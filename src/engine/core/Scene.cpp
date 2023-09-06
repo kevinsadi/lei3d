@@ -24,9 +24,9 @@ namespace lei3d
 
 		// Add Default Fly Camera
 		Entity&	   camera = AddEntity("Fly Camera");
-		FlyCamera* flyCam = camera.AddComponent<FlyCamera>();
-		flyCam->Init(win, 90.0f, 0.0f, 10.0f);
-		m_MainCamera = flyCam;
+		FlyCamera* flyCamera = camera.AddComponent<FlyCamera>();
+		flyCamera->Init(win, 90.0f, 0.0f, 10.0f);
+		m_FlyCamera = flyCamera;
 
 		// Load physics world
 		m_PhysicsWorld = std::make_unique<PhysicsWorld>();
@@ -34,7 +34,7 @@ namespace lei3d
 
 		OnLoad();
 
-		m_State = SCENE_PLAYING;
+		m_State = SCENE_START;	//Scene ready to start by default.
 	}
 
 	Entity& Scene::AddEntity(std::string name)
@@ -126,7 +126,7 @@ namespace lei3d
 			OnUpdate();
 		}
 
-		MainCamera().PollCameraMovementInput();
+		GetFlyCamera().PollCameraMovementInput();
 	}
 
 	void Scene::PhysicsUpdate()
@@ -141,20 +141,6 @@ namespace lei3d
 
 			OnPhysicsUpdate();
 		}
-	}
-
-	void Scene::Render()
-	{
-		GLCall(glClearColor(0.2f, 0.8f, 0.9f, 1.0f));
-		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-
-		// LEI_TRACE("Scene Render");
-		for (auto& entity : m_Entities)
-		{
-			entity->Render();
-		}
-
-		OnRender();
 	}
 
 	// yucky
@@ -174,22 +160,6 @@ namespace lei3d
 
 	void Scene::ImGUIRender()
 	{
-		// Scene Control Widgets
-		std::stringstream ss;
-		ss << "State: ";
-		ss << StateToString();
-		ImGui::Text(ss.str().c_str());
-
-		if (ImGui::Button("Play"))
-		{
-			Play();
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button("Pause"))
-		{
-			Pause();
-		}
 
 		// ImGui::SameLine();
 		// if (ImGui::Button("Reset"))
@@ -197,8 +167,8 @@ namespace lei3d
 		//     Reset();
 		// }
 
-		ImGui::Text("Camera: ");
-		m_MainCamera->OnImGuiRender();
+		ImGui::Text("Fly Camera: ");
+		m_FlyCamera->OnImGuiRender();
 
 		ImGui::Text("Physics World: ");
 		m_PhysicsWorld->OnImGuiRender();
@@ -257,9 +227,9 @@ namespace lei3d
 		OnDestroy();
 	}
 
-	Camera& Scene::MainCamera() const
+	Camera& Scene::GetFlyCamera() const
 	{
-		return *m_MainCamera;
+		return *m_FlyCamera;
 	}
 
 	PhysicsWorld& Scene::GetPhysicsWorld() const

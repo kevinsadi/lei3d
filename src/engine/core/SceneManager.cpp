@@ -32,9 +32,6 @@ namespace lei3d
 	void SceneManager::Init()
 	{
 		BuildScenesFromFile("data/config/Build.config");
-		// m_AllScenes.push_back({ "Test Kevin", std::make_unique<TestSceneKevin>() });
-		// m_AllScenes.push_back({ "Test Logan", std::make_unique<TestSceneLogan>() });
-		// m_AllScenes.push_back({ "Empty", std::make_unique<EmptyScene>() });
 	}
 
 	void SceneManager::BuildScenesFromFile(std::string filepath)

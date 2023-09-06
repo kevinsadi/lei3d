@@ -2,6 +2,7 @@
 
 #include "core/Component.hpp"
 #include "core/Scene.hpp"
+#include "core/SceneView.hpp" 
 
 #include "components/Camera.hpp"
 
@@ -12,6 +13,9 @@ namespace lei3d
 
 	class ModelInstance;
 	class SkyBox;
+
+	class Scene;
+	class SceneView;
 
 	class RenderSystem
 	{
@@ -26,7 +30,7 @@ namespace lei3d
 
 		void initialize(int width, int height);
 
-		void draw(const Scene& scene);
+		void draw(const Scene& scene, const SceneView& view);
 
 	private:
 		void lightingPass(const std::vector<ModelInstance*>& objects, Camera& camera);

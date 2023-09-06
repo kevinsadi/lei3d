@@ -98,8 +98,11 @@ namespace lei3d
 		m_PhysicsWorld->Step(Application::DeltaTime());
 	}
 
-	void TestSceneKevin::OnRender()
+	Camera& TestSceneKevin::GetMainCamera() const
 	{
+		Entity*			   cameraObj = GetEntity("FP Camera");
+		FirstPersonCamera* fpCamera = cameraObj->GetComponent<FirstPersonCamera>();
+		return *fpCamera;
 	}
 
 } // namespace lei3d

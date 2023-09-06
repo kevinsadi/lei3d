@@ -37,7 +37,7 @@ namespace lei3d
 
 	protected:
 		// We should prob. limit how much stuff we put into the base scene.
-		Camera*						  m_MainCamera = nullptr;	// every scene needs a camera
+		Camera*						  m_FlyCamera = nullptr;	// every scene has the default fly camera
 		std::unique_ptr<PhysicsWorld> m_PhysicsWorld = nullptr; // Each scene has a physics world
 
 		SceneState m_State;
@@ -54,7 +54,6 @@ namespace lei3d
 		void Start();
 		void Update();
 		void PhysicsUpdate();
-		void Render();
 		void ImGUIRender();
 		void Destroy();
 
@@ -75,17 +74,17 @@ namespace lei3d
 		virtual void OnStart() {}
 		virtual void OnUpdate() {}
 		virtual void OnPhysicsUpdate() {}
-		virtual void OnRender() {}
 		virtual void OnImGUIRender() {}
 		virtual void OnDestroy() {}
 
-		Entity*		  GetEntity(std::string name) const;
-		Camera&		  MainCamera() const;
-		PhysicsWorld& GetPhysicsWorld() const;
+		virtual Camera& GetMainCamera() const = 0;
+
+		Entity*			GetEntity(std::string name) const;
+		Camera&			GetFlyCamera() const;
+		PhysicsWorld&	GetPhysicsWorld() const;
 
 		void PrintEntityList() const; // For Debugging
 
-	private:
 		std::string StateToString() const;
 	};
 } // namespace lei3d

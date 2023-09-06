@@ -1,8 +1,12 @@
 #include "TestSceneLogan.hpp"
 
 #include "core/Application.hpp"
+
+#include "components/FirstPersonCamera.hpp"
 #include "components/ModelInstance.hpp"
+
 #include "logging/GLDebug.hpp"
+
 #include "physics/PhysicsWorld.hpp"
 
 #include <glm/glm.hpp>
@@ -24,8 +28,6 @@ namespace lei3d
 
 	void TestSceneLogan::OnLoad()
 	{
-		m_MainCamera->SetPosition({ 0.f, 50.f, 0.f });
-
 		// load textures
 		stbi_set_flip_vertically_on_load(true);
 
@@ -45,6 +47,10 @@ namespace lei3d
 
 		CharacterController* characterController = backpackObj.AddComponent<CharacterController>();
 		characterController->Init(1.f, 3.f);
+
+		Entity&			   fpCameraObj = AddEntity("FP Camera");
+		FirstPersonCamera* fpCamera = fpCameraObj.AddComponent<FirstPersonCamera>();
+		fpCamera->Init(Application::Window(), 90.0f, 0.0f, &backpackObj, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		// PHYSICS PLAYGROUND---------------------
 		Entity& physicsPlaygroundObj = AddEntity("Physics Playground");
@@ -73,4 +79,10 @@ namespace lei3d
 		m_PhysicsWorld->Step(Application::DeltaTime());
 	}
 
+	Camera& TestSceneLogan::GetMainCamera() const
+	{
+		Entity*			   cameraObj = GetEntity("FP Camera");
+		FirstPersonCamera* fpCamera = cameraObj->GetComponent<FirstPersonCamera>();
+		return *fpCamera;
+	}
 } // namespace lei3d
