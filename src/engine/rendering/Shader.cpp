@@ -111,37 +111,31 @@ namespace lei3d
 
 	void Shader::setUniformMat4(const std::string& name, const glm::mat4& matrix) const
 	{
-		bind();
 		GLCall(glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, glm::value_ptr(matrix)));
 	}
 
 	void Shader::setInt(const std::string& name, int value) const
 	{
-		bind();
 		GLCall(glUniform1i(getUniformLocation(name), value));
 	}
 
 	void Shader::setBool(const std::string& name, bool value) const
 	{
-		bind();
 		GLCall(glUniform1i(getUniformLocation(name), static_cast<int>(value)));
 	}
 
 	void Shader::setFloat(const std::string& name, float value) const
 	{
-		bind();
 		GLCall(glUniform1f(getUniformLocation(name), value));
 	}
 
 	void Shader::setVec3(const std::string& name, const glm::vec3& value) const
 	{
-		bind();
 		GLCall(glUniform3f(getUniformLocation(name), value.x, value.y, value.z));
 	}
 
 	void Shader::setVec2(const std::string& name, const glm::vec2& value) const
 	{
-		bind();
 		GLCall(glUniform2f(getUniformLocation(name), value.x, value.y));
 	}
 

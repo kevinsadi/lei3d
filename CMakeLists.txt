@@ -14,5 +14,4 @@ if (${FORCE_COLORED_OUTPUT})
     endif ()
 endif ()
 
-add_subdirectory(lib)
-add_subdirectory(src/engine)
+add_subdirectory(src)

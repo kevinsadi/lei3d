@@ -18,14 +18,14 @@ namespace lei3d
 		m_Model = model;
 	}
 
-	void ModelInstance::Draw(Shader* shader)
+	void ModelInstance::Draw(Shader* shader, RenderFlag flags, uint32_t bindLocation)
 	{
 		glm::mat4 model = m_Entity.GetModelMat();
 		shader->setUniformMat4("model", model);
 
 		if (m_Model)
 		{
-			m_Model->Draw(*shader);
+			m_Model->Draw(*shader, flags, bindLocation);
 		}
 	}
 } // namespace lei3d

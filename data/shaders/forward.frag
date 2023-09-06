@@ -32,12 +32,16 @@ struct DirLight {
     vec3 direction;
     vec3 color;
     float intensity;
+
+    float nearPlane;
+    float farPlane;
 };
 
 in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoords;
 in mat3 TBN;
+in vec4 FragPos_lS;
 
 layout (location = 0) out vec3 FragOut;
 layout (location = 1) out vec3 SaturationOut;
@@ -45,8 +49,46 @@ layout (location = 1) out vec3 SaturationOut;
 uniform Material material;
 uniform DirLight dirLight;
 uniform vec3 camPos;
+uniform sampler2D shadowMoments;
 
 const float PI = 3.14159265359;
+const float PositiveExponent = 40.0;
+const float NegativeExponent = 8.0;
+const float lightBleedReduction = 0.1;
+const int NUM_PCF_SAMPLES = 32;
+const vec2 Poisson[32] = vec2[](
+    vec2(-0.975402, -0.0711386),
+    vec2(-0.920347, -0.41142),
+    vec2(-0.883908, 0.217872),
+    vec2(-0.884518, 0.568041),
+    vec2(-0.811945, 0.90521),
+    vec2(-0.792474, -0.779962),
+    vec2(-0.614856, 0.386578),
+    vec2(-0.580859, -0.208777),
+    vec2(-0.53795, 0.716666),
+    vec2(-0.515427, 0.0899991),
+    vec2(-0.454634, -0.707938),
+    vec2(-0.420942, 0.991272),
+    vec2(-0.261147, 0.588488),
+    vec2(-0.211219, 0.114841),
+    vec2(-0.146336, -0.259194),
+    vec2(-0.139439, -0.888668),
+    vec2(0.0116886, 0.326395),
+    vec2(0.0380566, 0.625477),
+    vec2(0.0625935, -0.50853),
+    vec2(0.125584, 0.0469069),
+    vec2(0.169469, -0.997253),
+    vec2(0.320597, 0.291055),
+    vec2(0.359172, -0.633717),
+    vec2(0.435713, -0.250832),
+    vec2(0.507797, -0.916562),
+    vec2(0.545763, 0.730216),
+    vec2(0.56859, 0.11655),
+    vec2(0.743156, -0.505173),
+    vec2(0.736442, -0.189734),
+    vec2(0.843562, 0.357036),
+    vec2(0.865413, 0.763726),
+    vec2(0.872005, -0.927));
 
 float distributionGGX(vec3 N, vec3 H, float roughness);
 float geometrySchlickGGX(float NdotV, float roughness);
@@ -55,6 +97,66 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0);
 
 float inverseLerp(float v, float a, float b) {
     return (v - a) / (b - a);
+}
+
+float chebyshevUpperBound(vec2 moments, float mean, float minVariance) {
+    float variance = moments.y - (moments.x * moments.x);
+    variance = max(variance, minVariance);
+
+    float d = mean - moments.x;
+    float pmax = variance / (variance + (d * d));
+    pmax = clamp((pmax - lightBleedReduction) / (1.0 - lightBleedReduction), 0.0, 1.0);
+
+    return (mean <= moments.x) ? 1.0 : pmax;
+}
+
+float calcShadowEVSM() {
+    vec3 coords = FragPos_lS.xyz / FragPos_lS.w;
+    coords = coords * 0.5 + 0.5;
+
+    vec3 dir = FragPos - (200.f * -dirLight.direction); // TODO: calculate light position from scene bounds
+    float distanceSquared = dot(dir, dir);
+    float distance = (sqrt(distanceSquared) - dirLight.nearPlane) / (dirLight.farPlane - dirLight.nearPlane);
+
+    vec4 moments = texture(shadowMoments, coords.xy);
+
+    // compute depth warps
+    float depth = 2.0 * distance - 1.0;
+    float dp = exp(PositiveExponent * depth);
+    float dn = -exp(-NegativeExponent * depth);
+
+    // compute min variance
+    float msp = PositiveExponent * dp * 0.001;
+    msp = msp * msp;
+    float msn = NegativeExponent * dn * 0.001;
+    msn = msn * msn;
+
+    return min(chebyshevUpperBound(moments.xy, dp, msp), chebyshevUpperBound(moments.zw, dn, msn));
+}
+
+float calcShadowPCF(vec3 normal) {
+    vec3 coords = FragPos_lS.xyz / FragPos_lS.w;
+    coords = coords * 0.5 + 0.5;
+
+    float bias = max(0.05 * (1.0 - dot(normal, -dirLight.direction)), 0.005);
+    float closestDepth = texture(shadowMoments, coords.xy).x;
+    float currDepth = coords.z;
+
+    float shadow = 0.0;
+    if (!(currDepth > 1.0)) {
+        vec2 texelSize = vec2(1.0);
+        texelSize /= textureSize(shadowMoments, 0);
+
+        // PCF
+        for (int i = 0; i < NUM_PCF_SAMPLES; i++) {
+            float pcfDepth = 1.0;
+            pcfDepth = texture(shadowMoments, coords.xy + Poisson[i] * texelSize).r;
+            shadow += currDepth - bias > pcfDepth ? 1.0 : 0.0;
+        }
+        shadow /= float(NUM_PCF_SAMPLES);
+    }
+
+    return shadow;
 }
 
 void main() {
@@ -114,8 +216,9 @@ void main() {
         Lo += (kD * albedo / PI + specular) * radiance * NdotL;
     }
 
+    float visible = 1.0 - calcShadowPCF(N);
     vec3 ambient = vec3(0.03) * albedo * ao;
-    vec3 color = ambient + Lo;
+    vec3 color = ambient + Lo * visible;
 
     FragOut = color;
 

@@ -3,6 +3,7 @@
 #include "core/Entity.hpp"
 #include "core/FlyCamera.hpp"
 #include "physics/PhysicsWorld.hpp"
+#include "components/Lights.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -38,8 +39,9 @@ namespace lei3d
 	protected:
 		//We should prob. limit how much stuff we put into the base scene.
 		std::unique_ptr<FlyCamera>	  m_Camera = nullptr;		// every scene needs a camera
-		std::unique_ptr<Shader>		  m_MainShader = nullptr;	// THIS IS TEMPORARY
 		std::unique_ptr<PhysicsWorld> m_PhysicsWorld = nullptr; // Each scene has a physics world
+
+		std::unique_ptr<DirectionalLight> m_DirectionalLight = nullptr;
 
 		SceneState m_State;
 

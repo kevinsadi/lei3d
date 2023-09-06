@@ -20,12 +20,13 @@ namespace lei3d
 		GLFWwindow* const win = Application::Window();
 		m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 10.0f);
 
-		// Load shader (TEMPORARY)
-		m_MainShader = std::make_unique<Shader>("./data/shaders/transformations.vert", "./data/shaders/transformations.frag");
-
 		// Load physics world
 		m_PhysicsWorld = std::make_unique<PhysicsWorld>();
 		m_PhysicsWorld->Create(); // TODO: Consider if there is some better way to do this
+
+	  	// Default light, TODO: needs to load from scene file
+		DirectionalLight* dirLight = new DirectionalLight({ 0.1, -0.5, -0.45 }, { 1.f, 1.f, 1.f }, 1.f);
+		m_DirectionalLight = std::unique_ptr<DirectionalLight>(dirLight);
 
 		OnLoad();
 
@@ -76,6 +77,7 @@ namespace lei3d
 		m_Entities.clear(); // This should auto-destruct entities bc smart pointers.
 
 		OnUnload();
+		Destroy();
 	}
 
 	void Scene::Play()
@@ -90,9 +92,9 @@ namespace lei3d
 
 	void Scene::Reset()
 	{
-		//We have to do some tricky things to get the scene to reset all the objs and physics and stuff.
+		// We have to do some tricky things to get the scene to reset all the objs and physics and stuff.
 		m_State = SCENE_START;
-		Load(); //This is inefficient
+		Load(); // This is inefficient
 	}
 
 	void Scene::Start()
@@ -111,7 +113,7 @@ namespace lei3d
 	{
 		if (m_State == SCENE_PLAYING)
 		{
-			//LEI_TRACE("Scene Update");
+			// LEI_TRACE("Scene Update");
 
 			for (auto& entity : m_Entities)
 			{
@@ -128,7 +130,7 @@ namespace lei3d
 	{
 		if (m_State == SCENE_PLAYING)
 		{
-			//LEI_TRACE("Scene Physics Update");
+			// LEI_TRACE("Scene Physics Update");
 			for (auto& entity : m_Entities)
 			{
 				entity->PhysicsUpdate();
@@ -152,7 +154,7 @@ namespace lei3d
 		OnRender();
 	}
 
-	//yucky
+	// yucky
 	std::string Scene::StateToString() const
 	{
 		switch (m_State)
@@ -169,7 +171,7 @@ namespace lei3d
 
 	void Scene::ImGUIRender()
 	{
-		//Scene Control Widgets
+		// Scene Control Widgets
 		std::stringstream ss;
 		ss << "State: ";
 		ss << StateToString();
@@ -186,11 +188,11 @@ namespace lei3d
 			Pause();
 		}
 
-		//ImGui::SameLine();
-		//if (ImGui::Button("Reset"))
+		// ImGui::SameLine();
+		// if (ImGui::Button("Reset"))
 		//{
-		//    Reset();
-		//}
+		//     Reset();
+		// }
 
 		ImGui::Text("Camera: ");
 		m_Camera->OnImGuiRender();
@@ -248,6 +250,11 @@ namespace lei3d
 	void Scene::Destroy()
 	{
 		LEI_TRACE("Scene Destroy");
+
+		m_Camera.reset();
+		m_PhysicsWorld.reset();
+
+		m_DirectionalLight.reset();
 
 		OnDestroy();
 	}

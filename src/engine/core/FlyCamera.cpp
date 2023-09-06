@@ -171,6 +171,11 @@ namespace lei3d
 		return m_CameraPos;
 	}
 
+	float FlyCamera::GetFOV() const
+	{
+		return m_FOVDeg;
+	}
+
 	glm::vec3 FlyCamera::Front() const
 	{
 		return m_CameraFront;

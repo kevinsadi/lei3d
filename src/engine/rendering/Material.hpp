@@ -27,13 +27,13 @@ namespace lei3d
 		float	  m_Roughness = 0.5f;
 		float	  m_Ambient = 1.f;
 
-		std::shared_ptr<Texture> m_AlbedoTexture = nullptr;
-		std::shared_ptr<Texture> m_MetallicTexture = nullptr;
-		std::shared_ptr<Texture> m_RoughnessTexture = nullptr;
-		std::shared_ptr<Texture> m_AmbientTexture = nullptr;
+		Texture* m_AlbedoTexture = nullptr;
+		Texture* m_MetallicTexture = nullptr;
+		Texture* m_RoughnessTexture = nullptr;
+		Texture* m_AmbientTexture = nullptr;
 
-		std::shared_ptr<Texture> m_NormalMap = nullptr;
-		std::shared_ptr<Texture> m_BumpMap = nullptr;
+		Texture* m_NormalMap = nullptr;
+		Texture* m_BumpMap = nullptr;
 
 		bool  m_UseAlbedoMap = false;
 		bool  m_UseMetallicMap = false;

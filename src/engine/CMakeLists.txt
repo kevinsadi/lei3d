@@ -1,31 +1,33 @@
 cmake_minimum_required(VERSION 3.14)
 project(lei3d)
 
-add_subdirectory(lib)
-
-add_custom_target(copy_data ALL COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/data ${CMAKE_CURRENT_BINARY_DIR}/data)
-
-target_include_directories(imgui PUBLIC include)
-target_include_directories(spdlog PUBLIC include)
-
-file(GLOB_RECURSE sourceFiles
+file(GLOB_RECURSE ENGINE_SOURCE
         "*.cpp"
         )
 
-file(GLOB_RECURSE headerFiles
+file(GLOB_RECURSE ENGINE_HEADER
         "*.hpp"
         )
 
-add_executable(lei3d ${sourceFiles} ${headerFiles})
-add_dependencies(lei3d copy_data)
+add_library(lei3d_lib
+        ${ENGINE_HEADER}
+        ${ENGINE_SOURCE}
+        )
 
-find_package(OpenGL REQUIRED)
+target_include_directories(lei3d_lib PUBLIC
+        .
+        ${GLFW_INCLUDE}
+        ${GLAD_INCLUDE}
+        ${IMGUI_INCLUDE}
+        ${SPDLOG_INCLUDE}
+        ${BULLET_INCLUDE}
+        ${MINIAUDIO_INCLUDE}
+        ${STB_INCLUDE}
+        ${ASSIMP_INCLUDE}
+        ${GLM_INCLUDE}
+)
 
-include_directories(./)
-target_include_directories(glfw PUBLIC include)
-target_include_directories(glad PUBLIC include)
-target_include_directories(imgui PUBLIC include)
-target_include_directories(spdlog PUBLIC include)
-
-target_include_directories(lei3d PRIVATE include)
-target_link_libraries(lei3d PRIVATE glfw glad imgui glm stb_image miniaudio spdlog assimp libbullet3)
+if (WIN32)
+    # Avoid a name clash when building on Visual Studio
+    set_target_properties(lei3d_lib PROPERTIES OUTPUT_NAME liblei3d)
+endif()
