@@ -28,6 +28,7 @@ namespace lei3d
 		glm::vec3 m_CameraPos;
 		glm::vec3 m_CameraFront;
 		glm::vec3 m_CameraUp;
+		glm::vec3 m_CameraRight;
 
 	public:
 		Camera(Entity& entity);

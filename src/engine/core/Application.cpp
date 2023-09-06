@@ -72,6 +72,7 @@ namespace lei3d
 
 #ifdef __APPLE__
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
 #endif
 
 		m_Window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "lei3d", NULL, NULL);
@@ -117,8 +118,14 @@ namespace lei3d
 		m_SceneManager->Init();
 
 		LEI_TRACE("Loading Default Scene");
-		m_SceneManager->SetScene("Test Kevin");
-		m_SceneManager->LoadNextScene();
+		if (SceneManager::HasScenes())
+		{
+			m_SceneManager->SetScene(0);
+		}
+		else
+		{
+			LEI_WARN("NO SCENES SET (Check Build.config)");
+		}
 
 		// INIT AUDIO ENGINE ------------------------------
 		m_AudioPlayer = std::make_unique<AudioPlayer>();
@@ -205,7 +212,7 @@ namespace lei3d
 		ImGui::EndFrame();
 	}
 
-	PrimitiveRenderer& Application::PrimitiveRenderer()
+	PrimitiveRenderer& Application::GetPrimitiveRenderer()
 	{
 		return s_Instance->m_PrimitiveRenderer;
 	}

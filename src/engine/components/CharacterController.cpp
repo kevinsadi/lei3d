@@ -1,6 +1,10 @@
 #include "CharacterController.hpp"
 
+#include "core/SceneManager.hpp"
+
 #include "util/BulletUtil.hpp"
+
+#include <imgui.h>
 
 namespace lei3d
 {
@@ -14,6 +18,7 @@ namespace lei3d
 		delete m_Collider;
 		delete m_MotionState;
 		delete m_RigidBody;
+		delete m_CharacterPhysicsUpdate;
 
 		delete m_GroundCheckCollider;
 		delete m_GroundCheckObj;
@@ -29,13 +34,13 @@ namespace lei3d
 	 * Also cannot change the size of the graphics mesh of the character controller for proper collisions.
 	 *
 	 */
-	void CharacterController::Init(float width, float height, float groundCheckDist, glm::vec3 groundCheckLocalPos)
+	void CharacterController::Init(float width, float height, float groundCheckDist)
 	{
 		// CHARACTER--------------------
 		m_Width = width;
 		m_Height = height;
 		m_GroundCheckDist = groundCheckDist;
-		m_GroundCheckLocalPos = glmToBTVec3(groundCheckLocalPos);
+		m_GroundCheckLocalPos = btVector3(0.f, -height, 0.f);
 
 		m_Collider = new btCapsuleShape(btScalar{ width }, btScalar{ height });
 
@@ -64,8 +69,8 @@ namespace lei3d
 		m_GroundCheckObj->setWorldTransform(groundCheckTrans);
 
 		// WITHIN THIS CUSTOM PHYSICS UPDATE IS THE MAGIC THAT MAKES AIRSTRAFING / SURF POSSIBLE
-		CharacterPhysicsUpdate* customCharacterPhysicsUpdate = new CharacterPhysicsUpdate(m_RigidBody, m_GroundCheckObj, m_GroundCheckDist, m_Entity);
-		world.m_dynamicsWorld->addAction(customCharacterPhysicsUpdate);
+		m_CharacterPhysicsUpdate = new CharacterPhysicsUpdate(*this, m_RigidBody, m_GroundCheckObj, m_GroundCheckDist);
+		world.m_dynamicsWorld->addAction(m_CharacterPhysicsUpdate);
 	}
 
 	void CharacterController::PhysicsUpdate()
@@ -85,6 +90,31 @@ namespace lei3d
 		groundCheckTrans.mult(parentTransform, groundCheckTrans);
 
 		return groundCheckTrans;
+	}
+
+	bool CharacterController::IsGrounded() const
+	{
+		return m_Grounded;
+	}
+
+	void CharacterController::OnImGuiRender()
+	{
+		if (ImGui::CollapsingHeader("Character Controller"))
+		{
+			ImGui::Text("Grounded: %s", m_Grounded ? "True" : "False");
+
+			ImGui::InputFloat("Gravity", &m_gravity);
+			ImGui::InputFloat("Ground Acceleration", &m_accel);
+			ImGui::InputFloat("Air Acceleration", &m_airAccel);
+			ImGui::InputFloat("Max Speed", &m_maxSpeed);
+			ImGui::InputFloat("Max Air Speed", &m_maxAirSpeed);
+
+			ImGui::InputFloat("Friction", &m_friction);
+			ImGui::InputFloat("Air Friction", &m_airFriction);
+
+			ImGui::InputFloat("Jump Power", &m_jumpPower);
+			ImGui::InputFloat("Jump Height", &m_jumpHeight);
+		}
 	}
 
 } // namespace lei3d

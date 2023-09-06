@@ -20,6 +20,7 @@ namespace lei3d
 		float m_FlySpeed;
 
 		bool m_MouseEnterFlag;
+		bool m_UseMinecraftControls;
 
 		int m_PrevX;
 		int m_PrevY;
@@ -39,5 +40,7 @@ namespace lei3d
 		void handleLeft(float speed);
 		void handleRight(float speed);
 		void handleBack(float speed);
+		void handleUp(float speed);
+		void handleDown(float speed);
 	};
 } // namespace lei3d

@@ -1,11 +1,17 @@
-#include "CharacterPhysicsUpdate.hpp"
+#include "components/CharacterController.hpp"
+
+#include "core/Application.hpp"
 
 #include "physics/GroundedCallback.hpp"
 
+#include <algorithm>
+
+#include <GLFW/glfw3.h>
+
 namespace lei3d
 {
-	CharacterPhysicsUpdate::CharacterPhysicsUpdate(btRigidBody* character, btCollisionObject* groundCheck, float groundCheckDist, Entity& playerEntity)
-		: m_Character(character), m_GroundCheck(groundCheck), m_GroundCheckDist(groundCheckDist), m_PlayerEntity(playerEntity) {}
+	CharacterController::CharacterPhysicsUpdate::CharacterPhysicsUpdate(CharacterController& controller, btRigidBody* character, btCollisionObject* groundCheck, float groundCheckDist)
+		: m_Controller(controller), m_Character(character), m_GroundCheck(groundCheck), m_GroundCheckDist(groundCheckDist) {}
 
 	glm::vec3 projectVector(glm::vec3& vecToProject, glm::vec3& targetVector)
 	{
@@ -21,7 +27,7 @@ namespace lei3d
 	 * @param  {btCollisionWorld*} collisionWorld :
 	 * @param  {btScalar} deltaTime               :
 	 */
-	void CharacterPhysicsUpdate::updateAction(btCollisionWorld* collisionWorld, btScalar deltaTime)
+	void CharacterController::CharacterPhysicsUpdate::updateAction(btCollisionWorld* collisionWorld, btScalar deltaTime)
 	{
 		// Check if we are on the ground
 		GroundedCallback callback(m_Character);
@@ -29,9 +35,9 @@ namespace lei3d
 
 		bool onGround = callback.m_Grounded;
 		bool groundPoint = callback.m_GroundPoint;
-		// LEI_INFO("On Ground: {0}", onGround ? "True" : "False");
+		m_Controller.m_Grounded = onGround;
 
-		if (m_IncludeSFX && callback.m_Grounded == true && onGround == false)
+		if (m_Controller.m_IncludeSFX && callback.m_Grounded == true && onGround == false)
 		{
 			AudioPlayer::PlaySFX("landing_2"); //.PlaySound("landing");
 		}
@@ -43,7 +49,7 @@ namespace lei3d
 
 		// Calculate
 		glm::vec3 wishdir{ 0.0f, 0.0f, 0.0f };
-		float	  yawRotationRadian = glm::radians(m_PlayerEntity.m_Transform.yawRotation);
+		float	  yawRotationRadian = glm::radians(m_Controller.m_Entity.m_Transform.yawRotation);
 
 		// here is where we apply our constraints during the update
 		GLFWwindow* window = Application::Window();
@@ -72,13 +78,6 @@ namespace lei3d
 		{
 			wishdir = glm::normalize(wishdir);
 		}
-		/*
-		if (onGround) {
-			std::cout << "on ground" << std::endl;
-		} else {
-			std::cout << "not on ground" << std::endl;
-		}
-		*/
 
 		if (onGround)
 		{
@@ -99,7 +98,7 @@ namespace lei3d
 		m_Character->setLinearVelocity(v);
 	}
 
-	void CharacterPhysicsUpdate::debugDraw(btIDebugDraw* debugDrawer)
+	void CharacterController::CharacterPhysicsUpdate::debugDraw(btIDebugDraw* debugDrawer)
 	{
 		// Draw Ground Check
 		const btVector3 center = m_GroundCheck->getWorldTransform().getOrigin();
@@ -109,7 +108,7 @@ namespace lei3d
 		debugDrawer->drawSphere(center, radius, groundCheckColor);
 	}
 
-	glm::vec3 CharacterPhysicsUpdate::Accelerate(glm::vec3 wishDir, glm::vec3 prevVel, float acceleration, float maxVelocity)
+	glm::vec3 CharacterController::CharacterPhysicsUpdate::Accelerate(glm::vec3 wishDir, glm::vec3 prevVel, float acceleration, float maxVelocity)
 	{
 		float projectedSpeed = glm::dot(prevVel, wishDir);
 		float wishSpeed = acceleration * Application::DeltaTime(); // this is the wish speed (MIGHT NEED DELTA TIME TO FIX THIS????
@@ -123,20 +122,20 @@ namespace lei3d
 		return prevVel + wishDir * wishSpeed;
 	}
 
-	glm::vec3 CharacterPhysicsUpdate::AirAcceleration(glm::vec3 wishDir, glm::vec3 prevVelocity)
+	glm::vec3 CharacterController::CharacterPhysicsUpdate::AirAcceleration(glm::vec3 wishDir, glm::vec3 prevVelocity)
 	{
-		return Accelerate(wishDir, prevVelocity, m_airAccel, m_maxAirSpeed);
+		return Accelerate(wishDir, prevVelocity, m_Controller.m_airAccel, m_Controller.m_maxAirSpeed);
 	}
 
-	glm::vec3 CharacterPhysicsUpdate::GroundAcceleration(glm::vec3 wishDir, glm::vec3 prevVelocity)
+	glm::vec3 CharacterController::CharacterPhysicsUpdate::GroundAcceleration(glm::vec3 wishDir, glm::vec3 prevVelocity)
 	{
 		float speed = glm::length(prevVelocity);
 		if (speed != 0)
 		{
-			float drop = speed * m_friction * Application::DeltaTime(); // THIS MIGHT HAVE TO BE MULTIPLIED BY DELTA TIME??
-			prevVelocity *= std::max(speed - drop, 0.0f) / speed;		// Friction fall off
+			float drop = speed * m_Controller.m_friction * Application::DeltaTime(); // THIS MIGHT HAVE TO BE MULTIPLIED BY DELTA TIME??
+			prevVelocity *= std::max(speed - drop, 0.0f) / speed;					 // Friction fall off
 		}
 
-		return Accelerate(wishDir, prevVelocity, m_accel, m_maxSpeed);
+		return Accelerate(wishDir, prevVelocity, m_Controller.m_accel, m_Controller.m_maxSpeed);
 	}
 } // namespace lei3d
