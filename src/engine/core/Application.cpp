@@ -128,7 +128,8 @@ namespace lei3d
 		}
 
 		// INIT SCENE VIEWER ------------------------------
-		m_SceneView.SetMode(SceneView::ModeScene);
+		m_SceneView = std::make_unique<SceneView>();
+		m_SceneView->SetMode(SceneView::ModeScene);
 
 		// INIT AUDIO ENGINE ------------------------------
 		m_AudioPlayer = std::make_unique<AudioPlayer>();
@@ -174,8 +175,10 @@ namespace lei3d
 
 	void Application::Update()
 	{
-		m_SceneManager->ActiveScene().Update();
-		m_SceneManager->ActiveScene().PhysicsUpdate();
+		Scene& scene = m_SceneManager->ActiveScene();
+		scene.Update();
+		scene.PhysicsUpdate();
+		m_SceneView->ActiveCamera(scene).PollCameraMovementInput();	//Kinda jank
 	}
 
 	void Application::SetUIActive(bool uiActive)
@@ -187,9 +190,9 @@ namespace lei3d
 
 	void Application::Render()
 	{
-		m_Renderer.draw(SceneManager::ActiveScene(), m_SceneView);
+		m_Renderer.draw(SceneManager::ActiveScene(), *m_SceneView);
 
-		Camera& sceneCamera = m_SceneView.ActiveCamera(SceneManager::ActiveScene());
+		Camera& sceneCamera = m_SceneView->ActiveCamera(SceneManager::ActiveScene());
 		m_PrimitiveRenderer.drawAll(sceneCamera);
 	}
 
@@ -211,7 +214,7 @@ namespace lei3d
 
 	SceneView& Application::GetSceneView()
 	{
-		return s_Instance->m_SceneView;
+		return *s_Instance->m_SceneView;
 	}
 
 	PrimitiveRenderer& Application::GetPrimitiveRenderer()
@@ -298,7 +301,7 @@ namespace lei3d
 
 		if (key == GLFW_KEY_P && action == GLFW_PRESS)
 		{
-			m_SceneView.TogglePlayPause(SceneManager::ActiveScene());
+			m_SceneView->TogglePlayPause(SceneManager::ActiveScene());
 		}
 	}
 

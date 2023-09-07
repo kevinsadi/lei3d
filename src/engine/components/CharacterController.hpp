@@ -71,6 +71,7 @@ namespace lei3d
 		void Init(float width, float height, float groundCheckDist = 1.f);
 
 		void Start() override;
+		void Update() override;
 		void PhysicsUpdate() override;
 		void OnImGuiRender() override;
 

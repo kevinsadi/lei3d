@@ -1,6 +1,6 @@
 #pragma once
 
-#include "components/Camera.hpp"
+#include "core/Camera.hpp"
 
 #include "rendering/Shader.hpp"
 #include "rendering/buffers/Buffer.hpp"

@@ -1,9 +1,17 @@
 #include "SceneView.hpp"
 
+#include "core/Application.hpp"
+
+#include <imgui.h>
+
 namespace lei3d {
 	SceneView::SceneView()
 	{
-		//lmao
+		// load camera
+		GLFWwindow* const win = Application::Window();
+
+		// Add Default Fly Camera
+		m_FlyCamera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f);
 	}
 
 	SceneView::~SceneView()
@@ -40,9 +48,41 @@ namespace lei3d {
 		switch (m_Mode)
 		{
 			case Mode::ModeScene:
-				return scene.GetFlyCamera();
+				return *m_FlyCamera;
 			case Mode::ModeGame:
 				return scene.GetMainCamera();
 		}
+	}
+
+	void SceneView::OnImGuiRender(Scene& scene)
+	{
+		// SCENE CONTROL WIDGETS ----------------------------------------------
+		
+		std::stringstream ss;
+		ss << "State: ";
+		ss << scene.StateToString();
+		ImGui::Text(ss.str().c_str());
+
+		if (ImGui::Button("Play"))
+		{
+			TogglePlayPause(scene);
+		}
+
+		ImGui::SameLine();
+		if (ImGui::Button("Pause"))
+		{
+			SetMode(SceneView::ModeScene);
+			scene.Pause();
+		}
+
+		ImGui::SameLine();
+		if (ImGui::Button("Reset"))
+		{
+			SetMode(SceneView::ModeScene);
+			scene.Reset();
+		}
+
+		ImGui::Text("Fly Camera: ");
+		m_FlyCamera->OnImGuiRender();
 	}
 }

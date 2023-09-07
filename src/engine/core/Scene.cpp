@@ -1,8 +1,7 @@
 #include "core/Scene.hpp"
 
 #include "core/Application.hpp"
-
-#include "components/FlyCamera.hpp"
+#include "core/Camera.hpp"
 
 #include "logging/GLDebug.hpp"
 
@@ -19,14 +18,8 @@ namespace lei3d
 
 	void Scene::Load()
 	{
-		// load camera
-		GLFWwindow* const win = Application::Window();
-
-		// Add Default Fly Camera
-		Entity&	   camera = AddEntity("Fly Camera");
-		FlyCamera* flyCamera = camera.AddComponent<FlyCamera>();
-		flyCamera->Init(win, 90.0f, 0.0f, 10.0f);
-		m_FlyCamera = flyCamera;
+		//Default Camera
+		m_DefaultCamera = std::make_unique<Camera>(Application::Window(), 90.0f, 0.0f);
 
 		// Load physics world
 		m_PhysicsWorld = std::make_unique<PhysicsWorld>();
@@ -130,8 +123,6 @@ namespace lei3d
 
 			OnUpdate();
 		}
-
-		GetFlyCamera().PollCameraMovementInput();
 	}
 
 	void Scene::PhysicsUpdate()
@@ -163,16 +154,30 @@ namespace lei3d
 		}
 	}
 
-	void Scene::ImGUIRender()
+	void Scene::ShowHeirarchyGUI()
 	{
-		// ImGui::SameLine();
-		// if (ImGui::Button("Reset"))
-		//{
-		//     Reset();
-		// }
+		bool*			 p_open;
+		ImGuiWindowFlags window_flags = 0;
 
-		ImGui::Text("Fly Camera: ");
-		m_FlyCamera->OnImGuiRender();
+		// Comment/Uncomment these as needed
+		p_open = NULL;
+		// window_flags |= ImGuiWindowFlags_NoTitleBar;
+		// window_flags |= ImGuiWindowFlags_NoScrollbar;
+		window_flags |= ImGuiWindowFlags_MenuBar;
+		// window_flags |= ImGuiWindowFlags_NoMove;
+		// window_flags |= ImGuiWindowFlags_NoResize;
+		// window_flags |= ImGuiWindowFlags_NoCollapse;
+		// window_flags |= ImGuiWindowFlags_NoNav;
+		// window_flags |= ImGuiWindowFlags_NoBackground;
+		// window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
+		// window_flags |= ImGuiWindowFlags_UnsavedDocument;
+
+		if (!ImGui::Begin("Scene Heirarchy", p_open, window_flags))
+		{
+			// Early out if the window is collapsed, as an optimization.
+			ImGui::End();
+			return;
+		}
 
 		ImGui::Text("Physics World: ");
 		m_PhysicsWorld->OnImGuiRender();
@@ -221,7 +226,9 @@ namespace lei3d
 			entity.ShowInspectorGUI();
 		}
 
-		OnImGUIRender();
+		ImGui::SetWindowSize(ImVec2(300, 600), ImGuiCond_Once);
+		ImGui::SetWindowPos(ImVec2(0, 500), ImGuiCond_Once);
+		ImGui::End();
 	}
 
 	void Scene::Destroy()
@@ -234,9 +241,9 @@ namespace lei3d
 		OnDestroy();
 	}
 
-	Camera& Scene::GetFlyCamera() const
+	Camera& Scene::GetMainCamera() const
 	{
-		return *m_FlyCamera;
+		return *m_DefaultCamera;
 	}
 
 	PhysicsWorld& Scene::GetPhysicsWorld() const

@@ -43,8 +43,9 @@ namespace lei3d
 		std::unique_ptr<EditorGUI>	  m_EditorGUI;
 		std::unique_ptr<SceneManager> m_SceneManager;
 		std::unique_ptr<AudioPlayer>  m_AudioPlayer;
+		std::unique_ptr<SceneView>	  m_SceneView;
 
-		SceneView		  m_SceneView;
+		//Should we keep these on the stack? idk
 		RenderSystem	  m_Renderer;
 		PrimitiveRenderer m_PrimitiveRenderer;
 

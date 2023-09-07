@@ -1,10 +1,9 @@
 #pragma once
 
+#include "core/Camera.hpp"
 #include "core/Component.hpp"
 #include "core/Scene.hpp"
 #include "core/SceneView.hpp" 
-
-#include "components/Camera.hpp"
 
 #include "rendering/Shader.hpp"
 

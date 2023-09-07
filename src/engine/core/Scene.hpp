@@ -2,7 +2,7 @@
 
 #include "core/Entity.hpp"
 
-#include "components/Camera.hpp"
+#include "core/Camera.hpp"
 
 #include "physics/PhysicsWorld.hpp"
 #include "components/Lights.hpp"
@@ -38,9 +38,10 @@ namespace lei3d
 
 	protected:
 		// We should prob. limit how much stuff we put into the base scene.
-		Camera*						  m_FlyCamera = nullptr;	// every scene has the default fly camera
-		std::unique_ptr<PhysicsWorld> m_PhysicsWorld = nullptr; // Each scene has a physics world
 
+		//FlyCamera moved to SceneView
+		std::unique_ptr<Camera>			  m_DefaultCamera = nullptr;
+		std::unique_ptr<PhysicsWorld>	  m_PhysicsWorld = nullptr; // Each scene has a physics world
 		std::unique_ptr<DirectionalLight> m_DirectionalLight = nullptr;
 
 		SceneState m_State;
@@ -57,7 +58,6 @@ namespace lei3d
 		void Start();
 		void Update();
 		void PhysicsUpdate();
-		void ImGUIRender();
 		void Destroy();
 
 		// Scene State Changers
@@ -68,6 +68,9 @@ namespace lei3d
 		void Load();
 		void Unload();
 
+		//GUI
+		void ShowHeirarchyGUI();
+
 		// TODO: Abstract scene creation/loading into files: https://trello.com/c/eC66QGuD/25-define-scene-file-format
 		// Right now we use this virtual Load function to load all the objs in code.
 		virtual void OnLoad() {}
@@ -77,13 +80,11 @@ namespace lei3d
 		virtual void OnStart() {}
 		virtual void OnUpdate() {}
 		virtual void OnPhysicsUpdate() {}
-		virtual void OnImGUIRender() {}
 		virtual void OnDestroy() {}
 
-		virtual Camera& GetMainCamera() const = 0;
+		virtual Camera& GetMainCamera() const; //Scene must have some camera created (basically just the first person camera lmao.
 
 		Entity*		  GetEntity(std::string name) const;
-		Camera&		  GetFlyCamera() const;
 		PhysicsWorld& GetPhysicsWorld() const;
 
 		void PrintEntityList() const; // For Debugging

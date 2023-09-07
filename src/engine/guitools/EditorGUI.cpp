@@ -56,23 +56,8 @@ namespace lei3d
 		Scene&	   scene = SceneManager::ActiveScene();
 		SceneView& view = Application::GetSceneView();
 
-		// Scene Control Widgets
-		std::stringstream ss;
-		ss << "State: ";
-		ss << scene.StateToString();
-		ImGui::Text(ss.str().c_str());
-
-		if (ImGui::Button("Play"))
-		{
-			view.TogglePlayPause(scene);
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button("Pause"))
-		{
-			view.SetMode(SceneView::ModeScene);
-			scene.Pause();
-		}
+		//FLY CAMERA ---------------------------------------------
+		view.OnImGuiRender(scene);
 
 		if (ImGui::CollapsingHeader("Scenes"))
 		{
@@ -92,11 +77,6 @@ namespace lei3d
 			}
 		}
 
-		if (ImGui::CollapsingHeader("Scene Data"))
-		{
-			scene.ImGUIRender();
-		}
-
 		if (ImGui::CollapsingHeader("Game Info"))
 		{
 			ImGui::Text("fps = %f", 1.0f / Application::DeltaTime());
@@ -105,6 +85,8 @@ namespace lei3d
 		ImGui::SetWindowSize(ImVec2(400, 400), ImGuiCond_Once);
 		ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Once);
 		ImGui::End();
+
+		scene.ShowHeirarchyGUI();
 	}
 
 } // namespace lei3d

@@ -9,31 +9,27 @@ namespace lei3d
 	class Application;
 	class Camera;
 
+	/*
+	*  Camera with flying/no-clip controls.
+	*/
 	class FlyCamera : public Camera
 	{
 	private:
-		const float MIN_FLY_SPEED = 1.0f;
-		const float MAX_FLY_SPEED = 200.0f;
-		const float MAX_PITCH = 89.0f;
-		const float MOUSE_SENSITIVITY = 0.1f;
+		constexpr static float MIN_FLY_SPEED = 1.0f;
+		constexpr static float MAX_FLY_SPEED = 200.0f;
+		constexpr static float DEFAULT_FLY_SPEED = 40.0f;
 
 		float m_FlySpeed;
 
-		bool m_MouseEnterFlag;
 		bool m_UseMinecraftControls;
-
-		int m_PrevX;
-		int m_PrevY;
-
 	public:
-		FlyCamera(Entity& entity);
+		FlyCamera(GLFWwindow* window, float yaw = 0.0f, float pitch = 0.0f, float flySpeed = DEFAULT_FLY_SPEED);
 		~FlyCamera();
 
-		void Init(GLFWwindow* window, float yaw, float pitch, float flySpeed);
-
 		void OnImGuiRender() override;
-		void cameraMouseCallback(double xPosInput, double yPosInput) override;
 		void PollCameraMovementInput() override;
+
+		void SetFlySpeed(float speed);
 
 	private:
 		void handleForward(float speed);

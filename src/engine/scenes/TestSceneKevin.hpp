@@ -16,8 +16,6 @@ namespace lei3d
 		void OnUpdate() override;
 		void OnPhysicsUpdate() override;
 
-		Camera& GetMainCamera() const override;
-
 	private:
 		std::unique_ptr<Model> backpackModel;
 		std::unique_ptr<Model> playgroundModel;
