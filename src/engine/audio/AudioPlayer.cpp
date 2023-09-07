@@ -19,7 +19,7 @@ namespace lei3d
 			LEI_ERROR("AudioPlayer: Unable to initialize audio engine");
 		}
 
-		ma_engine_play_sound(m_AudioEngine.get(), "data/audio/Ethereal_Surg_8-17.mp3", NULL);
+		//ma_engine_play_sound(m_AudioEngine.get(), "data/audio/Ethereal_Surg_8-17.mp3", NULL);
 
 		if (s_AudioPlayer)
 		{

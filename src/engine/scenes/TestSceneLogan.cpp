@@ -1,8 +1,12 @@
 #include "TestSceneLogan.hpp"
 
 #include "core/Application.hpp"
+
+#include "components/FollowCameraController.hpp"
 #include "components/ModelInstance.hpp"
+
 #include "logging/GLDebug.hpp"
+
 #include "physics/PhysicsWorld.hpp"
 
 #include <glm/glm.hpp>
@@ -24,7 +28,6 @@ namespace lei3d
 
 	void TestSceneLogan::OnLoad()
 	{
-		m_Camera->SetPosition({ 0.f, 80.f, -60.f });
 		// load textures
 		stbi_set_flip_vertically_on_load(true);
 
@@ -53,6 +56,9 @@ namespace lei3d
 		CharacterController* characterController = backpackObj.AddComponent<CharacterController>();
 		characterController->Init(1.f, 3.f);
 
+		FollowCameraController* followCam = backpackObj.AddComponent<FollowCameraController>();
+		followCam->Init(*m_DefaultCamera, glm::vec3(0.0f, 1.0f, 0.0f));
+
 		// PHYSICS PLAYGROUND---------------------
 		Entity& physicsPlaygroundObj = AddEntity("Physics Playground");
 
@@ -68,7 +74,7 @@ namespace lei3d
 		////Test Multiple Components
 		Entity& skyboxObj = AddEntity("Skybox");
 
-		SkyBox*	skybox = skyboxObj.AddComponent<SkyBox>();
+		SkyBox*					 skybox = skyboxObj.AddComponent<SkyBox>();
 		std::vector<std::string> faces{ "data/skybox/anime_etheria/right.jpg", "data/skybox/anime_etheria/left.jpg",
 			"data/skybox/anime_etheria/up.jpg", "data/skybox/anime_etheria/down.jpg",
 			"data/skybox/anime_etheria/front.jpg", "data/skybox/anime_etheria/back.jpg" };
@@ -79,5 +85,4 @@ namespace lei3d
 	{
 		m_PhysicsWorld->Step(Application::DeltaTime());
 	}
-
 } // namespace lei3d

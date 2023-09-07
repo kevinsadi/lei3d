@@ -1,7 +1,9 @@
 #pragma once
 
 #include "core/Entity.hpp"
-#include "core/FlyCamera.hpp"
+
+#include "core/Camera.hpp"
+
 #include "physics/PhysicsWorld.hpp"
 #include "components/Lights.hpp"
 
@@ -14,11 +16,9 @@
 
 namespace lei3d
 {
-	class Application;
 	class Entity;
-	class FlyCamera;
+	class Camera;
 	class PhysicsWorld;
-	class Shader;
 	class RenderSystem;
 
 	class Scene
@@ -37,10 +37,11 @@ namespace lei3d
 		std::unordered_map<std::string, int> m_EntityNameCounts;
 
 	protected:
-		//We should prob. limit how much stuff we put into the base scene.
-		std::unique_ptr<FlyCamera>	  m_Camera = nullptr;		// every scene needs a camera
-		std::unique_ptr<PhysicsWorld> m_PhysicsWorld = nullptr; // Each scene has a physics world
+		// We should prob. limit how much stuff we put into the base scene.
 
+		//FlyCamera moved to SceneView
+		std::unique_ptr<Camera>			  m_DefaultCamera = nullptr;
+		std::unique_ptr<PhysicsWorld>	  m_PhysicsWorld = nullptr; // Each scene has a physics world
 		std::unique_ptr<DirectionalLight> m_DirectionalLight = nullptr;
 
 		SceneState m_State;
@@ -49,7 +50,7 @@ namespace lei3d
 		Scene();
 		~Scene();
 
-		//Entities
+		// Entities
 		Entity& AddEntity(std::string name);
 		Entity& AddEntity();
 
@@ -57,17 +58,18 @@ namespace lei3d
 		void Start();
 		void Update();
 		void PhysicsUpdate();
-		void Render();
-		void ImGUIRender();
 		void Destroy();
 
-		//Scene State Changers
+		// Scene State Changers
 		void Play();
 		void Pause();
 		void Reset();
 
 		void Load();
 		void Unload();
+
+		//GUI
+		void ShowHeirarchyGUI();
 
 		// TODO: Abstract scene creation/loading into files: https://trello.com/c/eC66QGuD/25-define-scene-file-format
 		// Right now we use this virtual Load function to load all the objs in code.
@@ -78,17 +80,15 @@ namespace lei3d
 		virtual void OnStart() {}
 		virtual void OnUpdate() {}
 		virtual void OnPhysicsUpdate() {}
-		virtual void OnRender() {}
-		virtual void OnImGUIRender() {}
 		virtual void OnDestroy() {}
 
+		virtual Camera& GetMainCamera() const; //Scene must have some camera created (basically just the first person camera lmao.
+
 		Entity*		  GetEntity(std::string name) const;
-		FlyCamera&	  MainCamera() const;
 		PhysicsWorld& GetPhysicsWorld() const;
 
 		void PrintEntityList() const; // For Debugging
 
-	private:
 		std::string StateToString() const;
 	};
 } // namespace lei3d

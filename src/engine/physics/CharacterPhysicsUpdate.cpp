@@ -49,24 +49,33 @@ namespace lei3d
 
 		// Calculate
 		glm::vec3 wishdir{ 0.0f, 0.0f, 0.0f };
+		float	  yawRotationRadian = glm::radians(m_Controller.m_Entity.m_Transform.yawRotation);
 
 		// here is where we apply our constraints during the update
 		GLFWwindow* window = Application::Window();
-		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		{
-			wishdir = wishdir + glm::vec3(1.0, 0.0, 0.0);
+			//Same as Camera
+			glm::vec3 forwardVec = glm::normalize(glm::vec3(cos(yawRotationRadian), 0, sin(yawRotationRadian)));
+			wishdir = wishdir + forwardVec;
 		}
-		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		{
-			wishdir = wishdir + glm::vec3(-1.0, 0.0, 0.0);
+			//Same as Camera
+			glm::vec3 forwardVec = glm::normalize(glm::vec3(cos(yawRotationRadian), 0, sin(yawRotationRadian)));
+			wishdir = wishdir - forwardVec;
 		}
-		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		{
-			wishdir = wishdir + glm::vec3(0.0, 0.0, -1.0);
+			//Same as Camera
+			glm::vec3 rightVec = glm::normalize(glm::vec3(-sin(yawRotationRadian), 0, cos(yawRotationRadian)));
+			wishdir = wishdir - rightVec;
 		}
-		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		{
-			wishdir = wishdir + glm::vec3(0.0, 0.0, 1.0);
+			//Same as Camera
+			glm::vec3 rightVec = glm::normalize(glm::vec3(-sin(yawRotationRadian), 0, cos(yawRotationRadian)));
+			wishdir = wishdir + rightVec;
 		}
 
 		if (wishdir != glm::vec3(0.0, 0.0, 0.0))

@@ -1,8 +1,13 @@
-#include "AppGUI.hpp"
+#include "EditorGUI.hpp"
+
+#include "core/Application.hpp"
+#include "core/SceneManager.hpp"
+
+#include <string>
 
 namespace lei3d
 {
-	void AppGUI::RenderUI()
+	void EditorGUI::RenderUI()
 	{
 		if (m_ShowDemoWindow)
 		{
@@ -45,7 +50,14 @@ namespace lei3d
 			ImGui::EndMenuBar();
 		}
 
-		ImGui::Text("PRESS TAB TO UNLOCK THE MOUSE");
+		ImGui::Text("PRESS TAB TO TOGGLE EDITOR");
+		ImGui::Text("HOLD SHIFT TO MOVE FASTER WITH CAMERA");
+
+		Scene&	   scene = SceneManager::ActiveScene();
+		SceneView& view = Application::GetSceneView();
+
+		//FLY CAMERA ---------------------------------------------
+		view.OnImGuiRender(scene);
 
 		if (ImGui::CollapsingHeader("Scenes"))
 		{
@@ -65,12 +77,6 @@ namespace lei3d
 			}
 		}
 
-		Scene& scene = SceneManager::ActiveScene();
-		if (ImGui::CollapsingHeader("Scene Data"))
-		{
-			scene.ImGUIRender();
-		}
-
 		if (ImGui::CollapsingHeader("Game Info"))
 		{
 			ImGui::Text("fps = %f", 1.0f / Application::DeltaTime());
@@ -79,6 +85,8 @@ namespace lei3d
 		ImGui::SetWindowSize(ImVec2(400, 400), ImGuiCond_Once);
 		ImGui::SetWindowPos(ImVec2(0, 0), ImGuiCond_Once);
 		ImGui::End();
+
+		scene.ShowHeirarchyGUI();
 	}
 
 } // namespace lei3d

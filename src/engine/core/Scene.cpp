@@ -1,6 +1,8 @@
 #include "core/Scene.hpp"
 
 #include "core/Application.hpp"
+#include "core/Camera.hpp"
+
 #include "logging/GLDebug.hpp"
 
 namespace lei3d
@@ -16,21 +18,20 @@ namespace lei3d
 
 	void Scene::Load()
 	{
-		// load camera
-		GLFWwindow* const win = Application::Window();
-		m_Camera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f, 10.0f);
+		//Default Camera
+		m_DefaultCamera = std::make_unique<Camera>(Application::Window(), 90.0f, 0.0f);
 
 		// Load physics world
 		m_PhysicsWorld = std::make_unique<PhysicsWorld>();
 		m_PhysicsWorld->Create(); // TODO: Consider if there is some better way to do this
 
-	  	// Default light, TODO: needs to load from scene file
+		// Default light, TODO: needs to load from scene file
 		DirectionalLight* dirLight = new DirectionalLight({ 0.1, -0.5, -0.45 }, { 1.f, 1.f, 1.f }, 1.f);
 		m_DirectionalLight = std::unique_ptr<DirectionalLight>(dirLight);
 
 		OnLoad();
 
-		m_State = SCENE_PLAYING;
+		m_State = SCENE_START; //Scene ready to start by default.
 	}
 
 	Entity& Scene::AddEntity(std::string name)
@@ -122,8 +123,6 @@ namespace lei3d
 
 			OnUpdate();
 		}
-
-		m_Camera->PollCameraMovementInput();
 	}
 
 	void Scene::PhysicsUpdate()
@@ -138,20 +137,6 @@ namespace lei3d
 
 			OnPhysicsUpdate();
 		}
-	}
-
-	void Scene::Render()
-	{
-		GLCall(glClearColor(0.2f, 0.8f, 0.9f, 1.0f));
-		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-
-		// LEI_TRACE("Scene Render");
-		for (auto& entity : m_Entities)
-		{
-			entity->Render();
-		}
-
-		OnRender();
 	}
 
 	// yucky
@@ -169,33 +154,30 @@ namespace lei3d
 		}
 	}
 
-	void Scene::ImGUIRender()
+	void Scene::ShowHeirarchyGUI()
 	{
-		// Scene Control Widgets
-		std::stringstream ss;
-		ss << "State: ";
-		ss << StateToString();
-		ImGui::Text(ss.str().c_str());
+		bool*			 p_open;
+		ImGuiWindowFlags window_flags = 0;
 
-		if (ImGui::Button("Play"))
+		// Comment/Uncomment these as needed
+		p_open = NULL;
+		// window_flags |= ImGuiWindowFlags_NoTitleBar;
+		// window_flags |= ImGuiWindowFlags_NoScrollbar;
+		window_flags |= ImGuiWindowFlags_MenuBar;
+		// window_flags |= ImGuiWindowFlags_NoMove;
+		// window_flags |= ImGuiWindowFlags_NoResize;
+		// window_flags |= ImGuiWindowFlags_NoCollapse;
+		// window_flags |= ImGuiWindowFlags_NoNav;
+		// window_flags |= ImGuiWindowFlags_NoBackground;
+		// window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
+		// window_flags |= ImGuiWindowFlags_UnsavedDocument;
+
+		if (!ImGui::Begin("Scene Heirarchy", p_open, window_flags))
 		{
-			Play();
+			// Early out if the window is collapsed, as an optimization.
+			ImGui::End();
+			return;
 		}
-
-		ImGui::SameLine();
-		if (ImGui::Button("Pause"))
-		{
-			Pause();
-		}
-
-		// ImGui::SameLine();
-		// if (ImGui::Button("Reset"))
-		//{
-		//     Reset();
-		// }
-
-		ImGui::Text("Camera: ");
-		m_Camera->OnImGuiRender();
 
 		ImGui::Text("Physics World: ");
 		m_PhysicsWorld->OnImGuiRender();
@@ -244,24 +226,24 @@ namespace lei3d
 			entity.ShowInspectorGUI();
 		}
 
-		OnImGUIRender();
+		ImGui::SetWindowSize(ImVec2(300, 600), ImGuiCond_Once);
+		ImGui::SetWindowPos(ImVec2(0, 500), ImGuiCond_Once);
+		ImGui::End();
 	}
 
 	void Scene::Destroy()
 	{
 		LEI_TRACE("Scene Destroy");
 
-		m_Camera.reset();
 		m_PhysicsWorld.reset();
-
 		m_DirectionalLight.reset();
 
 		OnDestroy();
 	}
 
-	FlyCamera& Scene::MainCamera() const
+	Camera& Scene::GetMainCamera() const
 	{
-		return *m_Camera;
+		return *m_DefaultCamera;
 	}
 
 	PhysicsWorld& Scene::GetPhysicsWorld() const

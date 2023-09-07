@@ -1,6 +1,6 @@
 #include "SkyBox.hpp"
 
-#include "core/SceneManager.hpp"
+#include "core/Application.hpp"
 #include "logging/GLDebug.hpp"
 
 namespace lei3d
@@ -129,7 +129,7 @@ namespace lei3d
 
 	void SkyBox::Render()
 	{
-		auto camera = SceneManager::ActiveScene().MainCamera();
+		auto camera = Application::GetSceneCamera();
 
 		// C++ doesn't like it if you don't declare these beforehand (initial ref. to non-const value)
 		glm::mat4 proj = camera.GetProj();

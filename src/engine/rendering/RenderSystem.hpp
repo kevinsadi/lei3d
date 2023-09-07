@@ -1,8 +1,10 @@
 #pragma once
 
+#include "core/Camera.hpp"
 #include "core/Component.hpp"
-#include "core/FlyCamera.hpp"
 #include "core/Scene.hpp"
+#include "core/SceneView.hpp" 
+
 #include "rendering/Shader.hpp"
 
 namespace lei3d
@@ -10,6 +12,9 @@ namespace lei3d
 
 	class ModelInstance;
 	class SkyBox;
+
+	class Scene;
+	class SceneView;
 
 	class RenderSystem
 	{
@@ -24,16 +29,16 @@ namespace lei3d
 
 		void initialize(int width, int height);
 
-		void draw(const Scene& scene);
+		void draw(const Scene& scene, const SceneView& view);
 
 	private:
-		void lightingPass(const std::vector<ModelInstance*>& objects, const DirectionalLight* light, FlyCamera& camera);
-		void environmentPass(const SkyBox& skyBox, FlyCamera& camera);
+		void lightingPass(const std::vector<ModelInstance*>& objects, const DirectionalLight* light, Camera& camera);
+		void environmentPass(const SkyBox& skyBox, Camera& camera);
 		void postprocessPass();
 
-		void genShadowPass(const std::vector<ModelInstance*>& objects, DirectionalLight* light, FlyCamera& camera);
+		void genShadowPass(const std::vector<ModelInstance*>& objects, DirectionalLight* light, Camera& camera);
 		std::vector<glm::vec4> getFrustumCornersWS(const glm::mat4& projection, const glm::mat4& view);
-		glm::mat4 getLightSpaceMatrix(DirectionalLight* light, float nearPlane, float farPlane, FlyCamera& camera);
+		glm::mat4 getLightSpaceMatrix(DirectionalLight* light, float nearPlane, float farPlane, Camera& camera);
 
 		// offscreen render target objects
 		unsigned int FBO;

@@ -35,6 +35,9 @@ namespace lei3d
 		glm::vec3 GetFirstColliderPosition();
 
 		void OnImGuiRender();
+
+	private:
+		bool ShouldShowDebug();
 	};
 
 } // namespace lei3d

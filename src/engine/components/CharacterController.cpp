@@ -2,6 +2,8 @@
 
 #include "core/SceneManager.hpp"
 
+#include "components/FollowCameraController.hpp"
+
 #include "util/BulletUtil.hpp"
 
 #include <imgui.h>
@@ -71,6 +73,15 @@ namespace lei3d
 		// WITHIN THIS CUSTOM PHYSICS UPDATE IS THE MAGIC THAT MAKES AIRSTRAFING / SURF POSSIBLE
 		m_CharacterPhysicsUpdate = new CharacterPhysicsUpdate(*this, m_RigidBody, m_GroundCheckObj, m_GroundCheckDist);
 		world.m_dynamicsWorld->addAction(m_CharacterPhysicsUpdate);
+	}
+
+	void CharacterController::Update()
+	{
+		const FollowCameraController* cameraController = m_Entity.GetComponent<FollowCameraController>();
+		if (cameraController != nullptr)
+		{
+			m_Entity.m_Transform.yawRotation = cameraController->GetCamera()->GetYaw();
+		}
 	}
 
 	void CharacterController::PhysicsUpdate()

@@ -87,7 +87,7 @@ namespace lei3d
 		///< error checks
 	}
 
-	void RenderSystem::draw(const Scene& scene)
+	void RenderSystem::draw(const Scene& scene, const SceneView& view)
 	{
 		// clear the blit image
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
@@ -96,7 +96,7 @@ namespace lei3d
 		glClearColor(0.2f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		FlyCamera&					camera = scene.MainCamera();
+		Camera&						camera = view.ActiveCamera(scene);
 		SkyBox*						skyBox = nullptr;
 		std::vector<ModelInstance*> modelEntities;
 		for (auto& entity : scene.m_Entities)
@@ -121,7 +121,7 @@ namespace lei3d
 		postprocessPass();
 	}
 
-	void RenderSystem::lightingPass(const std::vector<ModelInstance*>& objects, const DirectionalLight* light, FlyCamera& camera)
+	void RenderSystem::lightingPass(const std::vector<ModelInstance*>& objects, const DirectionalLight* light, Camera& camera)
 	{
 		forwardShader.bind();
 
@@ -161,7 +161,7 @@ namespace lei3d
 		glDisable(GL_DEPTH_TEST);
 	}
 
-	void RenderSystem::environmentPass(const SkyBox& skyBox, FlyCamera& camera)
+	void RenderSystem::environmentPass(const SkyBox& skyBox, Camera& camera)
 	{
 		glEnable(GL_DEPTH_TEST);
 		GLCall(glDepthFunc(GL_LEQUAL)); // we change the depth function here to it passes when testing depth value is equal
@@ -192,9 +192,9 @@ namespace lei3d
 
 		// draw a full screen quad, sample from rendered textures
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, rawTexture);	   // 0
+		glBindTexture(GL_TEXTURE_2D, rawTexture); // 0
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, saturationMask);  // 1
+		glBindTexture(GL_TEXTURE_2D, saturationMask); // 1
 		postprocessShader.setInt("RawFinalImage", 0);
 		postprocessShader.setInt("SaturationMask", 1); // match active texture bindings
 
@@ -210,7 +210,7 @@ namespace lei3d
 		glBlitFramebuffer(0, 0, scwidth, scheight, 0, 0, scwidth, scheight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
 	}
 
-	void RenderSystem::genShadowPass(const std::vector<ModelInstance*>& objects, DirectionalLight* light, FlyCamera& camera)
+	void RenderSystem::genShadowPass(const std::vector<ModelInstance*>& objects, DirectionalLight* light, Camera& camera)
 	{
 		shadowEVSMShader.bind();
 
@@ -257,7 +257,7 @@ namespace lei3d
 		return corners;
 	}
 
-	glm::mat4 RenderSystem::getLightSpaceMatrix(DirectionalLight* light, float nearPlane, float farPlane, FlyCamera& camera)
+	glm::mat4 RenderSystem::getLightSpaceMatrix(DirectionalLight* light, float nearPlane, float farPlane, Camera& camera)
 	{
 		const glm::mat4	projection = glm::perspective(glm::radians(camera.GetFOV()), (float)scwidth / (float)scheight, nearPlane, farPlane);
 		const std::vector<glm::vec4> corners = getFrustumCornersWS(projection, camera.GetView());
