@@ -23,8 +23,18 @@ namespace lei3d
 		const bool objIsPlayer = colObj1->m_collisionObject == m_AttachedObj;
 
 		////We only want the flag to be set when colliding with non-player geometry.
-		m_Grounded |= !objIsPlayer;
-		//m_Grounded = true;
+		//// we also want to check the angle of collision
+		const btTransform& transform0 = colObj0->m_collisionObject->getWorldTransform();
+		btVector3		   position0 = transform0.getOrigin();
+
+		const btTransform& transform1 = colObj1->m_collisionObject->getWorldTransform();
+		btVector3		   position1 = transform1.getOrigin();
+
+		btVector3 collisionAngle = position1 - position0;
+		//std::cout << collisionAngle.getX() << " " << collisionAngle.getY() << " " << collisionAngle.getZ() << std::endl;
+		bool angleIsGood = collisionAngle.getY() < -50;
+
+		m_Grounded |= !objIsPlayer && angleIsGood; //  syntactic sugar for a = a | b;
 
 		//if (colObj0->m_collisionObject == m_RigidBody && !m_Grounded)
 		//{
