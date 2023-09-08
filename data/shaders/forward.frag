@@ -99,6 +99,11 @@ float inverseLerp(float v, float a, float b) {
     return (v - a) / (b - a);
 }
 
+vec3 srgb_to_linear(vec3 color) {
+    // Approximation from http://chilliant.blogspot.com/2012/08/srgb-approximations-for-hlsl.html
+    return color * (color * (color * 0.305306011 + 0.682171111) + 0.012522878);
+}
+
 float chebyshevUpperBound(vec2 moments, float mean, float minVariance) {
     float variance = moments.y - (moments.x * moments.x);
     variance = max(variance, minVariance);
@@ -161,6 +166,7 @@ float calcShadowPCF(vec3 normal) {
 
 void main() {
     vec3 albedo = material.use_albedo_map ? texture(material.texture_albedo, TexCoords).rgb : material.albedo;
+    albedo = srgb_to_linear(albedo);
     // expect for packed textures to use ao (R) - roughness (G) - metallic (B) ordering
     float ao = material.use_ao_map ? texture(material.texture_ao, TexCoords).r : material.ambient;
     float roughness = material.use_roughness_map ? texture(material.texture_roughness, TexCoords).g : material.roughness;
