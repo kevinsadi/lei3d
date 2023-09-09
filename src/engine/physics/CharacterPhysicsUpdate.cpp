@@ -96,7 +96,7 @@ namespace lei3d
 
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && onGround)
 		{
-			v = v + btVector3(0.0, 4.75, 0.0);
+			v = v + btVector3(0, m_Controller.m_jumpPower, 0);
 		}
 
 		m_Character->setLinearVelocity(v);

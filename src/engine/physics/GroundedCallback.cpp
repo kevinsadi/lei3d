@@ -1,6 +1,7 @@
 #include "physics/GroundedCallback.hpp"
 
 #include "logging/Log.hpp"
+#include <iostream>
 
 namespace lei3d
 {
@@ -23,8 +24,18 @@ namespace lei3d
 		const bool objIsPlayer = colObj1->m_collisionObject == m_AttachedObj;
 
 		////We only want the flag to be set when colliding with non-player geometry.
-		m_Grounded |= !objIsPlayer;
-		//m_Grounded = true;
+		//// we also want to check the angle of collision
+
+		btVector3 collisionAngle = cp.m_normalWorldOnB;
+		if (!objIsPlayer)
+		{
+			std::cout << collisionAngle.getX() << " " << collisionAngle.getY() << " " << collisionAngle.getZ() << std::endl;
+			collisionAngle.angle(btVector3(0, 1, 0));
+		}
+
+		//bool angleIsGood = collisionAngle < -50;
+
+		m_Grounded |= !objIsPlayer && collisionAngle.getY() < -0.65; // && angleIsGood; //  syntactic sugar for a = a | b;
 
 		//if (colObj0->m_collisionObject == m_RigidBody && !m_Grounded)
 		//{
