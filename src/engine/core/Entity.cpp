@@ -66,6 +66,14 @@ namespace lei3d
 		}
 	}
 
+	void Entity::OnReset()
+	{
+		for (auto& component : m_Components)
+		{
+			component->OnReset();
+		}
+	}
+
 	void Entity::OnEditorUpdate()
 	{
 		for (auto& component : m_Components)

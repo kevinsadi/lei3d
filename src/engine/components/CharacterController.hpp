@@ -74,6 +74,7 @@ namespace lei3d
 		void Update() override;
 		void PhysicsUpdate() override;
 		void OnImGuiRender() override;
+		void OnReset() override;
 
 		bool IsGrounded() const;
 
