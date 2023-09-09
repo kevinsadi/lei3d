@@ -80,6 +80,8 @@ namespace lei3d
 			"data/skybox/anime_etheria/up.jpg", "data/skybox/anime_etheria/down.jpg",
 			"data/skybox/anime_etheria/front.jpg", "data/skybox/anime_etheria/back.jpg" };
 		skybox->Init(faces);
+
+		AudioPlayer::PlayMusic("Ethereal_Surg_8-17");
 	}
 
 	void TestSceneLogan::OnReset()
