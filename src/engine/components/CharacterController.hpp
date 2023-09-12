@@ -13,8 +13,6 @@ namespace lei3d
 	{
 	public:
 		// CHARACTER CONTROLLER PARAMETERS
-		float m_gravity = 15.24f;
-
 		float m_accel = 50.0f;
 		float m_airAccel = 800.0f;
 		float m_maxSpeed = 500.0f;

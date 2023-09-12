@@ -27,32 +27,15 @@ namespace lei3d
 		//// we also want to check the angle of collision
 
 		btVector3 collisionAngle = cp.m_normalWorldOnB;
-		if (!objIsPlayer)
-		{
-			std::cout << collisionAngle.getX() << " " << collisionAngle.getY() << " " << collisionAngle.getZ() << std::endl;
-			collisionAngle.angle(btVector3(0, 1, 0));
-		}
 
-		//bool angleIsGood = collisionAngle < -50;
+		// for testing
+		// if (!objIsPlayer)
+		// {
+		// 	std::cout << collisionAngle.getX() << " " << collisionAngle.getY() << " " << collisionAngle.getZ() << std::endl;
+		// 	collisionAngle.angle(btVector3(0, 1, 0));
+		// }
 
 		m_Grounded |= !objIsPlayer && collisionAngle.getY() < -0.65; // && angleIsGood; //  syntactic sugar for a = a | b;
-
-		//if (colObj0->m_collisionObject == m_RigidBody && !m_Grounded)
-		//{
-		//	const btTransform& transform = m_RigidBody->getWorldTransform();
-		//	// Orthonormal basis (just rotations) -> can just transform to invert
-		//	btMatrix3x3 invBasis = transform.getBasis();
-		//	btVector3	localPoint = invBasis * (cp.m_positionWorldOnB - transform.getOrigin());
-		//	localPoint[1] += m_ShapeHalfHeight;
-		//	float r = localPoint.length();
-		//	float cosTheta = localPoint[1] / r;
-
-		//	if (fabs(r - m_ShapeRadius) <= m_RadiusThreshold && cosTheta < m_MaxCosGround)
-		//	{
-		//		m_Grounded = true;
-		//		m_GroundPoint = cp.m_positionWorldOnB;
-		//	}
-		//}
 		return 0;
 	}
 } // namespace lei3d

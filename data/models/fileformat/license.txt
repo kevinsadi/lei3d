@@ -1,0 +1,11 @@
+Model Information:
+* title:	Surf Skyworld3 Preview
+* source:	https://sketchfab.com/3d-models/surf-skyworld3-preview-00c4e78617174e06b485e3862af79cce
+* author:	EVAI (https://sketchfab.com/Evvvai)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Surf Skyworld3 Preview" (https://sketchfab.com/3d-models/surf-skyworld3-preview-00c4e78617174e06b485e3862af79cce) by EVAI (https://sketchfab.com/Evvvai) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

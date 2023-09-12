@@ -43,6 +43,8 @@ namespace lei3d
 		}
 		backpackModel = std::make_unique<Model>(backpackPath);
 		const std::string physicsPlaygroundPath = "data/models/leveldesign/KevWorldClouds.obj";
+		//const std::string physicsPlaygroundPath = "data/models/fileformat/scene.gltf";
+
 		if (playgroundModel)
 		{
 			playgroundModel.reset();
@@ -55,7 +57,7 @@ namespace lei3d
 		// ModelInstance* modelRender = backpackObj.AddComponent<ModelInstance>();
 		// modelRender->Init(backpackModel.get());
 		backpackObj.SetScale(glm::vec3(1.f, 1.f, 1.f));
-		backpackObj.SetPosition(glm::vec3(0.f, 200.f, 0.f));
+		backpackObj.SetPosition(glm::vec3(0.f, 100.f, 0.f));
 		backpackObj.SetYawRotation(0);
 
 		CharacterController* characterController = backpackObj.AddComponent<CharacterController>();

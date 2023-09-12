@@ -21,7 +21,7 @@ namespace lei3d
 		m_solver = std::make_unique<btSequentialImpulseConstraintSolver>();
 
 		m_dynamicsWorld = std::make_unique<btDiscreteDynamicsWorld>(m_dispatcher.get(), m_overlappingPairCache.get(), m_solver.get(), m_collisionConfiguration.get());
-		m_dynamicsWorld->setGravity(btVector3(0, -23, 0));
+		m_dynamicsWorld->setGravity(btVector3(0, -40, 0));
 
 		m_debugDrawer = std::make_unique<LeiDebugDrawer>();
 		m_debugDrawer->setDebugMode(btIDebugDraw::DBG_DrawAabb);
