@@ -14,6 +14,9 @@ add_library(lei3d_lib
         ${ENGINE_SOURCE}
         )
 
+add_dependencies (lei3d_lib glad)
+
+
 target_include_directories(lei3d_lib PUBLIC
         .
         ${GLFW_INCLUDE}
