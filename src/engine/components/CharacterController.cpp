@@ -93,6 +93,17 @@ namespace lei3d
 		m_Entity.setFromBTTransform(characterTrans);
 	}
 
+	void CharacterController::OnReset()
+	{
+		btTransform trans;
+		trans.setIdentity();
+		trans.setOrigin(glmToBTVec3(m_Entity.m_Transform.position));
+
+		m_RigidBody->setWorldTransform(trans);
+		m_MotionState->setWorldTransform(trans);
+		m_GroundCheckObj->setWorldTransform(getGroundCheckTransform(trans));
+	}
+
 	btTransform CharacterController::getGroundCheckTransform(const btTransform& parentTransform)
 	{
 		btTransform groundCheckTrans;

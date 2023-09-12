@@ -95,7 +95,12 @@ namespace lei3d
 	{
 		// We have to do some tricky things to get the scene to reset all the objs and physics and stuff.
 		m_State = SCENE_START;
-		Load(); // This is inefficient
+
+		OnReset();
+		for (auto& entity : m_Entities)
+		{
+			entity->OnReset();
+		}
 	}
 
 	void Scene::Start()

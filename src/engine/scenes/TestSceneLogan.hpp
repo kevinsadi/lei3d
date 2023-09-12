@@ -25,6 +25,7 @@ namespace lei3d
 
 		void OnLoad() override;
 		void OnPhysicsUpdate() override;
+		void OnReset() override;
 
 	private:
 		std::unique_ptr<Model> backpackModel;

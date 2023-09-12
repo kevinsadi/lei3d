@@ -87,6 +87,14 @@ namespace lei3d
 		skybox->Init(faces);
 	}
 
+	void TestSceneKevin::OnReset()
+	{
+		//Just need to reset the backpack.
+		Entity* backpackObj = GetEntity("Backpack");
+		backpackObj->SetScale(glm::vec3(1.f, 1.f, 1.f));
+		backpackObj->SetPosition(glm::vec3(0.f, 200.f, 0.f));
+	}
+
 	void TestSceneKevin::OnUpdate()
 	{
 		if (glfwGetKey(Application::Window(), GLFW_KEY_R) == GLFW_PRESS)
@@ -95,7 +103,7 @@ namespace lei3d
 			if (backpackEntity)
 			{
 				std::cout << "backpackEntity" << std::endl;
-				backpackEntity->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f)); // IS THIS OKAY? DOES IT CAUSE A MEMORY LEAK?
+				backpackEntity->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 			}
 		}
 	}

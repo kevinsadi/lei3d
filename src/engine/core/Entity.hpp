@@ -45,6 +45,7 @@ namespace lei3d
 		void PhysicsUpdate();
 		void Render();
 		void OnDestroy();
+		void OnReset();
 
 		void OnEditorUpdate();
 
