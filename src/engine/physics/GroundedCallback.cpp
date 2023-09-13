@@ -35,7 +35,7 @@ namespace lei3d
 		// 	collisionAngle.angle(btVector3(0, 1, 0));
 		// }
 
-		m_Grounded |= !objIsPlayer && collisionAngle.getY() < -0.65; // && angleIsGood; //  syntactic sugar for a = a | b;
+		m_Grounded |= !objIsPlayer && collisionAngle.getY() < -0.95; // && angleIsGood; //  syntactic sugar for a = a | b;
 		return 0;
 	}
 } // namespace lei3d
