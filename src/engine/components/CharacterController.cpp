@@ -87,9 +87,16 @@ namespace lei3d
 	void CharacterController::PhysicsUpdate()
 	{
 		btTransform characterTrans;
-		m_MotionState->getWorldTransform(characterTrans);
+		// if entity pos changed
+		if (m_Entity.m_ResetTransform) {
+			m_Entity.m_ResetTransform = false;
+			characterTrans = m_Entity.getBTTransform();
+			m_RigidBody->setWorldTransform(characterTrans);
+			m_MotionState->setWorldTransform(characterTrans);
+		} else {
+			m_MotionState->getWorldTransform(characterTrans);
+		}
 		m_GroundCheckObj->setWorldTransform(getGroundCheckTransform(characterTrans));
-
 		m_Entity.setFromBTTransform(characterTrans);
 	}
 

@@ -70,4 +70,17 @@ namespace lei3d
 		world.m_dynamicsWorld->addRigidBody(m_RigidBody);
 	}
 
+	// FOR SOME REASON THE COLLISION MESH DOESN'T CHANGE
+	void StaticCollider::PhysicsUpdate()
+	{
+		btTransform trans;
+		// if entity pos changed
+		if (m_Entity.m_ResetTransform) {
+			m_Entity.m_ResetTransform = false;
+			trans = m_Entity.getBTTransform();
+			m_RigidBody->setWorldTransform(trans);
+			m_MotionState->setWorldTransform(trans);
+			m_Entity.setFromBTTransform(trans);
+		}
+	}
 } // namespace lei3d
