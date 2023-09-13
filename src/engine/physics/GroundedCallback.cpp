@@ -1,6 +1,7 @@
 #include "physics/GroundedCallback.hpp"
 
 #include "logging/Log.hpp"
+#include <iostream>
 
 namespace lei3d
 {
@@ -23,25 +24,18 @@ namespace lei3d
 		const bool objIsPlayer = colObj1->m_collisionObject == m_AttachedObj;
 
 		////We only want the flag to be set when colliding with non-player geometry.
-		m_Grounded |= !objIsPlayer;
-		//m_Grounded = true;
+		//// we also want to check the angle of collision
 
-		//if (colObj0->m_collisionObject == m_RigidBody && !m_Grounded)
-		//{
-		//	const btTransform& transform = m_RigidBody->getWorldTransform();
-		//	// Orthonormal basis (just rotations) -> can just transform to invert
-		//	btMatrix3x3 invBasis = transform.getBasis();
-		//	btVector3	localPoint = invBasis * (cp.m_positionWorldOnB - transform.getOrigin());
-		//	localPoint[1] += m_ShapeHalfHeight;
-		//	float r = localPoint.length();
-		//	float cosTheta = localPoint[1] / r;
+		btVector3 collisionAngle = cp.m_normalWorldOnB;
 
-		//	if (fabs(r - m_ShapeRadius) <= m_RadiusThreshold && cosTheta < m_MaxCosGround)
-		//	{
-		//		m_Grounded = true;
-		//		m_GroundPoint = cp.m_positionWorldOnB;
-		//	}
-		//}
+		// for testing
+		// if (!objIsPlayer)
+		// {
+		// 	std::cout << collisionAngle.getX() << " " << collisionAngle.getY() << " " << collisionAngle.getZ() << std::endl;
+		// 	collisionAngle.angle(btVector3(0, 1, 0));
+		// }
+
+		m_Grounded |= !objIsPlayer && collisionAngle.getY() < -0.95; // && angleIsGood; //  syntactic sugar for a = a | b;
 		return 0;
 	}
 } // namespace lei3d

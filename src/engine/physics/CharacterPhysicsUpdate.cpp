@@ -34,13 +34,12 @@ namespace lei3d
 		collisionWorld->contactTest(m_GroundCheck, callback);
 
 		bool onGround = callback.m_Grounded;
-		bool groundPoint = callback.m_GroundPoint;
-		m_Controller.m_Grounded = onGround;
-
-		if (m_Controller.m_IncludeSFX && callback.m_Grounded == true && onGround == false)
+		if (m_Controller.m_IncludeSFX && m_Controller.m_Grounded == false && onGround == true)
 		{
 			AudioPlayer::PlaySFX("landing_2"); //.PlaySound("landing");
 		}
+		bool groundPoint = callback.m_GroundPoint;
+		m_Controller.m_Grounded = onGround;
 
 		// Update velocity accordingly
 		btVector3 v = m_Character->getLinearVelocity();
@@ -96,7 +95,7 @@ namespace lei3d
 
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && onGround)
 		{
-			v = v + btVector3(0.0, 4.75, 0.0);
+			v = v + btVector3(0, m_Controller.m_jumpPower, 0);
 		}
 
 		m_Character->setLinearVelocity(v);

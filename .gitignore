@@ -3,6 +3,7 @@
 build/
 build-linux/
 buildtest/
+builds/
 .vscode/
 .vs/
 .cache
