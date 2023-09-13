@@ -94,20 +94,20 @@ namespace lei3d
 		//Just need to reset the backpack.
 		Entity* backpackObj = GetEntity("Backpack");
 		backpackObj->SetScale(glm::vec3(1.f, 1.f, 1.f));
-		backpackObj->SetPosition(glm::vec3(0.f, 200.f, 0.f));
+		backpackObj->SetPosition(glm::vec3(-112.5f, 505.f, 3.f));
 	}
 
 	void TestSceneKevin::OnUpdate()
 	{
-		if (glfwGetKey(Application::Window(), GLFW_KEY_R) == GLFW_PRESS)
-		{
-			Entity* backpackEntity = GetEntity("Backpack");
-			if (backpackEntity)
-			{
-				std::cout << "backpackEntity" << std::endl;
-				backpackEntity->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-			}
-		}
+		//if (glfwGetKey(Application::Window(), GLFW_KEY_R) == GLFW_PRESS)
+		//{
+		//	Entity* backpackEntity = GetEntity("Backpack");
+		//	if (backpackEntity)
+		//	{
+		//		std::cout << "backpackEntity" << std::endl;
+		//		backpackEntity->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		//	}
+		//}
 	}
 
 	void TestSceneKevin::OnPhysicsUpdate()

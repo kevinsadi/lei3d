@@ -26,6 +26,9 @@ namespace lei3d
 
 		// float m_maxSpeed = 40.0f;
 		//  float m_maxVelocity = 100;
+
+		bool m_IsInDynamicsWorld;
+
 	private:
 		class CharacterPhysicsUpdate : public btActionInterface
 		{

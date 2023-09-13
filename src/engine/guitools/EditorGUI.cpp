@@ -50,9 +50,6 @@ namespace lei3d
 			ImGui::EndMenuBar();
 		}
 
-		ImGui::Text("PRESS TAB TO TOGGLE EDITOR");
-		ImGui::Text("HOLD SHIFT TO MOVE FASTER WITH CAMERA");
-
 		Scene&	   scene = SceneManager::ActiveScene();
 		SceneView& view = Application::GetSceneView();
 
@@ -80,6 +77,15 @@ namespace lei3d
 		if (ImGui::CollapsingHeader("Game Info"))
 		{
 			ImGui::Text("fps = %f", 1.0f / Application::DeltaTime());
+		}
+
+		if (ImGui::CollapsingHeader("Shortcuts/Keybinds"))
+		{
+			ImGui::Text("TAB: TOGGLE EDITOR");
+			ImGui::Text("SHIFT: Move Faster With Camera");
+			ImGui::Text("CTRL: Increase Object Transform Step");
+			ImGui::Text("R: Reset the Scene");
+			ImGui::Text("Q: Play/Pause Scene");
 		}
 
 		ImGui::SetWindowSize(ImVec2(400, 400), ImGuiCond_Once);

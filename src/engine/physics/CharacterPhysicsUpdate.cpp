@@ -113,7 +113,7 @@ namespace lei3d
 
 	glm::vec3 CharacterController::CharacterPhysicsUpdate::Accelerate(glm::vec3 wishDir, glm::vec3 prevVel, float acceleration, float maxVelocity)
 	{
-		float projectedSpeed = glm::dot(prevVel, wishDir);
+		const float projectedSpeed = glm::dot(prevVel, wishDir);
 		float wishSpeed = acceleration * Application::DeltaTime(); // this is the wish speed (MIGHT NEED DELTA TIME TO FIX THIS????
 
 		// If necessary, truncate the new speed so it doesn't exceed max velocity
@@ -132,10 +132,11 @@ namespace lei3d
 
 	glm::vec3 CharacterController::CharacterPhysicsUpdate::GroundAcceleration(glm::vec3 wishDir, glm::vec3 prevVelocity)
 	{
-		float speed = glm::length(prevVelocity);
-		if (speed != 0)
+		constexpr float EPSILON = 0.1f;
+		const float		speed = glm::length(prevVelocity);
+		if (speed != 0 && glm::length(wishDir) < EPSILON)	//Only factor in friction on deceleration.
 		{
-			float drop = speed * m_Controller.m_friction * Application::DeltaTime(); // THIS MIGHT HAVE TO BE MULTIPLIED BY DELTA TIME??
+			const float drop = speed * m_Controller.m_friction * Application::DeltaTime(); // THIS MIGHT HAVE TO BE MULTIPLIED BY DELTA TIME??
 			prevVelocity *= std::max(speed - drop, 0.0f) / speed;					 // Friction fall off
 		}
 

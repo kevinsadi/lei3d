@@ -29,6 +29,24 @@ namespace lei3d
 	void CharacterController::Start()
 	{
 		LEI_TRACE("Character Controller started");
+
+		//Add player back into the world if they are not in it.
+		if (!m_IsInDynamicsWorld)
+		{
+			PhysicsWorld& world = SceneManager::ActiveScene().GetPhysicsWorld();
+			world.m_dynamicsWorld->addRigidBody(m_RigidBody);
+			m_IsInDynamicsWorld = true;
+		}
+
+		//Set the player's physics transform to the entity transform.
+		btTransform trans;
+		trans.setIdentity();
+		trans.setOrigin(glmToBTVec3(m_Entity.m_Transform.position));
+
+		//Reset Rigidbody & Ground Check
+		m_RigidBody->setWorldTransform(trans);
+		m_RigidBody->setLinearVelocity({ 0.0f, 0.0f, 0.0f });
+		m_GroundCheckObj->setWorldTransform(getGroundCheckTransform(trans));
 	}
 
 	/**
@@ -95,13 +113,10 @@ namespace lei3d
 
 	void CharacterController::OnReset()
 	{
-		btTransform trans;
-		trans.setIdentity();
-		trans.setOrigin(glmToBTVec3(m_Entity.m_Transform.position));
-
-		m_RigidBody->setWorldTransform(trans);
-		m_MotionState->setWorldTransform(trans);
-		m_GroundCheckObj->setWorldTransform(getGroundCheckTransform(trans));
+		//Remove player from the world first
+		PhysicsWorld& world = SceneManager::ActiveScene().GetPhysicsWorld();
+		world.m_dynamicsWorld->removeRigidBody(m_RigidBody);
+		m_IsInDynamicsWorld = false;
 	}
 
 	btTransform CharacterController::getGroundCheckTransform(const btTransform& parentTransform)
