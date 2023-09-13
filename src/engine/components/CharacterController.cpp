@@ -131,10 +131,10 @@ namespace lei3d
 			ImGui::InputFloat("Max Air Speed", &m_maxAirSpeed);
 
 			ImGui::InputFloat("Friction", &m_friction);
-			ImGui::InputFloat("Air Friction", &m_airFriction);
+			//ImGui::InputFloat("Air Friction", &m_airFriction);
 
 			ImGui::InputFloat("Jump Power", &m_jumpPower);
-			ImGui::InputFloat("Jump Height", &m_jumpHeight);
+			//ImGui::InputFloat("Jump Height", &m_jumpHeight);
 		}
 	}
 
