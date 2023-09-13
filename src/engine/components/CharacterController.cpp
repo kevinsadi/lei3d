@@ -114,7 +114,6 @@ namespace lei3d
 		{
 			ImGui::Text("Grounded: %s", m_Grounded ? "True" : "False");
 
-			ImGui::InputFloat("Gravity", &m_gravity);
 			ImGui::InputFloat("Ground Acceleration", &m_accel);
 			ImGui::InputFloat("Air Acceleration", &m_airAccel);
 			ImGui::InputFloat("Max Speed", &m_maxSpeed);

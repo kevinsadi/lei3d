@@ -42,8 +42,8 @@ namespace lei3d
 			backpackModel.reset();
 		}
 		backpackModel = std::make_unique<Model>(backpackPath);
-		const std::string physicsPlaygroundPath = "data/models/leveldesign/KevWorldClouds.obj";
-		//const std::string physicsPlaygroundPath = "data/models/fileformat/scene.gltf";
+		//const std::string physicsPlaygroundPath = "data/models/leveldesign/KevWorldClouds.obj";
+		const std::string physicsPlaygroundPath = "data/models/skyramps/skyramps.obj";
 
 		if (playgroundModel)
 		{
@@ -54,10 +54,10 @@ namespace lei3d
 		// BACKPACK (Character) ---------------------
 		Entity& backpackObj = AddEntity("Backpack");
 
-		// ModelInstance* modelRender = backpackObj.AddComponent<ModelInstance>();
-		// modelRender->Init(backpackModel.get());
+		//ModelInstance* modelRender = backpackObj.AddComponent<ModelInstance>();
+		//modelRender->Init(backpackModel.get());
 		backpackObj.SetScale(glm::vec3(1.f, 1.f, 1.f));
-		backpackObj.SetPosition(glm::vec3(0.f, 100.f, 0.f));
+		backpackObj.SetPosition(glm::vec3(-66.5f, 270.f, 3.f));
 		backpackObj.SetYawRotation(0);
 
 		CharacterController* characterController = backpackObj.AddComponent<CharacterController>();
@@ -71,7 +71,7 @@ namespace lei3d
 
 		ModelInstance* playgroundRender = physicsPlaygroundObj.AddComponent<ModelInstance>();
 		playgroundRender->Init(playgroundModel.get());
-		physicsPlaygroundObj.SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
+		physicsPlaygroundObj.SetScale(glm::vec3(0.1f, 0.1f, 0.1f));
 		physicsPlaygroundObj.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 		physicsPlaygroundObj.SetYawRotation(0);
 
