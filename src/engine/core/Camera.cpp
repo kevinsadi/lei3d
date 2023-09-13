@@ -5,11 +5,11 @@
 namespace lei3d
 {
 	Camera::Camera(GLFWwindow* window, float yaw, float pitch, LookMode mode)
-		: m_Yaw{yaw}, m_Pitch{pitch}, m_LookMode{mode}
+		: m_Yaw{ yaw }, m_Pitch{ pitch }, m_LookMode{ mode }
 	{
 		m_FOVDeg = 45.0f;
 		m_NearPlane = 0.1f;
-		m_FarPlane = 700.0f;
+		m_FarPlane = 1400.0f;
 
 		int screenWidth, screenHeight;
 		glfwGetWindowSize(window, &screenWidth, &screenHeight);
@@ -28,17 +28,19 @@ namespace lei3d
 
 	void Camera::cameraMouseCallback(double xPosInput, double yPosInput)
 	{
-		switch (m_LookMode) {
-		case LookMode::FREE:
-			FreeCameraControls(static_cast<float>(xPosInput), static_cast<float>(yPosInput));
-			break;
-		case LookMode::FIXED:
-		default:
-			break;
+		switch (m_LookMode)
+		{
+			case LookMode::FREE:
+				FreeCameraControls(static_cast<float>(xPosInput), static_cast<float>(yPosInput));
+				break;
+			case LookMode::FIXED:
+			default:
+				break;
 		}
 	}
 
-	void Camera::FreeCameraControls(float xpos, float ypos) {
+	void Camera::FreeCameraControls(float xpos, float ypos)
+	{
 		if (m_MouseEnterFlag)
 		{
 			m_PrevX = xpos;
