@@ -4,7 +4,8 @@
 
 #include <imgui.h>
 
-namespace lei3d {
+namespace lei3d
+{
 	SceneView::SceneView()
 	{
 		// load camera
@@ -29,6 +30,61 @@ namespace lei3d {
 		m_Mode = mode;
 	}
 
+	Camera& SceneView::ActiveCamera(const Scene& scene) const
+	{
+		switch (m_Mode)
+		{
+			case Mode::ModeScene:
+				return *m_FlyCamera;
+			case Mode::ModeGame:
+				return scene.GetMainCamera();
+		}
+	}
+
+	void SceneView::Update(Scene& scene)
+	{
+
+
+		ActiveCamera(scene).PollCameraMovementInput(); //Kinda jank
+	}
+
+	void SceneView::ProcessKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods)
+	{
+		if (key == GLFW_KEY_R && action == GLFW_PRESS)
+		{
+			Reset(SceneManager::ActiveScene());
+		}
+
+		if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+		{
+			TogglePlayPause(SceneManager::ActiveScene());
+		}
+	}
+
+	void SceneView::OnImGuiRender(Scene& scene)
+	{
+		// SCENE CONTROL WIDGETS ----------------------------------------------
+
+		std::stringstream ss;
+		ss << "State: ";
+		ss << scene.StateToString();
+		ImGui::Text(ss.str().c_str());
+
+		if (ImGui::Button("Play/Pause"))
+		{
+			TogglePlayPause(scene);
+		}
+
+		ImGui::SameLine();
+		if (ImGui::Button("Reset"))
+		{
+			Reset(scene);
+		}
+
+		ImGui::Text("Fly Camera: ");
+		m_FlyCamera->OnImGuiRender();
+	}
+
 	void SceneView::TogglePlayPause(Scene& scene)
 	{
 		if (m_Mode == ModeGame)
@@ -43,46 +99,9 @@ namespace lei3d {
 		}
 	}
 
-	Camera& SceneView::ActiveCamera(const Scene& scene) const
+	void SceneView::Reset(Scene& scene)
 	{
-		switch (m_Mode)
-		{
-			case Mode::ModeScene:
-				return *m_FlyCamera;
-			case Mode::ModeGame:
-				return scene.GetMainCamera();
-		}
+		SetMode(SceneView::ModeScene);
+		scene.Reset();
 	}
-
-	void SceneView::OnImGuiRender(Scene& scene)
-	{
-		// SCENE CONTROL WIDGETS ----------------------------------------------
-		
-		std::stringstream ss;
-		ss << "State: ";
-		ss << scene.StateToString();
-		ImGui::Text(ss.str().c_str());
-
-		if (ImGui::Button("Play"))
-		{
-			TogglePlayPause(scene);
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button("Pause"))
-		{
-			SetMode(SceneView::ModeScene);
-			scene.Pause();
-		}
-
-		ImGui::SameLine();
-		if (ImGui::Button("Reset"))
-		{
-			SetMode(SceneView::ModeScene);
-			scene.Reset();
-		}
-
-		ImGui::Text("Fly Camera: ");
-		m_FlyCamera->OnImGuiRender();
-	}
-}
+} // namespace lei3d

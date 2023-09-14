@@ -10,7 +10,7 @@ namespace lei3d
 	class Scene;
 
 	//Creates a view into a scene based on editor context.
-	//This seems kind of empty, but we might expand on it later, so it's good to abstract now. 
+	//This seems kind of empty, but we might expand on it later, so it's good to abstract now.
 	class SceneView
 	{
 	public:
@@ -19,23 +19,29 @@ namespace lei3d
 			ModeScene,
 			ModeGame
 		};
-	private:
-		//I chose not to hold a reference to the scene here and have it as an argument to functions 
-		//since syncing the scene with SceneManager etc. is a pain and not necessary when we have access to the scene.
-		Mode   m_Mode;
 
-		std::unique_ptr<FlyCamera> m_FlyCamera = nullptr;	//Default fly camera for viewing the scene.
+	private:
+		//I chose not to hold a reference to the scene here and have it as an argument to functions
+		//since syncing the scene with SceneManager etc. is a pain and not necessary when we have access to the scene.
+		Mode m_Mode;
+
+		std::unique_ptr<FlyCamera> m_FlyCamera = nullptr; //Default fly camera for viewing the scene.
 	public:
 		SceneView();
 		~SceneView();
 
-		void   SetMode(Mode mode);
-		void TogglePlayPause(Scene& scene);
+		void SetMode(Mode mode);
+
+		void Update(Scene& scene);
 
 		Mode GetMode() const;
 
 		Camera& ActiveCamera(const Scene& scene) const;
 
 		void OnImGuiRender(Scene& scene);
+		void ProcessKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods);
+	private:
+		void TogglePlayPause(Scene& scene);
+		void Reset(Scene& scene);
 	};
 } // namespace lei3d

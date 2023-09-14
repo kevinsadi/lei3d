@@ -178,7 +178,7 @@ namespace lei3d
 		Scene& scene = m_SceneManager->ActiveScene();
 		scene.Update();
 		scene.PhysicsUpdate();
-		m_SceneView->ActiveCamera(scene).PollCameraMovementInput();	//Kinda jank
+		m_SceneView->Update(scene);
 	}
 
 	void Application::SetUIActive(bool uiActive)
@@ -280,6 +280,7 @@ namespace lei3d
 				if (self)
 				{
 					self->ProcessKeyboardInput(window, key, scancode, action, mods);
+					self->m_SceneView->ProcessKeyboardInput(window, key, scancode, action, mods);
 				}
 			}
 		});
@@ -297,11 +298,6 @@ namespace lei3d
 		if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
 		{
 			SetUIActive(!m_UIActive);
-		}
-
-		if (key == GLFW_KEY_P && action == GLFW_PRESS)
-		{
-			m_SceneView->TogglePlayPause(SceneManager::ActiveScene());
 		}
 	}
 

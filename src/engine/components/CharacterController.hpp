@@ -19,13 +19,16 @@ namespace lei3d
 		float m_maxAirSpeed = 10.575f;
 
 		float m_friction = 1.0f;
-		float m_airFriction = 0.25f;
+		//float m_airFriction = 0.25f;
 
-		float m_jumpPower = 2.f;
-		float m_jumpHeight = 1.f;
+		float m_jumpPower = 7.f;
+		//float m_jumpHeight = 1.f;
 
 		// float m_maxSpeed = 40.0f;
 		//  float m_maxVelocity = 100;
+
+		bool m_IsInDynamicsWorld;
+
 	private:
 		class CharacterPhysicsUpdate : public btActionInterface
 		{

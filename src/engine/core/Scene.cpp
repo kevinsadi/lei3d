@@ -83,6 +83,11 @@ namespace lei3d
 
 	void Scene::Play()
 	{
+		if (m_State == SCENE_START)
+		{
+			//Initialize everything if we're starting the scene, otherwise no.
+			Start();
+		}
 		m_State = SCENE_PLAYING;
 	}
 
@@ -117,16 +122,21 @@ namespace lei3d
 
 	void Scene::Update()
 	{
-		if (m_State == SCENE_PLAYING)
+		switch (m_State)
 		{
-			// LEI_TRACE("Scene Update");
+			case SCENE_PLAYING:
+				// LEI_TRACE("Scene Update");
 
-			for (auto& entity : m_Entities)
-			{
-				entity->Update();
-			}
+				for (auto& entity : m_Entities)
+				{
+					entity->Update();
+				}
 
-			OnUpdate();
+				OnUpdate();
+				break;
+			case SCENE_PAUSED:
+			case SCENE_START:
+				break;
 		}
 	}
 
