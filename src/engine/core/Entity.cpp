@@ -176,10 +176,9 @@ namespace lei3d
 			constexpr float STEP_FINE = 0.5f;
 			constexpr float STEP_FAST = 10.0f; // Hold down Ctrl to scroll faster.
 
-			ImGui::InputFloat("x", &x, STEP_FINE, STEP_FAST);
-			// ImGui::SameLine();
-			ImGui::InputFloat("y", &y, STEP_FINE, STEP_FAST);
-			// ImGui::SameLine();
+			m_ResetTransform = 
+			ImGui::InputFloat("x", &x, STEP_FINE, STEP_FAST) |
+			ImGui::InputFloat("y", &y, STEP_FINE, STEP_FAST) |
 			ImGui::InputFloat("z", &z, STEP_FINE, STEP_FAST);
 
 			// NOTE: If the position is not changing, it's probably because the physics engine (or something else) is overwriting it)

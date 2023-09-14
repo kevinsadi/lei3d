@@ -34,6 +34,7 @@ namespace lei3d
 
 	public:
 		Transform m_Transform;
+		bool m_ResetTransform;
 
 		Entity();
 		Entity(const std::string& name);
