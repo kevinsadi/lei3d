@@ -16,7 +16,7 @@ namespace lei3d
 
 		forwardShader = Shader("./data/shaders/forward.vert", "./data/shaders/forward.frag");
 		postprocessShader = Shader("./data/shaders/screenspace_quad.vert", "./data/shaders/postprocess.frag");
-		shadowEVSMShader = Shader("./data/shaders/shadow_depth.vert", "./data/shaders/shadowEVSM.frag");
+		shadowCSMShader = Shader("./data/shaders/shadow_depth.vert", "./data/shaders/null.frag");
 
 		glGenVertexArrays(1, &dummyVAO);
 
@@ -65,15 +65,7 @@ namespace lei3d
 		glGenFramebuffers(1, &shadowFBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, shadowFBO);
 
-		glGenTextures(1, &shadowMoments);
 		glGenTextures(1, &shadowDepth);
-
-		// shadow moments map
-		glBindTexture(GL_TEXTURE_2D, shadowMoments);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, shadowResolution, shadowResolution, 0, GL_RGBA, GL_FLOAT, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, shadowMoments, 0);
 
 		// depth map; unused
 		glBindTexture(GL_TEXTURE_2D, shadowDepth);
@@ -144,11 +136,9 @@ namespace lei3d
 		forwardShader.setVec3("dirLight.direction", light->direction);
 		forwardShader.setVec3("dirLight.color", light->color);
 		forwardShader.setFloat("dirLight.intensity", light->intensity);
-//		forwardShader.setFloat("dirLight.nearPlane", light->nearPlane);
-//		forwardShader.setFloat("dirLight.farPlane", light->farPlane);
 		forwardShader.setUniformMat4("lightSpaceMatrix", lightSpaceMat);
 
-		forwardShader.setInt("shadowMoments", 1);
+		forwardShader.setInt("shadowDepth", 1);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, shadowDepth);
 
@@ -212,7 +202,7 @@ namespace lei3d
 
 	void RenderSystem::genShadowPass(const std::vector<ModelInstance*>& objects, DirectionalLight* light, Camera& camera)
 	{
-		shadowEVSMShader.bind();
+		shadowCSMShader.bind();
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, shadowFBO);
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
@@ -225,14 +215,11 @@ namespace lei3d
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		lightSpaceMat = getLightSpaceMatrix(light, 0.1f, 500.f, camera);	// TODO: set it to camera planes?
-		shadowEVSMShader.setUniformMat4("lightSpaceMatrix", lightSpaceMat);
-		shadowEVSMShader.setVec3("lightPos", 150.f * -light->direction);
-		shadowEVSMShader.setFloat("lightNearPlane", light->nearPlane);
-		shadowEVSMShader.setFloat("lightFarPlane", light->farPlane);
+		shadowCSMShader.setUniformMat4("lightSpaceMatrix", lightSpaceMat);
 
 		for (auto& obj : objects)
 		{
-			obj->Draw(&shadowEVSMShader, RenderFlag::None, 0);
+			obj->Draw(&shadowCSMShader, RenderFlag::None, 0);
 		}
 
 		glCullFace(GL_BACK);

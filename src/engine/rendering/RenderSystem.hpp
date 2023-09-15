@@ -51,7 +51,6 @@ namespace lei3d
 		unsigned int shadowFBO;
 		glm::mat4 lightSpaceMat;
 		unsigned int shadowResolution = 2048;
-		unsigned int shadowMoments;
 		unsigned int shadowDepth;
 
 		unsigned int dummyVAO; // used to draw full-screen "quad"
@@ -61,7 +60,7 @@ namespace lei3d
 		// shaders
 		Shader forwardShader;
 		Shader postprocessShader;
-		Shader shadowEVSMShader;
+		Shader shadowCSMShader;
 	};
 
 } // namespace lei3d
