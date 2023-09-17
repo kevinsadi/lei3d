@@ -33,15 +33,19 @@ struct DirLight {
     vec3 color;
     float intensity;
 
-    float nearPlane;
     float farPlane;
+    float cascadeDistances[3];
 };
+
+//layout (std140) uniform LightSpaceMatrices {
+//    mat4 lightSpaceMatrices[4];
+//};
 
 in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoords;
+in mat4 camView;
 in mat3 TBN;
-in vec4 FragPos_lS;
 
 layout (location = 0) out vec3 FragOut;
 layout (location = 1) out vec3 SaturationOut;
@@ -49,7 +53,8 @@ layout (location = 1) out vec3 SaturationOut;
 uniform Material material;
 uniform DirLight dirLight;
 uniform vec3 camPos;
-uniform sampler2D shadowDepth;
+uniform sampler2DArray shadowDepth;
+uniform mat4 lightSpaceMatrices[4];
 
 const float PI = 3.14159265359;
 const float PositiveExponent = 40.0;
@@ -105,22 +110,33 @@ vec3 srgb_to_linear(vec3 color) {
 }
 
 float calcShadowPCF(vec3 normal) {
-    vec3 coords = FragPos_lS.xyz / FragPos_lS.w;
+    vec4 fragPos_vS = camView * vec4(FragPos, 1.0);
+    float depth = abs(fragPos_vS.z);
+
+    vec4 res = step(depth, vec4(dirLight.cascadeDistances[0], dirLight.cascadeDistances[1], dirLight.cascadeDistances[2], dirLight.farPlane));
+    int layer = 4 - int(res.x + res.y + res.z + res.w);
+    vec4 fragPos_lS = lightSpaceMatrices[layer] * vec4(FragPos, 1.0);
+
+    vec3 coords = fragPos_lS.xyz / fragPos_lS.w;
     coords = coords * 0.5 + 0.5;
 
     float bias = max(0.05 * (1.0 - dot(normal, -dirLight.direction)), 0.005);
-    float closestDepth = texture(shadowDepth, coords.xy).x;
+    if (layer == 4) {
+        bias *= 1.0 / dirLight.farPlane * 0.5;
+    } else {
+        bias *= 1.0 / (dirLight.cascadeDistances[layer] * 0.5);
+    }
     float currDepth = coords.z;
 
     float shadow = 0.0;
     if (!(currDepth > 1.0)) {
         vec2 texelSize = vec2(1.0);
-        texelSize /= textureSize(shadowDepth, 0);
+        texelSize /= vec2(textureSize(shadowDepth, 0));
 
         // PCF
         for (int i = 0; i < NUM_PCF_SAMPLES; i++) {
             float pcfDepth = 1.0;
-            pcfDepth = texture(shadowDepth, coords.xy + Poisson[i] * texelSize).r;
+            pcfDepth = texture(shadowDepth, vec3(coords.xy + Poisson[i] * texelSize, layer)).r;
             shadow += currDepth - bias > pcfDepth ? 1.0 : 0.0;
         }
         shadow /= float(NUM_PCF_SAMPLES);

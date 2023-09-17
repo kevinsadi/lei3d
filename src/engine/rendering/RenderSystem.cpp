@@ -4,6 +4,7 @@
 #include "components/SkyBox.hpp"
 #include "logging/GLDebug.hpp"
 
+#include "glm/gtc/type_ptr.hpp"
 #include <array>
 
 namespace lei3d
@@ -16,7 +17,7 @@ namespace lei3d
 
 		forwardShader = Shader("./data/shaders/forward.vert", "./data/shaders/forward.frag");
 		postprocessShader = Shader("./data/shaders/screenspace_quad.vert", "./data/shaders/postprocess.frag");
-		shadowCSMShader = Shader("./data/shaders/shadow_depth.vert", "./data/shaders/null.frag");
+		shadowCSMShader = Shader("./data/shaders/shadow_depth.vert", "./data/shaders/null.frag", "./data/shaders/depth_cascades.geom");
 
 		glGenVertexArrays(1, &dummyVAO);
 
@@ -64,19 +65,24 @@ namespace lei3d
 
 		glGenFramebuffers(1, &shadowFBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, shadowFBO);
-
 		glGenTextures(1, &shadowDepth);
 
-		// depth map; unused
-		glBindTexture(GL_TEXTURE_2D, shadowDepth);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, shadowResolution, shadowResolution, 0, GL_DEPTH_COMPONENT,
-			GL_FLOAT, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowDepth, 0);
+		// depth map
+		glBindTexture(GL_TEXTURE_2D_ARRAY, shadowDepth);
+		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32F, shadowResolution, shadowResolution, 4, 0, GL_DEPTH_COMPONENT,
+			GL_FLOAT, nullptr); ///< should always be 4 levels
+		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowDepth, 0);
 
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-		///< error checks
+
+//		unsigned int lightMatsIdx = glGetUniformBlockIndex(shadowCSMShader.getShaderID(), "LightSpaceMatrices");
+//		glUniformBlockBinding(shadowCSMShader.getShaderID(), lightMatsIdx, 1);
+//		lightMatsIdx = glGetUniformBlockIndex(forwardShader.getShaderID(), "LightSpaceMatrices");
+//		glUniformBlockBinding(forwardShader.getShaderID(), lightMatsIdx, 1);
 	}
 
 	void RenderSystem::draw(const Scene& scene, const SceneView& view)
@@ -88,8 +94,8 @@ namespace lei3d
 		glClearColor(0.2f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		Camera&						camera = view.ActiveCamera(scene);
-		SkyBox*						skyBox = nullptr;
+		Camera& camera = view.ActiveCamera(scene);
+		SkyBox* skyBox = nullptr;
 		std::vector<ModelInstance*> modelEntities;
 		for (auto& entity : scene.m_Entities)
 		{
@@ -136,11 +142,21 @@ namespace lei3d
 		forwardShader.setVec3("dirLight.direction", light->direction);
 		forwardShader.setVec3("dirLight.color", light->color);
 		forwardShader.setFloat("dirLight.intensity", light->intensity);
-		forwardShader.setUniformMat4("lightSpaceMatrix", lightSpaceMat);
+		forwardShader.setFloat("dirLight.farPlane", camera.GetFarPlane());
+		for (int i = 0; i < light->cascadeLevels.size(); i++)
+		{
+			forwardShader.setFloat(("dirLight.cascadeDistances[" + std::to_string(i) + "]"), light->cascadeLevels[i]);
+		}
+//		glBindBufferBase(GL_UNIFORM_BUFFER, 1, light->lsmUBO);
+
+		for (int i = 0; i < light->lightSpaceMatrices.size(); i++)
+		{
+			forwardShader.setUniformMat4(("lightSpaceMatrices[" + std::to_string(i) + "]"), light->lightSpaceMatrices[i]);
+		}
 
 		forwardShader.setInt("shadowDepth", 1);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, shadowDepth);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, shadowDepth);
 
 		for (auto& obj : objects)
 		{
@@ -182,9 +198,9 @@ namespace lei3d
 
 		// draw a full screen quad, sample from rendered textures
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, rawTexture); // 0
+		glBindTexture(GL_TEXTURE_2D, rawTexture);	   // 0
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, saturationMask); // 1
+		glBindTexture(GL_TEXTURE_2D, saturationMask);  // 1
 		postprocessShader.setInt("RawFinalImage", 0);
 		postprocessShader.setInt("SaturationMask", 1); // match active texture bindings
 
@@ -205,17 +221,25 @@ namespace lei3d
 		shadowCSMShader.bind();
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, shadowFBO);
-		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
 		glViewport(0, 0, shadowResolution, shadowResolution);
 		glCullFace(GL_FRONT);
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST); // enable drawing to depth mask and depth testing
-		glClearColor(0.f, 0.f, 0.f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_DEPTH_BUFFER_BIT);
 
-		lightSpaceMat = getLightSpaceMatrix(light, 0.1f, 500.f, camera);	// TODO: set it to camera planes?
-		shadowCSMShader.setUniformMat4("lightSpaceMatrix", lightSpaceMat);
+		light->lightSpaceMatrices = getLightSpaceMatrices(light, camera);
+		for (int i = 0; i < light->lightSpaceMatrices.size(); i++)
+		{
+			shadowCSMShader.setUniformMat4(("lightSpaceMatrices[" + std::to_string(i) + "]"), light->lightSpaceMatrices[i]);
+		}
+		// TODO: figure out why UBOs not working later
+	//		glBindBuffer(GL_UNIFORM_BUFFER, light->lsmUBO);
+	//		for (int i = 0; i < light->lightSpaceMatrices.size(); i++) {
+	//			printf("%llu %llu\n", i * sizeof(glm::mat4x4), sizeof(glm::mat4x4));
+	//			GLCall(glBufferSubData(GL_UNIFORM_BUFFER, i * sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(light->lightSpaceMatrices[i])));
+	//		}
+	//		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		for (auto& obj : objects)
 		{
@@ -246,7 +270,7 @@ namespace lei3d
 
 	glm::mat4 RenderSystem::getLightSpaceMatrix(DirectionalLight* light, float nearPlane, float farPlane, Camera& camera)
 	{
-		const glm::mat4	projection = glm::perspective(glm::radians(camera.GetFOV()), (float)scwidth / (float)scheight, nearPlane, farPlane);
+		const glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), (float)scwidth / (float)scheight, nearPlane, farPlane);
 		const std::vector<glm::vec4> corners = getFrustumCornersWS(projection, camera.GetView());
 
 		glm::vec3 center = glm::vec3(0.f);
@@ -274,7 +298,6 @@ namespace lei3d
 			pmaxZ = std::max(pmaxZ, trf.z);
 		}
 
-		float frustum_fitting_factor = 1.f;
 		if (pminZ < 0)
 		{
 			pminZ *= frustum_fitting_factor;
@@ -292,10 +315,30 @@ namespace lei3d
 			pmaxZ *= frustum_fitting_factor;
 		}
 
-		light->nearPlane = pminZ;
-		light->farPlane = pmaxZ;
 		const glm::mat4 lightProj = glm::ortho(pminX, pmaxX, pminY, pmaxY, pminZ, pmaxZ);
 		return lightProj * lightView;
+	}
+
+	std::vector<glm::mat4> RenderSystem::getLightSpaceMatrices(DirectionalLight* light, Camera& camera)
+	{
+		std::vector<glm::mat4> matrices;
+		matrices.reserve(light->cascadeLevels.size() + 1);
+		for (int i = 0; i < light->cascadeLevels.size() + 1; i++)
+		{
+			if (i == 0)
+			{
+				matrices.push_back(getLightSpaceMatrix(light, camera.GetNearPlane(), light->cascadeLevels[i], camera));
+			}
+			else if (i < light->cascadeLevels.size())
+			{
+				matrices.push_back(getLightSpaceMatrix(light, light->cascadeLevels[i - 1], light->cascadeLevels[i], camera));
+			}
+			else
+			{
+				matrices.push_back(getLightSpaceMatrix(light, light->cascadeLevels[i - 1], camera.GetFarPlane(), camera));
+			}
+		}
+		return matrices;
 	}
 
 } // namespace lei3d

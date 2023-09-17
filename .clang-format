@@ -3,7 +3,8 @@ BasedOnStyle: LLVM
 
 AccessModifierOffset: -4
 AlignAfterOpenBracket: DontAlign
-AlignConsecutiveDeclarations: true
+AlignConsecutiveMacros: Consecutive
+AlignConsecutiveDeclarations: None
 AlignEscapedNewlines: Left
 AlignOperands: DontAlign
 AlignTrailingComments: true
@@ -42,6 +43,6 @@ IndentPPDirectives: BeforeHash
 IndentWidth: 4
 NamespaceIndentation: All
 PointerAlignment: Left
-SortIncludes: false
+SortIncludes: Never
 TabWidth: 4
 UseTab: Always

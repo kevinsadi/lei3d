@@ -112,6 +112,16 @@ namespace lei3d
 		return m_Pitch;
 	}
 
+	float Camera::GetNearPlane() const
+	{
+		return m_NearPlane;
+	}
+
+	float Camera::GetFarPlane() const
+	{
+		return m_FarPlane;
+	}
+
 	void Camera::SetFOV(float fovDeg)
 	{
 		m_FOVDeg = fovDeg;
