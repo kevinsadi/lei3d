@@ -13,21 +13,22 @@ namespace lei3d
 	{
 	public:
 		// CHARACTER CONTROLLER PARAMETERS
-		float m_gravity = 15.24f;
-
 		float m_accel = 50.0f;
-		float m_airAccel = 800.0f;
+		float m_airAccel = 2000.0f;
 		float m_maxSpeed = 500.0f;
-		float m_maxAirSpeed = 0.575f;
+		float m_maxAirSpeed = 10.575f;
 
 		float m_friction = 1.0f;
-		float m_airFriction = 0.25f;
+		//float m_airFriction = 0.25f;
 
-		float m_jumpPower = 2.f;
-		float m_jumpHeight = 1.f;
+		float m_jumpPower = 7.f;
+		//float m_jumpHeight = 1.f;
 
 		// float m_maxSpeed = 40.0f;
 		//  float m_maxVelocity = 100;
+
+		bool m_IsInDynamicsWorld;
+
 	private:
 		class CharacterPhysicsUpdate : public btActionInterface
 		{
@@ -74,6 +75,7 @@ namespace lei3d
 		void Update() override;
 		void PhysicsUpdate() override;
 		void OnImGuiRender() override;
+		void OnReset() override;
 
 		bool IsGrounded() const;
 

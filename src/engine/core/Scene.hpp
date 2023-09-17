@@ -81,6 +81,7 @@ namespace lei3d
 		virtual void OnUpdate() {}
 		virtual void OnPhysicsUpdate() {}
 		virtual void OnDestroy() {}
+		virtual void OnReset() {}
 
 		virtual Camera& GetMainCamera() const; //Scene must have some camera created (basically just the first person camera lmao.
 

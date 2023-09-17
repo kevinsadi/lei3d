@@ -29,6 +29,24 @@ namespace lei3d
 	void CharacterController::Start()
 	{
 		LEI_TRACE("Character Controller started");
+
+		//Add player back into the world if they are not in it.
+		if (!m_IsInDynamicsWorld)
+		{
+			PhysicsWorld& world = SceneManager::ActiveScene().GetPhysicsWorld();
+			world.m_dynamicsWorld->addRigidBody(m_RigidBody);
+			m_IsInDynamicsWorld = true;
+		}
+
+		//Set the player's physics transform to the entity transform.
+		btTransform trans;
+		trans.setIdentity();
+		trans.setOrigin(glmToBTVec3(m_Entity.m_Transform.position));
+
+		//Reset Rigidbody & Ground Check
+		m_RigidBody->setWorldTransform(trans);
+		m_RigidBody->setLinearVelocity({ 0.0f, 0.0f, 0.0f });
+		m_GroundCheckObj->setWorldTransform(getGroundCheckTransform(trans));
 	}
 
 	/**
@@ -87,10 +105,25 @@ namespace lei3d
 	void CharacterController::PhysicsUpdate()
 	{
 		btTransform characterTrans;
-		m_MotionState->getWorldTransform(characterTrans);
+		// if entity pos changed
+		if (m_Entity.m_ResetTransform) {
+			m_Entity.m_ResetTransform = false;
+			characterTrans = m_Entity.getBTTransform();
+			m_RigidBody->setWorldTransform(characterTrans);
+			m_MotionState->setWorldTransform(characterTrans);
+		} else {
+			m_MotionState->getWorldTransform(characterTrans);
+		}
 		m_GroundCheckObj->setWorldTransform(getGroundCheckTransform(characterTrans));
-
 		m_Entity.setFromBTTransform(characterTrans);
+	}
+
+	void CharacterController::OnReset()
+	{
+		//Remove player from the world first
+		PhysicsWorld& world = SceneManager::ActiveScene().GetPhysicsWorld();
+		world.m_dynamicsWorld->removeRigidBody(m_RigidBody);
+		m_IsInDynamicsWorld = false;
 	}
 
 	btTransform CharacterController::getGroundCheckTransform(const btTransform& parentTransform)
@@ -114,17 +147,16 @@ namespace lei3d
 		{
 			ImGui::Text("Grounded: %s", m_Grounded ? "True" : "False");
 
-			ImGui::InputFloat("Gravity", &m_gravity);
 			ImGui::InputFloat("Ground Acceleration", &m_accel);
 			ImGui::InputFloat("Air Acceleration", &m_airAccel);
 			ImGui::InputFloat("Max Speed", &m_maxSpeed);
 			ImGui::InputFloat("Max Air Speed", &m_maxAirSpeed);
 
 			ImGui::InputFloat("Friction", &m_friction);
-			ImGui::InputFloat("Air Friction", &m_airFriction);
+			//ImGui::InputFloat("Air Friction", &m_airFriction);
 
 			ImGui::InputFloat("Jump Power", &m_jumpPower);
-			ImGui::InputFloat("Jump Height", &m_jumpHeight);
+			//ImGui::InputFloat("Jump Height", &m_jumpHeight);
 		}
 	}
 

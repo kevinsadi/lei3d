@@ -19,7 +19,8 @@ namespace lei3d
         ~AudioPlayer();
 
         static AudioPlayer& GetAudioPlayer();
-        
+
+        static void PlayMusic(const std::string& musicName);
         static void PlaySFX(const std::string& sfxName);
 
         static void PlaySFXForMilliseconds(const std::string& sfxName, long milliseconds);

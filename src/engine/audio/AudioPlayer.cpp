@@ -39,6 +39,13 @@ namespace lei3d
 		return *(s_AudioPlayer);
 	}
 
+	void AudioPlayer::PlayMusic(const std::string& musicName)
+	{
+		std::string musicPath = "data/audio/" + musicName + ".mp3";
+
+		ma_engine_play_sound(s_AudioPlayer->m_AudioEngine.get(), musicPath.c_str(), NULL);
+	}
+
 	void AudioPlayer::PlaySFX(const std::string& sfxName)
 	{
 		std::string sfxPath = "data/audio/sfx/" + sfxName + ".mp3";

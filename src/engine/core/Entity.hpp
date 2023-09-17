@@ -34,6 +34,7 @@ namespace lei3d
 
 	public:
 		Transform m_Transform;
+		bool m_ResetTransform;
 
 		Entity();
 		Entity(const std::string& name);
@@ -45,6 +46,7 @@ namespace lei3d
 		void PhysicsUpdate();
 		void Render();
 		void OnDestroy();
+		void OnReset();
 
 		void OnEditorUpdate();
 
