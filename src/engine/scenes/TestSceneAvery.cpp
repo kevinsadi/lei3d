@@ -110,6 +110,12 @@ namespace lei3d
 			std::cout << "Pressing K Key" << std::endl;
 			AudioPlayer::PlaySFXForMilliseconds("landing", 5000);
 		}
+
+		if (glfwGetKey(Application::Window(), GLFW_KEY_L) == GLFW_PRESS)
+		{
+			std::cout << "Pressing L Bozo Key" << std::endl;
+			AudioPlayer::PlaySFXForMilliseconds("../breakcore", 5000);
+		}
 	}
 
 	void TestSceneAvery::OnPhysicsUpdate()

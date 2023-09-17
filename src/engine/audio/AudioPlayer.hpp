@@ -23,7 +23,7 @@ namespace lei3d
         static void PlayMusic(const std::string& musicName);
         static void PlaySFX(const std::string& sfxName);
 
-        static void PlaySFXForMilliseconds(const std::string& sfxName, long milliseconds);
+        static void PlaySFXForMilliseconds(const std::string& sfxName, long milliseconds, float volume = 1.0f);
 
         std::unique_ptr<ma_engine> m_AudioEngine;
 

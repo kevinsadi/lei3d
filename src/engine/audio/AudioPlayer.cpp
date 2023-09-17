@@ -52,34 +52,9 @@ namespace lei3d
 		ma_engine_play_sound(s_AudioPlayer->m_AudioEngine.get(), sfxPath.c_str(), NULL);
 	}
 
-	/**
-	 * This method is pulled directly from miniaudio's example code for their simple mixing.
-	 * @param 
-	 * @param
-	 * @param
-	 * @param frameCount number of frames to count
-	 */
-	void AudioPlayer::dataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
+	void AudioPlayer::PlaySFXForMilliseconds(const std::string& sfxName, long milliseconds, float volume)
 	{
-		ma_decoder* pDecoder = (ma_decoder*)pDevice->pUserData;
-		if (pDecoder == NULL)
-		{
-			return;
-		}
-
-		/* Reading PCM frames will loop based on what we specified when called ma_data_source_set_looping(). */
-		ma_data_source_read_pcm_frames(pDecoder, pOutput, frameCount, NULL);
-
-		(void)pInput;
-	}
-
-	void AudioPlayer::PlaySFXForMilliseconds(const std::string& sfxName, long milliseconds)
-	{
-		ma_result		 result;
-		//ma_decoder		 decoder;
-		//ma_device_config deviceConfig;
-		//ma_device		 device;
-		//ma_uint64		 framesRead = milliseconds;
+		ma_result result;
 
 		std::string sfxPath = "data/audio/sfx/" + sfxName + ".mp3";
 
@@ -92,11 +67,12 @@ namespace lei3d
 			return; // Failed to load sound.
 		}
 
-		std::cout << "RESULT: "<< result << "\t\tWe made it this far at least!" << std::endl;
-
+		ma_sound_set_volume(&sound, volume);
 		ma_sound_start(&sound);
-
-		std::cout << "OKIE SOUND START GOT CALLED!" << std::endl;
+		ma_sound_set_looping(&sound, MA_TRUE);
+		std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+		ma_sound_set_looping(&sound, MA_FALSE);
+		ma_sound_uninit(&sound);
 
 	}
 } // namespace lei3d
