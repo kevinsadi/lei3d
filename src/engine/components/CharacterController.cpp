@@ -63,8 +63,9 @@ namespace lei3d
 		m_GroundCheckLocalPos = btVector3(0.f, -height, 0.f);
 
 		m_Collider = new btCapsuleShape(btScalar{ width }, btScalar{ height });
+		m_Collider->setMargin(0.9);
 
-		btScalar  mass{ 1.f };
+		btScalar  mass{ 10.f };
 		btVector3 localInertia{ 0.0f, 0.0f, 0.0f };
 		m_Collider->calculateLocalInertia(mass, localInertia);
 
@@ -84,6 +85,7 @@ namespace lei3d
 		btTransform groundCheckTrans = getGroundCheckTransform(startTransform);
 
 		m_GroundCheckCollider = new btSphereShape(m_GroundCheckDist);
+		m_GroundCheckCollider->setMargin(0.9);
 		m_GroundCheckObj = new btCollisionObject();
 		m_GroundCheckObj->setCollisionShape(m_GroundCheckCollider);
 		m_GroundCheckObj->setWorldTransform(groundCheckTrans);
@@ -106,12 +108,15 @@ namespace lei3d
 	{
 		btTransform characterTrans;
 		// if entity pos changed
-		if (m_Entity.m_ResetTransform) {
+		if (m_Entity.m_ResetTransform)
+		{
 			m_Entity.m_ResetTransform = false;
 			characterTrans = m_Entity.getBTTransform();
 			m_RigidBody->setWorldTransform(characterTrans);
 			m_MotionState->setWorldTransform(characterTrans);
-		} else {
+		}
+		else
+		{
 			m_MotionState->getWorldTransform(characterTrans);
 		}
 		m_GroundCheckObj->setWorldTransform(getGroundCheckTransform(characterTrans));

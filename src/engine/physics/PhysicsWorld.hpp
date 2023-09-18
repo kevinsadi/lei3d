@@ -15,8 +15,9 @@ namespace lei3d
 	class PhysicsWorld
 	{
 	private:
-		bool m_Debug = false;
-		float m_Gravity = 40.0f;
+		bool  m_Debug = false;
+		float m_Gravity = 80.0f;
+
 	public:
 		std::unique_ptr<btDefaultCollisionConfiguration>	 m_collisionConfiguration = nullptr;
 		std::unique_ptr<btCollisionDispatcher>				 m_dispatcher = nullptr;
