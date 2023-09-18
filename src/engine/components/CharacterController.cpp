@@ -65,7 +65,7 @@ namespace lei3d
 		m_Collider = new btCapsuleShape(btScalar{ width }, btScalar{ height });
 		m_Collider->setMargin(0.9);
 
-		btScalar  mass{ 10.f };
+		btScalar  mass{ 7.f };
 		btVector3 localInertia{ 0.0f, 0.0f, 0.0f };
 		m_Collider->calculateLocalInertia(mass, localInertia);
 
@@ -76,6 +76,10 @@ namespace lei3d
 		m_RigidBody = new btRigidBody(rbInfo);
 		m_RigidBody->setSleepingThresholds(0.0, 0.0);
 		m_RigidBody->setAngularFactor(0.0);
+		m_RigidBody->setFriction(0.0);
+		// Enable CCD for a rigid body
+		m_RigidBody->setCcdMotionThreshold(0.0001); // Adjust the threshold as needed
+		m_RigidBody->setCcdSweptSphereRadius(0.4);	// Adjust the swept sphere radius
 
 		PhysicsWorld& world = SceneManager::ActiveScene().GetPhysicsWorld();
 		world.m_dynamicsWorld->addRigidBody(m_RigidBody);
@@ -85,7 +89,7 @@ namespace lei3d
 		btTransform groundCheckTrans = getGroundCheckTransform(startTransform);
 
 		m_GroundCheckCollider = new btSphereShape(m_GroundCheckDist);
-		m_GroundCheckCollider->setMargin(0.9);
+		m_GroundCheckCollider->setMargin(2.0);
 		m_GroundCheckObj = new btCollisionObject();
 		m_GroundCheckObj->setCollisionShape(m_GroundCheckCollider);
 		m_GroundCheckObj->setWorldTransform(groundCheckTrans);
