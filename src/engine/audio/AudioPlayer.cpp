@@ -52,7 +52,13 @@ namespace lei3d
 		ma_engine_play_sound(s_AudioPlayer->m_AudioEngine.get(), sfxPath.c_str(), NULL);
 	}
 
-	void AudioPlayer::PlaySFXForMilliseconds(const std::string& sfxName, long milliseconds, float volume)
+	void AudioPlayer::PlaySFXForMilliseconds(
+		const std::string& sfxName,
+		long milliseconds,
+		float volume,
+		ma_uint64 fadeInLengthInMilliseconds,
+		ma_uint64 fadeOutLengthInMilliseconds
+	)
 	{
 		ma_result result;
 
@@ -68,11 +74,50 @@ namespace lei3d
 		}
 
 		ma_sound_set_volume(&sound, volume);
+		ma_sound_set_fade_in_milliseconds(&sound, 0.0f, volume, fadeInLengthInMilliseconds);
 		ma_sound_start(&sound);
 		ma_sound_set_looping(&sound, MA_TRUE);
-		std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds));
+		std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds - fadeOutLengthInMilliseconds));
+		ma_sound_set_fade_in_milliseconds(&sound, volume, 0.0f, fadeOutLengthInMilliseconds);
+		std::this_thread::sleep_for(std::chrono::milliseconds(fadeOutLengthInMilliseconds));
 		ma_sound_set_looping(&sound, MA_FALSE);
 		ma_sound_uninit(&sound);
 
+	}
+
+	void AudioPlayer::PlaySFXForMilliseconds(const std::string& sfxName, long milliseconds, float volume)
+	{
+		PlaySFXForMilliseconds(sfxName, milliseconds, volume, 0, 0);
+	}
+
+	void AudioPlayer::PlaySFXForMilliseconds(const std::string& sfxName, long milliseconds)
+	{
+		PlaySFXForMilliseconds(sfxName, milliseconds, 1.0f, 0, 0);
+	}
+
+	void AudioPlayer::PlaySFXForSeconds(
+		const std::string& sfxName,
+		long seconds,
+		float volume,
+		ma_uint64 fadeInLengthInSeconds,
+		ma_uint64 fadeOutLengthInSeconds
+	)
+	{
+		AudioPlayer::PlaySFXForMilliseconds(sfxName, seconds * 1000, volume, fadeInLengthInSeconds * 1000, fadeOutLengthInSeconds * 1000);
+	}
+
+	void AudioPlayer::PlaySFXForSeconds(
+		const std::string& sfxName,
+		long			   seconds,
+		float			   volume)
+	{
+		AudioPlayer::PlaySFXForMilliseconds(sfxName, seconds * 1000, volume, 0, 0);
+	}
+
+	void AudioPlayer::PlaySFXForSeconds(
+		const std::string& sfxName,
+		long			   seconds)
+	{
+		AudioPlayer::PlaySFXForMilliseconds(sfxName, seconds * 1000, 1.0f, 0, 0);
 	}
 } // namespace lei3d

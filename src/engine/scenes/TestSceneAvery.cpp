@@ -108,13 +108,13 @@ namespace lei3d
 		if (glfwGetKey(Application::Window(), GLFW_KEY_K) == GLFW_PRESS)
 		{
 			std::cout << "Pressing K Key" << std::endl;
-			AudioPlayer::PlaySFXForMilliseconds("landing", 5000);
+			AudioPlayer::PlaySFXForSeconds("landing", 5, 1.0f, 2, 1);
 		}
 
 		if (glfwGetKey(Application::Window(), GLFW_KEY_L) == GLFW_PRESS)
 		{
 			std::cout << "Pressing L Bozo Key" << std::endl;
-			AudioPlayer::PlaySFXForMilliseconds("../breakcore", 5000);
+			AudioPlayer::PlaySFXForSeconds("../breakcore", 5, 1.0f, 1, 2);
 		}
 	}
 
