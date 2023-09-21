@@ -66,6 +66,7 @@ namespace lei3d
 		m_MotionState = new btDefaultMotionState(meshTransform);
 		btRigidBody::btRigidBodyConstructionInfo rbMeshInfo{ meshMass, m_MotionState, m_Collider, meshLocalInertia };
 		m_RigidBody = new btRigidBody(rbMeshInfo);
+		m_RigidBody->setRestitution(0.0);
 
 		world.m_dynamicsWorld->addRigidBody(m_RigidBody);
 	}
@@ -75,7 +76,8 @@ namespace lei3d
 	{
 		btTransform trans;
 		// if entity pos changed
-		if (m_Entity.m_ResetTransform) {
+		if (m_Entity.m_ResetTransform)
+		{
 			m_Entity.m_ResetTransform = false;
 			trans = m_Entity.getBTTransform();
 			m_RigidBody->setWorldTransform(trans);
