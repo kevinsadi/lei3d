@@ -85,4 +85,12 @@ namespace lei3d
 			m_Entity.setFromBTTransform(trans);
 		}
 	}
+
+	btRigidBody* StaticCollider::getRigidBody()
+	{
+		return this->m_RigidBody;
+	}
+	
+	
+
 } // namespace lei3d

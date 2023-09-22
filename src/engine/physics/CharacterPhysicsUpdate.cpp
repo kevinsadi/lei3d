@@ -111,6 +111,16 @@ namespace lei3d
 		debugDrawer->drawSphere(center, radius, groundCheckColor);
 	}
 
+	btCollisionObject* CharacterController::CharacterPhysicsUpdate::getGroundCheckObj()
+	{
+		return this->m_GroundCheck;
+	}
+
+	btRigidBody* CharacterController::CharacterPhysicsUpdate::getRigidBody()
+	{
+		return this->m_Character;
+	}
+
 	glm::vec3 CharacterController::CharacterPhysicsUpdate::Accelerate(glm::vec3 wishDir, glm::vec3 prevVel, float acceleration, float maxVelocity)
 	{
 		const float projectedSpeed = glm::dot(prevVel, wishDir);

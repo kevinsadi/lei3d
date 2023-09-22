@@ -151,6 +151,16 @@ namespace lei3d
 		return m_Grounded;
 	}
 
+	btCollisionObject* CharacterController::getGroundCheckObj()
+	{
+		return this->m_CharacterPhysicsUpdate->getGroundCheckObj();
+	}
+
+	btRigidBody* CharacterController::getRigidBody()
+	{
+		return m_CharacterPhysicsUpdate->getRigidBody();
+	}
+
 	void CharacterController::OnImGuiRender()
 	{
 		if (ImGui::CollapsingHeader("Character Controller"))
