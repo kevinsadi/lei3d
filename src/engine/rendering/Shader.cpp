@@ -10,11 +10,11 @@ namespace lei3d
 		// another clown emoji
 	}
 
-	Shader::Shader(const char* vertexShaderPath, const char* fragShaderPath)
+	Shader::Shader(const char* vertexShaderPath, const char* fragShaderPath, const char* geomShaderPath)
 	{
 		// read from the files
-		std::string	  vertexCode;
-		std::string	  fragmentCode;
+		std::string vertexCode;
+		std::string fragmentCode;
 		std::ifstream vShaderFile;
 		std::ifstream fShaderFile;
 		fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -80,9 +80,54 @@ namespace lei3d
 			LEI_ERROR("FRAGMENT SHADER COMPILATION FAILED\n\n" + std::string(infoLog));
 		}
 
+		unsigned int geometryShaderID;
+		if (geomShaderPath != nullptr)
+		{
+			std::string geometryCode;
+			std::ifstream gShaderFile;
+			gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+			try
+			{
+				gShaderFile.open(geomShaderPath);
+				std::stringstream gShaderStream;
+				gShaderStream << gShaderFile.rdbuf();
+				gShaderFile.close();
+				geometryCode = gShaderStream.str();
+			}
+			catch (const std::ifstream::failure& e)
+			{
+				if (gShaderFile.fail())
+				{
+					LEI_ERROR("ERROR - Failed to open geometry shader file: " + std::string(geomShaderPath));
+				}
+				else
+				{
+					LEI_ERROR("ERROR - Shader File Not Successfully Read: " + std::string(e.what()));
+				}
+			}
+			const char* gShaderCode = geometryCode.c_str();
+
+			GLCall(geometryShaderID = glCreateShader(GL_GEOMETRY_SHADER));
+			GLCall(glShaderSource(geometryShaderID, 1, &gShaderCode, NULL));
+			GLCall(glCompileShader(geometryShaderID));
+
+			success;
+			GLCall(glGetShaderiv(vertexShaderID, GL_COMPILE_STATUS, &success));
+			if (!success)
+			{
+				GLCall(glGetShaderInfoLog(vertexShaderID, 512, NULL, infoLog));
+				LEI_ERROR("GEOMETRY SHADER COMPILATION FAILED\n\n" + std::string(infoLog));
+			}
+		}
+
 		m_ShaderID = glCreateProgram(); // member variable
 		glAttachShader(m_ShaderID, vertexShaderID);
 		glAttachShader(m_ShaderID, fragmentShaderID);
+		if (geomShaderPath != nullptr)
+		{
+			glAttachShader(m_ShaderID, geometryShaderID);
+		}
 		glLinkProgram(m_ShaderID);
 
 		glGetProgramiv(m_ShaderID, GL_LINK_STATUS, &success);
@@ -94,6 +139,10 @@ namespace lei3d
 
 		glDeleteShader(vertexShaderID);
 		glDeleteShader(fragmentShaderID);
+		if (geomShaderPath != nullptr)
+		{
+			glDeleteShader(geometryShaderID);
+		}
 	}
 
 	/**
