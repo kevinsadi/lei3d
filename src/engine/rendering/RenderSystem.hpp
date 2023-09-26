@@ -33,6 +33,7 @@ namespace lei3d
 		void draw(const Scene& scene, const SceneView& view);
 
 	private:
+		void depthPrePass(const std::vector<ModelInstance*>& objects, Camera& camera);
 		void lightingPass(const std::vector<ModelInstance*>& objects, const std::vector<ColorSource*>& colorSrcs, const DirectionalLight* light, Camera& camera);
 		void environmentPass(const SkyBox& skyBox, Camera& camera);
 		void postprocessPass();
@@ -60,6 +61,7 @@ namespace lei3d
 		float frustum_fitting_factor = 10.f;	// TODO: make configurable through scenes?
 
 		// shaders
+		Shader depthShader;
 		Shader forwardShader;
 		Shader postprocessShader;
 		Shader shadowCSMShader;

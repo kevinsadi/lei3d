@@ -16,6 +16,7 @@ namespace lei3d
 		scwidth = width;
 		scheight = height;
 
+		depthShader = Shader("./data/shaders/depth.vert", "./data/shaders/null.frag");
 		forwardShader = Shader("./data/shaders/forward.vert", "./data/shaders/forward.frag");
 		postprocessShader = Shader("./data/shaders/screenspace_quad.vert", "./data/shaders/postprocess.frag");
 		shadowCSMShader = Shader("./data/shaders/shadow_depth.vert", "./data/shaders/null.frag", "./data/shaders/depth_cascades.geom");
@@ -49,11 +50,11 @@ namespace lei3d
 
 		// depth map
 		glBindTexture(GL_TEXTURE_2D, depthStencilTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, width, height, 0, GL_DEPTH_STENCIL,
-			GL_FLOAT_32_UNSIGNED_INT_24_8_REV, nullptr); // probably won't need stencil
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width, height, 0, GL_DEPTH_COMPONENT,
+			GL_FLOAT, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthStencilTexture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthStencilTexture, 0);
 
 		// post process pass target
 		glBindTexture(GL_TEXTURE_2D, finalTexture);
@@ -70,8 +71,8 @@ namespace lei3d
 
 		// depth map
 		glBindTexture(GL_TEXTURE_2D_ARRAY, shadowDepth);
-		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32F, shadowResolution, shadowResolution, 4, 0, GL_DEPTH_COMPONENT,
-			GL_FLOAT, nullptr); ///< should always be 4 levels
+		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT16, shadowResolution, shadowResolution, 4, 0, GL_DEPTH_COMPONENT,
+			GL_UNSIGNED_SHORT, nullptr); ///< should always be 4 levels
 		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowDepth, 0);
@@ -119,6 +120,7 @@ namespace lei3d
 		}
 		DirectionalLight* dirLight = scene.m_DirectionalLight.get();
 
+		depthPrePass(modelEntities, camera);
 		genShadowPass(modelEntities, dirLight, camera);
 		lightingPass(modelEntities, colorSources, dirLight, camera);
 		if (skyBox)
@@ -126,6 +128,31 @@ namespace lei3d
 			environmentPass(*skyBox, camera);
 		}
 		postprocessPass();
+	}
+
+	void RenderSystem::depthPrePass(const std::vector<ModelInstance*>& objects, Camera& camera)
+	{
+		depthShader.bind();
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
+		glDrawBuffer(GL_NONE);
+
+		glDepthMask(GL_TRUE);
+		glEnable(GL_DEPTH_TEST); // enable drawing to depth mask and depth testing
+		glDepthFunc(GL_LESS);
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		glm::mat4 projection = camera.GetProj();
+		depthShader.setUniformMat4("projection", projection);
+		glm::mat4 view = camera.GetView();
+		depthShader.setUniformMat4("view", view);
+
+		for (auto& obj : objects)
+		{
+			obj->Draw(&depthShader, RenderFlag::None, 0);
+		}
+
+		glDepthMask(GL_FALSE);
+		glDisable(GL_DEPTH_TEST);
 	}
 
 	void RenderSystem::lightingPass(const std::vector<ModelInstance*>& objects, const std::vector<ColorSource*>& colorSrcs, const DirectionalLight* light, Camera& camera)
@@ -136,10 +163,10 @@ namespace lei3d
 		std::array<GLenum, 2> drawBuffers{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
 		glDrawBuffers(drawBuffers.size(), drawBuffers.data()); // set attachment targets as 0 and 1
 
-		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST); // enable drawing to depth mask and depth testing
+		glDepthFunc(GL_EQUAL);
 		glClearColor(0.f, 0.f, 0.f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 
 		glm::mat4 projection = camera.GetProj();
 		forwardShader.setUniformMat4("projection", projection);
@@ -179,7 +206,7 @@ namespace lei3d
 			obj->Draw(&forwardShader, RenderFlag::BindImages, 2);
 		}
 
-		glDepthMask(GL_FALSE);
+		glDepthFunc(GL_LESS);
 		glDisable(GL_DEPTH_TEST);
 	}
 
