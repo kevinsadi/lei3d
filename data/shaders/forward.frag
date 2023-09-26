@@ -37,6 +37,11 @@ struct DirLight {
     float cascadeDistances[3];
 };
 
+struct ColorSource {
+    vec3 position;
+    float radius;
+};
+
 //layout (std140) uniform LightSpaceMatrices {
 //    mat4 lightSpaceMatrices[4];
 //};
@@ -55,6 +60,9 @@ uniform DirLight dirLight;
 uniform vec3 camPos;
 uniform sampler2DArray shadowDepth;
 uniform mat4 lightSpaceMatrices[4];
+
+uniform ColorSource colorSources[5];
+uniform int numColorSources;
 
 const float PI = 3.14159265359;
 const float PositiveExponent = 40.0;
@@ -209,11 +217,15 @@ void main() {
 
     FragOut = color;
 
-    // TODO: temporary, mock position and radius of color source
-    vec3 srcPos = vec3(0, 0.5, 1.2);
-    float srcR = 100;
-    float distToSrc = distance(srcPos, FragPos);
-    float satFactor = clamp(inverseLerp(distToSrc, srcR + 0.5, srcR), 0, 1);
+    float satFactor = 0.0;
+    for (int i = 0; i < numColorSources; i++) {
+        vec3 p = colorSources[i].position;
+        float r = colorSources[i].radius;
+        float distToSrc = distance(p, FragPos);
+        satFactor += clamp(inverseLerp(distToSrc, r + 0.5, r), 0, 1);
+    }
+    satFactor = clamp(satFactor, 0, 1);
+
     SaturationOut = vec3(satFactor);
 }
 

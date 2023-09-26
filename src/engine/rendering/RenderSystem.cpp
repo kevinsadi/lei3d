@@ -1,6 +1,7 @@
 #include "RenderSystem.hpp"
 
 #include "components/ModelInstance.hpp"
+#include "components/ColorSource.hpp"
 #include "components/SkyBox.hpp"
 #include "logging/GLDebug.hpp"
 
@@ -97,6 +98,7 @@ namespace lei3d
 		Camera& camera = view.ActiveCamera(scene);
 		SkyBox* skyBox = nullptr;
 		std::vector<ModelInstance*> modelEntities;
+		std::vector<ColorSource*> colorSources;
 		for (auto& entity : scene.m_Entities)
 		{
 			if (auto mi = entity->GetComponent<ModelInstance>())
@@ -107,11 +109,18 @@ namespace lei3d
 			{
 				skyBox = sb;
 			}
+			if (auto cs = entity->GetComponent<ColorSource>())
+			{
+				if (cs->active)
+				{
+					colorSources.push_back(cs);
+				}
+			}
 		}
 		DirectionalLight* dirLight = scene.m_DirectionalLight.get();
 
 		genShadowPass(modelEntities, dirLight, camera);
-		lightingPass(modelEntities, dirLight, camera);
+		lightingPass(modelEntities, colorSources, dirLight, camera);
 		if (skyBox)
 		{
 			environmentPass(*skyBox, camera);
@@ -119,7 +128,7 @@ namespace lei3d
 		postprocessPass();
 	}
 
-	void RenderSystem::lightingPass(const std::vector<ModelInstance*>& objects, const DirectionalLight* light, Camera& camera)
+	void RenderSystem::lightingPass(const std::vector<ModelInstance*>& objects, const std::vector<ColorSource*>& colorSrcs, const DirectionalLight* light, Camera& camera)
 	{
 		forwardShader.bind();
 
@@ -153,6 +162,13 @@ namespace lei3d
 		{
 			forwardShader.setUniformMat4(("lightSpaceMatrices[" + std::to_string(i) + "]"), light->lightSpaceMatrices[i]);
 		}
+
+		for (int i = 0; i < colorSrcs.size(); i++)
+		{
+			forwardShader.setVec3("colorSources[" + std::to_string(i) + "].position", colorSrcs[i]->GetPosition());
+			forwardShader.setFloat("colorSources[" + std::to_string(i) + "].radius", colorSrcs[i]->GetRadius());
+		}
+		forwardShader.setInt("numColorSources", colorSrcs.size());
 
 		forwardShader.setInt("shadowDepth", 1);
 		glActiveTexture(GL_TEXTURE1);

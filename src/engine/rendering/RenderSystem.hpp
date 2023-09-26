@@ -11,6 +11,7 @@ namespace lei3d
 {
 
 	class ModelInstance;
+	class ColorSource;
 	class SkyBox;
 
 	class Scene;
@@ -32,7 +33,7 @@ namespace lei3d
 		void draw(const Scene& scene, const SceneView& view);
 
 	private:
-		void lightingPass(const std::vector<ModelInstance*>& objects, const DirectionalLight* light, Camera& camera);
+		void lightingPass(const std::vector<ModelInstance*>& objects, const std::vector<ColorSource*>& colorSrcs, const DirectionalLight* light, Camera& camera);
 		void environmentPass(const SkyBox& skyBox, Camera& camera);
 		void postprocessPass();
 
