@@ -6,6 +6,8 @@
 
 #include <array>
 
+#include "core/Application.hpp"
+
 namespace lei3d
 {
 
@@ -119,6 +121,7 @@ namespace lei3d
 			environmentPass(*skyBox, camera);
 		}
 		postprocessPass();
+		UiPass();
 	}
 
 	void RenderSystem::lightingPass(const std::vector<ModelInstance*>& objects, const DirectionalLight* light, Camera& camera)
@@ -309,6 +312,11 @@ namespace lei3d
 		light->farPlane = pmaxZ;
 		const glm::mat4 lightProj = glm::ortho(pminX, pmaxX, pminY, pmaxY, pminZ, pmaxZ);
 		return lightProj * lightView;
+	}
+
+	void RenderSystem::UiPass()
+	{
+		//Application::GetFontRenderer().RenderText("Hello World", 100, 100, 100, glm::vec4(1.0f), glm::vec2(scwidth, scheight));
 	}
 
 } // namespace lei3d

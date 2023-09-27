@@ -24,6 +24,8 @@
 #include <chrono>
 #include <thread>
 
+#include "rendering/gui/fontrenderer/FontRenderer.hpp"
+
 namespace lei3d
 {
 	class AppGUI;
@@ -48,6 +50,7 @@ namespace lei3d
 		//Should we keep these on the stack? idk
 		RenderSystem	  m_Renderer;
 		PrimitiveRenderer m_PrimitiveRenderer;
+		FontRenderer	  m_fontRenderer;
 
 		// NOTE: Don't modify this directly. Use SetUIActive.
 		bool m_UIActive = false;
@@ -68,6 +71,7 @@ namespace lei3d
 		static float			  DeltaTime();
 		static SceneView&		  GetSceneView();
 		static PrimitiveRenderer& GetPrimitiveRenderer();
+		static FontRenderer&	  GetFontRenderer();
 
 		static inline Camera& GetSceneCamera()
 		{

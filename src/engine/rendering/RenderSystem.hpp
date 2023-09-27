@@ -40,6 +40,8 @@ namespace lei3d
 		std::vector<glm::vec4> getFrustumCornersWS(const glm::mat4& projection, const glm::mat4& view);
 		glm::mat4 getLightSpaceMatrix(DirectionalLight* light, float nearPlane, float farPlane, Camera& camera);
 
+		void UiPass();
+
 		// offscreen render target objects
 		unsigned int FBO;
 		unsigned int rawTexture;
