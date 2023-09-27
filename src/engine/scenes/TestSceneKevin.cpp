@@ -7,6 +7,7 @@
 #include "components/SkyBox.hpp"
 #include "components/StaticCollider.hpp"
 #include "components/FollowCameraController.hpp"
+#include "components/TimerComponent.hpp"
 
 #include "logging/GLDebug.hpp"
 #include "physics/PhysicsWorld.hpp"
@@ -65,6 +66,15 @@ namespace lei3d
 
 		FollowCameraController* followCam = backpackObj.AddComponent<FollowCameraController>();
 		followCam->Init(*m_DefaultCamera, glm::vec3(0.0f, 1.0f, 0.0f));
+
+		// Timer Component EXAMPLE ----------
+		TimerComponent* timerComponent = backpackObj.AddComponent<TimerComponent>();
+		timerComponent->SetTargetTime(5.0f);
+		timerComponent->OnTimerEnd([&]() {
+			LEI_TRACE("Timer Ended!!!");
+		});
+		timerComponent->StartTimer();
+		// -----------------------------------
 
 		// PHYSICS PLAYGROUND---------------------
 		Entity& physicsPlaygroundObj = AddEntity("Physics Playground");
