@@ -40,6 +40,7 @@ struct DirLight {
 struct ColorSource {
     vec3 position;
     float radius;
+    float falloff;
 };
 
 //layout (std140) uniform LightSpaceMatrices {
@@ -54,6 +55,8 @@ in mat3 TBN;
 
 layout (location = 0) out vec3 FragOut;
 layout (location = 1) out vec3 SaturationOut;
+layout (location = 2) out vec3 NormalsOut;
+layout (location = 3) out vec2 MetallicRoughnessOut;
 
 uniform Material material;
 uniform DirLight dirLight;
@@ -160,6 +163,7 @@ void main() {
     float ao = material.use_ao_map ? texture(material.texture_ao, TexCoords).r : material.ambient;
     float roughness = material.use_roughness_map ? texture(material.texture_roughness, TexCoords).g : material.roughness;
     roughness = material.is_glossy_rough ? 1 - roughness : roughness;
+    roughness = max(roughness, 0.025);
     float metallic = material.use_metallic_map ? texture(material.texture_metallic, TexCoords).b : material.metallic;
 
     vec3 N = Normal;
@@ -222,11 +226,13 @@ void main() {
         vec3 p = colorSources[i].position;
         float r = colorSources[i].radius;
         float distToSrc = distance(p, FragPos);
-        satFactor += clamp(inverseLerp(distToSrc, r + 0.5, r), 0, 1);
+        satFactor += clamp(inverseLerp(distToSrc, r + colorSources[i].falloff, r), 0, 1);
     }
     satFactor = clamp(satFactor, 0, 1);
 
     SaturationOut = vec3(satFactor);
+    NormalsOut = N;
+    MetallicRoughnessOut = vec2(metallic, roughness);
 }
 
 float distributionGGX(vec3 N, vec3 H, float roughness) {

@@ -21,6 +21,9 @@ namespace lei3d
 		postprocessShader = Shader("./data/shaders/screenspace_quad.vert", "./data/shaders/postprocess.frag");
 		shadowCSMShader = Shader("./data/shaders/shadow_depth.vert", "./data/shaders/null.frag", "./data/shaders/depth_cascades.geom");
 
+		SSRShader = Shader("./data/shaders/screenspace_quad.vert", "./data/shaders/SSR.frag");
+		reflectionShader = Shader("./data/shaders/screenspace_quad.vert", "./data/shaders/reflection_blend.frag");
+
 		glGenVertexArrays(1, &dummyVAO);
 
 		// Offscreen render resources
@@ -30,7 +33,10 @@ namespace lei3d
 
 		glGenTextures(1, &rawTexture);
 		glGenTextures(1, &saturationMask);
-		glGenTextures(1, &depthStencilTexture);
+		glGenTextures(1, &depthTexture);
+		glGenTextures(1, &normalsTexture);
+		glGenTextures(1, &metallicRoughnessTexture);
+		glGenTextures(1, &reflectionTexture);
 		glGenTextures(1, &finalTexture);
 
 		// lighting pass
@@ -48,20 +54,43 @@ namespace lei3d
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, saturationMask, 0);
 
+		// SSR resources
+
+		// screen object normals
+		glBindTexture(GL_TEXTURE_2D, normalsTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, normalsTexture, 0);
+
+		// screen object metallic + roughness
+		glBindTexture(GL_TEXTURE_2D, metallicRoughnessTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, width, height, 0, GL_RG, GL_FLOAT, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, metallicRoughnessTexture, 0);
+
+		// reflection
+		glBindTexture(GL_TEXTURE_2D, reflectionTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, reflectionTexture, 0);
+
 		// depth map
-		glBindTexture(GL_TEXTURE_2D, depthStencilTexture);
+		glBindTexture(GL_TEXTURE_2D, depthTexture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width, height, 0, GL_DEPTH_COMPONENT,
 			GL_FLOAT, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthStencilTexture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
 
 		// post process pass target
 		glBindTexture(GL_TEXTURE_2D, finalTexture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, finalTexture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, finalTexture, 0);
 
 		// Shadow resources
 
@@ -81,6 +110,18 @@ namespace lei3d
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
+		SSRShader.bind();
+		SSRShader.setInt("DepthMap", 0);
+		SSRShader.setInt("NormalMap", 1);
+		SSRShader.setInt("RawFinalImage", 2);
+		SSRShader.setInt("EnvMap", 3);
+
+		reflectionShader.bind();
+		reflectionShader.setInt("DepthMap", 0);
+		reflectionShader.setInt("MetallicRoughnessMap", 1);
+		reflectionShader.setInt("NormalMap", 2);
+		reflectionShader.setInt("ReflectedMap", 3);
+
 //		unsigned int lightMatsIdx = glGetUniformBlockIndex(shadowCSMShader.getShaderID(), "LightSpaceMatrices");
 //		glUniformBlockBinding(shadowCSMShader.getShaderID(), lightMatsIdx, 1);
 //		lightMatsIdx = glGetUniformBlockIndex(forwardShader.getShaderID(), "LightSpaceMatrices");
@@ -91,7 +132,7 @@ namespace lei3d
 	{
 		// clear the blit image
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
-		glDrawBuffer(GL_COLOR_ATTACHMENT2);
+		glDrawBuffer(GL_COLOR_ATTACHMENT5);
 
 		glClearColor(0.2f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -127,6 +168,8 @@ namespace lei3d
 		{
 			environmentPass(*skyBox, camera);
 		}
+
+		indirectLightingPass(*skyBox, camera);
 		postprocessPass();
 	}
 
@@ -160,7 +203,7 @@ namespace lei3d
 		forwardShader.bind();
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
-		std::array<GLenum, 2> drawBuffers{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+		std::array<GLenum, 4> drawBuffers{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
 		glDrawBuffers(drawBuffers.size(), drawBuffers.data()); // set attachment targets as 0 and 1
 
 		glEnable(GL_DEPTH_TEST); // enable drawing to depth mask and depth testing
@@ -194,6 +237,7 @@ namespace lei3d
 		{
 			forwardShader.setVec3("colorSources[" + std::to_string(i) + "].position", colorSrcs[i]->GetPosition());
 			forwardShader.setFloat("colorSources[" + std::to_string(i) + "].radius", colorSrcs[i]->GetRadius());
+			forwardShader.setFloat("colorSources[" + std::to_string(i) + "].falloff", colorSrcs[i]->GetFalloff());
 		}
 		forwardShader.setInt("numColorSources", colorSrcs.size());
 
@@ -213,31 +257,97 @@ namespace lei3d
 	void RenderSystem::environmentPass(const SkyBox& skyBox, Camera& camera)
 	{
 		glEnable(GL_DEPTH_TEST);
-		GLCall(glDepthFunc(GL_LEQUAL)); // we change the depth function here to it passes when testing depth value is equal
-										// to what is current stored
+		GLCall(glDepthFunc(GL_LEQUAL));
+
 		skyBox.skyboxShader.bind();
 		glm::mat4 view = glm::mat4(glm::mat3(camera.GetView()));
 		skyBox.skyboxShader.setUniformMat4("view", view);
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)scwidth / (float)scheight, 0.1f, 400.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)scwidth / (float)scheight, camera.GetNearPlane(), camera.GetFarPlane());
 		skyBox.skyboxShader.setUniformMat4("projection", projection);
 		glm::mat4 model = glm::identity<glm::mat4>();
 		skyBox.skyboxShader.setUniformMat4("model", model);
-		skyBox.skyboxShader.setInt("skyboxCubemap", 0);
-		// -- render the skybox cube
+		skyBox.skyboxShader.setInt("skyboxCubemap", 1);
+
 		GLCall(glBindVertexArray(skyBox.skyboxVAO));
-		GLCall(glActiveTexture(GL_TEXTURE0)); //! could be the problem
+		GLCall(glActiveTexture(GL_TEXTURE1));
 		GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, skyBox.cubeMapTexture));
 		GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
 		GLCall(glBindVertexArray(0));
-		GLCall(glDepthFunc(GL_LESS)); // set depth function back to normal
+		GLCall(glDepthFunc(GL_LESS));
 		glDisable(GL_DEPTH_TEST);
+	}
+
+	void RenderSystem::indirectLightingPass(const SkyBox& skyBox, Camera& camera)
+	{
+		// Generate screen space reflections to texture
+		SSRShader.bind();
+
+		glDrawBuffer(GL_COLOR_ATTACHMENT4);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, depthTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, normalsTexture);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, rawTexture);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyBox.cubeMapTexture);
+
+		glm::mat4 trs = glm::translate(glm::mat4(1.0), glm::vec3(0.5, 0.5, 0.5));
+		trs = trs * glm::scale(glm::mat4(1.0), glm::vec3(0.5, 0.5, 1.0));
+		glm::mat4 screenScale = glm::scale(glm::mat4(1.0), glm::vec3(scwidth, scheight, 1.0));
+		glm::mat4 projToPixel = screenScale * trs * camera.GetProj();
+
+		SSRShader.setUniformMat4("projToPixel", projToPixel);
+		SSRShader.setVec2("screenSize", {scwidth, scheight});
+		glm::mat4 projection = camera.GetProj();
+		glm::mat4 projInv = glm::inverse(projection);
+		SSRShader.setUniformMat4("invProjection", projInv);
+		glm::mat4 view = camera.GetView();
+		glm::mat4 viewInv = glm::inverse(view);
+		SSRShader.setUniformMat4("view", view);
+		SSRShader.setUniformMat4("invView", viewInv);
+		SSRShader.setFloat("nearPlane", camera.GetNearPlane());
+		SSRShader.setFloat("farPlane", camera.GetFarPlane());
+
+		glBindVertexArray(dummyVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindVertexArray(0);
+
+		// Blend reflections onto current render
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_ONE, GL_ONE);
+
+		reflectionShader.bind();
+
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, depthTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, metallicRoughnessTexture);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, normalsTexture);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, reflectionTexture);
+
+		reflectionShader.setVec2("screenSize", {scwidth, scheight});
+		reflectionShader.setVec3("camPos", camera.GetPosition());
+		reflectionShader.setUniformMat4("invView", viewInv);
+		reflectionShader.setUniformMat4("invProjection", projInv);
+
+		glBindVertexArray(dummyVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindVertexArray(0);
+
+		glDisable(GL_BLEND);
 	}
 
 	void RenderSystem::postprocessPass()
 	{
 		postprocessShader.bind();
 
-		glDrawBuffer(GL_COLOR_ATTACHMENT2);
+		glDrawBuffer(GL_COLOR_ATTACHMENT5);
 
 		// draw a full screen quad, sample from rendered textures
 		glActiveTexture(GL_TEXTURE0);
@@ -253,7 +363,7 @@ namespace lei3d
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
-		glReadBuffer(GL_COLOR_ATTACHMENT2);
+		glReadBuffer(GL_COLOR_ATTACHMENT5);
 
 		// blit to screen
 		glBlitFramebuffer(0, 0, scwidth, scheight, 0, 0, scwidth, scheight, GL_COLOR_BUFFER_BIT, GL_LINEAR);

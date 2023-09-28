@@ -83,7 +83,7 @@ namespace lei3d
 		// Test color source
 		Entity& startColorSrcObj = AddEntity("Start Color Area");
 		ColorSource* startSrc = startColorSrcObj.AddComponent<ColorSource>();
-		startSrc->Init(100, true);
+		startSrc->Init(100, 10, true);
 		startColorSrcObj.SetPosition(glm::vec3(-112.5, 505, 3));
 
 		////Test Multiple Components
