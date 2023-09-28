@@ -14,9 +14,10 @@ namespace lei3d
 	{
 	}
 
-	void ColorSource::Init(float r, bool a)
+	void ColorSource::Init(float r, float f, bool a)
 	{
 		radius = r;
+		falloff = f;
 		active = a;
 	}
 
@@ -38,5 +39,10 @@ namespace lei3d
 	glm::vec3 ColorSource::GetPosition()
 	{
 		return m_Entity.m_Transform.position;
+	}
+
+	float ColorSource::GetFalloff()
+	{
+		return falloff;
 	}
 } // namespace lei3d

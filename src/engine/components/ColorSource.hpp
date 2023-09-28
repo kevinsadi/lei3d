@@ -13,17 +13,19 @@ namespace lei3d
 	{
 	public:
 		float radius;
+		float falloff;
 		bool active;
 
 		ColorSource(Entity& entity);
 		~ColorSource();
 
-		void Init(float radius, bool active = false);
+		void Init(float radius, float falloff, bool active = false);
 
 		void ToggleActive();
 		void SetActive(bool active);
 
 		float GetRadius();
+		float GetFalloff();
 		glm::vec3 GetPosition();
 	};
 
