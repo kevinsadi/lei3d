@@ -8,6 +8,8 @@
 #include "glm/gtc/type_ptr.hpp"
 #include <array>
 
+#include "core/Application.hpp"
+
 namespace lei3d
 {
 
@@ -180,6 +182,7 @@ namespace lei3d
 
 		indirectLightingPass(*skyBox, camera);
 		postprocessPass();
+		UiPass();
 	}
 
 	void RenderSystem::depthPrePass(const std::vector<ModelInstance*>& objects, Camera& camera)
@@ -483,6 +486,11 @@ namespace lei3d
 		return lightProj * lightView;
 	}
 
+	void RenderSystem::UiPass()
+	{
+		//Application::GetFontRenderer().RenderText("Hello World", 100, 100, 100, glm::vec4(1.0f), glm::vec2(scwidth, scheight));
+	}
+	
 	std::vector<glm::mat4> RenderSystem::getLightSpaceMatrices(DirectionalLight* light, Camera& camera)
 	{
 		std::vector<glm::mat4> matrices;

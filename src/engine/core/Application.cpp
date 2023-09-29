@@ -139,6 +139,7 @@ namespace lei3d
 		// INIT RENDERER -----------------------------
 		m_Renderer.initialize(screenWidth, screenHeight);
 		m_PrimitiveRenderer.initialize(screenWidth, screenHeight);
+		m_fontRenderer.Init();
 
 		// INPUT CALLBACKS ------------------------------
 		SetupInputCallbacks();
@@ -222,6 +223,11 @@ namespace lei3d
 	PrimitiveRenderer& Application::GetPrimitiveRenderer()
 	{
 		return s_Instance->m_PrimitiveRenderer;
+	}
+
+	FontRenderer& Application::GetFontRenderer()
+	{
+		return s_Instance->m_fontRenderer;
 	}
 
 	// TODO: Put into input class
