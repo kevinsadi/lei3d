@@ -34,6 +34,7 @@ namespace lei3d
 		glGenTextures(1, &rawTexture);
 		glGenTextures(1, &saturationMask);
 		glGenTextures(1, &depthTexture);
+		glGenTextures(1, &albedoTexture);
 		glGenTextures(1, &normalsTexture);
 		glGenTextures(1, &metallicRoughnessTexture);
 		glGenTextures(1, &reflectionTexture);
@@ -56,26 +57,33 @@ namespace lei3d
 
 		// SSR resources
 
+		// screen object albedo
+		glBindTexture(GL_TEXTURE_2D, albedoTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, albedoTexture, 0);
+
 		// screen object normals
 		glBindTexture(GL_TEXTURE_2D, normalsTexture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, normalsTexture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, normalsTexture, 0);
 
 		// screen object metallic + roughness
 		glBindTexture(GL_TEXTURE_2D, metallicRoughnessTexture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, width, height, 0, GL_RG, GL_FLOAT, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, metallicRoughnessTexture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, metallicRoughnessTexture, 0);
 
 		// reflection
 		glBindTexture(GL_TEXTURE_2D, reflectionTexture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, reflectionTexture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, reflectionTexture, 0);
 
 		// depth map
 		glBindTexture(GL_TEXTURE_2D, depthTexture);
@@ -90,7 +98,7 @@ namespace lei3d
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, finalTexture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT6, GL_TEXTURE_2D, finalTexture, 0);
 
 		// Shadow resources
 
@@ -118,9 +126,10 @@ namespace lei3d
 
 		reflectionShader.bind();
 		reflectionShader.setInt("DepthMap", 0);
-		reflectionShader.setInt("MetallicRoughnessMap", 1);
-		reflectionShader.setInt("NormalMap", 2);
-		reflectionShader.setInt("ReflectedMap", 3);
+		reflectionShader.setInt("AlbedoMap", 1);
+		reflectionShader.setInt("MetallicRoughnessMap", 2);
+		reflectionShader.setInt("NormalMap", 3);
+		reflectionShader.setInt("ReflectedMap", 4);
 
 //		unsigned int lightMatsIdx = glGetUniformBlockIndex(shadowCSMShader.getShaderID(), "LightSpaceMatrices");
 //		glUniformBlockBinding(shadowCSMShader.getShaderID(), lightMatsIdx, 1);
@@ -203,7 +212,7 @@ namespace lei3d
 		forwardShader.bind();
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
-		std::array<GLenum, 4> drawBuffers{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+		std::array<GLenum, 5> drawBuffers{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
 		glDrawBuffers(drawBuffers.size(), drawBuffers.data()); // set attachment targets as 0 and 1
 
 		glEnable(GL_DEPTH_TEST); // enable drawing to depth mask and depth testing
@@ -282,7 +291,7 @@ namespace lei3d
 		// Generate screen space reflections to texture
 		SSRShader.bind();
 
-		glDrawBuffer(GL_COLOR_ATTACHMENT4);
+		glDrawBuffer(GL_COLOR_ATTACHMENT5);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, depthTexture);
@@ -325,10 +334,12 @@ namespace lei3d
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, depthTexture);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, metallicRoughnessTexture);
+		glBindTexture(GL_TEXTURE_2D, albedoTexture);
 		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, normalsTexture);
+		glBindTexture(GL_TEXTURE_2D, metallicRoughnessTexture);
 		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, normalsTexture);
+		glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_2D, reflectionTexture);
 
 		reflectionShader.setVec2("screenSize", {scwidth, scheight});
@@ -347,7 +358,7 @@ namespace lei3d
 	{
 		postprocessShader.bind();
 
-		glDrawBuffer(GL_COLOR_ATTACHMENT5);
+		glDrawBuffer(GL_COLOR_ATTACHMENT6);
 
 		// draw a full screen quad, sample from rendered textures
 		glActiveTexture(GL_TEXTURE0);
@@ -363,7 +374,7 @@ namespace lei3d
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
-		glReadBuffer(GL_COLOR_ATTACHMENT5);
+		glReadBuffer(GL_COLOR_ATTACHMENT6);
 
 		// blit to screen
 		glBlitFramebuffer(0, 0, scwidth, scheight, 0, 0, scwidth, scheight, GL_COLOR_BUFFER_BIT, GL_LINEAR);

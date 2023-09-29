@@ -49,6 +49,7 @@ namespace lei3d
 		unsigned int rawTexture;
 		unsigned int saturationMask;
 		unsigned int depthTexture;
+		unsigned int albedoTexture;
 		unsigned int normalsTexture;
 		unsigned int metallicRoughnessTexture;
 		unsigned int reflectionTexture;

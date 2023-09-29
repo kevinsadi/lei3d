@@ -55,8 +55,9 @@ in mat3 TBN;
 
 layout (location = 0) out vec3 FragOut;
 layout (location = 1) out vec3 SaturationOut;
-layout (location = 2) out vec3 NormalsOut;
-layout (location = 3) out vec2 MetallicRoughnessOut;
+layout (location = 2) out vec3 AlbedoOut;
+layout (location = 3) out vec3 NormalsOut;
+layout (location = 4) out vec2 MetallicRoughnessOut;
 
 uniform Material material;
 uniform DirLight dirLight;
@@ -231,6 +232,7 @@ void main() {
     satFactor = clamp(satFactor, 0, 1);
 
     SaturationOut = vec3(satFactor);
+    AlbedoOut = albedo;
     NormalsOut = N;
     MetallicRoughnessOut = vec2(metallic, roughness);
 }
