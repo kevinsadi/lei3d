@@ -41,6 +41,8 @@ namespace lei3d
 		glm::mat4 getLightSpaceMatrix(DirectionalLight* light, float nearPlane, float farPlane, Camera& camera);
 		std::vector<glm::mat4> getLightSpaceMatrices(DirectionalLight* light, Camera& camera);
 
+		void UiPass();
+
 		// offscreen render target objects
 		unsigned int FBO;
 		unsigned int rawTexture;
