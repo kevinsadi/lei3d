@@ -36,9 +36,10 @@ namespace lei3d
 	private:
 		static Application* s_Instance;
 
-		const unsigned int SCREEN_WIDTH = 1200;
-		const unsigned int SCREEN_HEIGHT = 1000;
+		int screenWidth = 1200;
+		int screenHeight = 1000;
 
+		GLFWmonitor* m_Monitor = nullptr;
 		GLFWwindow* m_Window = nullptr;
 
 		// TODO: Refactor things into editor/game
@@ -81,6 +82,7 @@ namespace lei3d
 	private:
 		void Initialize(); // Start the App
 		void FrameTick();  // Called every frame
+		void GetMonitorConfiguration();
 
 		void Update();
 		void Render();
