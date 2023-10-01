@@ -66,8 +66,8 @@ namespace lei3d
 	{
 		// GLFW INITIALIZE --------------------------------
 		glfwInit();
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef __APPLE__
@@ -75,8 +75,10 @@ namespace lei3d
 		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
 #endif
 
-		m_Window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "lei3d", NULL, NULL);
-		if (m_Window == NULL)
+		GetMonitorConfiguration();
+
+		m_Window = glfwCreateWindow(screenWidth, screenHeight, "lei3d", m_Monitor, nullptr);
+		if (m_Window == nullptr)
 		{
 			LEI_WARN("failed to create GLFW window");
 			glfwTerminate();
@@ -90,7 +92,7 @@ namespace lei3d
 			return;
 		}
 
-		GLCall(glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
+		GLCall(glViewport(0, 0, screenWidth, screenHeight));
 
 		// resize the openGL context if a user changes the window size
 		glfwSetFramebufferSizeCallback(m_Window, framebuffer_size_callback);
@@ -135,8 +137,9 @@ namespace lei3d
 		m_AudioPlayer = std::make_unique<AudioPlayer>();
 
 		// INIT RENDERER -----------------------------
-		m_Renderer.initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
-		m_PrimitiveRenderer.initialize(SCREEN_WIDTH, SCREEN_HEIGHT);
+		m_Renderer.initialize(screenWidth, screenHeight);
+		m_PrimitiveRenderer.initialize(screenWidth, screenHeight);
+		m_fontRenderer.Init();
 
 		// INPUT CALLBACKS ------------------------------
 		SetupInputCallbacks();
@@ -220,6 +223,11 @@ namespace lei3d
 	PrimitiveRenderer& Application::GetPrimitiveRenderer()
 	{
 		return s_Instance->m_PrimitiveRenderer;
+	}
+
+	FontRenderer& Application::GetFontRenderer()
+	{
+		return s_Instance->m_fontRenderer;
 	}
 
 	// TODO: Put into input class
@@ -309,6 +317,16 @@ namespace lei3d
 	float Application::DeltaTime()
 	{
 		return s_Instance->m_DeltaTime;
+	}
+
+	void Application::GetMonitorConfiguration()
+	{
+		m_Monitor = glfwGetPrimaryMonitor();
+
+		const GLFWvidmode* mode = glfwGetVideoMode(m_Monitor);
+
+		screenWidth = mode->width;
+		screenHeight = mode->height;
 	}
 
 } // namespace lei3d

@@ -1,10 +1,14 @@
 #include "RenderSystem.hpp"
 
 #include "components/ModelInstance.hpp"
+#include "components/ColorSource.hpp"
 #include "components/SkyBox.hpp"
 #include "logging/GLDebug.hpp"
 
+#include "glm/gtc/type_ptr.hpp"
 #include <array>
+
+#include "core/Application.hpp"
 
 namespace lei3d
 {
@@ -14,9 +18,13 @@ namespace lei3d
 		scwidth = width;
 		scheight = height;
 
+		depthShader = Shader("./data/shaders/depth.vert", "./data/shaders/null.frag");
 		forwardShader = Shader("./data/shaders/forward.vert", "./data/shaders/forward.frag");
 		postprocessShader = Shader("./data/shaders/screenspace_quad.vert", "./data/shaders/postprocess.frag");
-		shadowEVSMShader = Shader("./data/shaders/shadow_depth.vert", "./data/shaders/shadowEVSM.frag");
+		shadowCSMShader = Shader("./data/shaders/shadow_depth.vert", "./data/shaders/null.frag", "./data/shaders/depth_cascades.geom");
+
+		SSRShader = Shader("./data/shaders/screenspace_quad.vert", "./data/shaders/SSR.frag");
+		reflectionShader = Shader("./data/shaders/screenspace_quad.vert", "./data/shaders/reflection_blend.frag");
 
 		glGenVertexArrays(1, &dummyVAO);
 
@@ -27,7 +35,11 @@ namespace lei3d
 
 		glGenTextures(1, &rawTexture);
 		glGenTextures(1, &saturationMask);
-		glGenTextures(1, &depthStencilTexture);
+		glGenTextures(1, &depthTexture);
+		glGenTextures(1, &albedoTexture);
+		glGenTextures(1, &normalsTexture);
+		glGenTextures(1, &metallicRoughnessTexture);
+		glGenTextures(1, &reflectionTexture);
 		glGenTextures(1, &finalTexture);
 
 		// lighting pass
@@ -45,60 +57,101 @@ namespace lei3d
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, saturationMask, 0);
 
-		// depth map
-		glBindTexture(GL_TEXTURE_2D, depthStencilTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, width, height, 0, GL_DEPTH_STENCIL,
-			GL_FLOAT_32_UNSIGNED_INT_24_8_REV, nullptr); // probably won't need stencil
+		// SSR resources
+
+		// screen object albedo
+		glBindTexture(GL_TEXTURE_2D, albedoTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, depthStencilTexture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, albedoTexture, 0);
+
+		// screen object normals
+		glBindTexture(GL_TEXTURE_2D, normalsTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, normalsTexture, 0);
+
+		// screen object metallic + roughness
+		glBindTexture(GL_TEXTURE_2D, metallicRoughnessTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, width, height, 0, GL_RG, GL_FLOAT, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, metallicRoughnessTexture, 0);
+
+		// reflection
+		glBindTexture(GL_TEXTURE_2D, reflectionTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, reflectionTexture, 0);
+
+		// depth map
+		glBindTexture(GL_TEXTURE_2D, depthTexture);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width, height, 0, GL_DEPTH_COMPONENT,
+			GL_FLOAT, nullptr);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
 
 		// post process pass target
 		glBindTexture(GL_TEXTURE_2D, finalTexture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, finalTexture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT6, GL_TEXTURE_2D, finalTexture, 0);
 
 		// Shadow resources
 
 		glGenFramebuffers(1, &shadowFBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, shadowFBO);
-
-		glGenTextures(1, &shadowMoments);
 		glGenTextures(1, &shadowDepth);
 
-		// shadow moments map
-		glBindTexture(GL_TEXTURE_2D, shadowMoments);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, shadowResolution, shadowResolution, 0, GL_RGBA, GL_FLOAT, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, shadowMoments, 0);
+		// depth map
+		glBindTexture(GL_TEXTURE_2D_ARRAY, shadowDepth);
+		glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT16, shadowResolution, shadowResolution, 4, 0, GL_DEPTH_COMPONENT,
+			GL_UNSIGNED_SHORT, nullptr); ///< should always be 4 levels
+		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowDepth, 0);
 
-		// depth map; unused
-		glBindTexture(GL_TEXTURE_2D, shadowDepth);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, shadowResolution, shadowResolution, 0, GL_DEPTH_COMPONENT,
-			GL_FLOAT, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, shadowDepth, 0);
-
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-		///< error checks
+
+		SSRShader.bind();
+		SSRShader.setInt("DepthMap", 0);
+		SSRShader.setInt("NormalMap", 1);
+		SSRShader.setInt("RawFinalImage", 2);
+		SSRShader.setInt("EnvMap", 3);
+
+		reflectionShader.bind();
+		reflectionShader.setInt("DepthMap", 0);
+		reflectionShader.setInt("AlbedoMap", 1);
+		reflectionShader.setInt("MetallicRoughnessMap", 2);
+		reflectionShader.setInt("NormalMap", 3);
+		reflectionShader.setInt("ReflectedMap", 4);
+
+//		unsigned int lightMatsIdx = glGetUniformBlockIndex(shadowCSMShader.getShaderID(), "LightSpaceMatrices");
+//		glUniformBlockBinding(shadowCSMShader.getShaderID(), lightMatsIdx, 1);
+//		lightMatsIdx = glGetUniformBlockIndex(forwardShader.getShaderID(), "LightSpaceMatrices");
+//		glUniformBlockBinding(forwardShader.getShaderID(), lightMatsIdx, 1);
 	}
 
 	void RenderSystem::draw(const Scene& scene, const SceneView& view)
 	{
 		// clear the blit image
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
-		glDrawBuffer(GL_COLOR_ATTACHMENT2);
+		glDrawBuffer(GL_COLOR_ATTACHMENT5);
 
 		glClearColor(0.2f, 0.8f, 0.9f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		Camera&						camera = view.ActiveCamera(scene);
-		SkyBox*						skyBox = nullptr;
+		Camera& camera = view.ActiveCamera(scene);
+		SkyBox* skyBox = nullptr;
 		std::vector<ModelInstance*> modelEntities;
+		std::vector<ColorSource*> colorSources;
 		for (auto& entity : scene.m_Entities)
 		{
 			if (auto mi = entity->GetComponent<ModelInstance>())
@@ -109,30 +162,66 @@ namespace lei3d
 			{
 				skyBox = sb;
 			}
+			if (auto cs = entity->GetComponent<ColorSource>())
+			{
+				if (cs->active)
+				{
+					colorSources.push_back(cs);
+				}
+			}
 		}
 		DirectionalLight* dirLight = scene.m_DirectionalLight.get();
 
+		depthPrePass(modelEntities, camera);
 		genShadowPass(modelEntities, dirLight, camera);
-		lightingPass(modelEntities, dirLight, camera);
+		lightingPass(modelEntities, colorSources, dirLight, camera);
 		if (skyBox)
 		{
 			environmentPass(*skyBox, camera);
 		}
+
+		indirectLightingPass(*skyBox, camera);
 		postprocessPass();
+		UiPass();
 	}
 
-	void RenderSystem::lightingPass(const std::vector<ModelInstance*>& objects, const DirectionalLight* light, Camera& camera)
+	void RenderSystem::depthPrePass(const std::vector<ModelInstance*>& objects, Camera& camera)
+	{
+		depthShader.bind();
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
+		glDrawBuffer(GL_NONE);
+
+		glDepthMask(GL_TRUE);
+		glEnable(GL_DEPTH_TEST); // enable drawing to depth mask and depth testing
+		glDepthFunc(GL_LESS);
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		glm::mat4 projection = camera.GetProj();
+		depthShader.setUniformMat4("projection", projection);
+		glm::mat4 view = camera.GetView();
+		depthShader.setUniformMat4("view", view);
+
+		for (auto& obj : objects)
+		{
+			obj->Draw(&depthShader, RenderFlag::None, 0);
+		}
+
+		glDepthMask(GL_FALSE);
+		glDisable(GL_DEPTH_TEST);
+	}
+
+	void RenderSystem::lightingPass(const std::vector<ModelInstance*>& objects, const std::vector<ColorSource*>& colorSrcs, const DirectionalLight* light, Camera& camera)
 	{
 		forwardShader.bind();
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
-		std::array<GLenum, 2> drawBuffers{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+		std::array<GLenum, 5> drawBuffers{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
 		glDrawBuffers(drawBuffers.size(), drawBuffers.data()); // set attachment targets as 0 and 1
 
-		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST); // enable drawing to depth mask and depth testing
+		glDepthFunc(GL_EQUAL);
 		glClearColor(0.f, 0.f, 0.f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 
 		glm::mat4 projection = camera.GetProj();
 		forwardShader.setUniformMat4("projection", projection);
@@ -144,57 +233,141 @@ namespace lei3d
 		forwardShader.setVec3("dirLight.direction", light->direction);
 		forwardShader.setVec3("dirLight.color", light->color);
 		forwardShader.setFloat("dirLight.intensity", light->intensity);
-//		forwardShader.setFloat("dirLight.nearPlane", light->nearPlane);
-//		forwardShader.setFloat("dirLight.farPlane", light->farPlane);
-		forwardShader.setUniformMat4("lightSpaceMatrix", lightSpaceMat);
+		forwardShader.setFloat("dirLight.farPlane", camera.GetFarPlane());
+		for (int i = 0; i < light->cascadeLevels.size(); i++)
+		{
+			forwardShader.setFloat(("dirLight.cascadeDistances[" + std::to_string(i) + "]"), light->cascadeLevels[i]);
+		}
+//		glBindBufferBase(GL_UNIFORM_BUFFER, 1, light->lsmUBO);
 
-		forwardShader.setInt("shadowMoments", 1);
+		for (int i = 0; i < light->lightSpaceMatrices.size(); i++)
+		{
+			forwardShader.setUniformMat4(("lightSpaceMatrices[" + std::to_string(i) + "]"), light->lightSpaceMatrices[i]);
+		}
+
+		for (int i = 0; i < colorSrcs.size(); i++)
+		{
+			forwardShader.setVec3("colorSources[" + std::to_string(i) + "].position", colorSrcs[i]->GetPosition());
+			forwardShader.setFloat("colorSources[" + std::to_string(i) + "].radius", colorSrcs[i]->GetRadius());
+			forwardShader.setFloat("colorSources[" + std::to_string(i) + "].falloff", colorSrcs[i]->GetFalloff());
+		}
+		forwardShader.setInt("numColorSources", colorSrcs.size());
+
+		forwardShader.setInt("shadowDepth", 1);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, shadowDepth);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, shadowDepth);
 
 		for (auto& obj : objects)
 		{
 			obj->Draw(&forwardShader, RenderFlag::BindImages, 2);
 		}
 
-		glDepthMask(GL_FALSE);
+		glDepthFunc(GL_LESS);
 		glDisable(GL_DEPTH_TEST);
 	}
 
 	void RenderSystem::environmentPass(const SkyBox& skyBox, Camera& camera)
 	{
 		glEnable(GL_DEPTH_TEST);
-		GLCall(glDepthFunc(GL_LEQUAL)); // we change the depth function here to it passes when testing depth value is equal
-										// to what is current stored
+		GLCall(glDepthFunc(GL_LEQUAL));
+
 		skyBox.skyboxShader.bind();
 		glm::mat4 view = glm::mat4(glm::mat3(camera.GetView()));
 		skyBox.skyboxShader.setUniformMat4("view", view);
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)scwidth / (float)scheight, 0.1f, 400.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)scwidth / (float)scheight, camera.GetNearPlane(), camera.GetFarPlane());
 		skyBox.skyboxShader.setUniformMat4("projection", projection);
 		glm::mat4 model = glm::identity<glm::mat4>();
 		skyBox.skyboxShader.setUniformMat4("model", model);
-		skyBox.skyboxShader.setInt("skyboxCubemap", 0);
-		// -- render the skybox cube
+		skyBox.skyboxShader.setInt("skyboxCubemap", 1);
+
 		GLCall(glBindVertexArray(skyBox.skyboxVAO));
-		GLCall(glActiveTexture(GL_TEXTURE0)); //! could be the problem
+		GLCall(glActiveTexture(GL_TEXTURE1));
 		GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, skyBox.cubeMapTexture));
 		GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
 		GLCall(glBindVertexArray(0));
-		GLCall(glDepthFunc(GL_LESS)); // set depth function back to normal
+		GLCall(glDepthFunc(GL_LESS));
 		glDisable(GL_DEPTH_TEST);
+	}
+
+	void RenderSystem::indirectLightingPass(const SkyBox& skyBox, Camera& camera)
+	{
+		// Generate screen space reflections to texture
+		SSRShader.bind();
+
+		glDrawBuffer(GL_COLOR_ATTACHMENT5);
+		glClear(GL_COLOR_BUFFER_BIT);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, depthTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, normalsTexture);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, rawTexture);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, skyBox.cubeMapTexture);
+
+		glm::mat4 trs = glm::translate(glm::mat4(1.0), glm::vec3(0.5, 0.5, 0.5));
+		trs = trs * glm::scale(glm::mat4(1.0), glm::vec3(0.5, 0.5, 1.0));
+		glm::mat4 screenScale = glm::scale(glm::mat4(1.0), glm::vec3(scwidth, scheight, 1.0));
+		glm::mat4 projToPixel = screenScale * trs * camera.GetProj();
+
+		SSRShader.setUniformMat4("projToPixel", projToPixel);
+		SSRShader.setVec2("screenSize", {scwidth, scheight});
+		glm::mat4 projection = camera.GetProj();
+		glm::mat4 projInv = glm::inverse(projection);
+		SSRShader.setUniformMat4("invProjection", projInv);
+		glm::mat4 view = camera.GetView();
+		glm::mat4 viewInv = glm::inverse(view);
+		SSRShader.setUniformMat4("view", view);
+		SSRShader.setUniformMat4("invView", viewInv);
+		SSRShader.setFloat("nearPlane", camera.GetNearPlane());
+		SSRShader.setFloat("farPlane", camera.GetFarPlane());
+
+		glBindVertexArray(dummyVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindVertexArray(0);
+
+		// Blend reflections onto current render
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_ONE, GL_ONE);
+
+		reflectionShader.bind();
+
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, depthTexture);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, albedoTexture);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, metallicRoughnessTexture);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, normalsTexture);
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, reflectionTexture);
+
+		reflectionShader.setVec2("screenSize", {scwidth, scheight});
+		reflectionShader.setVec3("camPos", camera.GetPosition());
+		reflectionShader.setUniformMat4("invView", viewInv);
+		reflectionShader.setUniformMat4("invProjection", projInv);
+
+		glBindVertexArray(dummyVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glBindVertexArray(0);
+
+		glDisable(GL_BLEND);
 	}
 
 	void RenderSystem::postprocessPass()
 	{
 		postprocessShader.bind();
 
-		glDrawBuffer(GL_COLOR_ATTACHMENT2);
+		glDrawBuffer(GL_COLOR_ATTACHMENT6);
 
 		// draw a full screen quad, sample from rendered textures
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, rawTexture); // 0
+		glBindTexture(GL_TEXTURE_2D, rawTexture);	   // 0
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, saturationMask); // 1
+		glBindTexture(GL_TEXTURE_2D, saturationMask);  // 1
 		postprocessShader.setInt("RawFinalImage", 0);
 		postprocessShader.setInt("SaturationMask", 1); // match active texture bindings
 
@@ -204,7 +377,7 @@ namespace lei3d
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
-		glReadBuffer(GL_COLOR_ATTACHMENT2);
+		glReadBuffer(GL_COLOR_ATTACHMENT6);
 
 		// blit to screen
 		glBlitFramebuffer(0, 0, scwidth, scheight, 0, 0, scwidth, scheight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
@@ -212,27 +385,32 @@ namespace lei3d
 
 	void RenderSystem::genShadowPass(const std::vector<ModelInstance*>& objects, DirectionalLight* light, Camera& camera)
 	{
-		shadowEVSMShader.bind();
+		shadowCSMShader.bind();
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, shadowFBO);
-		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
 		glViewport(0, 0, shadowResolution, shadowResolution);
 		glCullFace(GL_FRONT);
 		glDepthMask(GL_TRUE);
 		glEnable(GL_DEPTH_TEST); // enable drawing to depth mask and depth testing
-		glClearColor(0.f, 0.f, 0.f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_DEPTH_BUFFER_BIT);
 
-		lightSpaceMat = getLightSpaceMatrix(light, 0.1f, 500.f, camera);	// TODO: set it to camera planes?
-		shadowEVSMShader.setUniformMat4("lightSpaceMatrix", lightSpaceMat);
-		shadowEVSMShader.setVec3("lightPos", 150.f * -light->direction);
-		shadowEVSMShader.setFloat("lightNearPlane", light->nearPlane);
-		shadowEVSMShader.setFloat("lightFarPlane", light->farPlane);
+		light->lightSpaceMatrices = getLightSpaceMatrices(light, camera);
+		for (int i = 0; i < light->lightSpaceMatrices.size(); i++)
+		{
+			shadowCSMShader.setUniformMat4(("lightSpaceMatrices[" + std::to_string(i) + "]"), light->lightSpaceMatrices[i]);
+		}
+		// TODO: figure out why UBOs not working later
+	//		glBindBuffer(GL_UNIFORM_BUFFER, light->lsmUBO);
+	//		for (int i = 0; i < light->lightSpaceMatrices.size(); i++) {
+	//			printf("%llu %llu\n", i * sizeof(glm::mat4x4), sizeof(glm::mat4x4));
+	//			GLCall(glBufferSubData(GL_UNIFORM_BUFFER, i * sizeof(glm::mat4x4), sizeof(glm::mat4x4), glm::value_ptr(light->lightSpaceMatrices[i])));
+	//		}
+	//		glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 		for (auto& obj : objects)
 		{
-			obj->Draw(&shadowEVSMShader, RenderFlag::None, 0);
+			obj->Draw(&shadowCSMShader, RenderFlag::None, 0);
 		}
 
 		glCullFace(GL_BACK);
@@ -259,7 +437,7 @@ namespace lei3d
 
 	glm::mat4 RenderSystem::getLightSpaceMatrix(DirectionalLight* light, float nearPlane, float farPlane, Camera& camera)
 	{
-		const glm::mat4	projection = glm::perspective(glm::radians(camera.GetFOV()), (float)scwidth / (float)scheight, nearPlane, farPlane);
+		const glm::mat4 projection = glm::perspective(glm::radians(camera.GetFOV()), (float)scwidth / (float)scheight, nearPlane, farPlane);
 		const std::vector<glm::vec4> corners = getFrustumCornersWS(projection, camera.GetView());
 
 		glm::vec3 center = glm::vec3(0.f);
@@ -287,7 +465,6 @@ namespace lei3d
 			pmaxZ = std::max(pmaxZ, trf.z);
 		}
 
-		float frustum_fitting_factor = 1.f;
 		if (pminZ < 0)
 		{
 			pminZ *= frustum_fitting_factor;
@@ -305,10 +482,35 @@ namespace lei3d
 			pmaxZ *= frustum_fitting_factor;
 		}
 
-		light->nearPlane = pminZ;
-		light->farPlane = pmaxZ;
 		const glm::mat4 lightProj = glm::ortho(pminX, pmaxX, pminY, pmaxY, pminZ, pmaxZ);
 		return lightProj * lightView;
+	}
+
+	void RenderSystem::UiPass()
+	{
+		//Application::GetFontRenderer().RenderText("Hello World", 100, 100, 100, glm::vec4(1.0f), glm::vec2(scwidth, scheight));
+	}
+	
+	std::vector<glm::mat4> RenderSystem::getLightSpaceMatrices(DirectionalLight* light, Camera& camera)
+	{
+		std::vector<glm::mat4> matrices;
+		matrices.reserve(light->cascadeLevels.size() + 1);
+		for (int i = 0; i < light->cascadeLevels.size() + 1; i++)
+		{
+			if (i == 0)
+			{
+				matrices.push_back(getLightSpaceMatrix(light, camera.GetNearPlane(), light->cascadeLevels[i], camera));
+			}
+			else if (i < light->cascadeLevels.size())
+			{
+				matrices.push_back(getLightSpaceMatrix(light, light->cascadeLevels[i - 1], light->cascadeLevels[i], camera));
+			}
+			else
+			{
+				matrices.push_back(getLightSpaceMatrix(light, light->cascadeLevels[i - 1], camera.GetFarPlane(), camera));
+			}
+		}
+		return matrices;
 	}
 
 } // namespace lei3d

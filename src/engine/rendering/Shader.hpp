@@ -22,7 +22,7 @@ namespace lei3d
 
 	public:
 		Shader();
-		Shader(const char* vertexShaderPath, const char* fragShaderPath);
+		Shader(const char* vertexShaderPath, const char* fragShaderPath, const char* geomShaderPath = nullptr);
 
 		// compile and link shader, then activate the shader
 		void bind() const;
@@ -34,7 +34,10 @@ namespace lei3d
 
 		void setVec2(const std::string& name, const glm::vec2& value) const;
 		void setVec3(const std::string& name, const glm::vec3& value) const;
+		void setVec4(const std::string& name, const glm::vec4& value) const;
 		void setUniformMat4(const std::string& name, const glm::mat4& matrix) const;
+
+		unsigned int getShaderID() const { return m_ShaderID; }
 
 	private:
 		int getUniformLocation(const std::string& name) const;

@@ -26,7 +26,7 @@ namespace lei3d
 		m_PhysicsWorld->Create(); // TODO: Consider if there is some better way to do this
 
 		// Default light, TODO: needs to load from scene file
-		DirectionalLight* dirLight = new DirectionalLight({ 0.1, -0.5, -0.45 }, { 1.f, 1.f, 1.f }, 1.f);
+		DirectionalLight* dirLight = new DirectionalLight({ 0.1, -0.5, -0.45 }, { 1.f, 1.f, 1.f }, 3.f);
 		m_DirectionalLight = std::unique_ptr<DirectionalLight>(dirLight);
 
 		OnLoad();

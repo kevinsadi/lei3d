@@ -47,6 +47,19 @@ vec3 aces_fitted(vec3 color) {
     return clamp(color_tonemapped, 0.0, 1.0);
 }
 
+const float A = 0.15;
+const float B = 0.50;
+const float C = 0.10;
+const float D = 0.20;
+const float E = 0.02;
+const float F = 0.30;
+const float W = 11.2;
+
+vec3 Uncharted2(vec3 color) {
+    color *= 16;    // hardcoded exposure
+    return ((color * (A * color + C * B) + D * E) / (color * (A * color + B) + D * F)) - E / F;
+}
+
 // Reinhard tonemapping variant by Jodie: https://www.shadertoy.com/view/4dBcD1
 vec3 reinhard_jodie(vec3 color) {
     float lum = gamma_luminance(color);

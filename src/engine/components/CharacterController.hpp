@@ -14,14 +14,14 @@ namespace lei3d
 	public:
 		// CHARACTER CONTROLLER PARAMETERS
 		float m_accel = 50.0f;
-		float m_airAccel = 2000.0f;
+		float m_airAccel = 1000.0f;
 		float m_maxSpeed = 500.0f;
-		float m_maxAirSpeed = 10.575f;
+		float m_maxAirSpeed = 20.575f;
 
-		float m_friction = 1.0f;
+		float m_friction = 10.0f;
 		//float m_airFriction = 0.25f;
 
-		float m_jumpPower = 7.f;
+		float m_jumpPower = 6.f;
 		//float m_jumpHeight = 1.f;
 
 		// float m_maxSpeed = 40.0f;
