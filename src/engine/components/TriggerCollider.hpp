@@ -2,6 +2,7 @@
 
 #include "core/Component.hpp"
 #include <unordered_set>
+#include <set>
 #include <btBulletDynamicsCommon.h>
 
 namespace lei3d
@@ -23,14 +24,14 @@ namespace lei3d
 		void OnReset() override;
 
 
-	/*protected:
-		virtual void OnTriggerEnter(std::vector<const btCollisionObject*>& enteredObjects);
-		virtual void OnTriggerExit(std::vector<const btCollisionObject*>& exitedObjects);*/
+	protected:
+		virtual void OnTriggerEnter(const btCollisionObject* enteredObject);
+		virtual void OnTriggerStay(const btCollisionObject* other);
+		virtual void OnTriggerExit(const btCollisionObject* exitedObjects);
 
 	private:
 		btCollisionObject* m_trigger;
 		std::unordered_set<const btCollisionObject*> m_ignoredColliders;
-		std::vector<const btCollisionObject*> m_enteredColliders;
-		std::vector<const btCollisionObject*> m_exitedColliders;
+		std::set<const btCollisionObject*> m_colliders; 
 	};
 } // namespace lei3d

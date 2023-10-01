@@ -2,13 +2,14 @@
 #include <vector>
 #include <unordered_set>
 #include <btBulletCollisionCommon.h>
+#include <set>
 
 namespace lei3d {
 	class TriggerColliderCallback : public btCollisionWorld::ContactResultCallback
 	{
 	public:
 		std::unordered_set<const btCollisionObject*>* m_ignoredColliders;
-		std::vector<const btCollisionObject*>  m_touchingColliders;
+		std::set<const btCollisionObject*>  m_touchingColliders;
 
 		TriggerColliderCallback(std::unordered_set<const btCollisionObject*>* ignoredColliders);
 		btScalar addSingleResult(btManifoldPoint& cp,

@@ -13,7 +13,7 @@ namespace lei3d
 	{
 		auto* colObj = collObj1->m_collisionObject;
 		if (!(m_ignoredColliders->contains(colObj))) {
-			m_touchingColliders.push_back(colObj);
+			m_touchingColliders.insert(colObj);
 		}
 
 		return 0;
