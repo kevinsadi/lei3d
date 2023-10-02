@@ -11,6 +11,7 @@ namespace lei3d
 {
 
 	class ModelInstance;
+	class ColorSource;
 	class SkyBox;
 
 	class Scene;
@@ -32,8 +33,10 @@ namespace lei3d
 		void draw(const Scene& scene, const SceneView& view);
 
 	private:
-		void lightingPass(const std::vector<ModelInstance*>& objects, const DirectionalLight* light, Camera& camera);
+		void depthPrePass(const std::vector<ModelInstance*>& objects, Camera& camera);
+		void lightingPass(const std::vector<ModelInstance*>& objects, const std::vector<ColorSource*>& colorSrcs, const DirectionalLight* light, Camera& camera);
 		void environmentPass(const SkyBox& skyBox, Camera& camera);
+		void indirectLightingPass(const SkyBox& skyBox, Camera& camera);
 		void postprocessPass();
 
 		void genShadowPass(const std::vector<ModelInstance*>& objects, DirectionalLight* light, Camera& camera);
@@ -41,11 +44,17 @@ namespace lei3d
 		glm::mat4 getLightSpaceMatrix(DirectionalLight* light, float nearPlane, float farPlane, Camera& camera);
 		std::vector<glm::mat4> getLightSpaceMatrices(DirectionalLight* light, Camera& camera);
 
+		void UiPass();
+
 		// offscreen render target objects
 		unsigned int FBO;
 		unsigned int rawTexture;
 		unsigned int saturationMask;
-		unsigned int depthStencilTexture;
+		unsigned int depthTexture;
+		unsigned int albedoTexture;
+		unsigned int normalsTexture;
+		unsigned int metallicRoughnessTexture;
+		unsigned int reflectionTexture;
 		unsigned int finalTexture;
 
 		// shadow resources
@@ -59,8 +68,11 @@ namespace lei3d
 		float frustum_fitting_factor = 10.f;	// TODO: make configurable through scenes?
 
 		// shaders
+		Shader depthShader;
 		Shader forwardShader;
 		Shader postprocessShader;
+		Shader SSRShader;
+		Shader reflectionShader;
 		Shader shadowCSMShader;
 	};
 

@@ -24,7 +24,7 @@ namespace lei3d
 
 		glm::vec3 m_Albedo{ 0.8f, 0.8f, 0.8f };
 		float	  m_Metallic = 0.f;
-		float	  m_Roughness = 0.5f;
+		float	  m_Roughness = 1.f;
 		float	  m_Ambient = 1.f;
 
 		Texture* m_AlbedoTexture = nullptr;

@@ -183,6 +183,11 @@ namespace lei3d
 		GLCall(glUniform3f(getUniformLocation(name), value.x, value.y, value.z));
 	}
 
+	void Shader::setVec4(const std::string& name, const glm::vec4& value) const
+	{
+		GLCall(glUniform4f(getUniformLocation(name), value.x, value.y, value.z, value.w));
+	}
+
 	void Shader::setVec2(const std::string& name, const glm::vec2& value) const
 	{
 		GLCall(glUniform2f(getUniformLocation(name), value.x, value.y));
