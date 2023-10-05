@@ -77,7 +77,7 @@ namespace lei3d
 
 		GetMonitorConfiguration();
 
-		m_Window = glfwCreateWindow(screenWidth, screenHeight, "lei3d", m_Monitor, nullptr);
+		m_Window = glfwCreateWindow(screenWidth, screenHeight, "lei3d", nullptr, nullptr);
 		if (m_Window == nullptr)
 		{
 			LEI_WARN("failed to create GLFW window");
