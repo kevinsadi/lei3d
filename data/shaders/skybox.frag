@@ -14,7 +14,9 @@ uniform samplerCube skyboxCubemap; // cubemap texture sampler
 uniform ColorSource colorSources[5];
 uniform int numColorSources;
 
+// tune this according to level?
 const float rangeStart = 400.0;
+const float rangeEnd = 600.0;
 
 float inverseLerp(float v, float a, float b) {
     return (v - a) / (b - a);
@@ -30,7 +32,9 @@ void main()
     FragOut = texture(skyboxCubemap, TexCoords);
     FragOut.rgb = srgb_to_linear(FragOut.rgb);
 
-    vec3 skyPos = rangeStart * normalize(TexCoords);
+    float bw = (min(FragOut.r, min(FragOut.g, FragOut.b)) + max(FragOut.r, max(FragOut.g, FragOut.b))) * 0.5;
+    float range = mix(rangeStart, rangeEnd, bw);
+    vec3 skyPos = range * normalize(TexCoords);
     float satFactor = 0.0;
     for (int i = 0; i < numColorSources; i++) {
         vec3 p = colorSources[i].position;
