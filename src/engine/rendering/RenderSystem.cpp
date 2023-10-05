@@ -180,7 +180,10 @@ namespace lei3d
 			environmentPass(*skyBox, colorSources, camera);
 		}
 
-		indirectLightingPass(*skyBox, camera);
+		if (isSSROn)
+		{
+			indirectLightingPass(*skyBox, camera);
+		}
 		postprocessPass();
 		UiPass();
 	}

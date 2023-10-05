@@ -74,6 +74,9 @@ namespace lei3d
 		Shader SSRShader;
 		Shader reflectionShader;
 		Shader shadowCSMShader;
+
+		// settings
+		bool isSSROn = false;
 	};
 
 } // namespace lei3d
