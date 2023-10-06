@@ -177,10 +177,13 @@ namespace lei3d
 		lightingPass(modelEntities, colorSources, dirLight, camera);
 		if (skyBox)
 		{
-			environmentPass(*skyBox, camera);
+			environmentPass(*skyBox, colorSources, camera);
 		}
 
-		indirectLightingPass(*skyBox, camera);
+		if (isSSROn)
+		{
+			indirectLightingPass(*skyBox, camera);
+		}
 		postprocessPass();
 		UiPass();
 	}
@@ -216,7 +219,7 @@ namespace lei3d
 
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, FBO);
 		std::array<GLenum, 5> drawBuffers{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3, GL_COLOR_ATTACHMENT4 };
-		glDrawBuffers(drawBuffers.size(), drawBuffers.data()); // set attachment targets as 0 and 1
+		glDrawBuffers(drawBuffers.size(), drawBuffers.data());
 
 		glEnable(GL_DEPTH_TEST); // enable drawing to depth mask and depth testing
 		glDepthFunc(GL_EQUAL);
@@ -266,8 +269,10 @@ namespace lei3d
 		glDisable(GL_DEPTH_TEST);
 	}
 
-	void RenderSystem::environmentPass(const SkyBox& skyBox, Camera& camera)
+	void RenderSystem::environmentPass(const SkyBox& skyBox, const std::vector<ColorSource*>& colorSrcs, Camera& camera)
 	{
+		std::array<GLenum, 2> drawBuffers{ GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+		glDrawBuffers(drawBuffers.size(), drawBuffers.data());
 		glEnable(GL_DEPTH_TEST);
 		GLCall(glDepthFunc(GL_LEQUAL));
 
@@ -279,6 +284,14 @@ namespace lei3d
 		glm::mat4 model = glm::identity<glm::mat4>();
 		skyBox.skyboxShader.setUniformMat4("model", model);
 		skyBox.skyboxShader.setInt("skyboxCubemap", 1);
+
+		for (int i = 0; i < colorSrcs.size(); i++)
+		{
+			skyBox.skyboxShader.setVec3("colorSources[" + std::to_string(i) + "].position", colorSrcs[i]->GetPosition());
+			skyBox.skyboxShader.setFloat("colorSources[" + std::to_string(i) + "].radius", colorSrcs[i]->GetRadius());
+			skyBox.skyboxShader.setFloat("colorSources[" + std::to_string(i) + "].falloff", colorSrcs[i]->GetFalloff());
+		}
+		skyBox.skyboxShader.setInt("numColorSources", colorSrcs.size());
 
 		GLCall(glBindVertexArray(skyBox.skyboxVAO));
 		GLCall(glActiveTexture(GL_TEXTURE1));

@@ -35,7 +35,7 @@ namespace lei3d
 	private:
 		void depthPrePass(const std::vector<ModelInstance*>& objects, Camera& camera);
 		void lightingPass(const std::vector<ModelInstance*>& objects, const std::vector<ColorSource*>& colorSrcs, const DirectionalLight* light, Camera& camera);
-		void environmentPass(const SkyBox& skyBox, Camera& camera);
+		void environmentPass(const SkyBox& skyBox, const std::vector<ColorSource*>& colorSrcs, Camera& camera);
 		void indirectLightingPass(const SkyBox& skyBox, Camera& camera);
 		void postprocessPass();
 
@@ -74,6 +74,9 @@ namespace lei3d
 		Shader SSRShader;
 		Shader reflectionShader;
 		Shader shadowCSMShader;
+
+		// settings
+		bool isSSROn = false;
 	};
 
 } // namespace lei3d
