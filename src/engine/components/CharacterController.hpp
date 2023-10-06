@@ -43,6 +43,8 @@ namespace lei3d
 
 			void updateAction(btCollisionWorld* collisionWorld, btScalar deltaTime) override;
 			void debugDraw(btIDebugDraw* debugDrawer) override;
+			btCollisionObject* getGroundCheckObj();
+			btRigidBody* getRigidBody();
 
 		private:
 			glm::vec3 Accelerate(glm::vec3 wishDir, glm::vec3 prevVelocity, float acceleration, float maxVelocity);
@@ -78,6 +80,9 @@ namespace lei3d
 		void OnReset() override;
 
 		bool IsGrounded() const;
+
+		btCollisionObject* getGroundCheckObj();
+		btRigidBody* getRigidBody();
 
 	private:
 		btTransform getGroundCheckTransform(const btTransform& parentTransform);

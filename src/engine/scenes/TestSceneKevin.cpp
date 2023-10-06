@@ -8,6 +8,7 @@
 #include "components/SkyBox.hpp"
 #include "components/StaticCollider.hpp"
 #include "components/FollowCameraController.hpp"
+#include "components/TriggerCollider.hpp"
 #include "components/TimerComponent.hpp"
 
 #include "logging/GLDebug.hpp"
@@ -64,6 +65,11 @@ namespace lei3d
 
 		CharacterController* characterController = backpackObj.AddComponent<CharacterController>();
 		characterController->Init(1.f, 3.f);
+
+		TriggerCollider* triggerCollider = backpackObj.AddComponent<TriggerCollider>();
+		std::vector<const btCollisionObject*> ignoredObjects;
+		ignoredObjects.push_back(characterController->getRigidBody());
+		triggerCollider->Init(characterController->getGroundCheckObj(), ignoredObjects);
 
 		FollowCameraController* followCam = backpackObj.AddComponent<FollowCameraController>();
 		followCam->Init(*m_DefaultCamera, glm::vec3(0.0f, 1.0f, 0.0f));
