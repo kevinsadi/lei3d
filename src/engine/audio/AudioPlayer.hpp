@@ -1,12 +1,15 @@
 #pragma once
 
-#include <memory>
-#include <ctime>
+#include <iostream>
 #include <thread>
 #include <chrono>
-#include <iostream>
+#include <stdlib.h>
+
 #include "miniaudio.h"
 #include "logging/Log.hpp"
+#include "core/Scene.hpp"
+#include "components/TimerComponent.hpp"
+
 
 namespace lei3d
 {
@@ -28,6 +31,7 @@ namespace lei3d
          * for volume and fade-in/fade-out length. Can be used to play segment of an
          * audio file or loop an audio file.
          * 
+		 * @param entity - Entity to call the Timer Component on.
          * @param sfxName - The name of the sound file in /data/audio/sfx.
          * @param milliseconds - How long to play/loop the sound for in milliseconds.
          * @param volume - Volume to play the sound (Default=1.0f). This is also the maximum fade-in volume.
@@ -83,6 +87,9 @@ namespace lei3d
 
         std::unique_ptr<ma_engine> m_AudioEngine;
 
-    };
+	private:
+		static void timer(long milliseconds, ma_sound *sound, float volume, ma_uint64 fadeOutLengthInMilliseconds);
 
+    };
+	
 }

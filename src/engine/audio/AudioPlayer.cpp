@@ -61,28 +61,48 @@ namespace lei3d
 	)
 	{
 		ma_result result;
-
 		std::string sfxPath = "data/audio/sfx/" + sfxName + ".mp3";
-
-		ma_sound sound;
-
-		result = ma_sound_init_from_file(s_AudioPlayer->m_AudioEngine.get(), sfxPath.c_str(), 0, NULL, NULL, &sound);
+		ma_sound *sound = (ma_sound *) malloc(sizeof(ma_sound));
+		result = ma_sound_init_from_file(s_AudioPlayer->m_AudioEngine.get(), sfxPath.c_str(), 0, NULL, NULL, sound);
 		if (result != MA_SUCCESS)
 		{
-			std::cout << "ERROR: Could not load " << sfxPath << " from file!" << std::endl;
+			LEI_ERROR("Could not load " + sfxPath + " from file!");
 			return; // Failed to load sound.
 		}
 
-		ma_sound_set_volume(&sound, volume);
-		ma_sound_set_fade_in_milliseconds(&sound, 0.0f, volume, fadeInLengthInMilliseconds);
-		ma_sound_start(&sound);
-		ma_sound_set_looping(&sound, MA_TRUE);
-		std::this_thread::sleep_for(std::chrono::milliseconds(milliseconds - fadeOutLengthInMilliseconds));
-		ma_sound_set_fade_in_milliseconds(&sound, volume, 0.0f, fadeOutLengthInMilliseconds);
-		std::this_thread::sleep_for(std::chrono::milliseconds(fadeOutLengthInMilliseconds));
-		ma_sound_set_looping(&sound, MA_FALSE);
-		ma_sound_uninit(&sound);
+		ma_sound_set_volume(sound, volume);
+		ma_sound_set_fade_in_milliseconds(sound, 0.0f, volume, fadeInLengthInMilliseconds);
+		ma_sound_start(sound);
+		ma_sound_set_looping(sound, MA_TRUE);
 
+		std::thread timer_thread(AudioPlayer::timer, milliseconds, sound, volume, fadeOutLengthInMilliseconds);
+
+		timer_thread.detach();
+
+	}
+
+	void AudioPlayer::timer(long milliseconds, ma_sound *sound, float volume, ma_uint64 fadeOutLengthInMilliseconds)
+	{
+		/*
+		Trying an approach outlined here: https://linuxhint.com/timer-function-cpp/
+		Hopefully it's cross-platform
+		*/
+		clock_t now = clock();
+		if (fadeOutLengthInMilliseconds > milliseconds)
+		{
+			fadeOutLengthInMilliseconds = milliseconds;
+		}
+		ma_uint64 ms = milliseconds * 1000;
+		while (clock() - now < ms - fadeOutLengthInMilliseconds * 1000);
+		clock_t now2 = clock();
+		ma_sound_set_fade_in_milliseconds(sound, volume, 0.0f, fadeOutLengthInMilliseconds);
+		fadeOutLengthInMilliseconds *= 1000;
+		while (clock() - now2 < fadeOutLengthInMilliseconds);
+		clock_t thing = clock();
+		std::cout << "CLOCK: " << thing << std::endl;
+		std::cout << "NOW: " << now << std::endl;
+		ma_sound_uninit(sound);
+		free(sound);
 	}
 
 	void AudioPlayer::PlaySFXForMilliseconds(const std::string& sfxName, long milliseconds, float volume)
