@@ -76,7 +76,7 @@ namespace lei3d
 		Shader shadowCSMShader;
 
 		// settings
-		bool isSSROn = false;
+		bool isSSROn = true;
 	};
 
 } // namespace lei3d
