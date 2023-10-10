@@ -18,7 +18,7 @@ namespace lei3d
 
 	void Scene::Load()
 	{
-		//Default Camera
+		// Default Camera
 		m_DefaultCamera = std::make_unique<Camera>(Application::Window(), 90.0f, 0.0f);
 
 		// Load physics world
@@ -31,7 +31,7 @@ namespace lei3d
 
 		OnLoad();
 
-		m_State = SCENE_START; //Scene ready to start by default.
+		m_State = SCENE_START; // Scene ready to start by default.
 	}
 
 	Entity& Scene::AddEntity(std::string name)
@@ -85,7 +85,7 @@ namespace lei3d
 	{
 		if (m_State == SCENE_START)
 		{
-			//Initialize everything if we're starting the scene, otherwise no.
+			// Initialize everything if we're starting the scene, otherwise no.
 			Start();
 		}
 		m_State = SCENE_PLAYING;
@@ -171,7 +171,7 @@ namespace lei3d
 
 	void Scene::ShowHeirarchyGUI()
 	{
-		bool*			 p_open;
+		bool* p_open;
 		ImGuiWindowFlags window_flags = 0;
 
 		// Comment/Uncomment these as needed
@@ -216,7 +216,7 @@ namespace lei3d
 				for (int i = 0; i < entityNames.size(); i++)
 				{
 					const char* label = entityNames[i] == "" ? "Unnamed" : entityNames[i].c_str();
-					const bool	is_selected = (currentEntityI == i);
+					const bool is_selected = (currentEntityI == i);
 					if (ImGui::Selectable(label, is_selected))
 					{
 						currentEntityI = i;

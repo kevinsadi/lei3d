@@ -46,7 +46,7 @@ namespace lei3d
 		{
 			backpackModel.reset();
 		}
-		backpackModel = std::make_unique<Model>(backpackPath);
+ 		backpackModel = std::make_unique<Model>(backpackPath);
 
 		const std::string physicsPlaygroundPath = "data/models/skyramps/skyramps.obj";
 		if (playgroundModel)

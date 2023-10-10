@@ -17,7 +17,7 @@ namespace lei3d
 
 	SceneView::~SceneView()
 	{
-		//lmfao
+		// lmfao
 	}
 
 	SceneView::Mode SceneView::GetMode() const
@@ -44,8 +44,7 @@ namespace lei3d
 	void SceneView::Update(Scene& scene)
 	{
 
-
-		ActiveCamera(scene).PollCameraMovementInput(); //Kinda jank
+		ActiveCamera(scene).PollCameraMovementInput(); // Kinda jank
 	}
 
 	void SceneView::ProcessKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -55,7 +54,7 @@ namespace lei3d
 			Reset(SceneManager::ActiveScene());
 		}
 
-		if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+		if (key == GLFW_KEY_P && action == GLFW_PRESS)
 		{
 			TogglePlayPause(SceneManager::ActiveScene());
 		}
