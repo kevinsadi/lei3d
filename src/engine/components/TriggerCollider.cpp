@@ -77,19 +77,19 @@ namespace lei3d {
 	void TriggerCollider::OnTriggerEnter(const btCollisionObject* enteredObject)
 	{
 #if _DEBUG
-		LEI_TRACE("ENTERED");
+		//LEI_TRACE("ENTERED");
 #endif
 	}
 	void TriggerCollider::OnTriggerStay(const btCollisionObject* other)
 	{
 #if _DEBUG
-		LEI_TRACE("STAY");
+		//LEI_TRACE("STAY");
 #endif
 	}
 	void TriggerCollider::OnTriggerExit(const btCollisionObject* exitedObjects)
 	{
 #if _DEBUG
-		LEI_TRACE("EXIT");
+		//LEI_TRACE("EXIT");
 #endif
 	}
 } // namespace lei3d

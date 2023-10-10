@@ -33,6 +33,8 @@ namespace lei3d
 	{
 	}
 
+
+
 	void TestSceneKevin::OnLoad()
 	{
 		// load textures
@@ -45,14 +47,16 @@ namespace lei3d
 			backpackModel.reset();
 		}
 		backpackModel = std::make_unique<Model>(backpackPath);
-		// const std::string physicsPlaygroundPath = "data/models/leveldesign/KevWorldClouds.obj";
-		const std::string physicsPlaygroundPath = "data/models/skyramps/skyramps.obj";
 
+		const std::string physicsPlaygroundPath = "data/models/skyramps/skyramps.obj";
 		if (playgroundModel)
 		{
 			playgroundModel.reset();
 		}
 		playgroundModel = std::make_unique<Model>(physicsPlaygroundPath);
+
+		const std::string benchPath = "data/models/environment/tree_test.glb";
+		m_EnviromentModels.emplace_back(std::make_unique<Model>(benchPath));
 
 		// BACKPACK (Character) ---------------------
 		Entity& backpackObj = AddEntity("Backpack");
@@ -95,6 +99,19 @@ namespace lei3d
 		StaticCollider* physicsPlaygroundCollider = physicsPlaygroundObj.AddComponent<StaticCollider>();
 		physicsPlaygroundCollider->Init();
 		physicsPlaygroundCollider->SetColliderToModel(*playgroundModel);
+
+		// environment decoration
+		Entity& bench = AddEntity("bench");
+
+		// ModelInstance* benchRender = bench.AddComponent<ModelInstance>();
+		// benchRender->Init(m_EnviromentModels[0].get());
+		// bench.SetScale(glm::vec3(20.f, 20.f, 20.f));
+		// bench.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		// bench.SetYawRotation(0);
+
+		// StaticCollider* benchCollider = bench.AddComponent<StaticCollider>();
+		// benchCollider->Init();
+		// benchCollider->SetColliderToModel(*playgroundModel);
 
 		// Test color source
 		Entity& startColorSrcObj = AddEntity("Start Color Area");
