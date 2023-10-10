@@ -45,19 +45,19 @@ namespace lei3d
          */
 		static void PlaySFXForMilliseconds(
 			const std::string& sfxName,
-			long			   milliseconds,
+			ma_uint64		   milliseconds,
 			float			   volume,
 			ma_uint64		   fadeInLengthInMilliseconds,
 			ma_uint64		   fadeOutLengthInMilliseconds);
 
 		static void PlaySFXForMilliseconds(
 			const std::string& sfxName,
-			long			   milliseconds,
+			ma_uint64		   milliseconds,
 			float			   volume);
 
 		static void PlaySFXForMilliseconds(
 			const std::string& sfxName,
-			long			   milliseconds);
+			ma_uint64		   milliseconds);
 
         /**
 		 * Plays the sound file given for a set time in seconds. Includes options
@@ -74,24 +74,24 @@ namespace lei3d
 		 */
 		static void PlaySFXForSeconds(
 			const std::string& sfxName,
-			long			   seconds,
+			ma_uint64		   seconds,
 			float			   volume,
 			ma_uint64		   fadeInLengthInSeconds,
 			ma_uint64		   fadeOutLengthInSeconds);
 
         static void PlaySFXForSeconds(
 			const std::string& sfxName,
-			long			   seconds,
+			ma_uint64		   seconds,
 			float			   volume);
 
         static void PlaySFXForSeconds(
 			const std::string& sfxName,
-			long			   seconds);
+			ma_uint64		   seconds);
 
         std::unique_ptr<ma_engine> m_AudioEngine;
 
 	private:
-		static void timer(std::string sfxPath, long milliseconds, ma_sound *sound, float volume, ma_uint64 fadeOutLengthInMilliseconds);
+		static void timer(std::string sfxPath, ma_uint64 milliseconds, ma_sound *sound, float volume, ma_uint64 fadeOutLengthInMilliseconds);
 
     };
 	

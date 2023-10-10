@@ -59,7 +59,7 @@ namespace lei3d
 
 	void AudioPlayer::PlaySFXForMilliseconds(
 		const std::string& sfxName,
-		long milliseconds,
+		ma_uint64 milliseconds,
 		float volume,
 		ma_uint64 fadeInLengthInMilliseconds,
 		ma_uint64 fadeOutLengthInMilliseconds
@@ -95,7 +95,7 @@ namespace lei3d
 
 	}
 
-	void AudioPlayer::timer(std::string sfxPath, long milliseconds, ma_sound *sound, float volume, ma_uint64 fadeOutLengthInMilliseconds)
+	void AudioPlayer::timer(std::string sfxPath, ma_uint64 milliseconds, ma_sound *sound, float volume, ma_uint64 fadeOutLengthInMilliseconds)
 	{
 		/*
 		Trying an approach outlined here: https://linuxhint.com/timer-function-cpp/
@@ -118,19 +118,19 @@ namespace lei3d
 		_sounds_on_loop.erase(sfxPath);
 	}
 
-	void AudioPlayer::PlaySFXForMilliseconds(const std::string& sfxName, long milliseconds, float volume)
+	void AudioPlayer::PlaySFXForMilliseconds(const std::string& sfxName, ma_uint64 milliseconds, float volume)
 	{
 		PlaySFXForMilliseconds(sfxName, milliseconds, volume, 0, 0);
 	}
 
-	void AudioPlayer::PlaySFXForMilliseconds(const std::string& sfxName, long milliseconds)
+	void AudioPlayer::PlaySFXForMilliseconds(const std::string& sfxName, ma_uint64 milliseconds)
 	{
 		PlaySFXForMilliseconds(sfxName, milliseconds, 1.0f, 0, 0);
 	}
 
 	void AudioPlayer::PlaySFXForSeconds(
 		const std::string& sfxName,
-		long seconds,
+		ma_uint64 seconds,
 		float volume,
 		ma_uint64 fadeInLengthInSeconds,
 		ma_uint64 fadeOutLengthInSeconds
@@ -141,7 +141,7 @@ namespace lei3d
 
 	void AudioPlayer::PlaySFXForSeconds(
 		const std::string& sfxName,
-		long			   seconds,
+		ma_uint64		   seconds,
 		float			   volume)
 	{
 		AudioPlayer::PlaySFXForMilliseconds(sfxName, seconds * 1000, volume, 0, 0);
@@ -149,7 +149,7 @@ namespace lei3d
 
 	void AudioPlayer::PlaySFXForSeconds(
 		const std::string& sfxName,
-		long			   seconds)
+		ma_uint64		   seconds)
 	{
 		AudioPlayer::PlaySFXForMilliseconds(sfxName, seconds * 1000, 1.0f, 0, 0);
 	}
