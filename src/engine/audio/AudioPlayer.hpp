@@ -4,6 +4,7 @@
 #include <thread>
 #include <chrono>
 #include <stdlib.h>
+#include <unordered_set>
 
 #include "miniaudio.h"
 #include "logging/Log.hpp"
@@ -15,6 +16,8 @@ namespace lei3d
 {
     class AudioPlayer
     {
+	private:
+		static std::unordered_set<std::string> _sounds_on_loop;
     public:
         static AudioPlayer* s_AudioPlayer;
 
@@ -88,7 +91,7 @@ namespace lei3d
         std::unique_ptr<ma_engine> m_AudioEngine;
 
 	private:
-		static void timer(long milliseconds, ma_sound *sound, float volume, ma_uint64 fadeOutLengthInMilliseconds);
+		static void timer(std::string sfxPath, long milliseconds, ma_sound *sound, float volume, ma_uint64 fadeOutLengthInMilliseconds);
 
     };
 	

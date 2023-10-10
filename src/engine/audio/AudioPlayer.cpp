@@ -5,6 +5,9 @@ namespace lei3d
 {
 	AudioPlayer* AudioPlayer::s_AudioPlayer = nullptr;
 
+	std::unordered_set<std::string> AudioPlayer::_sounds_on_loop = std::unordered_set<std::string>();
+
+
 	AudioPlayer::AudioPlayer()
 	{
 		ma_result result;
@@ -27,11 +30,13 @@ namespace lei3d
 		}
 
 		s_AudioPlayer = this;
+
 	}
 
 	AudioPlayer::~AudioPlayer()
 	{
 		ma_engine_uninit(m_AudioEngine.get());
+		
 	}
 
 	AudioPlayer& AudioPlayer::GetAudioPlayer()
@@ -67,21 +72,30 @@ namespace lei3d
 		if (result != MA_SUCCESS)
 		{
 			LEI_ERROR("Could not load " + sfxPath + " from file!");
+			free(sound);
 			return; // Failed to load sound.
 		}
+
+		if (_sounds_on_loop.contains(sfxPath))
+		{
+			ma_sound_uninit(sound);
+			free(sound);
+			return;
+		}
+		_sounds_on_loop.insert(sfxPath);
 
 		ma_sound_set_volume(sound, volume);
 		ma_sound_set_fade_in_milliseconds(sound, 0.0f, volume, fadeInLengthInMilliseconds);
 		ma_sound_start(sound);
 		ma_sound_set_looping(sound, MA_TRUE);
 
-		std::thread timer_thread(AudioPlayer::timer, milliseconds, sound, volume, fadeOutLengthInMilliseconds);
+		std::thread timer_thread(AudioPlayer::timer, sfxPath, milliseconds, sound, volume, fadeOutLengthInMilliseconds);
 
 		timer_thread.detach();
 
 	}
 
-	void AudioPlayer::timer(long milliseconds, ma_sound *sound, float volume, ma_uint64 fadeOutLengthInMilliseconds)
+	void AudioPlayer::timer(std::string sfxPath, long milliseconds, ma_sound *sound, float volume, ma_uint64 fadeOutLengthInMilliseconds)
 	{
 		/*
 		Trying an approach outlined here: https://linuxhint.com/timer-function-cpp/
@@ -99,10 +113,9 @@ namespace lei3d
 		fadeOutLengthInMilliseconds *= 1000;
 		while (clock() - now2 < fadeOutLengthInMilliseconds);
 		clock_t thing = clock();
-		std::cout << "CLOCK: " << thing << std::endl;
-		std::cout << "NOW: " << now << std::endl;
 		ma_sound_uninit(sound);
 		free(sound);
+		_sounds_on_loop.erase(sfxPath);
 	}
 
 	void AudioPlayer::PlaySFXForMilliseconds(const std::string& sfxName, long milliseconds, float volume)
