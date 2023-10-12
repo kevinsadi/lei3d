@@ -111,7 +111,7 @@ namespace lei3d
 			"data/skybox/anime_etheria/front.jpg", "data/skybox/anime_etheria/back.jpg" };
 		skybox->Init(faces);
 
-		// AudioPlayer::PlayMusic("Ethereal_Surg_8-17");
+		AudioPlayer::PlaySFX("win.mp3");
 	}
 
 	void SceneIntro::OnReset()
@@ -123,12 +123,14 @@ namespace lei3d
 
 		Entity* colorObj = GetEntity("Start Color Area");
 		colorObj->GetComponent<ColorSource>()->radius = 0;
+
+		AudioPlayer::PlaySFX("win.mp3");
 	}
 
 	void SceneIntro::OnUpdate()
 	{
 		Entity* colorObj = GetEntity("Start Color Area");
-		colorObj->GetComponent<ColorSource>()->radius += 1;
+		colorObj->GetComponent<ColorSource>()->radius += 0.8;
 	}
 
 	void SceneIntro::OnPhysicsUpdate()
