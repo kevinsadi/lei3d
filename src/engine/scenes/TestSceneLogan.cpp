@@ -62,6 +62,7 @@ namespace lei3d
 
 		// PHYSICS PLAYGROUND---------------------
 		Entity& physicsPlaygroundObj = AddEntity("Physics Playground");
+		physicsPlaygroundObj.SetYawRotation(0);
 
 		ModelInstance* playgroundRender = physicsPlaygroundObj.AddComponent<ModelInstance>();
 		playgroundRender->Init(playgroundModel.get());
@@ -75,7 +76,7 @@ namespace lei3d
 		////Test Multiple Components
 		Entity& skyboxObj = AddEntity("Skybox");
 
-		SkyBox*					 skybox = skyboxObj.AddComponent<SkyBox>();
+		SkyBox* skybox = skyboxObj.AddComponent<SkyBox>();
 		std::vector<std::string> faces{ "data/skybox/anime_etheria/right.jpg", "data/skybox/anime_etheria/left.jpg",
 			"data/skybox/anime_etheria/up.jpg", "data/skybox/anime_etheria/down.jpg",
 			"data/skybox/anime_etheria/front.jpg", "data/skybox/anime_etheria/back.jpg" };
@@ -86,7 +87,7 @@ namespace lei3d
 
 	void TestSceneLogan::OnReset()
 	{
-		//Just need to reset the backpack.
+		// Just need to reset the backpack.
 		Entity* backpackObj = GetEntity("Backpack");
 		backpackObj->SetScale(glm::vec3(1.f, 1.f, 1.f));
 		backpackObj->SetPosition(glm::vec3(0.f, 200.f, 0.f));
