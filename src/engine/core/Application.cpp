@@ -155,6 +155,14 @@ namespace lei3d
 		m_LastFrameTime = currentTime;
 
 		glfwPollEvents();
+
+		m_PhysicsElapsedTime += m_DeltaTime;
+		if (m_PhysicsElapsedTime >= m_FixedDeltaTime)
+		{
+			FixedUpdate();
+			m_PhysicsElapsedTime -= m_FixedDeltaTime;
+		}
+
 		Update();
 		Render();
 		ImGuiRender();
@@ -180,8 +188,13 @@ namespace lei3d
 	{
 		Scene& scene = m_SceneManager->ActiveScene();
 		scene.Update();
-		scene.PhysicsUpdate();
 		m_SceneView->Update(scene);
+	}
+
+	void Application::FixedUpdate()
+	{
+		Scene& scene = m_SceneManager->ActiveScene();
+		scene.PhysicsUpdate();
 	}
 
 	void Application::SetUIActive(bool uiActive)
@@ -241,7 +254,7 @@ namespace lei3d
 		// and call them here.
 
 		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double x, double y) {
-			int		   currentCursorMode = glfwGetInputMode(window, GLFW_CURSOR);
+			int currentCursorMode = glfwGetInputMode(window, GLFW_CURSOR);
 			const bool cursorDisabled = currentCursorMode == GLFW_CURSOR_DISABLED;
 
 			if (!cursorDisabled)
@@ -302,7 +315,7 @@ namespace lei3d
 			glfwSetWindowShouldClose(window, true);
 		}
 
-		//Editor Specific Controls
+		// Editor Specific Controls
 		if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
 		{
 			SetUIActive(!m_UIActive);

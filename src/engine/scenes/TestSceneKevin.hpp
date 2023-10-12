@@ -20,6 +20,10 @@ namespace lei3d
 	private:
 		std::unique_ptr<Model> backpackModel;
 		std::unique_ptr<Model> playgroundModel;
+
+		std::vector<std::unique_ptr<Model>> m_EnviromentModels;
+
+		//void Initialize
 	};
 
 	extern std::unique_ptr<Scene> MakeTestSceneKevin();

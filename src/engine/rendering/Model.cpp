@@ -139,11 +139,13 @@ namespace lei3d
 		if (mat->GetTextureCount(type) < 1)
 		{
 			// no textures of this type
+			//std::string error = std::string("Found no textures for type ") + aiTextureTypeToString(type) +  " in material " +  mat->GetName().C_Str() + "\n";
+			//LEI_WARN(error);
 			return nullptr;
 		}
 		if (mat->GetTextureCount(type) > 1)
 		{
-			std::cout << "Found more than 1 texture for type " << aiTextureTypeToString(type) << " in material " << mat->GetName().C_Str() << "\n";
+			LEI_WARN("Found more than 1 texture for type ", aiTextureTypeToString(type), " in material ", mat->GetName().C_Str(), "\n");
 		}
 
 		// only select the first texture
@@ -171,6 +173,54 @@ namespace lei3d
 		}
 
 		return texture;
+	}
+
+	void Model::loadMaterials(const aiScene* scene)
+	{
+		for (size_t i = 0; i < scene->mNumMaterials; i++)
+		{
+			const aiMaterial* aimaterial = scene->mMaterials[i];
+
+			Material* newMaterial = new Material();
+
+			aiColor3D color;
+			if (aimaterial->Get(AI_MATKEY_BASE_COLOR, color) == AI_SUCCESS)
+			{
+				newMaterial->m_Albedo = glm::vec3(color.r, color.g, color.b);
+			}
+			if (aimaterial->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS)
+			{
+				newMaterial->m_Albedo = glm::vec3(color.r, color.g, color.b);
+			}
+			if (aimaterial->Get(AI_MATKEY_METALLIC_FACTOR, newMaterial->m_Metallic) != AI_SUCCESS)
+			{
+				aimaterial->Get(AI_MATKEY_SPECULAR_FACTOR, newMaterial->m_Metallic);
+			}
+			if (aimaterial->Get(AI_MATKEY_ROUGHNESS_FACTOR, newMaterial->m_Roughness) != AI_SUCCESS)
+			{
+				if (aimaterial->Get(AI_MATKEY_GLOSSINESS_FACTOR, newMaterial->m_Roughness) == AI_SUCCESS)
+				{
+					newMaterial->m_Roughness = 1 - newMaterial->m_Roughness;
+				}
+			}
+
+			newMaterial->m_AlbedoTexture = loadMaterialTexture(aimaterial, aiTextureType_DIFFUSE, "texture_diffuse");
+			newMaterial->m_MetallicTexture = loadMaterialTexture(aimaterial, aiTextureType_METALNESS, "texture_metallic");
+			newMaterial->m_RoughnessTexture = loadMaterialTexture(aimaterial, aiTextureType_DIFFUSE_ROUGHNESS, "texture_roughness");
+			newMaterial->m_AmbientTexture = loadMaterialTexture(aimaterial, aiTextureType_AMBIENT_OCCLUSION, "texture_ao");
+
+			newMaterial->m_NormalMap = loadMaterialTexture(aimaterial, aiTextureType_NORMALS, "texture_normal");
+			newMaterial->m_BumpMap = loadMaterialTexture(aimaterial, aiTextureType_HEIGHT, "texture_bump");
+
+			newMaterial->m_UseAlbedoMap = newMaterial->m_AlbedoTexture != nullptr;
+			newMaterial->m_UseMetallicMap = newMaterial->m_MetallicTexture != nullptr;
+			newMaterial->m_UseRoughnessMap = newMaterial->m_RoughnessTexture != nullptr;
+			newMaterial->m_UseAmbientMap = newMaterial->m_AmbientTexture != nullptr;
+			newMaterial->m_UseNormalMap = newMaterial->m_NormalMap != nullptr;
+			newMaterial->m_UseBumpMap = newMaterial->m_BumpMap != nullptr;
+
+			materials.emplace_back(newMaterial);
+		}
 	}
 
 	/**
@@ -208,55 +258,6 @@ namespace lei3d
 		}
 
 		return m_BTMeshes;
-	}
-
-	void Model::loadMaterials(const aiScene* scene)
-	{
-		for (size_t i = 0; i < scene->mNumMaterials; i++)
-		{
-			const aiMaterial* aimaterial = scene->mMaterials[i];
-
-			Material* newMaterial = new Material();
-
-			aiColor3D color;
-			if (aimaterial->Get(AI_MATKEY_BASE_COLOR, color) == AI_SUCCESS)
-			{
-				newMaterial->m_Albedo = glm::vec3(color.r, color.g, color.b);
-			}
-			if (aimaterial->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS)
-			{
-				newMaterial->m_Albedo = glm::vec3(color.r, color.g, color.b);
-			}
-
-			if (aimaterial->Get(AI_MATKEY_METALLIC_FACTOR, newMaterial->m_Metallic) != AI_SUCCESS)
-			{
-				aimaterial->Get(AI_MATKEY_SPECULAR_FACTOR, newMaterial->m_Metallic);
-			}
-			if (aimaterial->Get(AI_MATKEY_ROUGHNESS_FACTOR, newMaterial->m_Roughness) != AI_SUCCESS)
-			{
-				if (aimaterial->Get(AI_MATKEY_GLOSSINESS_FACTOR, newMaterial->m_Roughness) == AI_SUCCESS)
-				{
-					newMaterial->m_Roughness = 1 - newMaterial->m_Roughness;
-				}
-			}
-
-			newMaterial->m_AlbedoTexture = loadMaterialTexture(aimaterial, aiTextureType_DIFFUSE, "texture_diffuse");
-			newMaterial->m_MetallicTexture = loadMaterialTexture(aimaterial, aiTextureType_METALNESS, "texture_metallic");
-			newMaterial->m_RoughnessTexture = loadMaterialTexture(aimaterial, aiTextureType_DIFFUSE_ROUGHNESS, "texture_roughness");
-			newMaterial->m_AmbientTexture = loadMaterialTexture(aimaterial, aiTextureType_AMBIENT_OCCLUSION, "texture_ao");
-
-			newMaterial->m_NormalMap = loadMaterialTexture(aimaterial, aiTextureType_NORMALS, "texture_normal");
-			newMaterial->m_BumpMap = loadMaterialTexture(aimaterial, aiTextureType_HEIGHT, "texture_bump");
-
-			newMaterial->m_UseAlbedoMap = newMaterial->m_AlbedoTexture != nullptr;
-			newMaterial->m_UseMetallicMap = newMaterial->m_MetallicTexture != nullptr;
-			newMaterial->m_UseRoughnessMap = newMaterial->m_RoughnessTexture != nullptr;
-			newMaterial->m_UseAmbientMap = newMaterial->m_AmbientTexture != nullptr;
-			newMaterial->m_UseNormalMap = newMaterial->m_NormalMap != nullptr;
-			newMaterial->m_UseBumpMap = newMaterial->m_BumpMap != nullptr;
-
-			materials.emplace_back(newMaterial);
-		}
 	}
 
 	// from https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/model.h
