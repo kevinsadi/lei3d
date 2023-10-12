@@ -130,7 +130,7 @@ namespace lei3d
 
 	void SkyBox::Render()
 	{
-		auto camera = Application::GetSceneCamera();
+		auto camera = Application::GetInstance().GetSceneCamera();
 
 		// C++ doesn't like it if you don't declare these beforehand (initial ref. to non-const value)
 		glm::mat4 proj = camera.GetProj();

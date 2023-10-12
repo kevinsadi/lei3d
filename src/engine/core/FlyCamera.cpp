@@ -17,7 +17,7 @@ namespace lei3d
 
 	void FlyCamera::PollCameraMovementInput()
 	{
-		GLFWwindow* const window = Application::Window();
+		GLFWwindow* const window = Application::GetInstance().Window();
 
 		float speed = m_FlySpeed;
 		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
@@ -64,46 +64,46 @@ namespace lei3d
 
 	void FlyCamera::handleForward(float speed)
 	{
-		m_CameraPos += m_CameraFront * speed * Application::DeltaTime();
+		m_CameraPos += m_CameraFront * speed * Application::GetInstance().DeltaTime();
 
 		if (m_UseMinecraftControls) {
 			//should move in m_CameraFront's direction, with no change in height
-			m_CameraPos += glm::normalize(glm::vec3(m_CameraFront.x, 0, m_CameraFront.z)) * speed * Application::DeltaTime();
+			m_CameraPos += glm::normalize(glm::vec3(m_CameraFront.x, 0, m_CameraFront.z)) * speed * Application::GetInstance().DeltaTime();
 		} else {
-			m_CameraPos += m_CameraFront * speed * Application::DeltaTime();
+			m_CameraPos += m_CameraFront * speed * Application::GetInstance().DeltaTime();
 		}
 	}
 
 	void FlyCamera::handleBack(float speed)
 	{
-		m_CameraPos -= m_CameraFront * speed * Application::DeltaTime();
+		m_CameraPos -= m_CameraFront * speed * Application::GetInstance().DeltaTime();
 
 		if (m_UseMinecraftControls) {
 			//should move opposite to m_CameraFront's direction, with no change in height
-			m_CameraPos -= glm::normalize(glm::vec3(m_CameraFront.x, 0, m_CameraFront.z)) * speed * Application::DeltaTime();
+			m_CameraPos -= glm::normalize(glm::vec3(m_CameraFront.x, 0, m_CameraFront.z)) * speed * Application::GetInstance().DeltaTime();
 		} else {
-			m_CameraPos -= m_CameraFront * speed * Application::DeltaTime();
+			m_CameraPos -= m_CameraFront * speed * Application::GetInstance().DeltaTime();
 		}
 	}
 
 	void FlyCamera::handleLeft(float speed)
 	{
-		m_CameraPos -= m_CameraRight * speed * Application::DeltaTime();
+		m_CameraPos -= m_CameraRight * speed * Application::GetInstance().DeltaTime();
 	}
 
 	void FlyCamera::handleRight(float speed)
 	{
-		m_CameraPos += m_CameraRight * speed * Application::DeltaTime();
+		m_CameraPos += m_CameraRight * speed * Application::GetInstance().DeltaTime();
 	}
 
 	void FlyCamera::handleUp(float speed)
 	{
-		m_CameraPos += m_CameraUp * speed * Application::DeltaTime();
+		m_CameraPos += m_CameraUp * speed * Application::GetInstance().DeltaTime();
 	}
 
 	void FlyCamera::handleDown(float speed)
 	{
-		m_CameraPos -= m_CameraUp * speed * Application::DeltaTime();
+		m_CameraPos -= m_CameraUp * speed * Application::GetInstance().DeltaTime();
 	}
 
 	void FlyCamera::SetFlySpeed(float speed) {

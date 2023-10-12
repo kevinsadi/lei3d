@@ -9,7 +9,7 @@ namespace lei3d
 	SceneView::SceneView()
 	{
 		// load camera
-		GLFWwindow* const win = Application::Window();
+		GLFWwindow* const win = Application::GetInstance().Window();
 
 		// Add Default Fly Camera
 		m_FlyCamera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f);

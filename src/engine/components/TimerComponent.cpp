@@ -20,7 +20,7 @@ namespace lei3d
 	{
 		if (m_Start)
 		{
-			m_Timer += Application::DeltaTime();
+			m_Timer += Application::GetInstance().DeltaTime();
 			if (m_Timer >= m_TargetTime) {
 				// Trigger an event / do something
 				m_Event();

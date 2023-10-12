@@ -19,7 +19,7 @@ namespace lei3d
 	void Scene::Load()
 	{
 		//Default Camera
-		m_DefaultCamera = std::make_unique<Camera>(Application::Window(), 90.0f, 0.0f);
+		m_DefaultCamera = std::make_unique<Camera>(Application::GetInstance().Window(), 90.0f, 0.0f);
 
 		// Load physics world
 		m_PhysicsWorld = std::make_unique<PhysicsWorld>();

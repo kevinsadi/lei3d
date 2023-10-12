@@ -14,22 +14,18 @@ namespace lei3d
 		GLCall(glViewport(0, 0, width, height));
 	}
 
-	Application* Application::s_Instance = nullptr;
-
 	Application::Application()
 	{
-		if (s_Instance)
-		{
-			LEI_ERROR("Multiple instances detected. Only one application should be running at a time.");
-		}
+	}
 
-		s_Instance = this;
+	Application& Application::GetInstance()
+	{
+		static Application instance;
+		return instance;
 	}
 
 	Application::~Application()
 	{
-		s_Instance = nullptr;
-
 		// Shutdown GLFW
 		glfwDestroyWindow(m_Window);
 		glfwTerminate();
@@ -217,17 +213,17 @@ namespace lei3d
 
 	SceneView& Application::GetSceneView()
 	{
-		return *s_Instance->m_SceneView;
+		return *m_SceneView;
 	}
 
 	PrimitiveRenderer& Application::GetPrimitiveRenderer()
 	{
-		return s_Instance->m_PrimitiveRenderer;
+		return m_PrimitiveRenderer;
 	}
 
 	FontRenderer& Application::GetFontRenderer()
 	{
-		return s_Instance->m_fontRenderer;
+		return m_fontRenderer;
 	}
 
 	// TODO: Put into input class
@@ -241,7 +237,7 @@ namespace lei3d
 		// and call them here.
 
 		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double x, double y) {
-			int		   currentCursorMode = glfwGetInputMode(window, GLFW_CURSOR);
+			int currentCursorMode = glfwGetInputMode(window, GLFW_CURSOR);
 			const bool cursorDisabled = currentCursorMode == GLFW_CURSOR_DISABLED;
 
 			if (!cursorDisabled)
@@ -260,7 +256,7 @@ namespace lei3d
 				{
 					if (cursorDisabled)
 					{
-						Camera& sceneCamera = Application::GetSceneCamera();
+						Camera& sceneCamera = Application::GetInstance().GetSceneCamera();
 						sceneCamera.cameraMouseCallback(x, y);
 					}
 				}
@@ -302,7 +298,7 @@ namespace lei3d
 			glfwSetWindowShouldClose(window, true);
 		}
 
-		//Editor Specific Controls
+		// Editor Specific Controls
 		if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
 		{
 			SetUIActive(!m_UIActive);
@@ -311,12 +307,12 @@ namespace lei3d
 
 	GLFWwindow* Application::Window()
 	{
-		return s_Instance->m_Window;
+		return m_Window;
 	}
 
 	float Application::DeltaTime()
 	{
-		return s_Instance->m_DeltaTime;
+		return m_DeltaTime;
 	}
 
 	void Application::GetMonitorConfiguration()

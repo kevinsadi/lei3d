@@ -51,7 +51,7 @@ namespace lei3d
 		}
 
 		Scene&	   scene = SceneManager::ActiveScene();
-		SceneView& view = Application::GetSceneView();
+		SceneView& view = Application::GetInstance().GetSceneView();
 
 		//FLY CAMERA ---------------------------------------------
 		view.OnImGuiRender(scene);
@@ -76,7 +76,7 @@ namespace lei3d
 
 		if (ImGui::CollapsingHeader("Game Info"))
 		{
-			ImGui::Text("fps = %f", 1.0f / Application::DeltaTime());
+			ImGui::Text("fps = %f", 1.0f / Application::GetInstance().DeltaTime());
 		}
 
 		if (ImGui::CollapsingHeader("Shortcuts/Keybinds"))

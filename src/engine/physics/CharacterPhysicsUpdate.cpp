@@ -51,7 +51,7 @@ namespace lei3d
 		float	  yawRotationRadian = glm::radians(m_Controller.m_Entity.m_Transform.yawRotation);
 
 		// here is where we apply our constraints during the update
-		GLFWwindow* window = Application::Window();
+		GLFWwindow* window = Application::GetInstance().Window();
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		{
 			//Same as Camera
@@ -124,7 +124,7 @@ namespace lei3d
 	glm::vec3 CharacterController::CharacterPhysicsUpdate::Accelerate(glm::vec3 wishDir, glm::vec3 prevVel, float acceleration, float maxVelocity)
 	{
 		const float projectedSpeed = glm::dot(prevVel, wishDir);
-		float wishSpeed = acceleration * Application::DeltaTime(); // this is the wish speed (MIGHT NEED DELTA TIME TO FIX THIS????
+		float wishSpeed = acceleration * Application::GetInstance().DeltaTime(); // this is the wish speed (MIGHT NEED DELTA TIME TO FIX THIS????
 
 		// If necessary, truncate the new speed so it doesn't exceed max velocity
 		if (projectedSpeed + wishSpeed > maxVelocity)
@@ -146,7 +146,7 @@ namespace lei3d
 		const float		speed = glm::length(prevVelocity);
 		if (speed != 0 && glm::length(wishDir) < EPSILON)	//Only factor in friction on deceleration.
 		{
-			const float drop = speed * m_Controller.m_friction * Application::DeltaTime(); // THIS MIGHT HAVE TO BE MULTIPLIED BY DELTA TIME??
+			const float drop = speed * m_Controller.m_friction * Application::GetInstance().DeltaTime(); // THIS MIGHT HAVE TO BE MULTIPLIED BY DELTA TIME??
 			prevVelocity *= std::max(speed - drop, 0.0f) / speed;					 // Friction fall off
 		}
 
