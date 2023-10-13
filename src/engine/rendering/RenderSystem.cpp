@@ -43,9 +43,10 @@ namespace lei3d
 		glGenTextures(1, &finalTexture);
 
 		// lighting pass
+		GLenum mipMode = isSSROn ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST;
 		glBindTexture(GL_TEXTURE_2D, rawTexture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mipMode);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, rawTexture, 0);
 
