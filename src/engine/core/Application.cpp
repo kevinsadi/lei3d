@@ -153,8 +153,6 @@ namespace lei3d
 		m_DeltaTime = currentTime - m_LastFrameTime;
 		m_LastFrameTime = currentTime;
 
-		glfwPollEvents();
-
 		m_PhysicsElapsedTime += m_DeltaTime;
 		if (m_PhysicsElapsedTime >= m_FixedDeltaTime)
 		{
