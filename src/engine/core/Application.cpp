@@ -2,6 +2,8 @@
 #include "Application.hpp"
 
 #include "logging/GLDebug.hpp"
+#include "core/InputManager.hpp"
+#include "core/SceneManager.hpp"
 
 #include <stb_image.h>
 
@@ -48,9 +50,9 @@ namespace lei3d
 		{
 			// We need to block frame ticking until the new scene has been loaded
 			// Not the most optimal scene loader (may need to look into async loading), but works for now.
-			if (m_SceneManager->NeedsSceneSwitch())
+			if (SceneManager::GetInstance().NeedsSceneSwitch())
 			{
-				m_SceneManager->LoadNextScene();
+				SceneManager::GetInstance().LoadNextScene();
 			}
 			FrameTick();
 		}
@@ -95,6 +97,10 @@ namespace lei3d
 
 		GLCall(glEnable(GL_DEPTH_TEST));
 
+		// INPUT CALLBACKS ------------------------------
+		// set glfw input callbacks before imgui, so it initializes properly for imgui as well
+		InputManager::initialize(m_Window);
+
 		// IMGUI SETUP --------------------------------
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -105,20 +111,20 @@ namespace lei3d
 		ImGui::StyleColorsDark();
 
 		ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
-		ImGui_ImplOpenGL3_Init();
+		ImGui_ImplOpenGL3_Init("#version 410");
 
 		// AppGUI --------------------------------
 		m_EditorGUI = std::make_unique<EditorGUI>();
 		SetUIActive(false);
 
 		// CREATE SCENES --------------------------------
-		m_SceneManager = std::make_unique<SceneManager>();
-		m_SceneManager->Init();
+		SceneManager& sm = SceneManager::GetInstance();
+		sm.Init();
 
 		LEI_TRACE("Loading Default Scene");
 		if (SceneManager::HasScenes())
 		{
-			m_SceneManager->SetScene(0);
+			sm.SetScene(0);
 		}
 		else
 		{
@@ -136,9 +142,6 @@ namespace lei3d
 		m_Renderer.initialize(screenWidth, screenHeight);
 		m_PrimitiveRenderer.initialize(screenWidth, screenHeight);
 		m_fontRenderer.Init();
-
-		// INPUT CALLBACKS ------------------------------
-		SetupInputCallbacks();
 	}
 
 	void Application::FrameTick()
@@ -150,11 +153,11 @@ namespace lei3d
 		m_DeltaTime = currentTime - m_LastFrameTime;
 		m_LastFrameTime = currentTime;
 
-		glfwPollEvents();
 		Update();
 		Render();
 		ImGuiRender();
 
+		glfwPollEvents();
 		glfwSwapBuffers(m_Window);
 
 		// Sync FPS to desired value
@@ -174,10 +177,21 @@ namespace lei3d
 
 	void Application::Update()
 	{
-		Scene& scene = m_SceneManager->ActiveScene();
+		Scene& scene = SceneManager::GetInstance().ActiveScene();
 		scene.Update();
+
+		ImGuiIO& io = ImGui::GetIO();
+		if (io.WantCaptureMouse || io.WantCaptureKeyboard)
+		{
+			// nothing
+		}
+		else
+		{
+			ProcessInput();
+			m_SceneView->Update(scene);
+		}
+
 		scene.PhysicsUpdate();
-		m_SceneView->Update(scene);
 	}
 
 	void Application::SetUIActive(bool uiActive)
@@ -197,18 +211,18 @@ namespace lei3d
 
 	void Application::ImGuiRender()
 	{
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
-
 		if (m_UIActive)
 		{
-			m_EditorGUI->RenderUI();
-		}
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
 
-		ImGui::Render();
-		ImDrawData* drawData = ImGui::GetDrawData();
-		ImGui_ImplOpenGL3_RenderDrawData(drawData);
+			m_EditorGUI->RenderUI();
+
+			ImGui::Render();
+			ImDrawData* drawData = ImGui::GetDrawData();
+			ImGui_ImplOpenGL3_RenderDrawData(drawData);
+		}
 	}
 
 	SceneView& Application::GetSceneView()
@@ -226,80 +240,22 @@ namespace lei3d
 		return m_fontRenderer;
 	}
 
-	// TODO: Put into input class
-	void Application::SetupInputCallbacks()
+	void Application::ProcessInput()
 	{
-		glfwSetWindowUserPointer(m_Window, this);
+		InputManager& im = InputManager::GetInstance();
+		im.update();
 
-		// NOTE: We need to be careful about overwriting the inputs, bc that will screw over imgui.
-		// TODO: https://trello.com/c/S05x7OxG/33-input-callbacks
-		// Create an input class where you can add and remove input callback functions from a list,
-		// and call them here.
+		Camera& sceneCamera = GetInstance().GetSceneCamera();
+		sceneCamera.Pan();
 
-		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double x, double y) {
-			int currentCursorMode = glfwGetInputMode(window, GLFW_CURSOR);
-			const bool cursorDisabled = currentCursorMode == GLFW_CURSOR_DISABLED;
-
-			if (!cursorDisabled)
-			{
-				ImGui_ImplGlfw_CursorPosCallback(window, x, y);
-			}
-
-			ImGuiIO& io = ImGui::GetIO();
-			if (!io.WantCaptureMouse)
-			{
-				// Do mouse position things in game
-				// Only pass data to the app if ImGui is not using it.
-
-				Application* self = static_cast<Application*>(glfwGetWindowUserPointer(window));
-				if (self)
-				{
-					if (cursorDisabled)
-					{
-						Camera& sceneCamera = Application::GetInstance().GetSceneCamera();
-						sceneCamera.cameraMouseCallback(x, y);
-					}
-				}
-			}
-		});
-
-		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) {
-			ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
-
-			ImGuiIO& io = ImGui::GetIO();
-			if (!io.WantCaptureMouse)
-			{
-				// Do Mouse Button things in game
-			}
-		});
-
-		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-			ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
-
-			ImGuiIO& io = ImGui::GetIO();
-			if (!io.WantCaptureKeyboard)
-			{
-				// Do cursor position things in game
-				Application* self = static_cast<Application*>(glfwGetWindowUserPointer(window));
-				if (self)
-				{
-					self->ProcessKeyboardInput(window, key, scancode, action, mods);
-					self->m_SceneView->ProcessKeyboardInput(window, key, scancode, action, mods);
-				}
-			}
-		});
-	}
-
-	void Application::ProcessKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods)
-	{
 		// gracefully exit on escape
-		if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		if (im.isKeyPressed(GLFW_KEY_ESCAPE))
 		{
-			glfwSetWindowShouldClose(window, true);
+			glfwSetWindowShouldClose(m_Window, true);
 		}
 
 		// Editor Specific Controls
-		if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
+		if (im.isKeyPressed(GLFW_KEY_TAB))
 		{
 			SetUIActive(!m_UIActive);
 		}
@@ -307,12 +263,12 @@ namespace lei3d
 
 	GLFWwindow* Application::Window()
 	{
-		return m_Window;
+		return GetInstance().m_Window;
 	}
 
 	float Application::DeltaTime()
 	{
-		return m_DeltaTime;
+		return GetInstance().m_DeltaTime;
 	}
 
 	void Application::GetMonitorConfiguration()

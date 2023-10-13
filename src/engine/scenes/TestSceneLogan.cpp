@@ -94,6 +94,6 @@ namespace lei3d
 
 	void TestSceneLogan::OnPhysicsUpdate()
 	{
-		m_PhysicsWorld->Step(Application::GetInstance().DeltaTime());
+		m_PhysicsWorld->Step(Application::DeltaTime());
 	}
 } // namespace lei3d

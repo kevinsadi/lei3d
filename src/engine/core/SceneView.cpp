@@ -1,6 +1,7 @@
 #include "SceneView.hpp"
 
 #include "core/Application.hpp"
+#include "core/InputManager.hpp"
 
 #include <imgui.h>
 
@@ -9,7 +10,7 @@ namespace lei3d
 	SceneView::SceneView()
 	{
 		// load camera
-		GLFWwindow* const win = Application::GetInstance().Window();
+		GLFWwindow* const win = Application::Window();
 
 		// Add Default Fly Camera
 		m_FlyCamera = std::make_unique<FlyCamera>(win, 90.0f, 0.0f);
@@ -43,19 +44,19 @@ namespace lei3d
 
 	void SceneView::Update(Scene& scene)
 	{
-
-
-		ActiveCamera(scene).PollCameraMovementInput(); //Kinda jank
+		ActiveCamera(scene).PollCameraMovementInput();
+		ProcessInput();
 	}
 
-	void SceneView::ProcessKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods)
+	void SceneView::ProcessInput()
 	{
-		if (key == GLFW_KEY_R && action == GLFW_PRESS)
+		InputManager& im = InputManager::GetInstance();
+		if (im.isKeyPressed(GLFW_KEY_R))
 		{
 			Reset(SceneManager::ActiveScene());
 		}
 
-		if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+		if (im.isKeyPressed(GLFW_KEY_P))
 		{
 			TogglePlayPause(SceneManager::ActiveScene());
 		}

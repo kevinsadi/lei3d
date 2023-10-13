@@ -1,5 +1,6 @@
 #include "Camera.hpp"
 
+#include "core/InputManager.hpp"
 #include <GLFW/glfw3.h>
 
 namespace lei3d
@@ -26,12 +27,15 @@ namespace lei3d
 		//: Clown Emoji
 	}
 
-	void Camera::cameraMouseCallback(double xPosInput, double yPosInput)
+	void Camera::Pan()
 	{
+		InputManager& im = InputManager::GetInstance();
+		glm::vec2 offset = im.getMouseOffset();
+
 		switch (m_LookMode)
 		{
 			case LookMode::FREE:
-				FreeCameraControls(static_cast<float>(xPosInput), static_cast<float>(yPosInput));
+				FreeCameraControls(offset.x, offset.y);
 				break;
 			case LookMode::FIXED:
 			default:
@@ -41,17 +45,8 @@ namespace lei3d
 
 	void Camera::FreeCameraControls(float xpos, float ypos)
 	{
-		if (m_MouseEnterFlag)
-		{
-			m_PrevX = xpos;
-			m_PrevY = ypos;
-			m_MouseEnterFlag = false;
-		}
-
-		float xoffset = xpos - m_PrevX;
-		float yoffset = m_PrevY - ypos; // openGL inverted y
-		m_PrevX = xpos;
-		m_PrevY = ypos;
+		float xoffset = xpos;
+		float yoffset = ypos;
 
 		xoffset *= MOUSE_SENSITIVITY;
 		yoffset *= MOUSE_SENSITIVITY;
@@ -60,9 +55,13 @@ namespace lei3d
 		m_Pitch += yoffset;
 
 		if (m_Pitch > MAX_PITCH)
+		{
 			m_Pitch = MAX_PITCH;
+		}
 		if (m_Pitch < -MAX_PITCH)
+		{
 			m_Pitch = -MAX_PITCH;
+		}
 
 		glm::vec3 direction;
 		direction.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));

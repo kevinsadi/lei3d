@@ -1,6 +1,7 @@
 #include "FlyCamera.hpp"
 
 #include "core/Application.hpp"
+#include "core/InputManager.hpp"
 
 namespace lei3d
 {
@@ -17,10 +18,10 @@ namespace lei3d
 
 	void FlyCamera::PollCameraMovementInput()
 	{
-		GLFWwindow* const window = Application::GetInstance().Window();
+		InputManager& im = InputManager::GetInstance();
 
 		float speed = m_FlySpeed;
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		if (im.isKeyDown(GLFW_KEY_LEFT_SHIFT))
 		{
 			speed *= 10.0f;
 
@@ -30,27 +31,27 @@ namespace lei3d
 			}
 		}
 
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		if (im.isKeyDown(GLFW_KEY_W))
 		{
 			handleForward(speed);
 		}
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		if (im.isKeyDown(GLFW_KEY_S))
 		{
 			handleBack(speed);
 		}
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		if (im.isKeyDown(GLFW_KEY_A))
 		{
 			handleLeft(speed);
 		}
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		if (im.isKeyDown(GLFW_KEY_D))
 		{
 			handleRight(speed);
 		}
-		if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		if (im.isKeyDown(GLFW_KEY_E))
 		{
 			handleUp(speed);
 		}
-		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+		if (im.isKeyDown(GLFW_KEY_Q))
 		{
 			handleDown(speed);
 		}
@@ -64,46 +65,46 @@ namespace lei3d
 
 	void FlyCamera::handleForward(float speed)
 	{
-		m_CameraPos += m_CameraFront * speed * Application::GetInstance().DeltaTime();
+		m_CameraPos += m_CameraFront * speed * Application::DeltaTime();
 
 		if (m_UseMinecraftControls) {
 			//should move in m_CameraFront's direction, with no change in height
-			m_CameraPos += glm::normalize(glm::vec3(m_CameraFront.x, 0, m_CameraFront.z)) * speed * Application::GetInstance().DeltaTime();
+			m_CameraPos += glm::normalize(glm::vec3(m_CameraFront.x, 0, m_CameraFront.z)) * speed * Application::DeltaTime();
 		} else {
-			m_CameraPos += m_CameraFront * speed * Application::GetInstance().DeltaTime();
+			m_CameraPos += m_CameraFront * speed * Application::DeltaTime();
 		}
 	}
 
 	void FlyCamera::handleBack(float speed)
 	{
-		m_CameraPos -= m_CameraFront * speed * Application::GetInstance().DeltaTime();
+		m_CameraPos -= m_CameraFront * speed * Application::DeltaTime();
 
 		if (m_UseMinecraftControls) {
 			//should move opposite to m_CameraFront's direction, with no change in height
-			m_CameraPos -= glm::normalize(glm::vec3(m_CameraFront.x, 0, m_CameraFront.z)) * speed * Application::GetInstance().DeltaTime();
+			m_CameraPos -= glm::normalize(glm::vec3(m_CameraFront.x, 0, m_CameraFront.z)) * speed * Application::DeltaTime();
 		} else {
-			m_CameraPos -= m_CameraFront * speed * Application::GetInstance().DeltaTime();
+			m_CameraPos -= m_CameraFront * speed * Application::DeltaTime();
 		}
 	}
 
 	void FlyCamera::handleLeft(float speed)
 	{
-		m_CameraPos -= m_CameraRight * speed * Application::GetInstance().DeltaTime();
+		m_CameraPos -= m_CameraRight * speed * Application::DeltaTime();
 	}
 
 	void FlyCamera::handleRight(float speed)
 	{
-		m_CameraPos += m_CameraRight * speed * Application::GetInstance().DeltaTime();
+		m_CameraPos += m_CameraRight * speed * Application::DeltaTime();
 	}
 
 	void FlyCamera::handleUp(float speed)
 	{
-		m_CameraPos += m_CameraUp * speed * Application::GetInstance().DeltaTime();
+		m_CameraPos += m_CameraUp * speed * Application::DeltaTime();
 	}
 
 	void FlyCamera::handleDown(float speed)
 	{
-		m_CameraPos -= m_CameraUp * speed * Application::GetInstance().DeltaTime();
+		m_CameraPos -= m_CameraUp * speed * Application::DeltaTime();
 	}
 
 	void FlyCamera::SetFlySpeed(float speed) {

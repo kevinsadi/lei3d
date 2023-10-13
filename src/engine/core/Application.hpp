@@ -29,7 +29,6 @@
 namespace lei3d
 {
 	class AppGUI;
-	class SceneManager;
 
 	class Application
 	{
@@ -42,7 +41,6 @@ namespace lei3d
 
 		// TODO: Refactor things into editor/game
 		std::unique_ptr<EditorGUI> m_EditorGUI;
-		std::unique_ptr<SceneManager> m_SceneManager;
 		std::unique_ptr<AudioPlayer> m_AudioPlayer;
 		std::unique_ptr<SceneView> m_SceneView;
 
@@ -66,15 +64,15 @@ namespace lei3d
 
 		void SetUIActive(bool uiActive);
 
-		GLFWwindow* Window();
-		float DeltaTime();
+		static GLFWwindow* Window();
+		static float DeltaTime();
 		SceneView& GetSceneView();
 		PrimitiveRenderer& GetPrimitiveRenderer();
 		FontRenderer& GetFontRenderer();
 
 		inline Camera& GetSceneCamera()
 		{
-			return GetSceneView().ActiveCamera(SceneManager::ActiveScene());
+			return GetSceneView().ActiveCamera(SceneManager::GetInstance().ActiveScene());
 		}
 
 	private:
@@ -88,7 +86,6 @@ namespace lei3d
 		void Render();
 		void ImGuiRender();
 
-		void SetupInputCallbacks();
-		void ProcessKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods);
+		void ProcessInput();
 	};
 } // namespace lei3d

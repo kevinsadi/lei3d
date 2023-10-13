@@ -76,7 +76,7 @@ namespace lei3d
 
 		if (ImGui::CollapsingHeader("Game Info"))
 		{
-			ImGui::Text("fps = %f", 1.0f / Application::GetInstance().DeltaTime());
+			ImGui::Text("fps = %f", 1.0f / Application::DeltaTime());
 		}
 
 		if (ImGui::CollapsingHeader("Shortcuts/Keybinds"))
