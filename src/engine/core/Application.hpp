@@ -8,18 +8,18 @@
 #include "rendering/PrimitiveRenderer.hpp"
 #include "rendering/RenderSystem.hpp"
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include "audio/AudioPlayer.hpp"
 #include <filesystem>
 #include <iostream>
 #include <map>
 #include <memory>
 #include <vector>
-#include "audio/AudioPlayer.hpp"
 
 #include <chrono>
 #include <thread>
@@ -54,8 +54,12 @@ namespace lei3d
 
 		float m_LastFrameTime = 0.0f; // used to keep track of delta time
 		float m_DeltaTime = 0.0f;	  // Total time for last frame.
-		float m_DesiredFPS =
-			120.0f;					  // FPS will be capped to this value. (current bug means that the FPS cap is half, not sure why)
+		float m_DesiredFPS = 120.0f;  // FPS will be capped to this value. (current bug
+									  // means that the FPS cap is half, not sure why)
+
+		float m_PhysicsElapsedTime = 0.0f;
+		float m_FixedDeltaTime = 0.01f;
+
 	public:
 		static Application& GetInstance();
 		~Application();
@@ -83,6 +87,7 @@ namespace lei3d
 		void GetMonitorConfiguration();
 
 		void Update();
+		void FixedUpdate();
 		void Render();
 		void ImGuiRender();
 

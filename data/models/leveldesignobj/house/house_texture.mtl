@@ -1,0 +1,22 @@
+# Blender 3.5.0 MTL File: 'house_texture.blend'
+# www.blender.org
+
+newmtl Brown_roof
+Ns 69.504128
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Brown_Roof.png
+
+newmtl Yellow_walls
+Ns 69.504128
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd Yellow_Roof.png

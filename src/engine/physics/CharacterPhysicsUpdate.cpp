@@ -36,7 +36,7 @@ namespace lei3d
 		bool onGround = callback.m_Grounded;
 		if (m_Controller.m_IncludeSFX && m_Controller.m_Grounded == false && onGround == true)
 		{
-			AudioPlayer::PlaySFX("landing_2"); //.PlaySound("landing");
+			AudioPlayer::PlaySFX("SFX-LAND-SHORT-RR4.wav"); //.PlaySound("landing");
 		}
 		bool groundPoint = callback.m_GroundPoint;
 		m_Controller.m_Grounded = onGround;
@@ -48,31 +48,31 @@ namespace lei3d
 
 		// Calculate
 		glm::vec3 wishdir{ 0.0f, 0.0f, 0.0f };
-		float	  yawRotationRadian = glm::radians(m_Controller.m_Entity.m_Transform.yawRotation);
+		float yawRotationRadian = glm::radians(m_Controller.m_Entity.m_Transform.yawRotation);
 
 		// here is where we apply our constraints during the update
 		InputManager& im = InputManager::GetInstance();
 		if (im.isKeyDown(GLFW_KEY_W))
 		{
-			//Same as Camera
+			// Same as Camera
 			glm::vec3 forwardVec = glm::normalize(glm::vec3(cos(yawRotationRadian), 0, sin(yawRotationRadian)));
 			wishdir = wishdir + forwardVec;
 		}
 		if (im.isKeyDown(GLFW_KEY_S))
 		{
-			//Same as Camera
+			// Same as Camera
 			glm::vec3 forwardVec = glm::normalize(glm::vec3(cos(yawRotationRadian), 0, sin(yawRotationRadian)));
 			wishdir = wishdir - forwardVec;
 		}
 		if (im.isKeyDown(GLFW_KEY_A))
 		{
-			//Same as Camera
+			// Same as Camera
 			glm::vec3 rightVec = glm::normalize(glm::vec3(-sin(yawRotationRadian), 0, cos(yawRotationRadian)));
 			wishdir = wishdir - rightVec;
 		}
 		if (im.isKeyDown(GLFW_KEY_D))
 		{
-			//Same as Camera
+			// Same as Camera
 			glm::vec3 rightVec = glm::normalize(glm::vec3(-sin(yawRotationRadian), 0, cos(yawRotationRadian)));
 			wishdir = wishdir + rightVec;
 		}
@@ -105,7 +105,7 @@ namespace lei3d
 	{
 		// Draw Ground Check
 		const btVector3 center = m_GroundCheck->getWorldTransform().getOrigin();
-		const btScalar	radius = m_GroundCheckDist;
+		const btScalar radius = m_GroundCheckDist;
 		const btVector3 groundCheckColor = btVector3(0.f, 0.f, 1.f);
 
 		debugDrawer->drawSphere(center, radius, groundCheckColor);
@@ -143,11 +143,11 @@ namespace lei3d
 	glm::vec3 CharacterController::CharacterPhysicsUpdate::GroundAcceleration(glm::vec3 wishDir, glm::vec3 prevVelocity)
 	{
 		constexpr float EPSILON = 0.1f;
-		const float		speed = glm::length(prevVelocity);
-		if (speed != 0 && glm::length(wishDir) < EPSILON)	//Only factor in friction on deceleration.
+		const float speed = glm::length(prevVelocity);
+		if (speed != 0 && glm::length(wishDir) < EPSILON) // Only factor in friction on deceleration.
 		{
 			const float drop = speed * m_Controller.m_friction * Application::DeltaTime(); // THIS MIGHT HAVE TO BE MULTIPLIED BY DELTA TIME??
-			prevVelocity *= std::max(speed - drop, 0.0f) / speed;					 // Friction fall off
+			prevVelocity *= std::max(speed - drop, 0.0f) / speed;						   // Friction fall off
 		}
 
 		return Accelerate(wishDir, prevVelocity, m_Controller.m_accel, m_Controller.m_maxSpeed);

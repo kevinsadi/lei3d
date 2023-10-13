@@ -6,11 +6,11 @@ namespace lei3d
 {
 	class Model;
 
-	class TestSceneKevin : public Scene
+	class TestSceneAvery : public Scene
 	{
 	public:
-		TestSceneKevin();
-		~TestSceneKevin();
+		TestSceneAvery();
+		~TestSceneAvery();
 
 		void OnLoad() override;
 		void OnUpdate() override;
@@ -20,11 +20,7 @@ namespace lei3d
 	private:
 		std::unique_ptr<Model> backpackModel;
 		std::unique_ptr<Model> playgroundModel;
-
-		std::vector<std::unique_ptr<Model>> m_EnviromentModels;
-
-		//void Initialize
 	};
 
-	extern std::unique_ptr<Scene> MakeTestSceneKevin();
+	extern std::unique_ptr<Scene> MakeTestSceneAvery();
 } // namespace lei3d

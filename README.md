@@ -5,25 +5,27 @@
 This is a dual repo to support the custom game engine Lei3D and the physics-based airstrafing game that implements it, [SkyLei](https://docs.google.com/document/d/1Ktms7R8Q_NFXl61THuaZg5ugdS3S1yB7YlfEAdG3e6E/edit). Please reference the [technical docs](https://docs.google.com/document/d/1xWzLR5w1hAfVA2lAmUGGxLnd27bZAXDg0xyif3sXK6A/edit?usp=sharing) for any additional info: 
 
 ## Features
-* Build System for Windows, Mac, Linux - CMake
-* Rendering of meshes and scenes - Assimp
-  * Support imports from Blender in any file format (.obj, .gltf)
-* Physics, Quake-like air strafing, surfing, and bunny hopping. Rigid Body Collisions - Bullet3
-* GUI and dev tools - imgui
-  * Level Editor
-  * Frames Per Second (FPS) counter
-  * Frame Limiter
-  * Level Switching
-  * Scene Edit/Play mode & Pausing/Resetting Levels
-* Player Controller / Input System
-* Entity Component System (ECS)
-  * Includes naming for entities
-* Forward Rendering 
-  * Point Lights
-  * Multi-Render Passes
-  * Cascaded Shadows and Post Processing 
-  * Skybox Rendering
-  * Post Processing
+* Core
+  * Build System for Windows, Mac, Linux - CMake
+  * Physics, Quake-like air strafing, surfing, and bunny hopping. Rigid Body Collisions - Bullet3
+  * GUI and dev tools - imgui
+    * Level Editor
+    * Frames Per Second (FPS) counter
+    * Level Switching
+    * Scene Edit/Play mode & Pausing/Resetting Levels
+  * Player Controller / Input System
+  * Actor Component System (ACS)
+    * Includes naming for entities
+    * Modify transform of entities from GUI
+  * Forward Lighting 
+    * Physically Based Material System
+    * Directional Lights
+    * Cascaded Shadows
+    * Skybox Rendering
+    * Stencil Masking
+* Post Effects
+  * Desaturation 
+  * Screen Space Reflections (SSR)
 
 ## Build
 
@@ -80,9 +82,14 @@ In a world that is shattered to pieces and taken to islands in the sky, SkyLei f
 
 
 ## Controls:
-WASD - movement 
-look around the scene by moving mouse
-tab to unlock cursor to interact with the gui
+* `WASD` - movement 
+* `tab` - unlock cursor to interact with the gui
+* `q` - lower camera in fly mode
+* `e` - raise camera in fly mode
+* `r` - reset scene
+* `p` - toggle pause/play
+* `space` - jump
+
 
 
 ## Showcase

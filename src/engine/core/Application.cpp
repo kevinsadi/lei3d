@@ -153,6 +153,15 @@ namespace lei3d
 		m_DeltaTime = currentTime - m_LastFrameTime;
 		m_LastFrameTime = currentTime;
 
+		glfwPollEvents();
+
+		m_PhysicsElapsedTime += m_DeltaTime;
+		if (m_PhysicsElapsedTime >= m_FixedDeltaTime)
+		{
+			FixedUpdate();
+			m_PhysicsElapsedTime -= m_FixedDeltaTime;
+		}
+
 		Update();
 		Render();
 		ImGuiRender();
@@ -190,7 +199,11 @@ namespace lei3d
 			ProcessInput();
 			m_SceneView->Update(scene);
 		}
+	}
 
+	void Application::FixedUpdate()
+	{
+		Scene& scene = m_SceneManager->ActiveScene();
 		scene.PhysicsUpdate();
 	}
 

@@ -18,7 +18,7 @@ namespace lei3d
 
 	SceneView::~SceneView()
 	{
-		//lmfao
+		// lmfao
 	}
 
 	SceneView::Mode SceneView::GetMode() const

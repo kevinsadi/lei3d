@@ -14,7 +14,7 @@ namespace lei3d
 			ImGui::ShowDemoWindow();
 		}
 
-		bool*			 p_open;
+		bool* p_open;
 		ImGuiWindowFlags window_flags = 0;
 
 		// Comment/Uncomment these as needed
@@ -53,13 +53,13 @@ namespace lei3d
 		Scene&	   scene = SceneManager::ActiveScene();
 		SceneView& view = Application::GetInstance().GetSceneView();
 
-		//FLY CAMERA ---------------------------------------------
+		// FLY CAMERA ---------------------------------------------
 		view.OnImGuiRender(scene);
 
 		if (ImGui::CollapsingHeader("Scenes"))
 		{
 			static int selectedScene = 0;
-			int		   sceneI = 0;
+			int sceneI = 0;
 			for (std::string& name : SceneManager::GetSceneNames())
 			{
 				const int oldSelectedScene = selectedScene;
@@ -85,7 +85,7 @@ namespace lei3d
 			ImGui::Text("SHIFT: Move Faster With Camera");
 			ImGui::Text("CTRL: Increase Object Transform Step");
 			ImGui::Text("R: Reset the Scene");
-			ImGui::Text("Q: Play/Pause Scene");
+			ImGui::Text("P: Play/Pause Scene");
 		}
 
 		ImGui::SetWindowSize(ImVec2(400, 400), ImGuiCond_Once);
