@@ -82,13 +82,14 @@ In a world that is shattered to pieces and taken to islands in the sky, SkyLei f
 
 
 ## Controls:
-`WASD` - movement 
-`space` - jump
-`tab` - unlock cursor to interact with the gui
-`q` - lower camera in fly mode
-`e` - raise camera in fly mode
-`r` - reset scene
-`p` - toggle pause/play
+* `WASD` - movement 
+* `tab` - unlock cursor to interact with the gui
+* `q` - lower camera in fly mode
+* `e` - raise camera in fly mode
+* `r` - reset scene
+* `p` - toggle pause/play
+* `space` - jump
+
 
 
 ## Showcase
