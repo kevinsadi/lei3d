@@ -203,7 +203,7 @@ namespace lei3d
 
 	void Application::FixedUpdate()
 	{
-		Scene& scene = m_SceneManager->ActiveScene();
+		Scene& scene = SceneManager::GetInstance().ActiveScene();
 		scene.PhysicsUpdate();
 	}
 
