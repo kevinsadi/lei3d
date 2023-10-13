@@ -5,6 +5,7 @@
 #include "components/FollowCameraController.hpp"
 #include "components/ModelInstance.hpp"
 #include "components/ColorSource.hpp"
+#include "components/LevelSwitchCollider.hpp"
 
 #include "logging/GLDebug.hpp"
 
@@ -40,7 +41,7 @@ namespace lei3d
 		}
 		backpackModel = std::make_unique<Model>(backpackPath);
 
-		const std::string physicsPlaygroundPath = "data/models/leveldesign/KevWorldColorFive.obj";
+		const std::string physicsPlaygroundPath = "data/models/leveldesignobj/cloud/cloud.obj";
 		if (playgroundModel)
 		{
 			playgroundModel.reset();
@@ -58,6 +59,23 @@ namespace lei3d
 		// this will break as you load multiple times, it will make multiple models
 		const std::string flowerPath = "data/models/leveldesignobj/flower/flower_export_2.obj";
 		m_EnviromentModels.emplace_back(std::make_unique<Model>(flowerPath));
+
+		const std::string islandPath = "data/models/leveldesignobj/island/island.obj";
+		m_EnviromentModels.emplace_back(std::make_unique<Model>(islandPath));
+
+		const std::string housePath = "data/models/leveldesignobj/house/house_texture.obj";
+		m_EnviromentModels.emplace_back(std::make_unique<Model>(housePath));
+
+		const std::string signPath = "data/models/leveldesignobj/sign/sign.obj";
+		m_EnviromentModels.emplace_back(std::make_unique<Model>(signPath));
+
+		const std::string fishPath = "data/models/leveldesignobj/fish2/fish.obj";
+		m_EnviromentModels.emplace_back(std::make_unique<Model>(fishPath));
+
+		// const std::string fishPath = "data/models/leveldesignobj/fish/fish.obj";
+		// m_EnviromentModels.emplace_back(std::make_unique<Model>(fishPath));
+
+		// this is some of the worst code I have written in my life, please forgive me
 
 		// BACKPACK (Character) ---------------------
 		Entity& backpackObj = AddEntity("Backpack");
@@ -80,8 +98,8 @@ namespace lei3d
 
 		ModelInstance* playgroundRender = physicsPlaygroundObj.AddComponent<ModelInstance>();
 		playgroundRender->Init(playgroundModel.get());
-		physicsPlaygroundObj.SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
-		physicsPlaygroundObj.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		physicsPlaygroundObj.SetScale(glm::vec3(15.f, 5.f, 10.0f));
+		physicsPlaygroundObj.SetPosition(glm::vec3(0.0f, 50.0f, 0.0f));
 
 		StaticCollider* physicsPlaygroundCollider = physicsPlaygroundObj.AddComponent<StaticCollider>();
 		physicsPlaygroundCollider->Init();
@@ -101,6 +119,73 @@ namespace lei3d
 		ColorSource* startSrc = startColorSrcObj.AddComponent<ColorSource>();
 		startSrc->Init(5, 10, true);
 		startColorSrcObj.SetPosition(glm::vec3(0, 0, 0));
+
+		// House ---------------------
+		Entity& houseObj = AddEntity("House");
+		houseObj.SetScale(glm::vec3(4.0f, 6.0f, 4.0f));
+		houseObj.SetPosition(glm::vec3(-10.00f, -12.0f, -10.0f));
+		houseObj.SetYawRotation(0);
+
+		ModelInstance* houseRender = houseObj.AddComponent<ModelInstance>();
+		houseRender->Init(m_EnviromentModels[2].get());
+
+		StaticCollider* houseCollider = houseObj.AddComponent<StaticCollider>();
+		houseCollider->Init();
+		houseCollider->SetColliderToModel(*m_EnviromentModels[2].get());
+
+		// Sign ---------------------
+		Entity& signObj = AddEntity("Sign");
+		signObj.SetScale(glm::vec3(3.0f, 3.0f, 3.0f));
+		signObj.SetPosition(glm::vec3(13.0f, 51.0f, -7.0f));
+		signObj.SetYawRotation(-70);
+
+		ModelInstance* signRender = signObj.AddComponent<ModelInstance>();
+		signRender->Init(m_EnviromentModels[3].get());
+
+		StaticCollider* signCollider = signObj.AddComponent<StaticCollider>();
+		signCollider->Init();
+		signCollider->SetColliderToModel(*m_EnviromentModels[3].get());
+
+		// Fish ---------------------
+		Entity& fishObj = AddEntity("Fish");
+		fishObj.SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
+		fishObj.SetPosition(glm::vec3(36.0f, 17.0f, -6.5f));
+		fishObj.SetYawRotation(0);
+
+		ModelInstance* fishRender = fishObj.AddComponent<ModelInstance>();
+		fishRender->Init(m_EnviromentModels[4].get());
+
+		// Islands ---------------------
+		Entity& islandObj = AddEntity("Island");
+		islandObj.SetScale(glm::vec3(30.0f, 30.0f, 30.0f));
+		islandObj.SetPosition(glm::vec3(20.0f, -20.5f, -44.0f));
+		islandObj.SetYawRotation(0);
+
+		ModelInstance* islandRender = islandObj.AddComponent<ModelInstance>();
+		islandRender->Init(m_EnviromentModels[1].get());
+
+		StaticCollider* islandCollider = islandObj.AddComponent<StaticCollider>();
+		islandCollider->Init();
+		islandCollider->SetColliderToModel(*m_EnviromentModels[1].get());
+
+		//
+		Entity& islandObj2 = AddEntity("Island2");
+		islandObj2.SetYawRotation(0);
+		islandObj2.SetScale(glm::vec3(20.0f, 20.0f, 20.0f));
+		islandObj2.SetPosition(glm::vec3(0.0f, 0.0f, -154.0f));
+
+		ModelInstance* islandRender2 = islandObj2.AddComponent<ModelInstance>();
+		islandRender2->Init(m_EnviromentModels[1].get());
+
+		StaticCollider* islandCollider2 = islandObj2.AddComponent<StaticCollider>();
+		islandCollider2->Init();
+		islandCollider2->SetColliderToModel(*m_EnviromentModels[1].get());
+
+		// LevelSwitchCollider* triggerCollider = islandObj2.AddComponent<LevelSwitchCollider>();
+		// std::vector<const btCollisionObject*> ignoredObjects;
+		// ignoredObjects.push_back(characterController->getRigidBody());
+		// // ignoredObjects.push_back(islandCollider2->getRigidBody());
+		// triggerCollider->Init(characterController->getGroundCheckObj(), ignoredObjects);
 
 		////Test Multiple Components
 		Entity& skyboxObj = AddEntity("Skybox");
