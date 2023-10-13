@@ -17,8 +17,8 @@ namespace lei3d
 	 * so we do this stinky boiler plate instead
 	 * */
 	std::unordered_map<std::string, std::unique_ptr<Scene> (*)()> SceneManager::s_SceneConstructors = {
-		{ "Test Kevin", MakeTestSceneKevin },
 		{ "SceneIntro", MakeSceneIntro },
+		{ "Test Kevin", MakeTestSceneKevin },
 		{ "Test Logan", MakeTestSceneLogan },
 		{ "Test Avery", MakeTestSceneAvery }
 	};
