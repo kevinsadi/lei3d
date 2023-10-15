@@ -181,6 +181,9 @@ namespace lei3d
 		islandCollider2->Init();
 		islandCollider2->SetColliderToModel(*m_EnviromentModels[1].get());
 
+		TriggerCollider* trigger = islandObj2.AddComponent<TriggerCollider>();
+
+
 		// LevelSwitchCollider* triggerCollider = islandObj2.AddComponent<LevelSwitchCollider>();
 		// std::vector<const btCollisionObject*> ignoredObjects;
 		// ignoredObjects.push_back(characterController->getRigidBody());
