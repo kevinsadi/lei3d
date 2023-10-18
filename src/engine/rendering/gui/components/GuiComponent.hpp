@@ -56,6 +56,9 @@ namespace lei3d
 		std::pair<Space, glm::vec2> m_size;	// normalized 0-1
 		UiMesh* m_mesh = nullptr;
 
+		void BeginRender();
+		void EndRender();
+
 		virtual void Render(const glm::vec2& screenSize) = 0;
 		virtual void Update() = 0;
 

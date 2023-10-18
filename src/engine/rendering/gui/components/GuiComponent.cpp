@@ -53,6 +53,18 @@ namespace lei3d
 		m_size = { Space::PIXELS, size };
 	}
 
+	void GuiComponent::BeginRender()
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	void GuiComponent::EndRender()
+	{
+		glDisable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ZERO);
+	}
+
 	glm::vec2 GuiComponent::PosNormalized(const glm::vec2& screenSize)
 	{
 		if (m_position.first == Space::PIXELS)

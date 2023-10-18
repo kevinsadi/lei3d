@@ -44,6 +44,8 @@ namespace lei3d
 
 	void GuiRect::Render(const glm::vec2& screenSize)
 	{
+		BeginRender();
+
 		GuiManager::Instance().m_guiShader->bind();
 
 		GuiManager::Instance().m_guiShader->setUniformMat4("transform", 
@@ -56,6 +58,8 @@ namespace lei3d
 		GuiManager::Instance().m_guiShader->setInt("normalized", true);
 
 		m_mesh->Draw(GuiManager::Instance().m_guiShader);
+
+		EndRender();
 	}
 
 	void GuiRect::Update()
