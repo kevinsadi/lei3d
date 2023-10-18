@@ -19,7 +19,7 @@ namespace lei3d
 		{0.5f, 0.5f, 0}	// CENTER
 	};
 
-	GuiComponent::GuiComponent(Anchor anchor, glm::vec2 pos, glm::vec2 size)
+	GuiComponent::GuiComponent(Anchor anchor, const std::pair<Space, glm::vec2>& pos, const std::pair<Space, glm::vec2>& size)
 		: m_anchor(anchor)
 		, m_position(pos)
 		, m_size(size)
@@ -31,5 +31,49 @@ namespace lei3d
 	GuiComponent::~GuiComponent()
 	{
 		GuiManager::Instance().RemoveGuiComponent(m_id);
+	}
+
+	void GuiComponent::SetPositionNormalized(const glm::vec2& pos)
+	{
+		m_position = { Space::NORMALIZED, pos };
+	}
+
+	void GuiComponent::SetPositionPixels(const glm::vec2& pos)
+	{
+		m_position = { Space::PIXELS, pos };
+	}
+
+	void GuiComponent::SetSizeNormalized(const glm::vec2& size)
+	{
+		m_size = { Space::NORMALIZED, size };
+	}
+
+	void GuiComponent::SetSizePixels(const glm::vec2& size)
+	{
+		m_size = { Space::PIXELS, size };
+	}
+
+	glm::vec2 GuiComponent::PosNormalized(const glm::vec2& screenSize)
+	{
+		if (m_position.first == Space::PIXELS)
+		{
+			return m_position.second / screenSize;
+		}
+		else
+		{
+			return m_position.second;
+		}
+	}
+
+	glm::vec2 GuiComponent::SizeNormalized(const glm::vec2& screenSize)
+	{
+		if (m_size.first == Space::PIXELS)
+		{
+			return m_size.second / screenSize;
+		}
+		else
+		{
+			return m_size.second;
+		}
 	}
 }

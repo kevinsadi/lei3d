@@ -5,7 +5,12 @@
 
 namespace lei3d 
 {
-	GuiRect::GuiRect(Anchor anchor, const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color)
+	GuiRect::GuiRect(
+		Anchor anchor, 
+		const std::pair<Space, glm::vec2>& pos, 
+		const std::pair<Space, glm::vec2>& size, 
+		glm::vec4 color
+	)
 		: GuiComponent(anchor, pos, size)
 		, m_color(color)
 	{
@@ -32,13 +37,18 @@ namespace lei3d
 		delete m_mesh;
 	}
 
+	void GuiRect::SetColor(const glm::vec4& color)
+	{
+		m_color = color;
+	}
+
 	void GuiRect::Render(const glm::vec2& screenSize)
 	{
 		GuiManager::Instance().m_guiShader->bind();
 
 		GuiManager::Instance().m_guiShader->setUniformMat4("transform", 
-			glm::scale(glm::identity<glm::mat4>(), glm::vec3(m_size, 1)) *
-			glm::translate(glm::identity<glm::mat4>(), s_anchorPositions[m_anchor] + glm::vec3(m_position, 0))
+			glm::scale(glm::identity<glm::mat4>(), glm::vec3(SizeNormalized(screenSize), 1)) *
+			glm::translate(glm::identity<glm::mat4>(), s_anchorPositions[m_anchor] + glm::vec3(PosNormalized(screenSize), 0))
 		);
 
 		GuiManager::Instance().m_guiShader->setVec2("screenSize", screenSize);
@@ -50,6 +60,6 @@ namespace lei3d
 
 	void GuiRect::Update()
 	{
-		
+
 	}
 }

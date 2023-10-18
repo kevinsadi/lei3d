@@ -12,8 +12,15 @@ namespace lei3d
         glm::vec4 m_color;
 
     public:
-		GuiRect(Anchor anchor, const glm::vec2& pos, const glm::vec2& size, const glm::vec4& color);
+        GuiRect(
+            Anchor anchor = CENTER, 
+            const std::pair<Space, glm::vec2>& pos = { NORMALIZED, { 0.25, 0.25 } }, 
+            const std::pair<Space, glm::vec2>& size = { NORMALIZED, { 0.5, 0.5 } }, 
+            glm::vec4 color = { 1, 1, 1, 1 }
+        );
 		~GuiRect() override;
+
+        void SetColor(const glm::vec4& color);
 
         void Render(const glm::vec2& screenSize) override;
         void Update() override;

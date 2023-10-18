@@ -503,7 +503,7 @@ namespace lei3d
 
 	void RenderSystem::UiPass()
 	{
-		GuiRect* rect = new GuiRect(GuiComponent::CENTER, {0, 0}, {0.25, 0.25}, {1, 1, 1, 1});
+		GuiRect* rect = new GuiRect();
 		GuiManager::Instance().AddGuiComponent(rect);
 		GuiManager::Instance().RenderGui(glm::vec2(scwidth, scheight));
 		delete rect;
