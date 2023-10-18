@@ -10,7 +10,9 @@ namespace lei3d
 
     class FontRenderer
     {
-	public:
+	private:
+		friend class GuiManager;
+
 		static std::vector<Font> s_fonts;
 		unsigned m_fontIndex = 0;
 
@@ -18,9 +20,6 @@ namespace lei3d
 		~FontRenderer();
 
 		void Init();
-		void RenderText(std::string text, float x, float y, float scale, glm::vec4 color, glm::vec2 screenSize);
-
-	private:
-		Shader* m_textShader;
+		void RenderText(std::string text, float x, float y, float scale, glm::vec4 color, glm::vec2 screenSize, Shader* shader);
 	};
 }

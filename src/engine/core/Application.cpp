@@ -5,6 +5,8 @@
 
 #include <stb_image.h>
 
+#include "rendering/gui/GuiManager.hpp"
+
 namespace lei3d
 {
 
@@ -139,7 +141,7 @@ namespace lei3d
 		// INIT RENDERER -----------------------------
 		m_Renderer.initialize(screenWidth, screenHeight);
 		m_PrimitiveRenderer.initialize(screenWidth, screenHeight);
-		m_fontRenderer.Init();
+		GuiManager::Init();
 
 		// INPUT CALLBACKS ------------------------------
 		SetupInputCallbacks();
@@ -236,11 +238,6 @@ namespace lei3d
 	PrimitiveRenderer& Application::GetPrimitiveRenderer()
 	{
 		return s_Instance->m_PrimitiveRenderer;
-	}
-
-	FontRenderer& Application::GetFontRenderer()
-	{
-		return s_Instance->m_fontRenderer;
 	}
 
 	// TODO: Put into input class

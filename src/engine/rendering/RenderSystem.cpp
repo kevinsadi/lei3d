@@ -9,6 +9,8 @@
 #include <array>
 
 #include "core/Application.hpp"
+#include "gui/GuiManager.hpp"
+#include "gui/components/GuiRect.hpp"
 
 namespace lei3d
 {
@@ -501,6 +503,10 @@ namespace lei3d
 
 	void RenderSystem::UiPass()
 	{
+		GuiRect* rect = new GuiRect(GuiComponent::CENTER, {0, 0}, {0.25, 0.25}, {1, 1, 1, 1});
+		GuiManager::Instance().AddGuiComponent(rect);
+		GuiManager::Instance().RenderGui(glm::vec2(scwidth, scheight));
+		delete rect;
 		//Application::GetFontRenderer().RenderText("Hello World", 100, 100, 100, glm::vec4(1.0f), glm::vec2(scwidth, scheight));
 	}
 	
