@@ -31,7 +31,8 @@ namespace lei3d
 		std::vector<Vertex> m_vertices;
 		std::vector<unsigned int> m_indices;
 		int m_textureID;
-		
+
+		UiMesh();
 		UiMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, int textureID = -1);
 		~UiMesh();
 		

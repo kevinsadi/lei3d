@@ -8,7 +8,7 @@ namespace lei3d
 {
     class GuiRect : public GuiComponent
     {
-    private:
+    protected:
         glm::vec4 m_color;
 
     public:

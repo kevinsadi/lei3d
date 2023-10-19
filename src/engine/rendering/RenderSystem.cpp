@@ -11,6 +11,7 @@
 #include "core/Application.hpp"
 #include "gui/GuiManager.hpp"
 #include "gui/components/GuiRect.hpp"
+#include "gui/components/GuiTextBox.hpp"
 
 namespace lei3d
 {
@@ -503,8 +504,8 @@ namespace lei3d
 
 	void RenderSystem::UiPass()
 	{
-		GuiRect* rect = new GuiRect();
-		GuiManager::Instance().AddGuiComponent(rect);
+		GuiTextBox* rect = new GuiTextBox();
+		GuiManager::Instance().AddGuiComponent((GuiComponent*)rect);
 		GuiManager::Instance().RenderGui(glm::vec2(scwidth, scheight));
 		delete rect;
 		//Application::GetFontRenderer().RenderText("Hello World", 100, 100, 100, glm::vec4(1.0f), glm::vec2(scwidth, scheight));

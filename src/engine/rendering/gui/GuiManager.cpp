@@ -43,7 +43,9 @@ namespace lei3d
 	{
 		for (auto& guiComponent : s_guiComponents)
 		{
+			guiComponent.second->BeginRender();
 			guiComponent.second->Render(screenSize);
+			guiComponent.second->EndRender();
 		}
 	}
 

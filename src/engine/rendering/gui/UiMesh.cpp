@@ -7,6 +7,12 @@
 
 namespace lei3d
 {
+	UiMesh::UiMesh()
+		: m_textureID(-1)
+	{
+		
+	}
+
 	UiMesh::UiMesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, int textureID)
 		: m_vertices(vertices)
 		, m_indices(indices)

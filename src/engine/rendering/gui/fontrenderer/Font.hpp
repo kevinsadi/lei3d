@@ -22,6 +22,8 @@ namespace lei3d
 	class Font
 	{
 	private:
+		friend class FontRenderer;
+		// px = 3/4 * pt
 		float fontSize;
 
 		void Load(const char* filename);

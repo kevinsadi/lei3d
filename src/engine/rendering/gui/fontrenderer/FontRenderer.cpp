@@ -25,31 +25,17 @@ namespace lei3d
 		s_fonts.emplace_back("britannic");
 	}
 
-	void FontRenderer::RenderText(std::string text, float x, float y, float scale, glm::vec4 color, glm::vec2 screenSize, Shader* shader)
+	UiMesh* FontRenderer::CreateMesh(std::string text, unsigned fontIndex)
 	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		shader->bind();
-
 		std::vector<UiMesh::Vertex> vertices;
 		std::vector<unsigned int> indices;
-		
-		glm::mat4 transform =
-			glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f)) * 
-			glm::scale(glm::mat4(1.0f), glm::vec3(scale, scale, 1.0f));
-
-		shader->setUniformMat4("transform", transform);
-		shader->setVec2("screenSize", screenSize);
-		shader->setInt("ourTexture", 0);
-		shader->setVec4("color", color);
-		shader->setInt("normalized", false);
 
 		float xOffset = 0;
+
 		// Iterate through all characters
 		for (char c : text)
 		{
-			Character ch = s_fonts[m_fontIndex].m_characters[c];
+			Character ch = s_fonts[fontIndex].m_characters[c];
 
 			float xpos = xOffset + ch.XOffset;
 			float ypos = 0;
@@ -73,10 +59,25 @@ namespace lei3d
 			xOffset += ch.XAdvance;
 		}
 
-		UiMesh mesh = UiMesh(vertices, indices, s_fonts[m_fontIndex].m_texture->m_GlID);
-		mesh.Draw(GuiManager::Instance().m_guiFontShader);
+		return new UiMesh(vertices, indices, s_fonts[fontIndex].m_texture->m_GlID);
+	}
 
-		glDisable(GL_BLEND);
-		glBlendFunc(GL_ONE, GL_ZERO);
+	float FontRenderer::GetTextWidth(std::string text, unsigned fontIndex)
+	{
+		float width = 0;
+
+		// Iterate through all characters
+		for (char c : text)
+		{
+			Character ch = s_fonts[fontIndex].m_characters[c];
+			width += ch.XAdvance;
+		}
+
+		return width;
+	}
+
+	float FontRenderer::PtToPx(float pt)
+	{
+		return pt * 4.f / 3.f;
 	}
 }

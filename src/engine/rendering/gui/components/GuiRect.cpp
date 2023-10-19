@@ -44,13 +44,11 @@ namespace lei3d
 
 	void GuiRect::Render(const glm::vec2& screenSize)
 	{
-		BeginRender();
-
 		GuiManager::Instance().m_guiShader->bind();
 
-		GuiManager::Instance().m_guiShader->setUniformMat4("transform", 
-			glm::scale(glm::identity<glm::mat4>(), glm::vec3(SizeNormalized(screenSize), 1)) *
-			glm::translate(glm::identity<glm::mat4>(), s_anchorPositions[m_anchor] + glm::vec3(PosNormalized(screenSize), 0))
+		GuiManager::Instance().m_guiShader->setUniformMat4("transform",
+			glm::translate(glm::identity<glm::mat4>(), PosNormalized(screenSize)) *
+			glm::scale(glm::identity<glm::mat4>(), glm::vec3(SizeNormalized(screenSize), 1)) 
 		);
 
 		GuiManager::Instance().m_guiShader->setVec2("screenSize", screenSize);
@@ -58,8 +56,6 @@ namespace lei3d
 		GuiManager::Instance().m_guiShader->setInt("normalized", true);
 
 		m_mesh->Draw(GuiManager::Instance().m_guiShader);
-
-		EndRender();
 	}
 
 	void GuiRect::Update()

@@ -57,24 +57,30 @@ namespace lei3d
 	{
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glDisable(GL_DEPTH_TEST);
 	}
 
 	void GuiComponent::EndRender()
 	{
 		glDisable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ZERO);
+		glEnable(GL_DEPTH_TEST);
 	}
 
-	glm::vec2 GuiComponent::PosNormalized(const glm::vec2& screenSize)
+	glm::vec3 GuiComponent::PosNormalized(const glm::vec2& screenSize)
 	{
+		glm::vec3 pos = s_anchorPositions[m_anchor];
+
 		if (m_position.first == Space::PIXELS)
 		{
-			return m_position.second / screenSize;
+			pos += glm::vec3(m_position.second / screenSize, 0);
 		}
 		else
 		{
-			return m_position.second;
+			pos += glm::vec3(m_position.second, 0);
 		}
+
+		return pos;
 	}
 
 	glm::vec2 GuiComponent::SizeNormalized(const glm::vec2& screenSize)

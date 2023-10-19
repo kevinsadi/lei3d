@@ -52,8 +52,8 @@ namespace lei3d
 
 		static const glm::vec3 s_anchorPositions[ANCHOR_COUNT];
 
-		std::pair<Space, glm::vec2> m_position; // normalized 0-1
-		std::pair<Space, glm::vec2> m_size;	// normalized 0-1
+		std::pair<Space, glm::vec2> m_position;
+		std::pair<Space, glm::vec2> m_size;	
 		UiMesh* m_mesh = nullptr;
 
 		void BeginRender();
@@ -62,7 +62,7 @@ namespace lei3d
 		virtual void Render(const glm::vec2& screenSize) = 0;
 		virtual void Update() = 0;
 
-		glm::vec2 PosNormalized(const glm::vec2& screenSize);
+		glm::vec3 PosNormalized(const glm::vec2& screenSize);
 		glm::vec2 SizeNormalized(const glm::vec2& screenSize);
 	};
 }
