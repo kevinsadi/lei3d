@@ -504,11 +504,10 @@ namespace lei3d
 
 	void RenderSystem::UiPass()
 	{
-		GuiTextBox* rect = new GuiTextBox();
-		GuiManager::Instance().AddGuiComponent((GuiComponent*)rect);
-		GuiManager::Instance().RenderGui(glm::vec2(scwidth, scheight));
-		delete rect;
-		//Application::GetFontRenderer().RenderText("Hello World", 100, 100, 100, glm::vec4(1.0f), glm::vec2(scwidth, scheight));
+		//GuiTextBox* rect = new GuiTextBox();
+		//GuiManager::Instance().AddGuiComponent((GuiComponent*)rect);
+		//GuiManager::Instance().RenderGui(glm::vec2(scwidth, scheight));
+		//delete rect;
 	}
 	
 	std::vector<glm::mat4> RenderSystem::getLightSpaceMatrices(DirectionalLight* light, Camera& camera)
