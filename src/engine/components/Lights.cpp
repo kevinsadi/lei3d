@@ -8,7 +8,7 @@ namespace lei3d
 	DirectionalLight::DirectionalLight(glm::vec3 dir, glm::vec3 col, float intensity)
 		: direction(glm::normalize(dir)), color(col), intensity(intensity)
 	{
-		Camera& camera = Application::GetSceneCamera();
+		Camera& camera = Application::GetInstance().GetSceneCamera();
 		float farZ = camera.GetFarPlane();
 		cascadeLevels = std::vector<float>{ farZ * 0.067f, farZ * 0.2f, farZ * 0.5f };
 

@@ -10,7 +10,6 @@
 
 namespace lei3d
 {
-	SceneManager* SceneManager::s_Instance = nullptr;
 
 	/* Need to implement these function pointers manually in TestScene.hpp / TestScene.cpp
 	 * bc you can't cast from std::unique_ptr<TestBlaBlaScene> (*) () to std::unique_ptr<Scene> (*) ()
@@ -25,12 +24,12 @@ namespace lei3d
 
 	SceneManager::SceneManager()
 	{
-		if (s_Instance)
-		{
-			LEI_ERROR("Multiple instances detected. Only one SceneManager should exist.");
-		}
+	}
 
-		s_Instance = this;
+	SceneManager& SceneManager::GetInstance()
+	{
+		static SceneManager instance;
+		return instance;
 	}
 
 	void SceneManager::Init()
@@ -68,12 +67,12 @@ namespace lei3d
 
 	bool SceneManager::HasScenes()
 	{
-		return !s_Instance->m_AllScenes.empty();
+		return !GetInstance().m_AllScenes.empty();
 	}
 
 	void SceneManager::SetScene(int sceneIndex)
 	{
-		const auto& scenes = s_Instance->m_AllScenes;
+		const auto& scenes = GetInstance().m_AllScenes;
 
 		if (sceneIndex < 0 || sceneIndex >= scenes.size())
 		{
@@ -82,17 +81,17 @@ namespace lei3d
 		}
 
 		Scene* nextScene = scenes[sceneIndex].second.get();
-		s_Instance->SetNextScene(*nextScene);
+		GetInstance().SetNextScene(*nextScene);
 	}
 
 	void SceneManager::SetScene(std::string sceneName)
 	{
 		// This is a structured binding. It allows us to unpack the scene name and object from an std::pair implicitly.
-		for (const auto& [currName, currScene] : s_Instance->m_AllScenes)
+		for (const auto& [currName, currScene] : GetInstance().m_AllScenes)
 		{
 			if (sceneName == currName)
 			{
-				s_Instance->SetNextScene(*currScene);
+				GetInstance().SetNextScene(*currScene);
 				return;
 			}
 		}
@@ -103,7 +102,7 @@ namespace lei3d
 	std::vector<std::string> SceneManager::GetSceneNames()
 	{
 		std::vector<std::string> names;
-		for (const auto& [name, scene] : s_Instance->m_AllScenes)
+		for (const auto& [name, scene] : GetInstance().m_AllScenes)
 		{
 			names.push_back(name);
 		}
@@ -120,7 +119,7 @@ namespace lei3d
 	Scene& SceneManager::ActiveScene()
 	{
 		LEI_ASSERT(m_ActiveScene, "Attempt to access active scene when there wasn't one.");
-		return *(s_Instance->m_ActiveScene);
+		return *(GetInstance().m_ActiveScene);
 	}
 
 	void SceneManager::LoadNextScene()
@@ -150,4 +149,5 @@ namespace lei3d
 		m_ActiveScene = &scene;
 		m_ActiveScene->Load();
 	}
+
 } // namespace lei3d

@@ -21,7 +21,7 @@ namespace lei3d
 		float m_friction = 10.0f;
 		//float m_airFriction = 0.25f;
 
-		float m_jumpPower = 6.f;
+		float m_jumpPower = 30.f;
 		//float m_jumpHeight = 1.f;
 
 		// float m_maxSpeed = 40.0f;
