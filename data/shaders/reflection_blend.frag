@@ -31,16 +31,18 @@ void main() {
 
     float metallic = texture(MetallicRoughnessMap, texCoords).r;
     float roughness = texture(MetallicRoughnessMap, texCoords).g;
+    float roughnessFade = smoothstep(0.3, 0.85, 1.0 - roughness);
 
-    vec3 reflectedColor = blur(ReflectedMap, texCoords, roughness);
+//    vec3 reflectedColor = blur(ReflectedMap, texCoords, roughness);
+    vec3 reflectedColor = texture(ReflectedMap, texCoords).rgb;
 
     vec3 albedo = texture(AlbedoMap, texCoords).rgb;
-    vec3 F0 = mix(vec3(0.004), albedo, metallic);
+    vec3 F0 = mix(vec3(0.03), albedo, metallic);
 
     vec3 N = normalize(texture(NormalMap, texCoords).xyz);
     vec3 V = normalize(camPos - pos_wS);
     vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.001), F0, roughness);
-    reflectedColor *= F;
+    reflectedColor *= F * roughnessFade;
 
     FragColor.rgb = reflectedColor;
 }
@@ -55,7 +57,7 @@ vec3 blur(sampler2D image, vec2 texCoord, float roughness) {
     const float Quality = 6.0;
     const float MaxSize = 64.0;
 
-    float Size = mix(1.0, 64.0, roughness);
+    float Size = smoothstep(1.0, 64.0, roughness);
 
     vec2 radius = Size / textureSize(image, 0);
     vec3 color = texture(image, texCoord).rgb;

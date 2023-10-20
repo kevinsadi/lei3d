@@ -29,7 +29,7 @@ namespace lei3d
 	void Model::loadModel(const std::string& path)
 	{
 		Assimp::Importer importer;
-		const aiScene*	 scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_CalcTangentSpace | aiProcess_FlipUVs);
+		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals | aiProcess_CalcTangentSpace | aiProcess_FlipUVs);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
@@ -66,7 +66,7 @@ namespace lei3d
 	 */
 	Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	{
-		std::vector<Vertex>		  vertices;
+		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
 
 		// process vertices from assimp to our own mesh component
@@ -132,15 +132,15 @@ namespace lei3d
 	}
 
 	// get the materials that we want from the assimp mat and convert it to textures array that is returned
-	Texture* Model::loadMaterialTexture(const aiMaterial* mat, aiTextureType type, const std::string& typeName)
+	Texture* Model::loadMaterialTexture(const aiMaterial* mat, const aiScene* scene, aiTextureType type, const std::string& typeName)
 	{
 		Texture* texture;
 
 		if (mat->GetTextureCount(type) < 1)
 		{
 			// no textures of this type
-			//std::string error = std::string("Found no textures for type ") + aiTextureTypeToString(type) +  " in material " +  mat->GetName().C_Str() + "\n";
-			//LEI_WARN(error);
+			// std::string error = std::string("Found no textures for type ") + aiTextureTypeToString(type) +  " in material " +  mat->GetName().C_Str() + "\n";
+			// LEI_WARN(error);
 			return nullptr;
 		}
 		if (mat->GetTextureCount(type) > 1)
@@ -151,6 +151,12 @@ namespace lei3d
 		// only select the first texture
 		aiString str;
 		mat->GetTexture(type, 0, &str);
+		std::pair<const aiTexture*, int> texdata = scene->GetEmbeddedTextureAndIndex(str.C_Str());
+		bool isEmbedded = texdata.first != nullptr;
+		if (isEmbedded)
+		{
+			str = texdata.first->mFilename;
+		}
 
 		bool skip = false;
 		for (const auto& tex : textures) // for every texture we've loaded so far
@@ -165,7 +171,15 @@ namespace lei3d
 		if (!skip)
 		{
 			texture = new Texture();
-			texture->id = TextureFromFile(str.C_Str(), m_Directory);
+			if (isEmbedded)
+			{
+				texture->id = TextureFromMemory(texdata.first, m_Directory);
+			}
+			else
+			{
+				texture->id = TextureFromFile(str.C_Str(), m_Directory);
+			}
+
 			texture->type = typeName;
 			texture->path = str.C_Str();
 			textures.emplace_back(texture);
@@ -204,13 +218,13 @@ namespace lei3d
 				}
 			}
 
-			newMaterial->m_AlbedoTexture = loadMaterialTexture(aimaterial, aiTextureType_DIFFUSE, "texture_diffuse");
-			newMaterial->m_MetallicTexture = loadMaterialTexture(aimaterial, aiTextureType_METALNESS, "texture_metallic");
-			newMaterial->m_RoughnessTexture = loadMaterialTexture(aimaterial, aiTextureType_DIFFUSE_ROUGHNESS, "texture_roughness");
-			newMaterial->m_AmbientTexture = loadMaterialTexture(aimaterial, aiTextureType_AMBIENT_OCCLUSION, "texture_ao");
+			newMaterial->m_AlbedoTexture = loadMaterialTexture(aimaterial, scene, aiTextureType_DIFFUSE, "texture_diffuse");
+			newMaterial->m_MetallicTexture = loadMaterialTexture(aimaterial, scene, aiTextureType_METALNESS, "texture_metallic");
+			newMaterial->m_RoughnessTexture = loadMaterialTexture(aimaterial, scene, aiTextureType_DIFFUSE_ROUGHNESS, "texture_roughness");
+			newMaterial->m_AmbientTexture = loadMaterialTexture(aimaterial, scene, aiTextureType_AMBIENT_OCCLUSION, "texture_ao");
 
-			newMaterial->m_NormalMap = loadMaterialTexture(aimaterial, aiTextureType_NORMALS, "texture_normal");
-			newMaterial->m_BumpMap = loadMaterialTexture(aimaterial, aiTextureType_HEIGHT, "texture_bump");
+			newMaterial->m_NormalMap = loadMaterialTexture(aimaterial, scene, aiTextureType_NORMALS, "texture_normal");
+			newMaterial->m_BumpMap = loadMaterialTexture(aimaterial, scene, aiTextureType_HEIGHT, "texture_bump");
 
 			newMaterial->m_UseAlbedoMap = newMaterial->m_AlbedoTexture != nullptr;
 			newMaterial->m_UseMetallicMap = newMaterial->m_MetallicTexture != nullptr;
@@ -239,7 +253,7 @@ namespace lei3d
 			{
 				btTriangleMesh* curCollisionMesh = new btTriangleMesh();
 
-				std::vector<Vertex>		  vertices = mesh.vertices;
+				std::vector<Vertex> vertices = mesh.vertices;
 				std::vector<unsigned int> indices = mesh.indices;
 
 				for (int i = 0; i < indices.size(); i += 3)
@@ -269,7 +283,7 @@ namespace lei3d
 		unsigned int textureID;
 		glGenTextures(1, &textureID);
 
-		int			   width, height, nrComponents;
+		int width, height, nrComponents;
 		unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 		if (data)
 		{
@@ -295,6 +309,45 @@ namespace lei3d
 		else
 		{
 			LEI_WARN("Texture failed to load at path: " + std::string(path));
+			stbi_image_free(data);
+		}
+
+		return textureID;
+	}
+
+	unsigned int TextureFromMemory(const aiTexture* texture, const std::string& directory) {
+		unsigned int textureID;
+		glGenTextures(1, &textureID);
+
+		bool isCompressed = texture->mHeight == 0;
+		int buflen = isCompressed ? texture->mWidth : texture->mWidth * texture->mHeight * 4;	// TODO: hopefully only "compressed" data, haven't checked the else segment
+
+		int width, height, nrComponents;
+		unsigned char* data = stbi_load_from_memory((unsigned char*)texture->pcData, buflen, &width, &height, &nrComponents, 0);
+		if (data)
+		{
+			GLenum format;
+			if (nrComponents == 1)
+				format = GL_RED;
+			else if (nrComponents == 3)
+				format = GL_RGB;
+			else if (nrComponents == 4)
+				format = GL_RGBA;
+
+			glBindTexture(GL_TEXTURE_2D, textureID);
+			glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+			stbi_image_free(data);
+		}
+		else
+		{
+			LEI_WARN("Texture failed to load at path: " + std::string(texture->mFilename.C_Str()));
 			stbi_image_free(data);
 		}
 

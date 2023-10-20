@@ -50,8 +50,8 @@ namespace lei3d
 			ImGui::EndMenuBar();
 		}
 
-		Scene& scene = SceneManager::ActiveScene();
-		SceneView& view = Application::GetSceneView();
+		Scene&	   scene = SceneManager::ActiveScene();
+		SceneView& view = Application::GetInstance().GetSceneView();
 
 		// FLY CAMERA ---------------------------------------------
 		view.OnImGuiRender(scene);

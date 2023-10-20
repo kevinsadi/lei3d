@@ -1,6 +1,7 @@
 #include "SceneView.hpp"
 
 #include "core/Application.hpp"
+#include "core/InputManager.hpp"
 
 #include <imgui.h>
 
@@ -43,18 +44,19 @@ namespace lei3d
 
 	void SceneView::Update(Scene& scene)
 	{
-
-		ActiveCamera(scene).PollCameraMovementInput(); // Kinda jank
+		ActiveCamera(scene).PollCameraMovementInput();
+		ProcessInput();
 	}
 
-	void SceneView::ProcessKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods)
+	void SceneView::ProcessInput()
 	{
-		if (key == GLFW_KEY_R && action == GLFW_PRESS)
+		InputManager& im = InputManager::GetInstance();
+		if (im.isKeyPressed(GLFW_KEY_R))
 		{
 			Reset(SceneManager::ActiveScene());
 		}
 
-		if (key == GLFW_KEY_P && action == GLFW_PRESS)
+		if (im.isKeyPressed(GLFW_KEY_P))
 		{
 			TogglePlayPause(SceneManager::ActiveScene());
 		}
