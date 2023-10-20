@@ -5,20 +5,24 @@
 
 namespace lei3d 
 {
-	GuiManager* GuiManager::s_instance = new GuiManager();
+	GuiManager::GuiManager()
+	{
+		
+	}
 
 	GuiManager& GuiManager::Instance()
 	{
-		return *s_instance;
+		static GuiManager s_instance;
+		return s_instance;
 	}
 
 	void GuiManager::Init()
 	{
-		s_instance->m_guiFontShader = new Shader("./data/shaders/gui.vert", "./data/shaders/guifont.frag");
-		s_instance->m_guiShader = new Shader("./data/shaders/gui.vert", "./data/shaders/gui.frag");
-		s_instance->m_guiTextureShader = new Shader("./data/shaders/gui.vert", "./data/shaders/guitexture.frag");
+		m_guiFontShader = Shader("./data/shaders/gui.vert", "./data/shaders/guifont.frag");
+		m_guiShader = Shader("./data/shaders/gui.vert", "./data/shaders/gui.frag");
+		m_guiTextureShader = Shader("./data/shaders/gui.vert", "./data/shaders/guitexture.frag");
 		
-		s_instance->m_fontRenderer.Init();
+		m_fontRenderer.Init();
 	}
 
 	void GuiManager::AddGuiComponent(GuiComponent* guiComponent)

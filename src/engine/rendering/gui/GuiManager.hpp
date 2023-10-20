@@ -11,22 +11,20 @@ namespace lei3d
 	class GuiManager
     {
     private:
-		static GuiManager* s_instance;
 		std::unordered_map<unsigned, GuiComponent*> s_guiComponents;
 
-		GuiManager() = default;
-		~GuiManager() = default;
+		GuiManager();
 
 	public:
-		Shader* m_guiShader = nullptr;
-		Shader* m_guiTextureShader = nullptr;
-		Shader* m_guiFontShader = nullptr;
+		Shader m_guiShader;
+		Shader m_guiTextureShader;
+		Shader m_guiFontShader;
 
-		FontRenderer m_fontRenderer = FontRenderer();
+		FontRenderer m_fontRenderer;
 
 		static GuiManager& Instance();
 
-		static void Init();
+		void Init();
 
 		void AddGuiComponent(GuiComponent* guiComponent);
 		bool RemoveGuiComponent(unsigned id);

@@ -6,7 +6,7 @@ namespace lei3d
 {
 	unsigned GuiComponent::s_nextId = 0;
 
-	const glm::vec3 GuiComponent::s_anchorPositions[ANCHOR_COUNT] = 
+	const glm::vec3 GuiComponent::s_anchorPositions[unsigned(Anchor::ANCHOR_COUNT)] = 
 	{
 		{0.0f, 1.0f, 0},	// TOP_LEFT
 		{1.0f, 1.0f, 0},	// TOP_RIGHT
@@ -20,7 +20,7 @@ namespace lei3d
 	};
 
 	GuiComponent::GuiComponent(Anchor anchor, const std::pair<Space, glm::vec2>& pos, const std::pair<Space, glm::vec2>& size)
-		: m_anchor(anchor)
+		: m_anchor((unsigned)anchor)
 		, m_position(pos)
 		, m_size(size)
 	{

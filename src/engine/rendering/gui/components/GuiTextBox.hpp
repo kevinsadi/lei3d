@@ -9,7 +9,7 @@ namespace lei3d
     class GuiTextBox : private GuiRect
 	{
     public:
-		enum LineHeightMetrix
+		enum class LineHeightMetric
 		{
 			PT,
 			PX,
@@ -18,9 +18,9 @@ namespace lei3d
 
 		GuiTextBox(
 			const std::string& text = "TextBox",
-			Anchor anchor = CENTER,
-			const std::pair<Space, glm::vec2>& pos = { NORMALIZED, { 0.25, 0.25 } },
-			const std::pair<LineHeightMetrix, float>& fontSize = { PT, 100 },
+			Anchor anchor = Anchor::CENTER,
+			const std::pair<Space, glm::vec2>& pos = { Space::NORMALIZED, { 0.25, 0.25 } },
+			const std::pair<LineHeightMetric, float>& fontSize = { LineHeightMetric::PT, 100 },
 			glm::vec4 textColor = { 1, 1, 1, 1 },
 			glm::vec4 backgroundColor = { 1, 0, 0, 0.5 },
 			bool backgroundEnabled = true
@@ -40,7 +40,7 @@ namespace lei3d
 		
 	protected:
 		std::string m_text;
-		std::pair<LineHeightMetrix, float> m_fontSize;
+		std::pair<LineHeightMetric, float> m_fontSize;
 		glm::vec4 m_textColor;
 		bool m_backgroundEnabled;
 		UiMesh* m_textMesh = nullptr;

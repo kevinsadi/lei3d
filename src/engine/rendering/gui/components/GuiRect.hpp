@@ -13,9 +13,9 @@ namespace lei3d
 
     public:
         GuiRect(
-            Anchor anchor = CENTER, 
-            const std::pair<Space, glm::vec2>& pos = { NORMALIZED, { 0.25, 0.25 } }, 
-            const std::pair<Space, glm::vec2>& size = { NORMALIZED, { 0.5, 0.5 } }, 
+            Anchor anchor = Anchor::CENTER, 
+            const std::pair<Space, glm::vec2>& pos = { Space::NORMALIZED, { 0.25, 0.25 } }, 
+            const std::pair<Space, glm::vec2>& size = { Space::NORMALIZED, { 0.5, 0.5 } }, 
             glm::vec4 color = { 1, 0, 0, 0.5 }
         );
 		~GuiRect() override;

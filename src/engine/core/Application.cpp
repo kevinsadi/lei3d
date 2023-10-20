@@ -144,7 +144,7 @@ namespace lei3d
 		m_Renderer.initialize(screenWidth, screenHeight);
 		m_PrimitiveRenderer.initialize(screenWidth, screenHeight);
 
-		GuiManager::Init();
+		GuiManager::Instance().Init();
 	}
 
 	void Application::FrameTick()

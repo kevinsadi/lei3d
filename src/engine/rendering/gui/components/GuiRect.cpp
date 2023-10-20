@@ -44,18 +44,18 @@ namespace lei3d
 
 	void GuiRect::Render(const glm::vec2& screenSize)
 	{
-		GuiManager::Instance().m_guiShader->bind();
+		GuiManager::Instance().m_guiShader.bind();
 
-		GuiManager::Instance().m_guiShader->setUniformMat4("transform",
+		GuiManager::Instance().m_guiShader.setUniformMat4("transform",
 			glm::translate(glm::identity<glm::mat4>(), PosNormalized(screenSize)) *
 			glm::scale(glm::identity<glm::mat4>(), glm::vec3(SizeNormalized(screenSize), 1)) 
 		);
 
-		GuiManager::Instance().m_guiShader->setVec2("screenSize", screenSize);
-		GuiManager::Instance().m_guiShader->setVec4("color", m_color);
-		GuiManager::Instance().m_guiShader->setInt("normalized", true);
+		GuiManager::Instance().m_guiShader.setVec2("screenSize", screenSize);
+		GuiManager::Instance().m_guiShader.setVec4("color", m_color);
+		GuiManager::Instance().m_guiShader.setInt("normalized", true);
 
-		m_mesh->Draw(GuiManager::Instance().m_guiShader);
+		m_mesh->Draw(&GuiManager::Instance().m_guiShader);
 	}
 
 	void GuiRect::Update()

@@ -11,7 +11,7 @@ namespace lei3d
 		const std::string& text, 
 		Anchor anchor,
 		const std::pair<Space, glm::vec2>& pos,
-		const std::pair<LineHeightMetrix, float>& fontSize, 
+		const std::pair<LineHeightMetric, float>& fontSize, 
 		glm::vec4 textColor, 
 		glm::vec4 backgroundColor, 
 		bool backgroundEnabled
@@ -39,17 +39,17 @@ namespace lei3d
 
 	void GuiTextBox::SetFontSizePt(float fontSize)
 	{
-		m_fontSize = { LineHeightMetrix::PT, fontSize };
+		m_fontSize = { LineHeightMetric::PT, fontSize };
 	}
 
 	void GuiTextBox::SetFontSizePx(float fontSize)
 	{
-		m_fontSize = { LineHeightMetrix::PX, fontSize };
+		m_fontSize = { LineHeightMetric::PX, fontSize };
 	}
 
 	void GuiTextBox::SetFontSizeNorm(float fontSize)
 	{
-		m_fontSize = { LineHeightMetrix::NORM, fontSize };
+		m_fontSize = { LineHeightMetric::NORM, fontSize };
 	}
 
 	void GuiTextBox::SetTextColor(const glm::vec4& textColor)
@@ -75,19 +75,19 @@ namespace lei3d
 			GuiRect::Render(screenSize);
 		}
 
-		GuiManager::Instance().m_guiFontShader->bind();
+		GuiManager::Instance().m_guiFontShader.bind();
 
-		GuiManager::Instance().m_guiFontShader->setUniformMat4("transform",
+		GuiManager::Instance().m_guiFontShader.setUniformMat4("transform",
 			glm::translate(glm::identity<glm::mat4>(), PosNormalized(screenSize)) *
 			glm::scale(glm::identity<glm::mat4>(), glm::vec3(GetFontScalar(screenSize), 1))
 		);
 
-		GuiManager::Instance().m_guiFontShader->setVec2("screenSize", screenSize);
-		GuiManager::Instance().m_guiFontShader->setVec4("color", m_textColor);
-		GuiManager::Instance().m_guiFontShader->setInt("normalized", true);
-		GuiManager::Instance().m_guiFontShader->setInt("ourTexture", 0);
+		GuiManager::Instance().m_guiFontShader.setVec2("screenSize", screenSize);
+		GuiManager::Instance().m_guiFontShader.setVec4("color", m_textColor);
+		GuiManager::Instance().m_guiFontShader.setInt("normalized", true);
+		GuiManager::Instance().m_guiFontShader.setInt("ourTexture", 0);
 
-		m_textMesh->Draw(GuiManager::Instance().m_guiFontShader);
+		m_textMesh->Draw(&GuiManager::Instance().m_guiFontShader);
 	}
 
 	void GuiTextBox::Update()
@@ -99,11 +99,11 @@ namespace lei3d
 	{
 		switch (m_fontSize.first)
 		{
-		case LineHeightMetrix::PT:
+		case LineHeightMetric::PT:
 			return { m_fontSize.second / screenSize.x, m_fontSize.second / screenSize.y };
-		case LineHeightMetrix::PX:
+		case LineHeightMetric::PX:
 			return { m_fontSize.second * (4.f / 3.f) / screenSize.x, m_fontSize.second * (4.f / 3.f) / screenSize.y };
-		case LineHeightMetrix::NORM:
+		case LineHeightMetric::NORM:
 			return { m_fontSize.second * screenSize.y / screenSize.x, m_fontSize.second };
 		default:
 			return { 1, 1 };
