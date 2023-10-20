@@ -240,12 +240,8 @@ namespace lei3d
 		return s_Instance->m_PrimitiveRenderer;
 	}
 
-	FontRenderer& Application::GetFontRenderer()
-	{
-		return m_fontRenderer;
-	}
-
-	void Application::ProcessInput()
+	// TODO: Put into input class
+	void Application::SetupInputCallbacks()
 	{
 		glfwSetWindowUserPointer(m_Window, this);
 
