@@ -73,8 +73,10 @@ namespace lei3d
 
 		static GLFWwindow* Window();
 		static float DeltaTime();
-		static SceneView& GetSceneView();
-		static PrimitiveRenderer& GetPrimitiveRenderer();
+
+		SceneView& GetSceneView();
+		PrimitiveRenderer& GetPrimitiveRenderer();
+		FontRenderer& GetFontRenderer();
 
 		static inline Camera& GetSceneCamera()
 		{
