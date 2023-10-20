@@ -25,14 +25,14 @@ namespace lei3d
 	{
 	private:
 		// model data
-		std::vector<Mesh>	 m_Meshes;
-		std::string			 m_Directory;
+		std::vector<Mesh> m_Meshes;
+		std::string m_Directory;
 		std::vector<Texture> m_TexturesLoaded;
 
 		std::vector<btTriangleMesh*> m_BTMeshes; // NEED TO DEALLOCATE THIS IN DESTRUCTOR!
 
 	public:
-		std::vector<std::unique_ptr<Texture>>  textures;
+		std::vector<std::unique_ptr<Texture>> textures;
 		std::vector<std::unique_ptr<Material>> materials;
 
 		Model(const std::string& modelPath);
@@ -43,14 +43,15 @@ namespace lei3d
 		std::vector<btTriangleMesh*>& GetCollisionMeshes();
 
 	private:
-		void					 loadMaterials(const aiScene* scene);
-		void					 loadModel(const std::string& path);
-		void					 processNode(aiNode* node, const aiScene* scene);
-		Mesh					 processMesh(aiMesh* mesh, const aiScene* scene);
-		Texture* loadMaterialTexture(const aiMaterial* mat, aiTextureType type, const std::string& typeName);
+		void loadMaterials(const aiScene* scene);
+		void loadModel(const std::string& path);
+		void processNode(aiNode* node, const aiScene* scene);
+		Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+		Texture* loadMaterialTexture(const aiMaterial* mat, const aiScene* scene, aiTextureType type, const std::string& typeName);
 	};
 
 	// TODO: Use Abstract Texture in "Texture.cpp"
 	unsigned int TextureFromFile(const char* path, const std::string& directory, bool gamma = false);
+	unsigned int TextureFromMemory(const aiTexture* texture, const std::string& directory);
 
 } // namespace lei3d

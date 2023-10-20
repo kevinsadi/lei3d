@@ -37,11 +37,6 @@ namespace lei3d
 
 		LookMode m_LookMode;
 
-		bool m_MouseEnterFlag;
-
-		int m_PrevX;
-		int m_PrevY;
-
 	public:
 		Camera(GLFWwindow* window, float yaw = 0.0f, float pitch = 0.0f, LookMode mode = LookMode::FREE);
 		~Camera();
@@ -59,7 +54,7 @@ namespace lei3d
 		float GetFarPlane() const;
 
 		virtual void OnImGuiRender() {}
-		virtual void cameraMouseCallback(double xPosInput, double yPosInput);
+		virtual void Pan();
 		virtual void PollCameraMovementInput() {}
 
 		void SetFOV(float fov);

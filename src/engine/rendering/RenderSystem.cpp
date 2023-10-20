@@ -46,9 +46,10 @@ namespace lei3d
 		glGenTextures(1, &finalTexture);
 
 		// lighting pass
+		GLenum mipMode = isSSROn ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST;
 		glBindTexture(GL_TEXTURE_2D, rawTexture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mipMode);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, rawTexture, 0);
 
@@ -126,8 +127,9 @@ namespace lei3d
 		SSRShader.bind();
 		SSRShader.setInt("DepthMap", 0);
 		SSRShader.setInt("NormalMap", 1);
-		SSRShader.setInt("RawFinalImage", 2);
-		SSRShader.setInt("EnvMap", 3);
+		SSRShader.setInt("MetallicRoughnessMap", 2);
+		SSRShader.setInt("RawFinalImage", 3);
+		SSRShader.setInt("EnvMap", 4);
 
 		reflectionShader.bind();
 		reflectionShader.setInt("DepthMap", 0);
@@ -317,8 +319,11 @@ namespace lei3d
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, normalsTexture);
 		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, rawTexture);
+		glBindTexture(GL_TEXTURE_2D, metallicRoughnessTexture);
 		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, rawTexture);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		glActiveTexture(GL_TEXTURE4);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, skyBox.cubeMapTexture);
 
 		glm::mat4 trs = glm::translate(glm::mat4(1.0), glm::vec3(0.5, 0.5, 0.5));
