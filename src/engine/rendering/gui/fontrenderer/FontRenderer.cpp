@@ -4,6 +4,7 @@
 #include "core/Application.hpp"
 #include "logging/GLDebug.hpp"
 #include "rendering/Shader.hpp"
+#include "rendering/gui/GuiManager.hpp"
 #include "rendering/gui/UiMesh.hpp"
 
 namespace lei3d
@@ -16,40 +17,25 @@ namespace lei3d
 
 	FontRenderer::~FontRenderer()
 	{
-		delete m_textShader;
 		s_fonts.clear();
 	}
 
 	void FontRenderer::Init()
 	{
 		s_fonts.emplace_back("britannic");
-
-		m_textShader = new Shader("./data/shaders/text.vert", "./data/shaders/text.frag");
 	}
 
-	void FontRenderer::RenderText(std::string text, float x, float y, float scale, glm::vec4 color, glm::vec2 screenSize)
+	UiMesh* FontRenderer::CreateMesh(std::string text, unsigned fontIndex)
 	{
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		m_textShader->bind();
-
 		std::vector<UiMesh::Vertex> vertices;
 		std::vector<unsigned int> indices;
-		
-		glm::mat4 transform =
-			glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f)) * 
-			glm::scale(glm::mat4(1.0f), glm::vec3(scale, scale, 1.0f));
-
-		m_textShader->setUniformMat4("transform", transform);
-		m_textShader->setVec2("screenSize", screenSize);
-		m_textShader->setInt("ourTexture", 0);
 
 		float xOffset = 0;
+
 		// Iterate through all characters
 		for (char c : text)
 		{
-			Character ch = s_fonts[m_fontIndex].m_characters[c];
+			Character ch = s_fonts[fontIndex].m_characters[c];
 
 			float xpos = xOffset + ch.XOffset;
 			float ypos = 0;
@@ -57,10 +43,10 @@ namespace lei3d
 			float w = ch.Size.x;
 			float h = ch.Size.y;
 
-			vertices.push_back(UiMesh::Vertex({ xpos, ypos + h }, { color.x, color.y, color.z, color.w }, { ch.TopLeft.x, ch.TopLeft.y }));
-			vertices.push_back(UiMesh::Vertex({ xpos + w, ypos }, { color.x, color.y, color.z, color.w }, { ch.BottomRight.x, ch.BottomRight.y }));
-			vertices.push_back(UiMesh::Vertex({ xpos + w, ypos + h }, { color.x, color.y, color.z, color.w }, { ch.BottomRight.x, ch.TopLeft.y }));
-			vertices.push_back(UiMesh::Vertex({ xpos, ypos }, { color.x, color.y, color.z, color.w }, { ch.TopLeft.x, ch.BottomRight.y }));
+			vertices.push_back(UiMesh::Vertex({ xpos, ypos + h }, { ch.TopLeft.x, ch.TopLeft.y }));
+			vertices.push_back(UiMesh::Vertex({ xpos + w, ypos }, { ch.BottomRight.x, ch.BottomRight.y }));
+			vertices.push_back(UiMesh::Vertex({ xpos + w, ypos + h }, { ch.BottomRight.x, ch.TopLeft.y }));
+			vertices.push_back(UiMesh::Vertex({ xpos, ypos }, { ch.TopLeft.x, ch.BottomRight.y }));
 
 			indices.push_back(vertices.size() - 4);
 			indices.push_back(vertices.size() - 2);
@@ -73,10 +59,25 @@ namespace lei3d
 			xOffset += ch.XAdvance;
 		}
 
-		UiMesh mesh = UiMesh(vertices, indices, *s_fonts[m_fontIndex].m_texture);
-		mesh.Draw();
+		return new UiMesh(vertices, indices, s_fonts[fontIndex].m_texture->m_GlID);
+	}
 
-		glDisable(GL_BLEND);
-		glBlendFunc(GL_ONE, GL_ZERO);
+	float FontRenderer::GetTextWidth(std::string text, unsigned fontIndex)
+	{
+		float width = 0;
+
+		// Iterate through all characters
+		for (char c : text)
+		{
+			Character ch = s_fonts[fontIndex].m_characters[c];
+			width += ch.XAdvance;
+		}
+
+		return width;
+	}
+
+	float FontRenderer::PtToPx(float pt)
+	{
+		return pt * 4.f / 3.f;
 	}
 }
