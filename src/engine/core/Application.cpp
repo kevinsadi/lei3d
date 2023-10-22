@@ -7,6 +7,8 @@
 
 #include <stb_image.h>
 
+#include "rendering/gui/GuiManager.hpp"
+
 namespace lei3d
 {
 
@@ -141,7 +143,8 @@ namespace lei3d
 		// INIT RENDERER -----------------------------
 		m_Renderer.initialize(screenWidth, screenHeight);
 		m_PrimitiveRenderer.initialize(screenWidth, screenHeight);
-		m_fontRenderer.Init();
+
+		GuiManager::Instance().Init();
 	}
 
 	void Application::FrameTick()
@@ -244,11 +247,6 @@ namespace lei3d
 	PrimitiveRenderer& Application::GetPrimitiveRenderer()
 	{
 		return m_PrimitiveRenderer;
-	}
-
-	FontRenderer& Application::GetFontRenderer()
-	{
-		return m_fontRenderer;
 	}
 
 	void Application::ProcessInput()
