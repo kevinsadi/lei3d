@@ -11,6 +11,7 @@
 #include "core/Application.hpp"
 #include "gui/GuiManager.hpp"
 #include "gui/components/GuiRect.hpp"
+#include "gui/components/GuiRectButton.hpp"
 #include "gui/components/GuiTextBox.hpp"
 
 namespace lei3d
@@ -520,6 +521,16 @@ namespace lei3d
 		const glm::mat4 lightProj = glm::ortho(pminX, pmaxX, pminY, pmaxY, pminZ, pmaxZ);
 		return lightProj * lightView;
 	}
+<<<<<<< HEAD
+=======
+
+	void RenderSystem::UiPass()
+	{
+		GuiRectButton* rect = new GuiRectButton([]() { LEI_INFO("Button Clicked"); });
+		GuiManager::Instance().RenderGui(glm::vec2(scwidth, scheight));
+		delete rect;
+	}
+>>>>>>> cf5babd (Misc progress on Interactive Gui)
 	
 	std::vector<glm::mat4> RenderSystem::getLightSpaceMatrices(DirectionalLight* light, Camera& camera)
 	{

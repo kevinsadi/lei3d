@@ -195,10 +195,21 @@ namespace lei3d
 		{
 			// nothing
 		}
+		else if (GuiManager::Instance().InteractableLayer())
+		{
+			// game paused if GUI screen is open
+			GuiManager::Instance().UpdateGui();
+
+			if (InputManager::GetInstance().isKeyPressed(GLFW_MOUSE_BUTTON_LEFT))
+			{
+				GuiManager::Instance().SendClick({ screenWidth, screenHeight }, InputManager::GetInstance().getMousePosition());
+			}
+		}
 		else
 		{
 			ProcessInput();
 			m_SceneView->Update(scene);
+			GuiManager::Instance().UpdateGui();
 		}
 	}
 

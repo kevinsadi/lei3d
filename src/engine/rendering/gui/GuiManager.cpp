@@ -27,25 +27,52 @@ namespace lei3d
 
 	void GuiManager::AddGuiComponent(GuiComponent* guiComponent)
 	{
-		s_guiComponents[guiComponent->m_id] = guiComponent;
+		m_guiComponents[guiComponent->m_id] = guiComponent;
+
+		if (guiComponent->m_interactable)
+		{
+			m_interactableComponents.insert(guiComponent->m_id);
+		}
 	}
 
 	bool GuiManager::RemoveGuiComponent(unsigned id)
 	{
-		auto it = s_guiComponents.find(id);
+		auto it = m_guiComponents.find(id);
 
-		if (it != s_guiComponents.end())
+		if (it != m_guiComponents.end())
 		{
-			s_guiComponents.erase(it);
+			if (it->second->m_interactable)
+			{
+				m_interactableComponents.erase(id);
+			}
+
+			m_guiComponents.erase(it);
 			return true;
 		}
 
 		return false;
 	}
 
+	void GuiManager::SetInteractable(unsigned id, bool interactable)
+	{
+		if (interactable)
+		{
+			m_interactableComponents.insert(id);
+		}
+		else
+		{
+			m_interactableComponents.erase(id);
+		}
+	}
+
+	bool GuiManager::InteractableLayer()
+	{
+		return !m_interactableComponents.empty();
+	}
+
 	void GuiManager::RenderGui(const glm::vec2& screenSize)
 	{
-		for (auto& guiComponent : s_guiComponents)
+		for (auto& guiComponent : m_guiComponents)
 		{
 			guiComponent.second->BeginRender();
 			guiComponent.second->Render(screenSize);
@@ -55,9 +82,22 @@ namespace lei3d
 
 	void GuiManager::UpdateGui()
 	{
-		for (auto& guiComponent : s_guiComponents)
+		m_mouseOver.clear();
+
+		for (auto& guiComponent : m_guiComponents)
 		{
 			guiComponent.second->Update();
+		}
+	}
+
+	void GuiManager::SendClick(const glm::vec2& screenSize, const glm::vec2& mousePos)
+	{
+		for (auto& guiComponent : m_guiComponents)
+		{
+			if (guiComponent.second->IsInteractable() && guiComponent.second->IsMouseOver(screenSize, mousePos))
+			{
+				guiComponent.second->OnClick(screenSize, mousePos);
+			}
 		}
 	}
 }

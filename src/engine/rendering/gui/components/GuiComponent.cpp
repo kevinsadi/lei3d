@@ -19,12 +19,13 @@ namespace lei3d
 		{0.5f, 0.5f, 0}	// CENTER
 	};
 
-	GuiComponent::GuiComponent(Anchor anchor, const std::pair<Space, glm::vec2>& pos, const std::pair<Space, glm::vec2>& size)
+	GuiComponent::GuiComponent(Anchor anchor, const std::pair<Space, glm::vec2>& pos, const std::pair<Space, glm::vec2>& size, bool interactable)
 		: m_anchor((unsigned)anchor)
 		, m_position(pos)
 		, m_size(size)
+		, m_interactable(interactable)
+		, m_id(s_nextId++)
 	{
-		m_id = s_nextId++;
 		GuiManager::Instance().AddGuiComponent(this);
 	}
 
@@ -53,6 +54,11 @@ namespace lei3d
 		m_size = { Space::PIXELS, size };
 	}
 
+	bool GuiComponent::IsInteractable() const
+	{
+		return m_interactable;
+	}
+
 	void GuiComponent::BeginRender()
 	{
 		glEnable(GL_BLEND);
@@ -67,7 +73,14 @@ namespace lei3d
 		glEnable(GL_DEPTH_TEST);
 	}
 
-	glm::vec3 GuiComponent::PosNormalized(const glm::vec2& screenSize)
+	void GuiComponent::SetInteractable(bool interactable)
+	{
+		*((bool*) & m_interactable) = interactable; // want to change value of a const thing :D
+
+		GuiManager::Instance().SetInteractable(m_id, interactable);
+	}
+
+	glm::vec3 GuiComponent::PosNormalized(const glm::vec2& screenSize) const
 	{
 		glm::vec3 pos = s_anchorPositions[m_anchor];
 
@@ -83,11 +96,39 @@ namespace lei3d
 		return pos;
 	}
 
-	glm::vec2 GuiComponent::SizeNormalized(const glm::vec2& screenSize)
+	glm::vec2 GuiComponent::SizeNormalized(const glm::vec2& screenSize) const
 	{
 		if (m_size.first == Space::PIXELS)
 		{
 			return m_size.second / screenSize;
+		}
+		else
+		{
+			return m_size.second;
+		}
+	}
+
+	glm::vec3 GuiComponent::PosPixels(const glm::vec2& screenSize) const
+	{
+		glm::vec3 pos = s_anchorPositions[m_anchor] * glm::vec3(screenSize, 0);
+
+		if (m_position.first == Space::NORMALIZED)
+		{
+			pos += glm::vec3(m_position.second * screenSize, 0);
+		}
+		else
+		{
+			pos += glm::vec3(m_position.second, 0);
+		}
+
+		return pos;
+	}
+
+	glm::vec2 GuiComponent::SizePixels(const glm::vec2& screenSize) const
+	{
+		if (m_size.first == Space::NORMALIZED)
+		{
+			return m_size.second * screenSize;
 		}
 		else
 		{

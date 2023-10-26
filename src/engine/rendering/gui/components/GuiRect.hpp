@@ -24,5 +24,7 @@ namespace lei3d
 
         void Render(const glm::vec2& screenSize) override;
         void Update() override;
+
+        bool IsMouseOver(const glm::vec2& screenSize, const glm::vec2& mousePosition) const override;
     };
 }

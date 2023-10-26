@@ -34,7 +34,8 @@ namespace lei3d
 		GuiComponent(
 			Anchor anchor = Anchor::CENTER, 
 			const std::pair<Space, glm::vec2>& pos = { Space::NORMALIZED, { 0.25, 0.25 } }, 
-			const std::pair<Space, glm::vec2>& size = { Space::NORMALIZED, { 0.5, 0.5 } }
+			const std::pair<Space, glm::vec2>& size = { Space::NORMALIZED, { 0.5, 0.5 } },
+			bool interactable = false
 		);
 		virtual ~GuiComponent();
 
@@ -44,12 +45,15 @@ namespace lei3d
 		void SetSizeNormalized(const glm::vec2& size);
 		void SetSizePixels(const glm::vec2& size);
 
+		bool IsInteractable() const;
+
 	protected:
 		friend class GuiManager;
 
 		static unsigned s_nextId;
 		unsigned m_id;
 		unsigned m_anchor;
+		const bool m_interactable;
 
 		static const glm::vec3 s_anchorPositions[unsigned(Anchor::ANCHOR_COUNT)];
 
@@ -62,8 +66,15 @@ namespace lei3d
 
 		virtual void Render(const glm::vec2& screenSize) = 0;
 		virtual void Update() = 0;
+		virtual bool IsMouseOver(const glm::vec2& screenSize, const glm::vec2& mousePosition) const = 0;
+		virtual void OnClick(const glm::vec2& screenSize, const glm::vec2& mousePosition) = 0;
 
-		glm::vec3 PosNormalized(const glm::vec2& screenSize);
-		glm::vec2 SizeNormalized(const glm::vec2& screenSize);
+		void SetInteractable(bool interactable);
+
+		glm::vec3 PosNormalized(const glm::vec2& screenSize) const;
+		glm::vec2 SizeNormalized(const glm::vec2& screenSize) const;
+
+		glm::vec3 PosPixels(const glm::vec2& screenSize) const;
+		glm::vec2 SizePixels(const glm::vec2& screenSize) const;
 	};
 }

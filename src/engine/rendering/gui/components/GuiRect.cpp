@@ -62,4 +62,13 @@ namespace lei3d
 	{
 
 	}
+
+	bool GuiRect::IsMouseOver(const glm::vec2& screenSize, const glm::vec2& mousePosition) const
+	{
+		const glm::vec3 pos = PosPixels(screenSize);
+		const glm::vec2 size = SizePixels(screenSize);
+
+		return mousePosition.x >= pos.x && mousePosition.x <= pos.x + size.x
+			&& mousePosition.y >= pos.y && mousePosition.y <= pos.y + size.y;
+	}
 }
