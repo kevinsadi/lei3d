@@ -10,6 +10,7 @@
 #include "components/FollowCameraController.hpp"
 #include "components/TriggerCollider.hpp"
 #include "components/TimerComponent.hpp"
+#include "components/PlayerTriggerComponent.hpp"
 
 #include "logging/GLDebug.hpp"
 #include "physics/PhysicsWorld.hpp"
@@ -65,11 +66,6 @@ namespace lei3d
 		CharacterController* characterController = backpackObj.AddComponent<CharacterController>();
 		characterController->Init(1.f, 3.f);
 
-		TriggerCollider* triggerCollider = backpackObj.AddComponent<TriggerCollider>();
-		std::vector<const btCollisionObject*> ignoredObjects;
-		ignoredObjects.push_back(characterController->getRigidBody());
-		triggerCollider->Init(characterController->getGroundCheckObj(), ignoredObjects);
-
 		FollowCameraController* followCam = backpackObj.AddComponent<FollowCameraController>();
 		followCam->Init(*m_DefaultCamera, glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -95,6 +91,11 @@ namespace lei3d
 		physicsPlaygroundCollider->Init();
 		physicsPlaygroundCollider->SetColliderToModel(*playgroundModel);
 
+		PlayerTriggerComponent* playerTrigger = physicsPlaygroundObj.AddComponent<PlayerTriggerComponent>();
+		playerTrigger->SetOnPlayerEntered([&]() {
+			LEI_TRACE("Player entered trigger collider");
+		});
+
 		// Test color source
 		Entity& startColorSrcObj = AddEntity("Start Color Area");
 		ColorSource* startSrc = startColorSrcObj.AddComponent<ColorSource>();
@@ -118,6 +119,7 @@ namespace lei3d
 		backpackObj->SetScale(glm::vec3(1.f, 1.f, 1.f));
 		backpackObj->SetPosition(glm::vec3(-112.5f, 505.f, 3.f));
 	}
+	
 
 	void TestSceneKevin::OnUpdate()
 	{
