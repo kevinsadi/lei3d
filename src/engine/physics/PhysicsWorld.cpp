@@ -25,7 +25,7 @@ namespace lei3d
 		m_dynamicsWorld->getSolverInfo().m_numIterations = 30; // Increase the number of solver iterations
 
 		m_debugDrawer = std::make_unique<LeiDebugDrawer>();
-		m_debugDrawer->setDebugMode(btIDebugDraw::DBG_DrawAabb);
+		m_debugDrawer->setDebugMode(btIDebugDraw::DBG_DrawContactPoints | btIDebugDraw::DBG_EnableCCD);
 		m_dynamicsWorld->setDebugDrawer(m_debugDrawer.get());
 	}
 
@@ -41,8 +41,8 @@ namespace lei3d
 		for (int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
 		{
 			btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
-			btRigidBody*	   body = btRigidBody::upcast(obj);
-			btTransform		   trans;
+			btRigidBody* body = btRigidBody::upcast(obj);
+			btTransform trans;
 			if (body && body->getMotionState())
 			{
 				body->getMotionState()->getWorldTransform(trans);
@@ -58,8 +58,8 @@ namespace lei3d
 	glm::vec3 PhysicsWorld::GetFirstColliderPosition()
 	{
 		btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[0];
-		btRigidBody*	   body = btRigidBody::upcast(obj);
-		btTransform		   trans;
+		btRigidBody* body = btRigidBody::upcast(obj);
+		btTransform trans;
 		if (body && body->getMotionState())
 		{
 			body->getMotionState()->getWorldTransform(trans);
