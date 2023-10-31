@@ -1,7 +1,7 @@
 #include "components/CharacterController.hpp"
 
 #include "core/Application.hpp"
-
+#include "core/InputManager.hpp"
 #include "physics/GroundedCallback.hpp"
 
 #include <algorithm>
@@ -51,26 +51,26 @@ namespace lei3d
 		float yawRotationRadian = glm::radians(m_Controller.m_Entity.m_Transform.yawRotation);
 
 		// here is where we apply our constraints during the update
-		GLFWwindow* window = Application::Window();
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		InputManager& im = InputManager::GetInstance();
+		if (im.isKeyDown(GLFW_KEY_W))
 		{
 			// Same as Camera
 			glm::vec3 forwardVec = glm::normalize(glm::vec3(cos(yawRotationRadian), 0, sin(yawRotationRadian)));
 			wishdir = wishdir + forwardVec;
 		}
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		if (im.isKeyDown(GLFW_KEY_S))
 		{
 			// Same as Camera
 			glm::vec3 forwardVec = glm::normalize(glm::vec3(cos(yawRotationRadian), 0, sin(yawRotationRadian)));
 			wishdir = wishdir - forwardVec;
 		}
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		if (im.isKeyDown(GLFW_KEY_A))
 		{
 			// Same as Camera
 			glm::vec3 rightVec = glm::normalize(glm::vec3(-sin(yawRotationRadian), 0, cos(yawRotationRadian)));
 			wishdir = wishdir - rightVec;
 		}
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		if (im.isKeyDown(GLFW_KEY_D))
 		{
 			// Same as Camera
 			glm::vec3 rightVec = glm::normalize(glm::vec3(-sin(yawRotationRadian), 0, cos(yawRotationRadian)));
@@ -93,7 +93,7 @@ namespace lei3d
 			v = btVector3(outputVel.x, outputVel.y, outputVel.z);
 		}
 
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && onGround)
+		if (im.isKeyPressed(GLFW_KEY_SPACE) && onGround)
 		{
 			v = v + btVector3(0, m_Controller.m_jumpPower, 0);
 		}

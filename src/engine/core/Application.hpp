@@ -24,18 +24,13 @@
 #include <chrono>
 #include <thread>
 
-#include "rendering/gui/fontrenderer/FontRenderer.hpp"
-
 namespace lei3d
 {
 	class AppGUI;
-	class SceneManager;
 
 	class Application
 	{
 	private:
-		static Application* s_Instance;
-
 		int screenWidth = 1200;
 		int screenHeight = 1000;
 
@@ -44,14 +39,12 @@ namespace lei3d
 
 		// TODO: Refactor things into editor/game
 		std::unique_ptr<EditorGUI> m_EditorGUI;
-		std::unique_ptr<SceneManager> m_SceneManager;
 		std::unique_ptr<AudioPlayer> m_AudioPlayer;
 		std::unique_ptr<SceneView> m_SceneView;
 
 		// Should we keep these on the stack? idk
 		RenderSystem m_Renderer;
 		PrimitiveRenderer m_PrimitiveRenderer;
-		FontRenderer m_fontRenderer;
 
 		// NOTE: Don't modify this directly. Use SetUIActive.
 		bool m_UIActive = false;
@@ -65,7 +58,7 @@ namespace lei3d
 		float m_FixedDeltaTime = 0.01f;
 
 	public:
-		Application();
+		static Application& GetInstance();
 		~Application();
 
 		void Run(); // Run the app.
@@ -74,16 +67,18 @@ namespace lei3d
 
 		static GLFWwindow* Window();
 		static float DeltaTime();
-		static SceneView& GetSceneView();
-		static PrimitiveRenderer& GetPrimitiveRenderer();
-		static FontRenderer& GetFontRenderer();
+    
+		SceneView& GetSceneView();
+		PrimitiveRenderer& GetPrimitiveRenderer();
 
-		static inline Camera& GetSceneCamera()
+		inline Camera& GetSceneCamera()
 		{
-			return GetSceneView().ActiveCamera(SceneManager::ActiveScene());
+			return GetSceneView().ActiveCamera(SceneManager::GetInstance().ActiveScene());
 		}
 
 	private:
+		Application();
+
 		void Initialize(); // Start the App
 		void FrameTick();  // Called every frame
 		void GetMonitorConfiguration();
@@ -93,8 +88,6 @@ namespace lei3d
 		void Render();
 		void ImGuiRender();
 
-		void SetupInputCallbacks();
-		void ProcessKeyboardInput(GLFWwindow* window, int key, int scancode,
-			int action, int mods);
+		void ProcessInput();
 	};
 } // namespace lei3d

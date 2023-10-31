@@ -20,7 +20,7 @@ int main()
 	LEI_TRACE("Initialized Logger");
 
 	// loops until render loop ends
-	Application app;
+	Application& app = Application::GetInstance();
 	app.Run();
 
 	return 0;

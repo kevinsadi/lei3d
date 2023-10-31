@@ -39,7 +39,7 @@ namespace lei3d
 		Camera& ActiveCamera(const Scene& scene) const;
 
 		void OnImGuiRender(Scene& scene);
-		void ProcessKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods);
+		void ProcessInput();
 	private:
 		void TogglePlayPause(Scene& scene);
 		void Reset(Scene& scene);

@@ -48,32 +48,22 @@ namespace lei3d
 		}
 		playgroundModel = std::make_unique<Model>(physicsPlaygroundPath);
 
-		for (std::unique_ptr<Model>& model : m_EnviromentModels)
-		{
-			if (model)
-			{
-				model.reset();
-			}
-		}
-
-		// this will break as you load multiple times, it will make multiple models
+		// since this would just overwrite
 		const std::string flowerPath = "data/models/leveldesignobj/flower/flower_export_2.obj";
-		m_EnviromentModels.emplace_back(std::make_unique<Model>(flowerPath));
+		m_EnviromentModels.insert(std::make_pair("flower", std::make_unique<Model>(flowerPath)));
 
 		const std::string islandPath = "data/models/leveldesignobj/island/island.obj";
-		m_EnviromentModels.emplace_back(std::make_unique<Model>(islandPath));
+		m_EnviromentModels.insert(std::make_pair("island", std::make_unique<Model>(islandPath)));
 
 		const std::string housePath = "data/models/leveldesignobj/house/house_texture.obj";
-		m_EnviromentModels.emplace_back(std::make_unique<Model>(housePath));
+		m_EnviromentModels.insert(std::make_pair("house", std::make_unique<Model>(housePath)));
 
 		const std::string signPath = "data/models/leveldesignobj/sign/sign.obj";
-		m_EnviromentModels.emplace_back(std::make_unique<Model>(signPath));
+		m_EnviromentModels.insert(std::make_pair("sign", std::make_unique<Model>(signPath)));
 
 		const std::string fishPath = "data/models/leveldesignobj/fish2/fish.obj";
-		m_EnviromentModels.emplace_back(std::make_unique<Model>(fishPath));
-
-		// const std::string fishPath = "data/models/leveldesignobj/fish/fish.obj";
-		// m_EnviromentModels.emplace_back(std::make_unique<Model>(fishPath));
+		m_EnviromentModels["fish"] = (std::make_unique<Model>(fishPath));
+		m_EnviromentModels.insert(std::make_pair("fish", std::make_unique<Model>(fishPath)));
 
 		// this is some of the worst code I have written in my life, please forgive me
 
@@ -90,7 +80,7 @@ namespace lei3d
 		characterController->Init(1.f, 3.f);
 
 		FollowCameraController* followCam = backpackObj.AddComponent<FollowCameraController>();
-		followCam->Init(*m_DefaultCamera, glm::vec3(0.0f, 1.0f, 0.0f));
+		followCam->Init(*m_DefaultCamera, glm::vec3(0.0f, 5.0f, 0.0f));
 
 		// PHYSICS PLAYGROUND---------------------
 		Entity& physicsPlaygroundObj = AddEntity("Physics Playground");
@@ -110,7 +100,7 @@ namespace lei3d
 		flowerObj.SetYawRotation(0);
 
 		ModelInstance* flowerRender = flowerObj.AddComponent<ModelInstance>();
-		flowerRender->Init(m_EnviromentModels[0].get());
+		flowerRender->Init(m_EnviromentModels["flower"].get());
 		flowerObj.SetScale(glm::vec3(2.5f, 2.5f, 2.5f));
 		flowerObj.SetPosition(glm::vec3(0.0f, 50.3f, 0.0f));
 
@@ -127,11 +117,11 @@ namespace lei3d
 		houseObj.SetYawRotation(0);
 
 		ModelInstance* houseRender = houseObj.AddComponent<ModelInstance>();
-		houseRender->Init(m_EnviromentModels[2].get());
+		houseRender->Init(m_EnviromentModels["house"].get());
 
 		StaticCollider* houseCollider = houseObj.AddComponent<StaticCollider>();
 		houseCollider->Init();
-		houseCollider->SetColliderToModel(*m_EnviromentModels[2].get());
+		houseCollider->SetColliderToModel(*m_EnviromentModels["house"].get());
 
 		// Sign ---------------------
 		Entity& signObj = AddEntity("Sign");
@@ -140,11 +130,11 @@ namespace lei3d
 		signObj.SetYawRotation(-70);
 
 		ModelInstance* signRender = signObj.AddComponent<ModelInstance>();
-		signRender->Init(m_EnviromentModels[3].get());
+		signRender->Init(m_EnviromentModels["sign"].get());
 
 		StaticCollider* signCollider = signObj.AddComponent<StaticCollider>();
 		signCollider->Init();
-		signCollider->SetColliderToModel(*m_EnviromentModels[3].get());
+		signCollider->SetColliderToModel(*m_EnviromentModels["sign"].get());
 
 		// Fish ---------------------
 		Entity& fishObj = AddEntity("Fish");
@@ -153,7 +143,7 @@ namespace lei3d
 		fishObj.SetYawRotation(0);
 
 		ModelInstance* fishRender = fishObj.AddComponent<ModelInstance>();
-		fishRender->Init(m_EnviromentModels[4].get());
+		fishRender->Init(m_EnviromentModels["fish"].get());
 
 		// Islands ---------------------
 		Entity& islandObj = AddEntity("Island");
@@ -162,11 +152,11 @@ namespace lei3d
 		islandObj.SetYawRotation(0);
 
 		ModelInstance* islandRender = islandObj.AddComponent<ModelInstance>();
-		islandRender->Init(m_EnviromentModels[1].get());
+		islandRender->Init(m_EnviromentModels["island"].get());
 
 		StaticCollider* islandCollider = islandObj.AddComponent<StaticCollider>();
 		islandCollider->Init();
-		islandCollider->SetColliderToModel(*m_EnviromentModels[1].get());
+		islandCollider->SetColliderToModel(*m_EnviromentModels["island"].get());
 
 		//
 		Entity& islandObj2 = AddEntity("Island2");
@@ -175,11 +165,11 @@ namespace lei3d
 		islandObj2.SetPosition(glm::vec3(0.0f, 0.0f, -154.0f));
 
 		ModelInstance* islandRender2 = islandObj2.AddComponent<ModelInstance>();
-		islandRender2->Init(m_EnviromentModels[1].get());
+		islandRender2->Init(m_EnviromentModels["island"].get());
 
 		StaticCollider* islandCollider2 = islandObj2.AddComponent<StaticCollider>();
 		islandCollider2->Init();
-		islandCollider2->SetColliderToModel(*m_EnviromentModels[1].get());
+		islandCollider2->SetColliderToModel(*m_EnviromentModels["island"].get());
 
 		// TriggerCollider* trigger = islandObj2.AddComponent<TriggerCollider>();
 

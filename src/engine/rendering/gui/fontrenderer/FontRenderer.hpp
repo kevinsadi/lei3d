@@ -6,21 +6,25 @@
 
 namespace lei3d
 {
+	class UiMesh;
 	class Shader;
 
     class FontRenderer
     {
-	public:
+	private:
+		friend class GuiManager;
+		friend class GuiTextBox;
+
 		static std::vector<Font> s_fonts;
-		unsigned m_fontIndex = 0;
 
 		FontRenderer();
 		~FontRenderer();
 
 		void Init();
-		void RenderText(std::string text, float x, float y, float scale, glm::vec4 color, glm::vec2 screenSize);
 
-	private:
-		Shader* m_textShader;
+		UiMesh* CreateMesh(std::string text, unsigned fontIndex = 0);
+		float GetTextWidth(std::string text, unsigned fontIndex = 0);
+
+		float PtToPx(float pt);
 	};
 }

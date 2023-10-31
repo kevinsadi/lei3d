@@ -4,6 +4,7 @@ out vec4 FragColor;
 
 uniform sampler2D DepthMap;
 uniform sampler2D NormalMap;
+uniform sampler2D MetallicRoughnessMap;
 uniform sampler2D RawFinalImage;
 uniform samplerCube EnvMap;
 
@@ -39,6 +40,16 @@ float distanceSquared(vec2 a, vec2 b) {
 float linear01Depth(float z) {
     float tmp = farPlane / nearPlane;
     return 1.0 / ((1.0 - tmp) * z + tmp);
+}
+
+vec3 srgb_to_linear(vec3 color) {
+    // Approximation from http://chilliant.blogspot.com/2012/08/srgb-approximations-for-hlsl.html
+    return color * (color * (color * 0.305306011 + 0.682171111) + 0.012522878);
+}
+
+float mipLevelFromRoughness(float roughness, int mipCount) {
+    float level = 3.f - 1.15f * log2(roughness);
+    return float(mipCount) - 1.f - level;
 }
 
 // adapted from McGuire's SS tracing solution: https://casual-effects.blogspot.com/2014/08/screen-space-ray-tracing.html
@@ -164,7 +175,20 @@ void main() {
     float maxDim = min(1.0, max(abs(hitCoordNDC.x), abs(hitCoordNDC.y)));
     screenFade = 1.0 - (max(0.0, maxDim - screenFade) / (1.0 - screenFade));
 
+    float roughness = texture(MetallicRoughnessMap, hitCoord).g;
+
+    vec2 texSize = textureSize(EnvMap, 0);
+    int mipLevelCount = int(floor(log2(max(texSize.x, texSize.y))));
+    float mipLevel = mipLevelFromRoughness(roughness, mipLevelCount);
+
+    vec3 envColor = textureLod(EnvMap, reflectDir_wS, mipLevel).rgb;
+    envColor = srgb_to_linear(envColor);
+
+    texSize = textureSize(RawFinalImage, 0);
+    mipLevelCount = int(floor(log2(max(texSize.x, texSize.y))));
+    mipLevel = mipLevelFromRoughness(roughness, mipLevelCount);
+
     // Depending on map, might fallback to sample environment
-    vec3 reflectColor = texture(RawFinalImage, hitCoord).rgb;
-    FragColor.rgb = mix(texture(EnvMap, reflectDir_wS).rgb, reflectColor, eyeBlend * screenFade * bounceFade);
+    vec3 reflectColor = textureLod(RawFinalImage, hitCoord, mipLevel).rgb;
+    FragColor.rgb = mix(envColor, reflectColor, eyeBlend * screenFade * bounceFade);
 }

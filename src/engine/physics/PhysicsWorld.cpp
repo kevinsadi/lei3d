@@ -75,7 +75,7 @@ namespace lei3d
 	bool PhysicsWorld::ShouldShowDebug()
 	{
 		// Don't show physics stuff in game view
-		const bool inGameView = Application::GetSceneView().GetMode() == SceneView::ModeGame;
+		const bool inGameView = Application::GetInstance().GetSceneView().GetMode() == SceneView::ModeGame;
 		return m_Debug && !inGameView;
 	}
 
