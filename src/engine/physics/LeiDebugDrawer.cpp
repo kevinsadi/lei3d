@@ -30,11 +30,11 @@ namespace lei3d
 	{
 		if (distance < 0)
 		{
-			Application::GetPrimitiveRenderer().pushLine(Application::GetSceneCamera(), btToGLMVec3(PointOnB), btToGLMVec3((PointOnB + normalOnB.normalized() * 12)), btToGLMVec3(btVector3(1, 0, 0)), 0.5f);
+			Application::GetInstance().GetPrimitiveRenderer().pushLine(Application::GetInstance().GetSceneCamera(), btToGLMVec3(PointOnB), btToGLMVec3((PointOnB + normalOnB.normalized() * 12)), btToGLMVec3(btVector3(1, 0, 0)), 0.5f);
 		}
 		else
 		{
-			Application::GetPrimitiveRenderer().pushLine(Application::GetSceneCamera(), btToGLMVec3(PointOnB), btToGLMVec3((PointOnB + normalOnB.normalized() * 12)), btToGLMVec3(btVector3(0, 1, 0)), 0.5f);
+			Application::GetInstance().GetPrimitiveRenderer().pushLine(Application::GetInstance().GetSceneCamera(), btToGLMVec3(PointOnB), btToGLMVec3((PointOnB + normalOnB.normalized() * 12)), btToGLMVec3(btVector3(0, 1, 0)), 0.5f);
 		}
 	}
 
