@@ -117,7 +117,7 @@ namespace lei3d
 
 		// AppGUI --------------------------------
 		m_EditorGUI = std::make_unique<EditorGUI>();
-		SetUIActive(false);
+		SetIMGUIActive(false);
 
 		// CREATE SCENES --------------------------------
 		SceneManager& sm = SceneManager::GetInstance();
@@ -195,21 +195,10 @@ namespace lei3d
 		{
 			// nothing
 		}
-		else if (GuiManager::Instance().InteractableLayer())
-		{
-			// game paused if GUI screen is open
-			GuiManager::Instance().UpdateGui();
-
-			if (InputManager::GetInstance().isKeyPressed(GLFW_MOUSE_BUTTON_LEFT))
-			{
-				GuiManager::Instance().SendClick({ screenWidth, screenHeight }, InputManager::GetInstance().getMousePosition());
-			}
-		}
 		else
 		{
 			ProcessInput();
 			m_SceneView->Update(scene);
-			GuiManager::Instance().UpdateGui();
 		}
 	}
 
@@ -219,11 +208,18 @@ namespace lei3d
 		scene.PhysicsUpdate();
 	}
 
-	void Application::SetUIActive(bool uiActive)
+	void Application::SetIMGUIActive(bool uiActive)
 	{
-		m_UIActive = uiActive;
-		int cursorMode = m_UIActive ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
-		glfwSetInputMode(m_Window, GLFW_CURSOR, cursorMode);
+		m_ImGUIActive = uiActive;
+
+		if (uiActive)
+		{
+			InputManager::GetInstance().giveInputFocus(InputManager::InputTarget::IMGUI);
+		}
+		else
+		{
+			InputManager::GetInstance().giveInputFocus(InputManager::InputTarget::GAME);
+		}
 	}
 
 	void Application::Render()
@@ -237,7 +233,7 @@ namespace lei3d
 
 	void Application::ImGuiRender()
 	{
-		if (m_UIActive)
+		if (m_ImGUIActive)
 		{
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
@@ -264,7 +260,7 @@ namespace lei3d
 	void Application::ProcessInput()
 	{
 		InputManager& im = InputManager::GetInstance();
-		im.update();
+		im.update(m_Window);
 
 		Camera& sceneCamera = GetInstance().GetSceneCamera();
 		sceneCamera.Pan();
@@ -276,9 +272,9 @@ namespace lei3d
 		}
 
 		// Editor Specific Controls
-		if (im.isKeyPressed(GLFW_KEY_TAB))
+		if (im.isKeyPressed(GLFW_KEY_TAB, m_ImGUIActive ? InputManager::InputTarget::IMGUI : InputManager::InputTarget::GAME))
 		{
-			SetUIActive(!m_UIActive);
+			SetIMGUIActive(!m_ImGUIActive);
 		}
 	}
 

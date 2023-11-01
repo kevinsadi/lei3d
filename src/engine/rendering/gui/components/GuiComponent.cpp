@@ -19,19 +19,22 @@ namespace lei3d
 		{0.5f, 0.5f, 0}	// CENTER
 	};
 
-	GuiComponent::GuiComponent(Anchor anchor, const std::pair<Space, glm::vec2>& pos, const std::pair<Space, glm::vec2>& size, bool interactable)
+	GuiComponent::GuiComponent(
+		Anchor anchor, 
+		const std::pair<Space, glm::vec2>& pos, 
+		const std::pair<Space, glm::vec2>& size, 
+		std::function<void()> onClick
+	)
 		: m_anchor((unsigned)anchor)
 		, m_position(pos)
 		, m_size(size)
-		, m_interactable(interactable)
+		, m_onClick(onClick)
 		, m_id(s_nextId++)
 	{
-		GuiManager::Instance().AddGuiComponent(this);
 	}
 
 	GuiComponent::~GuiComponent()
 	{
-		GuiManager::Instance().RemoveGuiComponent(m_id);
 	}
 
 	void GuiComponent::SetPositionNormalized(const glm::vec2& pos)
@@ -54,9 +57,9 @@ namespace lei3d
 		m_size = { Space::PIXELS, size };
 	}
 
-	bool GuiComponent::IsInteractable() const
+	unsigned GuiComponent::GetId() const
 	{
-		return m_interactable;
+		return m_id;
 	}
 
 	void GuiComponent::BeginRender()
@@ -73,11 +76,12 @@ namespace lei3d
 		glEnable(GL_DEPTH_TEST);
 	}
 
-	void GuiComponent::SetInteractable(bool interactable)
+	void GuiComponent::OnClick(const glm::vec2& screenSize, const glm::vec2& mousePosition)
 	{
-		*((bool*) & m_interactable) = interactable; // want to change value of a const thing :D
-
-		GuiManager::Instance().SetInteractable(m_id, interactable);
+		if (m_onClick)
+		{
+			m_onClick();
+		}
 	}
 
 	glm::vec3 GuiComponent::PosNormalized(const glm::vec2& screenSize) const

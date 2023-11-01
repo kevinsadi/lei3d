@@ -9,9 +9,9 @@
 #include <array>
 
 #include "core/Application.hpp"
+#include "core/InputManager.hpp"
 #include "gui/GuiManager.hpp"
 #include "gui/components/GuiRect.hpp"
-#include "gui/components/GuiRectButton.hpp"
 #include "gui/components/GuiTextBox.hpp"
 
 namespace lei3d
@@ -526,9 +526,9 @@ namespace lei3d
 
 	void RenderSystem::UiPass()
 	{
-		GuiRectButton* rect = new GuiRectButton([]() { LEI_INFO("Button Clicked"); });
+		GuiManager::Instance().UpdateGui({ scwidth, scheight }, InputManager::GetInstance().getMousePosition());
+
 		GuiManager::Instance().RenderGui(glm::vec2(scwidth, scheight));
-		delete rect;
 	}
 >>>>>>> cf5babd (Misc progress on Interactive Gui)
 	

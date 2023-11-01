@@ -11,19 +11,19 @@ namespace lei3d
 		const std::string& text, 
 		Anchor anchor,
 		const std::pair<Space, glm::vec2>& pos,
+		std::function<void()> onClick,
 		const std::pair<LineHeightMetric, float>& fontSize, 
 		glm::vec4 textColor, 
 		glm::vec4 backgroundColor, 
 		bool backgroundEnabled
 	)
-		: GuiRect(anchor, pos)
+		: GuiRect(anchor, pos, { Space::NORMALIZED, { 0.25, 0.25 } }, onClick, backgroundColor)
 		, m_text(text)
 		, m_fontSize(fontSize)
 		, m_textColor(textColor)
 		, m_backgroundEnabled(backgroundEnabled)
 	{
 		GenerateMesh();
-		m_color = backgroundColor;
 	}
 
 	GuiTextBox::~GuiTextBox()

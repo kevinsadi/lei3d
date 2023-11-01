@@ -6,7 +6,7 @@
 
 namespace lei3d
 {
-    class GuiTextBox : private GuiRect
+    class GuiTextBox : public GuiRect
 	{
     public:
 		enum class LineHeightMetric
@@ -20,6 +20,7 @@ namespace lei3d
 			const std::string& text = "TextBox",
 			Anchor anchor = Anchor::CENTER,
 			const std::pair<Space, glm::vec2>& pos = { Space::NORMALIZED, { 0.25, 0.25 } },
+			std::function<void()> onClick = nullptr,
 			const std::pair<LineHeightMetric, float>& fontSize = { LineHeightMetric::PT, 100 },
 			glm::vec4 textColor = { 1, 1, 1, 1 },
 			glm::vec4 backgroundColor = { 1, 0, 0, 0.5 },

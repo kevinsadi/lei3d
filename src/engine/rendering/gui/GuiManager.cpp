@@ -2,6 +2,8 @@
 
 #include "components/GuiComponent.hpp"
 #include "core/Application.hpp"
+#include "core/InputManager.hpp"
+#include "screens/GuiScreen.hpp"
 
 namespace lei3d 
 {
@@ -23,81 +25,52 @@ namespace lei3d
 		m_guiTextureShader = Shader("./data/shaders/gui.vert", "./data/shaders/guitexture.frag");
 		
 		m_fontRenderer.Init();
+
+		m_baseScreen = new GuiScreen();
+		m_baseScreen->Init();
 	}
 
-	void GuiManager::AddGuiComponent(GuiComponent* guiComponent)
+	GuiScreen& GuiManager::GetBaseScreen()
 	{
-		m_guiComponents[guiComponent->m_id] = guiComponent;
-
-		if (guiComponent->m_interactable)
-		{
-			m_interactableComponents.insert(guiComponent->m_id);
-		}
+		return *m_baseScreen;
 	}
 
-	bool GuiManager::RemoveGuiComponent(unsigned id)
+	GuiScreen& GuiManager::GetActiveScreen()
 	{
-		auto it = m_guiComponents.find(id);
-
-		if (it != m_guiComponents.end())
-		{
-			if (it->second->m_interactable)
-			{
-				m_interactableComponents.erase(id);
-			}
-
-			m_guiComponents.erase(it);
-			return true;
-		}
-
-		return false;
+		return *m_activeScreen;
 	}
 
-	void GuiManager::SetInteractable(unsigned id, bool interactable)
+	void GuiManager::SetActiveScreen(GuiScreen* screen)
 	{
-		if (interactable)
+		if (m_activeScreen)
+			delete m_activeScreen;
+
+		if (screen == nullptr)
 		{
-			m_interactableComponents.insert(id);
+			SceneManager::GetInstance().ActiveScene().Play();
 		}
 		else
 		{
-			m_interactableComponents.erase(id);
+			SceneManager::GetInstance().ActiveScene().Pause();
+			InputManager::GetInstance().giveInputFocus(InputManager::InputTarget::GUI);
 		}
-	}
 
-	bool GuiManager::InteractableLayer()
-	{
-		return !m_interactableComponents.empty();
+		m_activeScreen = screen;
 	}
 
 	void GuiManager::RenderGui(const glm::vec2& screenSize)
 	{
-		for (auto& guiComponent : m_guiComponents)
-		{
-			guiComponent.second->BeginRender();
-			guiComponent.second->Render(screenSize);
-			guiComponent.second->EndRender();
-		}
+		m_baseScreen->Render(screenSize);
+
+		if (m_activeScreen)
+			m_activeScreen->Render(screenSize);
 	}
 
-	void GuiManager::UpdateGui()
+	void GuiManager::UpdateGui(const glm::vec2& screenSize, const glm::vec2& mousePos)
 	{
-		m_mouseOver.clear();
+		m_baseScreen->Update(screenSize, mousePos);
 
-		for (auto& guiComponent : m_guiComponents)
-		{
-			guiComponent.second->Update();
-		}
-	}
-
-	void GuiManager::SendClick(const glm::vec2& screenSize, const glm::vec2& mousePos)
-	{
-		for (auto& guiComponent : m_guiComponents)
-		{
-			if (guiComponent.second->IsInteractable() && guiComponent.second->IsMouseOver(screenSize, mousePos))
-			{
-				guiComponent.second->OnClick(screenSize, mousePos);
-			}
-		}
+		if (m_activeScreen)
+			m_activeScreen->Update(screenSize, mousePos);
 	}
 }

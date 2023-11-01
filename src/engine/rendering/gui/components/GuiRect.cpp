@@ -8,10 +8,11 @@ namespace lei3d
 	GuiRect::GuiRect(
 		Anchor anchor, 
 		const std::pair<Space, glm::vec2>& pos, 
-		const std::pair<Space, glm::vec2>& size, 
+		const std::pair<Space, glm::vec2>& size,
+		std::function<void()> onClick,
 		glm::vec4 color
 	)
-		: GuiComponent(anchor, pos, size)
+		: GuiComponent(anchor, pos, size, onClick)
 		, m_color(color)
 	{
 		std::vector<UiMesh::Vertex> vertices;

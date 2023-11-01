@@ -24,13 +24,33 @@ namespace lei3d
 		glfwSetCursorPosCallback(window, InputManager::mouseCallback);
 	}
 
-	void InputManager::update()
+	void InputManager::update(GLFWwindow* window)
 	{
-		InputManager::GetInstance().setMouseOffset();
+		setMouseOffset();
+
+		if (has_focus == InputTarget::GAME)
+		{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		}
+		else if (has_focus == InputTarget::GUI)
+		{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+		else if (has_focus == InputTarget::IMGUI)
+		{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+		else
+		{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
 	}
 
-	bool InputManager::isKeyDown(unsigned int key_id)
+	bool InputManager::isKeyDown(unsigned int key_id, InputTarget for_target)
 	{
+		if (has_focus != for_target) 
+			return false;
+
 		bool result = false;
 		auto it = key_down_map.find(key_id);
 		if (it != key_down_map.end()) {
@@ -39,8 +59,11 @@ namespace lei3d
 		return result;
 	}
 
-	bool InputManager::isKeyPressed(unsigned int key_id)
+	bool InputManager::isKeyPressed(unsigned int key_id, InputTarget for_target)
 	{
+		if (for_target != has_focus)
+			return false;
+
 		bool result = false;
 		auto it = key_pressed_map.find(key_id);
 		if (it != key_pressed_map.end()) {
@@ -50,14 +73,29 @@ namespace lei3d
 		return result;
 	}
 
-	bool InputManager::isButtonDown(unsigned int butt_id)
+	bool InputManager::isButtonDown(unsigned int butt_id, InputTarget for_target)
 	{
+		if (for_target != has_focus)
+			return false;
+
 		bool result = false;
 		auto it = mb_map.find(butt_id);
 		if (it != mb_map.end()) {
 			result = mb_map[butt_id];
 		}
 		return result;
+	}
+
+	glm::vec2 InputManager::getMouseOffset(InputTarget for_target)
+	{
+		if (for_target == has_focus)
+		{
+			return mouse_offset;
+		}
+		else
+		{
+			return glm::vec2(0.0f);
+		}
 	}
 
 	void InputManager::setKeyDown(unsigned int key_id, bool is_down)

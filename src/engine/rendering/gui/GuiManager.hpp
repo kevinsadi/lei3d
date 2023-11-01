@@ -7,15 +7,14 @@
 
 namespace lei3d 
 {
+	class GuiScreen;
 	class GuiComponent;
 
 	class GuiManager
     {
     private:
-		std::unordered_map<unsigned, GuiComponent*> m_guiComponents;
-		std::unordered_set<unsigned> m_interactableComponents;
-
-		std::unordered_set<unsigned> m_mouseOver;
+		GuiScreen* m_baseScreen = nullptr;
+		GuiScreen* m_activeScreen = nullptr;
 
 		GuiManager();
 
@@ -30,14 +29,11 @@ namespace lei3d
 
 		void Init();
 
-		void AddGuiComponent(GuiComponent* guiComponent);
-		bool RemoveGuiComponent(unsigned id);
-
-		void SetInteractable(unsigned id, bool interactable);
-		bool InteractableLayer();
+		GuiScreen& GetBaseScreen();
+		GuiScreen& GetActiveScreen();
+		void SetActiveScreen(GuiScreen* screen);
 
 		void RenderGui(const glm::vec2& screenSize);
-		void UpdateGui();
-		void SendClick(const glm::vec2& screenSize, const glm::vec2& mousePos);
+		void UpdateGui(const glm::vec2& screenSize, const glm::vec2& mousePos);
     };
 }
