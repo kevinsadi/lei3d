@@ -107,6 +107,15 @@ namespace lei3d
 		{
 			m_Entity.m_Transform.yawRotation = cameraController->GetCamera()->GetYaw();
 		}
+
+		if (m_Entity.m_Transform.position.y < m_deathPlaneY)
+		{
+			//LEI_INFO("Player Below Death Plane");
+
+			//We probably want to split things up once we get a gui in.
+			SceneManager::ActiveScene().Reset();
+			SceneManager::ActiveScene().Play();
+		}
 	}
 
 	void CharacterController::PhysicsUpdate()
@@ -177,6 +186,8 @@ namespace lei3d
 
 			ImGui::InputFloat("Jump Power", &m_jumpPower);
 			//ImGui::InputFloat("Jump Height", &m_jumpHeight);
+
+			ImGui::InputFloat("Death Plane Y", &m_deathPlaneY);
 		}
 	}
 
