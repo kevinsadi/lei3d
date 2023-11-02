@@ -5,6 +5,7 @@
 #include "scenes/TestSceneLogan.hpp"
 #include "scenes/TestSceneAvery.hpp"
 #include "scenes/SceneIntro.hpp"
+#include "scenes/SceneTitle.hpp"
 
 #include "util/StringUtil.hpp"
 
@@ -16,6 +17,7 @@ namespace lei3d
 	 * so we do this stinky boiler plate instead
 	 * */
 	std::unordered_map<std::string, std::unique_ptr<Scene> (*)()> SceneManager::s_SceneConstructors = {
+		{ "SceneTitle", MakeSceneTitle },
 		{ "SceneIntro", MakeSceneIntro },
 		{ "Test Kevin", MakeTestSceneKevin },
 		{ "Test Logan", MakeTestSceneLogan },
