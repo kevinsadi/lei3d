@@ -171,6 +171,8 @@ namespace lei3d
 		islandCollider2->Init();
 		islandCollider2->SetColliderToModel(*m_EnviromentModels["island"].get());
 
+		// TriggerCollider* trigger = islandObj2.AddComponent<TriggerCollider>();
+
 		// LevelSwitchCollider* triggerCollider = islandObj2.AddComponent<LevelSwitchCollider>();
 		// std::vector<const btCollisionObject*> ignoredObjects;
 		// ignoredObjects.push_back(characterController->getRigidBody());
@@ -186,7 +188,7 @@ namespace lei3d
 			"data/skybox/anime_etheria/front.jpg", "data/skybox/anime_etheria/back.jpg" };
 		skybox->Init(faces);
 
-		AudioPlayer::PlaySFX("win.mp3");
+		// AudioPlayer::PlaySFX("win.mp3");
 	}
 
 	void SceneIntro::OnReset()
@@ -199,7 +201,7 @@ namespace lei3d
 		Entity* colorObj = GetEntity("Start Color Area");
 		colorObj->GetComponent<ColorSource>()->radius = 0;
 
-		AudioPlayer::PlaySFX("win.mp3");
+		// AudioPlayer::PlaySFX("win.mp3");
 	}
 
 	void SceneIntro::OnUpdate()

@@ -1,12 +1,17 @@
 #include "TriggerCollider.hpp"
 #include "TriggerColliderCallback.hpp"
 #include "core/SceneManager.hpp"
+#include <components/StaticCollider.hpp>
 
 namespace lei3d
 {
 	TriggerCollider::TriggerCollider(Entity& entity)
 		: m_trigger(nullptr), Component(entity)
 	{
+		StaticCollider* collider = entity.GetComponent<StaticCollider>();
+		if (collider != nullptr) {
+			m_trigger = collider->getRigidBody();
+		}
 	}
 
 	TriggerCollider::~TriggerCollider()
@@ -16,14 +21,32 @@ namespace lei3d
 	void TriggerCollider::Init(btCollisionObject* trigger, std::vector<const btCollisionObject*>& ignoredColliders)
 	{
 		m_trigger = trigger;
+		Init(ignoredColliders);
+	}
+
+	void TriggerCollider::Init(std::vector<const btCollisionObject*>& ignoredColliders)
+	{
 		for (auto* collider : ignoredColliders)
 		{
 			m_ignoredColliders.insert(collider);
 		}
 	}
 
+	void TriggerCollider::AddIgnoredCollider(const btCollisionObject* ignoredCollider)
+	{
+		m_ignoredColliders.insert(ignoredCollider);
+	}
+
+	void TriggerCollider::RemoveIgnoredCollider(const btCollisionObject* ignoredCollider)
+	{
+		m_ignoredColliders.erase(ignoredCollider);
+	}
+
 	void TriggerCollider::Start()
 	{
+		if (m_trigger == nullptr) {
+			LEI_ASSERT("Trigger Collider component not assiged a collider (may have attatched trigger component before attatching static collider component)");
+		}
 	}
 
 	void TriggerCollider::Update()
@@ -33,7 +56,7 @@ namespace lei3d
 	{
 		if (m_trigger == nullptr)
 		{
-			assert("Trigger Collider has not been initialized");
+			LEI_ASSERT("Trigger Collider component not assiged a collider (may have attatched trigger component before attatching static collider component)");
 		}
 
 		TriggerColliderCallback callback(&m_ignoredColliders);
@@ -89,19 +112,19 @@ namespace lei3d
 	void TriggerCollider::OnTriggerEnter(const btCollisionObject* enteredObject)
 	{
 #if _DEBUG
-		// LEI_TRACE("ENTERED");
+		 //LEI_TRACE("ENTERED");
 #endif
 	}
 	void TriggerCollider::OnTriggerStay(const btCollisionObject* other)
 	{
 #if _DEBUG
-		// LEI_TRACE("STAY");
+		 //LEI_TRACE("STAY");
 #endif
 	}
 	void TriggerCollider::OnTriggerExit(const btCollisionObject* exitedObjects)
 	{
 #if _DEBUG
-		// LEI_TRACE("EXIT");
+		 //LEI_TRACE("EXIT");
 #endif
 	}
 } // namespace lei3d
