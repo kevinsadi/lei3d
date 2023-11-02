@@ -221,7 +221,7 @@ namespace lei3d
 
 		Camera& sceneCamera = m_SceneView->ActiveCamera(SceneManager::ActiveScene());
 		m_PrimitiveRenderer.drawAll(sceneCamera);
-		// SceneManager::ActiveScene().GetPhysicsWorld().m_dynamicsWorld->debugDrawWorld();
+		SceneManager::ActiveScene().GetPhysicsWorld().m_dynamicsWorld->debugDrawWorld();
 	}
 
 	void Application::ImGuiRender()
