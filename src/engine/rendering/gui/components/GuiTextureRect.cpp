@@ -41,14 +41,14 @@ namespace lei3d
 
 	void GuiTextureRect::Render(const glm::vec2& screenSize)
 	{
-		GuiManager::Instance().m_guiShader.bind();
+		GuiManager::Instance().m_guiTextureShader.bind();
 
-		GuiManager::Instance().m_guiShader.setUniformMat4("transform",
+		GuiManager::Instance().m_guiTextureShader.setUniformMat4("transform",
 			glm::translate(glm::identity<glm::mat4>(), PosNormalized(screenSize)) * glm::scale(glm::identity<glm::mat4>(), glm::vec3(SizeNormalized(screenSize), 1)));
 		
-		GuiManager::Instance().m_guiShader.setVec4("color", {1, 1, 1, 1});
+		GuiManager::Instance().m_guiTextureShader.setVec4("color", { 1, 1, 1, 1 });
 
-		m_mesh->Draw(&GuiManager::Instance().m_guiShader);
+		m_mesh->Draw(&GuiManager::Instance().m_guiTextureShader);
 	}
 
 	void GuiTextureRect::Update()

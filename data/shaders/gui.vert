@@ -11,11 +11,13 @@ uniform vec4 color;
 
 void main() 
 {
-    // everything should be normalized
     vertexColor = color;
     TexCoord = aTexCoord;
 
-    vec2 position = aPosition;
+    // changing from (0, 0) in top left and (1, 1) in bottom right to
+    // opengl coordinates, (-1, -1) in bottom left and (1, 1) in 
+    // top right
+    vec2 position = aPosition * 2.0 - 1.0;
 
     gl_Position = transform * vec4(position, 0, 1.0);
 
