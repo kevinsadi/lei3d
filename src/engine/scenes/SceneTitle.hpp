@@ -32,6 +32,10 @@ namespace lei3d
 		std::unique_ptr<Model> backpackModel;
 		std::unique_ptr<Model> playgroundModel;
 		std::unordered_map<std::string, std::unique_ptr<Model>> m_EnviromentModels;
+		
+		float m_fishTheta;
+		float m_fishRadius;
+		float m_deltaTheta;
 	};
 
 	extern std::unique_ptr<Scene> MakeSceneTitle();

@@ -138,9 +138,14 @@ namespace lei3d
 
 		// Fish ---------------------
 		Entity& fishObj = AddEntity("Fish");
+		m_fishTheta = 0.0f;
+		m_fishRadius = glm::length(glm::vec2(126.5f, 85.0f));
+		//                2 * PI radians        (14 second loop, assuming 60fps)
+		m_deltaTheta = (2 * glm::pi<float>()) / (14 * 60);
+
 		fishObj.SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
-		fishObj.SetPosition(glm::vec3(36.0f, 17.0f, 6.5f));
-		fishObj.SetYawRotation(0);
+		fishObj.SetPosition(glm::vec3(126.5f, 85.0f, 7.0f));
+		fishObj.SetYawRotation(glm::atan(126.5f, 85.0f));
 
 		ModelInstance* fishRender = fishObj.AddComponent<ModelInstance>();
 		fishRender->Init(m_EnviromentModels["fish"].get());
@@ -208,6 +213,16 @@ namespace lei3d
 	{
 		Entity* colorObj = GetEntity("Start Color Area");
 		colorObj->GetComponent<ColorSource>()->radius += 0.8;
+
+		// Fly fishy fly!
+		m_fishTheta -= m_deltaTheta;
+		Entity* fishObj = GetEntity("Fish");
+		fishObj->SetPosition(glm::vec3(
+			m_fishRadius * glm::cos(m_fishTheta),
+			85.0f,
+			m_fishRadius * glm::sin(m_fishTheta)
+		));
+		fishObj->SetYawRotation(m_fishTheta * -360.0f / (2.0f * glm::pi<float>()));
 	}
 
 	void SceneTitle::OnPhysicsUpdate()
