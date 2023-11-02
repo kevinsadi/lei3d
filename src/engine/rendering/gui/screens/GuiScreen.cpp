@@ -1,6 +1,7 @@
 #include "GuiScreen.hpp"
 
 #include "core/InputManager.hpp"
+#include "rendering/gui/GuiManager.hpp"
 #include "rendering/gui/components/GuiComponent.hpp"
 #include "rendering/gui/components/GuiTextBox.hpp"
 
@@ -21,9 +22,7 @@ namespace lei3d
 
 	void GuiScreen::Init()
 	{
-		GuiTextBox* text = new GuiTextBox("Hello");
-
-		AddComponent(text);
+		m_initialized = true;
 	}
 
 	void GuiScreen::AddComponent(GuiComponent* guiComponent)
@@ -48,18 +47,12 @@ namespace lei3d
 	{
 		for (auto& guiComponent : m_components)
 		{
-			guiComponent.second->Update();
-		}
-
-		if (InputManager::GetInstance().isButtonDown(GLFW_MOUSE_BUTTON_LEFT))
-		{
-			for (auto& guiComponent : m_components)
+			if (guiComponent.second->IsMouseOver(screenSize, mousePos))
 			{
-				if (guiComponent.second->IsMouseOver(screenSize, mousePos))
-				{
-					guiComponent.second->OnClick(screenSize, mousePos);
-				}
+				guiComponent.second->m_mouseOver = true;
 			}
+
+			guiComponent.second->Update();
 		}
 	}
 
@@ -67,7 +60,9 @@ namespace lei3d
 	{
 		for (auto& component : m_components)
 		{
+			component.second->BeginRender();
 			component.second->Render(screenSize);
+			component.second->EndRender();
 		}
 	}
 }

@@ -81,10 +81,8 @@ namespace lei3d
 			glm::translate(glm::identity<glm::mat4>(), PosNormalized(screenSize)) *
 			glm::scale(glm::identity<glm::mat4>(), glm::vec3(GetFontScalar(screenSize), 1))
 		);
-
-		GuiManager::Instance().m_guiFontShader.setVec2("screenSize", screenSize);
+		
 		GuiManager::Instance().m_guiFontShader.setVec4("color", m_textColor);
-		GuiManager::Instance().m_guiFontShader.setInt("normalized", true);
 		GuiManager::Instance().m_guiFontShader.setInt("ourTexture", 0);
 
 		m_textMesh->Draw(&GuiManager::Instance().m_guiFontShader);

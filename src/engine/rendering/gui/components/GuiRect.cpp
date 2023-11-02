@@ -1,7 +1,9 @@
 #include "GuiRect.hpp"
 
+#include "core/InputManager.hpp"
 #include "rendering/gui/GuiManager.hpp"
 #include "rendering/gui/UiMesh.hpp"
+#include "logging/Log.hpp"
 
 namespace lei3d 
 {
@@ -51,17 +53,18 @@ namespace lei3d
 			glm::translate(glm::identity<glm::mat4>(), PosNormalized(screenSize)) *
 			glm::scale(glm::identity<glm::mat4>(), glm::vec3(SizeNormalized(screenSize), 1)) 
 		);
-
-		GuiManager::Instance().m_guiShader.setVec2("screenSize", screenSize);
+		
 		GuiManager::Instance().m_guiShader.setVec4("color", m_color);
-		GuiManager::Instance().m_guiShader.setInt("normalized", true);
 
 		m_mesh->Draw(&GuiManager::Instance().m_guiShader);
 	}
 
 	void GuiRect::Update()
 	{
-
+		if (m_mouseOver && m_onClick && InputManager::GetInstance().isButtonDown(GLFW_MOUSE_BUTTON_LEFT, InputManager::InputTarget::GUI))
+		{
+			m_onClick();
+		}
 	}
 
 	bool GuiRect::IsMouseOver(const glm::vec2& screenSize, const glm::vec2& mousePosition) const
@@ -69,7 +72,9 @@ namespace lei3d
 		const glm::vec3 pos = PosPixels(screenSize);
 		const glm::vec2 size = SizePixels(screenSize);
 
-		return mousePosition.x >= pos.x && mousePosition.x <= pos.x + size.x
-			&& mousePosition.y >= pos.y && mousePosition.y <= pos.y + size.y;
+		bool mouseOver = mousePosition.x >= pos.x && mousePosition.x <= (pos.x + size.x)
+						&& mousePosition.y >= pos.y && mousePosition.y <= (pos.y + size.y);
+
+		return mouseOver;
 	}
 }

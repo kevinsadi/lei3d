@@ -8,6 +8,7 @@
 #include <stb_image.h>
 
 #include "rendering/gui/GuiManager.hpp"
+#include "rendering/gui/screens/MainMenuScreen.hpp"
 
 namespace lei3d
 {
@@ -269,6 +270,12 @@ namespace lei3d
 		if (im.isKeyPressed(GLFW_KEY_ESCAPE))
 		{
 			glfwSetWindowShouldClose(m_Window, true);
+		}
+
+		// open sample splash screen
+		if (im.isKeyPressed(GLFW_KEY_0))
+		{
+			GuiManager::Instance().SetActiveScreen(new MainMenuScreen());
 		}
 
 		// Editor Specific Controls

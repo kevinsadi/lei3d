@@ -61,6 +61,7 @@ namespace lei3d
 		std::pair<Space, glm::vec2> m_size;	
 		UiMesh* m_mesh = nullptr;
 		std::function<void()> m_onClick;
+		bool m_mouseOver = false;
 
 		void BeginRender();
 		void EndRender();
@@ -68,7 +69,6 @@ namespace lei3d
 		virtual void Render(const glm::vec2& screenSize) = 0;
 		virtual void Update() = 0;
 		virtual bool IsMouseOver(const glm::vec2& screenSize, const glm::vec2& mousePosition) const = 0;
-		virtual void OnClick(const glm::vec2& screenSize, const glm::vec2& mousePosition);
 
 		glm::vec3 PosNormalized(const glm::vec2& screenSize) const;
 		glm::vec2 SizeNormalized(const glm::vec2& screenSize) const;

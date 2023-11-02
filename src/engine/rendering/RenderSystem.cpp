@@ -13,6 +13,7 @@
 #include "gui/GuiManager.hpp"
 #include "gui/components/GuiRect.hpp"
 #include "gui/components/GuiTextBox.hpp"
+#include "logging/Log.hpp"
 
 namespace lei3d
 {

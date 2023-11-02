@@ -8,14 +8,18 @@ namespace lei3d
 
 	class GuiScreen
     {
+		friend class GuiManager;
+
     private:
 		std::unordered_map<unsigned, GuiComponent*> m_components;
+		bool m_initialized = false;
+
+	protected:
+		virtual void Init();
 
 	public:
 		GuiScreen();
 		virtual ~GuiScreen();
-
-		virtual void Init();
 
 		void AddComponent(GuiComponent* guiComponent);
 		bool RemoveComponent(unsigned id);

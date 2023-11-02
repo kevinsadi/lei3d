@@ -3,7 +3,9 @@
 #include "components/GuiComponent.hpp"
 #include "core/Application.hpp"
 #include "core/InputManager.hpp"
+#include "screens/BaseGuiScreen.hpp"
 #include "screens/GuiScreen.hpp"
+#include "logging/Log.hpp"
 
 namespace lei3d 
 {
@@ -26,7 +28,7 @@ namespace lei3d
 		
 		m_fontRenderer.Init();
 
-		m_baseScreen = new GuiScreen();
+		m_baseScreen = new BaseGuiScreen();
 		m_baseScreen->Init();
 	}
 
@@ -43,7 +45,10 @@ namespace lei3d
 	void GuiManager::SetActiveScreen(GuiScreen* screen)
 	{
 		if (m_activeScreen)
+		{
 			delete m_activeScreen;
+			m_activeScreen = nullptr;		
+		}
 
 		if (screen == nullptr)
 		{
@@ -51,11 +56,21 @@ namespace lei3d
 		}
 		else
 		{
+			if (!screen->m_initialized)
+			{
+				screen->Init();
+			}
+
 			SceneManager::GetInstance().ActiveScene().Pause();
 			InputManager::GetInstance().giveInputFocus(InputManager::InputTarget::GUI);
 		}
 
 		m_activeScreen = screen;
+	}
+
+	void GuiManager::CloseActiveScreen()
+	{
+		SetActiveScreen(nullptr);
 	}
 
 	void GuiManager::RenderGui(const glm::vec2& screenSize)
@@ -71,6 +86,15 @@ namespace lei3d
 		m_baseScreen->Update(screenSize, mousePos);
 
 		if (m_activeScreen)
-			m_activeScreen->Update(screenSize, mousePos);
+		{
+			if (InputManager::GetInstance().isKeyPressed(GLFW_KEY_ESCAPE, InputManager::InputTarget::GUI))
+			{
+				CloseActiveScreen();
+			}
+			else
+			{
+				m_activeScreen->Update(screenSize, mousePos);
+			}
+		}
 	}
 }

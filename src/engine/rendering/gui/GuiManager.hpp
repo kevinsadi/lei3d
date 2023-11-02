@@ -2,8 +2,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "fontrenderer/FontRenderer.hpp"
 #include "rendering/Shader.hpp"
+#include "fontrenderer/FontRenderer.hpp"
 
 namespace lei3d 
 {
@@ -32,6 +32,7 @@ namespace lei3d
 		GuiScreen& GetBaseScreen();
 		GuiScreen& GetActiveScreen();
 		void SetActiveScreen(GuiScreen* screen);
+		void CloseActiveScreen();
 
 		void RenderGui(const glm::vec2& screenSize);
 		void UpdateGui(const glm::vec2& screenSize, const glm::vec2& mousePos);

@@ -8,15 +8,15 @@ namespace lei3d
 
 	const glm::vec3 GuiComponent::s_anchorPositions[unsigned(Anchor::ANCHOR_COUNT)] = 
 	{
-		{0.0f, 1.0f, 0},	// TOP_LEFT
-		{1.0f, 1.0f, 0},	// TOP_RIGHT
-		{0.0f, 0.0f, 0},	// BOTTOM_LEFT
-		{1.0f, 0.0f, 0},	// BOTTOM_RIGHT
-		{0.5f, 1.0f, 0},	// CENTER_TOP
+		{0.0f, 0.0f, 0},	// TOP_LEFT
+		{1.0f, 0.0f, 0},	// TOP_RIGHT
+		{0.0f, 1.0f, 0},	// BOTTOM_LEFT
+		{1.0f, 1.0f, 0},	// BOTTOM_RIGHT
+		{0.5f, 0.0f, 0},	// CENTER_TOP
 		{1.0f, 0.5f, 0},	// CENTER_RIGHT
-		{0.5f, 0.0f, 0},	// CENTER_BOTTOM
+		{0.5f, 1.0f, 0},	// CENTER_BOTTOM
 		{0.0f, 0.5f, 0},	// CENTER_LEFT
-		{0.5f, 0.5f, 0}	// CENTER
+		{0.5f, 0.5f, 0}	    // CENTER
 	};
 
 	GuiComponent::GuiComponent(
@@ -74,14 +74,6 @@ namespace lei3d
 		glDisable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ZERO);
 		glEnable(GL_DEPTH_TEST);
-	}
-
-	void GuiComponent::OnClick(const glm::vec2& screenSize, const glm::vec2& mousePosition)
-	{
-		if (m_onClick)
-		{
-			m_onClick();
-		}
 	}
 
 	glm::vec3 GuiComponent::PosNormalized(const glm::vec2& screenSize) const
