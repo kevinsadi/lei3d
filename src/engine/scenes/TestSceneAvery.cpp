@@ -119,8 +119,8 @@ namespace lei3d
 		// Just need to reset the backpack.
 		Entity* backpackObj = GetEntity("Backpack");
 		backpackObj->SetScale(glm::vec3(1.f, 1.f, 1.f));
-		backpackObj->SetPosition(glm::vec3(-112.5f, 505.f, 3.f));
-		AudioPlayer::PlaySFXForSeconds("landing", 6, 1.0f, 0, 2);
+		// backpackObj->SetPosition(glm::vec3(-112.5f, 505.f, 3.f));
+		// AudioPlayer::PlaySFXForSeconds("landing", 6, 1.0f, 0, 2);
 	}
 
 	void TestSceneAvery::OnUpdate()
@@ -135,20 +135,20 @@ namespace lei3d
 		//	}
 		// }
 
-		if (glfwGetKey(Application::Window(), GLFW_KEY_J) == GLFW_PRESS)
-		{
-			LEI_TRACE("Pressing J Key");
-		}
-		if (glfwGetKey(Application::Window(), GLFW_KEY_K) == GLFW_PRESS)
-		{
-			LEI_TRACE("Pressing K Key");
-			AudioPlayer::PlaySFXForSeconds("../breakcore", 5L);
-		}
-		if (glfwGetKey(Application::Window(), GLFW_KEY_L) == GLFW_PRESS)
-		{
-			LEI_TRACE("Pressing L Key");
-			AudioPlayer::PlaySFXForSeconds("landing", 5L);
-		}
+		// if (glfwGetKey(Application::Window(), GLFW_KEY_J) == GLFW_PRESS)
+		// {
+		// 	LEI_TRACE("Pressing J Key");
+		// }
+		// if (glfwGetKey(Application::Window(), GLFW_KEY_K) == GLFW_PRESS)
+		// {
+		// 	LEI_TRACE("Pressing K Key");
+		// 	AudioPlayer::PlaySFXForSeconds("../breakcore", 5L);
+		// }
+		// if (glfwGetKey(Application::Window(), GLFW_KEY_L) == GLFW_PRESS)
+		// {
+		// 	LEI_TRACE("Pressing L Key");
+		// 	AudioPlayer::PlaySFXForSeconds("landing", 5L);
+		// }
 	}
 
 	void TestSceneAvery::OnPhysicsUpdate()

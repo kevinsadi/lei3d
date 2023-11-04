@@ -36,7 +36,7 @@ namespace lei3d
 		bool onGround = callback.m_Grounded;
 		if (m_Controller.m_IncludeSFX && m_Controller.m_Grounded == false && onGround == true)
 		{
-			AudioPlayer::PlaySFX("SFX-LAND-SHORT-RR4.wav"); //.PlaySound("landing");
+			AudioPlayer::GetInstance().PlaySFX("SFX-LAND-SHORT-RR4.wav"); //.PlaySound("landing");
 		}
 		bool groundPoint = callback.m_GroundPoint;
 		m_Controller.m_Grounded = onGround;
