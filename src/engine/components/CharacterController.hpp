@@ -14,18 +14,20 @@ namespace lei3d
 	public:
 		// CHARACTER CONTROLLER PARAMETERS
 		float m_accel = 50.0f;
-		float m_airAccel = 1000.0f;
-		float m_maxSpeed = 500.0f;
+		float m_airAccel = 300.0f;
+		float m_maxSpeed = 100.0f;
 		float m_maxAirSpeed = 20.575f;
 
-		float m_friction = 10.0f;
-		//float m_airFriction = 0.25f;
+		float m_friction = 19.0f;
+		// float m_airFriction = 0.25f;
 
 		float m_jumpPower = 30.f;
-		//float m_jumpHeight = 1.f;
+		// float m_jumpHeight = 1.f;
 
 		// float m_maxSpeed = 40.0f;
 		//  float m_maxVelocity = 100;
+
+		float m_deathPlaneY = -1000.0f;
 
 		bool m_IsInDynamicsWorld;
 
@@ -34,9 +36,9 @@ namespace lei3d
 		{
 		private:
 			CharacterController& m_Controller;
-			btRigidBody*		 m_Character;
-			btCollisionObject*	 m_GroundCheck;
-			float				 m_GroundCheckDist;
+			btRigidBody* m_Character;
+			btCollisionObject* m_GroundCheck;
+			float m_GroundCheckDist;
 
 		public:
 			CharacterPhysicsUpdate(CharacterController& controller, btRigidBody* character, btCollisionObject* groundCheck, float groundCheckDist);
@@ -52,16 +54,16 @@ namespace lei3d
 			glm::vec3 GroundAcceleration(glm::vec3 wishDir, glm::vec3 prevVelocity);
 		};
 
-		float					m_Width, m_Height;
-		btCollisionShape*		m_Collider;
-		btDefaultMotionState*	m_MotionState;
-		btRigidBody*			m_RigidBody;
+		float m_Width, m_Height;
+		btCollisionShape* m_Collider;
+		btDefaultMotionState* m_MotionState;
+		btRigidBody* m_RigidBody;
 		CharacterPhysicsUpdate* m_CharacterPhysicsUpdate;
 
 		// GROUND CHECK
-		btVector3		   m_GroundCheckLocalPos;
-		btScalar		   m_GroundCheckDist;
-		btCollisionShape*  m_GroundCheckCollider;
+		btVector3 m_GroundCheckLocalPos;
+		btScalar m_GroundCheckDist;
+		btCollisionShape* m_GroundCheckCollider;
 		btCollisionObject* m_GroundCheckObj;
 
 		bool m_Grounded;

@@ -17,11 +17,11 @@ namespace lei3d
 	class SkyBox;
 	class PhysicsWorld;
 
-	class SceneIntro : public Scene
+	class SceneTitle : public Scene
 	{
 	public:
-		SceneIntro();
-		~SceneIntro();
+		SceneTitle();
+		~SceneTitle();
 
 		void OnLoad() override;
 		void OnPhysicsUpdate() override;
@@ -32,7 +32,11 @@ namespace lei3d
 		std::unique_ptr<Model> backpackModel;
 		std::unique_ptr<Model> playgroundModel;
 		std::unordered_map<std::string, std::unique_ptr<Model>> m_EnviromentModels;
+		
+		float m_fishTheta;
+		float m_fishRadius;
+		float m_deltaTheta;
 	};
 
-	extern std::unique_ptr<Scene> MakeSceneIntro();
+	extern std::unique_ptr<Scene> MakeSceneTitle();
 } // namespace lei3d

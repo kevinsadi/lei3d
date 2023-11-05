@@ -4,6 +4,10 @@ out vec4 FragColor;
 
 uniform sampler2D RawFinalImage;
 uniform sampler2D SaturationMask;
+uniform sampler2D DepthMask;
+
+uniform float nearPlane;
+uniform float farPlane;
 
 in vec2 TexCoords;
 
@@ -67,6 +71,11 @@ vec3 reinhard_jodie(vec3 color) {
     return mix(color / (lum + 1.0), color_tonemapped, color_tonemapped);
 }
 
+float linearize_depth(float d, float near, float far) {
+    float z = 2.0 * d - 1.0;
+    return 2.0 * near * far / (far + near - z * (far - near));
+}
+
 // Approximate conversion to srgb from http://chilliant.blogspot.com/2012/08/srgb-approximations-for-hlsl.html
 // Use instead of gamma correction
 vec3 linear_to_srgb(vec3 color) {
@@ -75,8 +84,18 @@ vec3 linear_to_srgb(vec3 color) {
 
 void main() {
     vec3 color = texture(RawFinalImage, TexCoords).rgb;
-    float factor = texture(SaturationMask, TexCoords).r;
-    vec3 finalColor = desaturate(color, factor);
+
+    float depth = texture(DepthMask, TexCoords).r;
+    depth = linearize_depth(depth, nearPlane, farPlane) / farPlane;
+
+    float satFactor = texture(SaturationMask, TexCoords).r;
+
+    const vec3 fogColor = vec3(0.145, 0.588, 0.745);  // TODO: change this based on skybox
+    float fogFactor = depth * (1.0 - satFactor) - 0.2;
+    fogFactor = clamp(fogFactor, 0.0, 1.0);
+    color = mix(color, fogColor, fogFactor);
+
+    vec3 finalColor = desaturate(color, satFactor);
 
     vec3 tonemapped = reinhard_jodie(finalColor);
 

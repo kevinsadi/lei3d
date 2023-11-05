@@ -28,6 +28,14 @@ namespace lei3d
 
 	void LeiDebugDrawer::drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color)
 	{
+		if (distance < 0)
+		{
+			Application::GetInstance().GetPrimitiveRenderer().pushLine(Application::GetInstance().GetSceneCamera(), btToGLMVec3(PointOnB), btToGLMVec3((PointOnB + normalOnB.normalized() * 12)), btToGLMVec3(btVector3(1, 0, 0)), 0.5f);
+		}
+		else
+		{
+			Application::GetInstance().GetPrimitiveRenderer().pushLine(Application::GetInstance().GetSceneCamera(), btToGLMVec3(PointOnB), btToGLMVec3((PointOnB + normalOnB.normalized() * 12)), btToGLMVec3(btVector3(0, 1, 0)), 0.5f);
+		}
 	}
 
 	void LeiDebugDrawer::draw3dText(const btVector3& location, const char* textString)

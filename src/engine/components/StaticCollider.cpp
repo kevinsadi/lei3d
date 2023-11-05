@@ -60,13 +60,15 @@ namespace lei3d
 		meshTransform.setOrigin(btVector3{ transform.position.x, transform.position.y, transform.position.z });
 
 		// mesh environment collisions are static
-		btScalar  meshMass = 0.0f;
+		btScalar meshMass = 0.0f;
 		btVector3 meshLocalInertia{ 0.0f, 0.0f, 0.0f };
 
 		m_MotionState = new btDefaultMotionState(meshTransform);
 		btRigidBody::btRigidBodyConstructionInfo rbMeshInfo{ meshMass, m_MotionState, m_Collider, meshLocalInertia };
 		m_RigidBody = new btRigidBody(rbMeshInfo);
 		m_RigidBody->setRestitution(0.0);
+		m_RigidBody->setCcdMotionThreshold(0.0001); // Adjust the threshold as needed
+		m_RigidBody->setCcdSweptSphereRadius(0.4);	// Adjust the swept sphere radius
 
 		world.m_dynamicsWorld->addRigidBody(m_RigidBody);
 	}
@@ -90,7 +92,5 @@ namespace lei3d
 	{
 		return this->m_RigidBody;
 	}
-	
-	
 
 } // namespace lei3d

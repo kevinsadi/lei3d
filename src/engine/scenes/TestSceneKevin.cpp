@@ -110,6 +110,8 @@ namespace lei3d
 			"data/skybox/anime_etheria/up.jpg", "data/skybox/anime_etheria/down.jpg",
 			"data/skybox/anime_etheria/front.jpg", "data/skybox/anime_etheria/back.jpg" };
 		skybox->Init(faces);
+
+		AudioPlayer::GetInstance().PlayMusic("sus2.mp3", 0.8f);
 	}
 
 	void TestSceneKevin::OnReset()
@@ -118,6 +120,7 @@ namespace lei3d
 		Entity* backpackObj = GetEntity("Backpack");
 		backpackObj->SetScale(glm::vec3(1.f, 1.f, 1.f));
 		backpackObj->SetPosition(glm::vec3(-112.5f, 505.f, 3.f));
+		AudioPlayer::GetInstance().PlaySFX("reset.mp3");
 	}
 	
 

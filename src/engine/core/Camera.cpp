@@ -8,7 +8,7 @@ namespace lei3d
 	Camera::Camera(GLFWwindow* window, float yaw, float pitch, LookMode mode)
 		: m_Yaw{ yaw }, m_Pitch{ pitch }, m_LookMode{ mode }
 	{
-		m_FOVDeg = 45.0f;
+		m_FOVDeg = 55.0f;
 		m_NearPlane = 0.1f;
 		m_FarPlane = 1400.0f;
 
