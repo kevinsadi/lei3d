@@ -1,12 +1,12 @@
 #include "CharacterController.hpp"
 
 #include "core/SceneManager.hpp"
-
 #include "components/FollowCameraController.hpp"
 
 #include "util/BulletUtil.hpp"
-
 #include <imgui.h>
+
+#include "audio/AudioPlayer.hpp"
 
 namespace lei3d
 {
@@ -30,7 +30,7 @@ namespace lei3d
 	{
 		LEI_TRACE("Character Controller started");
 
-		//Add player back into the world if they are not in it.
+		// Add player back into the world if they are not in it.
 		if (!m_IsInDynamicsWorld)
 		{
 			PhysicsWorld& world = SceneManager::ActiveScene().GetPhysicsWorld();
@@ -38,12 +38,12 @@ namespace lei3d
 			m_IsInDynamicsWorld = true;
 		}
 
-		//Set the player's physics transform to the entity transform.
+		// Set the player's physics transform to the entity transform.
 		btTransform trans;
 		trans.setIdentity();
 		trans.setOrigin(glmToBTVec3(m_Entity.m_Transform.position));
 
-		//Reset Rigidbody & Ground Check
+		// Reset Rigidbody & Ground Check
 		m_RigidBody->setWorldTransform(trans);
 		m_RigidBody->setLinearVelocity({ 0.0f, 0.0f, 0.0f });
 		m_GroundCheckObj->setWorldTransform(getGroundCheckTransform(trans));
@@ -65,7 +65,7 @@ namespace lei3d
 		m_Collider = new btCapsuleShape(btScalar{ width }, btScalar{ height });
 		m_Collider->setMargin(0.0);
 
-		btScalar  mass{ 7.f };
+		btScalar mass{ 7.f };
 		btVector3 localInertia{ 0.0f, 0.0f, 0.0f };
 		m_Collider->calculateLocalInertia(mass, localInertia);
 
@@ -110,9 +110,9 @@ namespace lei3d
 
 		if (m_Entity.m_Transform.position.y < m_deathPlaneY)
 		{
-			//LEI_INFO("Player Below Death Plane");
+			// LEI_INFO("Player Below Death Plane");
 
-			//We probably want to split things up once we get a gui in.
+			// We probably want to split things up once we get a gui in.
 			SceneManager::ActiveScene().Reset();
 			SceneManager::ActiveScene().Play();
 		}
@@ -139,7 +139,7 @@ namespace lei3d
 
 	void CharacterController::OnReset()
 	{
-		//Remove player from the world first
+		// Remove player from the world first
 		PhysicsWorld& world = SceneManager::ActiveScene().GetPhysicsWorld();
 		world.m_dynamicsWorld->removeRigidBody(m_RigidBody);
 		m_IsInDynamicsWorld = false;
@@ -182,10 +182,10 @@ namespace lei3d
 			ImGui::InputFloat("Max Air Speed", &m_maxAirSpeed);
 
 			ImGui::InputFloat("Friction", &m_friction);
-			//ImGui::InputFloat("Air Friction", &m_airFriction);
+			// ImGui::InputFloat("Air Friction", &m_airFriction);
 
 			ImGui::InputFloat("Jump Power", &m_jumpPower);
-			//ImGui::InputFloat("Jump Height", &m_jumpHeight);
+			// ImGui::InputFloat("Jump Height", &m_jumpHeight);
 
 			ImGui::InputFloat("Death Plane Y", &m_deathPlaneY);
 		}
