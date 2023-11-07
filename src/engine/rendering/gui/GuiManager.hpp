@@ -16,12 +16,16 @@ namespace lei3d
 		GuiScreen* m_baseScreen = nullptr;
 		GuiScreen* m_activeScreen = nullptr;
 
+		GuiScreen* m_nextScreen = nullptr;
+		bool m_shouldSwapScreens = false;
+
+		void SetActiveScreen(GuiScreen* screen);
+
 		GuiManager();
 
 	public:
 		Shader m_guiShader;
 		Shader m_guiTextureShader;
-		Shader m_guiFontShader;
 
 		FontRenderer m_fontRenderer;
 
@@ -31,8 +35,9 @@ namespace lei3d
 
 		GuiScreen& GetBaseScreen();
 		GuiScreen& GetActiveScreen();
-		void SetActiveScreen(GuiScreen* screen);
+
 		void CloseActiveScreen();
+		void QueueNextScreen(GuiScreen* screen);
 
 		void RenderGui(const glm::vec2& screenSize);
 		void UpdateGui(const glm::vec2& screenSize, const glm::vec2& mousePos);

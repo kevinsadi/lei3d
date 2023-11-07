@@ -19,17 +19,18 @@ namespace lei3d
 		std::vector<UiMesh::Vertex> vertices;
 		std::vector<unsigned int> indices;
 
-		vertices.emplace_back(UiMesh::Vec2{ 0.0f, 0.0f }, UiMesh::Vec2{0.f, 0.f});
+		vertices.emplace_back(UiMesh::Vec2{ 0.0f, 0.0f }, UiMesh::Vec2{0.0f, 0.0f});
 		vertices.emplace_back(UiMesh::Vec2{ 0.0f, 1.0f }, UiMesh::Vec2{ 0.0f, 1.0f });
 		vertices.emplace_back(UiMesh::Vec2{ 1.0f, 1.0f }, UiMesh::Vec2{ 1.0f, 1.0f });
-		vertices.emplace_back(UiMesh::Vec2{ 1.0f, 0.0f }, UiMesh::Vec2{ 1.0f, 1.0f });
+		vertices.emplace_back(UiMesh::Vec2{ 1.0f, 0.0f }, UiMesh::Vec2{ 1.0f, 0.0f });
 
 		indices.emplace_back(0);
 		indices.emplace_back(1);
 		indices.emplace_back(2);
+
 		indices.emplace_back(0);
-		indices.emplace_back(2);
 		indices.emplace_back(3);
+		indices.emplace_back(2);
 
 		m_mesh = new UiMesh(vertices, indices, textureID);
 	}
@@ -43,9 +44,12 @@ namespace lei3d
 	{
 		GuiManager::Instance().m_guiTextureShader.bind();
 
-		GuiManager::Instance().m_guiTextureShader.setUniformMat4("transform",
-			glm::translate(glm::identity<glm::mat4>(), PosNormalized(screenSize)) * glm::scale(glm::identity<glm::mat4>(), glm::vec3(SizeNormalized(screenSize), 1)));
-		
+		GuiManager::Instance().m_guiTextureShader.setUniformMat4("translation",
+			glm::translate(glm::identity<glm::mat4>(), PosNormalized(screenSize)));
+
+		GuiManager::Instance().m_guiTextureShader.setUniformMat4("scale",
+			glm::scale(glm::identity<glm::mat4>(), glm::vec3(SizeNormalized(screenSize), 1)));
+
 		GuiManager::Instance().m_guiTextureShader.setVec4("color", { 1, 1, 1, 1 });
 
 		m_mesh->Draw(&GuiManager::Instance().m_guiTextureShader);

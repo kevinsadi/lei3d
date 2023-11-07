@@ -4,6 +4,7 @@
 #include "rendering/gui/components/GuiTextureRect.hpp"
 #include "Logging/Log.hpp"
 #include "rendering/buffers/Texture.hpp"
+#include "rendering/gui/GuiManager.hpp"
 
 namespace lei3d
 {
@@ -37,7 +38,10 @@ namespace lei3d
 			"Click Me",
 			GuiComponent::Anchor::CENTER,
 			{ GuiComponent::Space::NORMALIZED, { 0, 0 } },
-			[]() { LEI_INFO("Button Clicked"); })
+			[]() {
+				LEI_INFO("Button Clicked, Closing GUI Screen.");
+				GuiManager::Instance().CloseActiveScreen();
+			})
 		);
 	}
 } 

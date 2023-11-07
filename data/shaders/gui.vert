@@ -6,7 +6,9 @@ layout (location = 1) in vec2 aTexCoord;
 out vec4 vertexColor;
 out vec2 TexCoord;
 
-uniform mat4 transform;
+uniform mat4 translation;
+uniform mat4 scale;
+
 uniform vec4 color;
 
 void main() 
@@ -17,8 +19,8 @@ void main()
     // changing from (0, 0) in top left and (1, 1) in bottom right to
     // opengl coordinates, (-1, -1) in bottom left and (1, 1) in 
     // top right
-    vec2 position = aPosition * 2.0 - 1.0;
+    vec2 position = vec2(1.0, -1.0) * (aPosition * 2.0 - 1.0);
 
-    gl_Position = transform * vec4(position, 0, 1.0);
+    gl_Position = translation * scale * vec4(position, 0, 1.0);
 
 }

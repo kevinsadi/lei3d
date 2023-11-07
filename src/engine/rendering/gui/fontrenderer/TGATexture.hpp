@@ -9,14 +9,14 @@ namespace lei3d
 	public:
 		int m_width;
 		int m_height;
-		int m_bytesPerPixel;
+		//int m_bytesPerPixel;
 		std::vector<unsigned char> m_data;
 		unsigned m_GlID;
 
-		TGATexture(std::string fileName);
+		TGATexture(const std::string& fileName);
 
 	private:
-		char* ReadFile(std::string filePath, int* fileSize);
+		//char* ReadFile(const std::string& filePath, int* fileSize);
 
 		void LoadTga(const std::string& filePath);
 		//void LoadTexture();

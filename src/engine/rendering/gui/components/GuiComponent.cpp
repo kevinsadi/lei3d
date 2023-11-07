@@ -84,7 +84,7 @@ namespace lei3d
 		{
 			pos += glm::vec3(m_position.second / screenSize, 0);
 		}
-		else
+		else if (m_position.first == Space::NORMALIZED)
 		{
 			pos += glm::vec3(m_position.second, 0);
 		}
@@ -98,10 +98,12 @@ namespace lei3d
 		{
 			return m_size.second / screenSize;
 		}
-		else
+		else if (m_size.first == Space::NORMALIZED)
 		{
 			return m_size.second;
 		}
+
+		return {};
 	}
 
 	glm::vec3 GuiComponent::PosPixels(const glm::vec2& screenSize) const
@@ -112,7 +114,7 @@ namespace lei3d
 		{
 			pos += glm::vec3(m_position.second * screenSize, 0);
 		}
-		else
+		else if (m_position.first == Space::PIXELS)
 		{
 			pos += glm::vec3(m_position.second, 0);
 		}
@@ -126,9 +128,11 @@ namespace lei3d
 		{
 			return m_size.second * screenSize;
 		}
-		else
+		else if (m_size.first == Space::PIXELS)
 		{
 			return m_size.second;
 		}
+
+		return {};
 	}
 }

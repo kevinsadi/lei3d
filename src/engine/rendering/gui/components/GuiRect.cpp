@@ -28,9 +28,10 @@ namespace lei3d
 		indices.emplace_back(0);
 		indices.emplace_back(1);
 		indices.emplace_back(2);
+
 		indices.emplace_back(0);
-		indices.emplace_back(2);
 		indices.emplace_back(3);
+		indices.emplace_back(2);
 
 		m_mesh = new UiMesh(vertices, indices);
 	}
@@ -49,10 +50,11 @@ namespace lei3d
 	{
 		GuiManager::Instance().m_guiShader.bind();
 
-		GuiManager::Instance().m_guiShader.setUniformMat4("transform",
-			glm::translate(glm::identity<glm::mat4>(), PosNormalized(screenSize)) *
-			glm::scale(glm::identity<glm::mat4>(), glm::vec3(SizeNormalized(screenSize), 1)) 
-		);
+		GuiManager::Instance().m_guiShader.setUniformMat4("translation",
+			glm::translate(glm::identity<glm::mat4>(), PosNormalized(screenSize)));
+
+		GuiManager::Instance().m_guiShader.setUniformMat4("scale",
+			glm::scale(glm::identity<glm::mat4>(), glm::vec3(SizeNormalized(screenSize), 1)));
 		
 		GuiManager::Instance().m_guiShader.setVec4("color", m_color);
 

@@ -75,17 +75,20 @@ namespace lei3d
 			GuiRect::Render(screenSize);
 		}
 
-		GuiManager::Instance().m_guiFontShader.bind();
+		GuiManager::Instance().m_guiTextureShader.bind();
 
-		GuiManager::Instance().m_guiFontShader.setUniformMat4("transform",
-			glm::translate(glm::identity<glm::mat4>(), PosNormalized(screenSize)) *
-			glm::scale(glm::identity<glm::mat4>(), glm::vec3(GetFontScalar(screenSize), 1))
+		GuiManager::Instance().m_guiTextureShader.setUniformMat4("translation",
+			glm::translate(glm::identity<glm::mat4>(),PosNormalized(screenSize))
+		);
+
+		GuiManager::Instance().m_guiTextureShader.setUniformMat4("scale",
+			glm::scale(glm::identity<glm::mat4>(), glm::vec3(GetFontScalarNormalized(screenSize), 1))
 		);
 		
-		GuiManager::Instance().m_guiFontShader.setVec4("color", m_textColor);
-		GuiManager::Instance().m_guiFontShader.setInt("ourTexture", 0);
+		GuiManager::Instance().m_guiTextureShader.setVec4("color", m_textColor);
+		GuiManager::Instance().m_guiTextureShader.setInt("ourTexture", 0);
 
-		m_textMesh->Draw(&GuiManager::Instance().m_guiFontShader);
+		m_textMesh->Draw(&GuiManager::Instance().m_guiTextureShader);
 	}
 
 	void GuiTextBox::Update()
@@ -93,14 +96,14 @@ namespace lei3d
 		GuiRect::Update();
 	}
 
-	glm::vec2 GuiTextBox::GetFontScalar(const glm::vec2& screenSize) const
+	glm::vec2 GuiTextBox::GetFontScalarNormalized(const glm::vec2& screenSize) const
 	{
 		switch (m_fontSize.first)
 		{
 		case LineHeightMetric::PT:
-			return { m_fontSize.second / screenSize.x, m_fontSize.second / screenSize.y };
+				return { FontRenderer::PtToPx(m_fontSize.second) / screenSize.x, FontRenderer::PtToPx(m_fontSize.second) / screenSize.y };
 		case LineHeightMetric::PX:
-			return { m_fontSize.second * (4.f / 3.f) / screenSize.x, m_fontSize.second * (4.f / 3.f) / screenSize.y };
+			return { m_fontSize.second / screenSize.x, m_fontSize.second / screenSize.y };
 		case LineHeightMetric::NORM:
 			return { m_fontSize.second * screenSize.y / screenSize.x, m_fontSize.second };
 		default:
@@ -115,9 +118,23 @@ namespace lei3d
 
 	void GuiTextBox::UpdateBackgroundSize(const glm::vec2& screenSize)
 	{
-		glm::vec2 fontScalar = GetFontScalar(screenSize);
-
-		m_size.first = Space::NORMALIZED;
-		m_size.second = { GuiManager::Instance().m_fontRenderer.GetTextWidth(m_text) * fontScalar.x, fontScalar.y };
+		if (m_fontSize.first == LineHeightMetric::PT)
+		{
+			m_size.first = Space::PIXELS;
+			m_size.second = { GuiManager::Instance().m_fontRenderer.GetTextWidthPx(m_text, FontRenderer::PtToPx(m_fontSize.second)), FontRenderer::PtToPx(m_fontSize.second) };
+			return;
+		}
+		else if (m_fontSize.first == LineHeightMetric::PX)
+		{
+			m_size.first = Space::PIXELS;
+			m_size.second = { GuiManager::Instance().m_fontRenderer.GetTextWidthPx(m_text, m_fontSize.second), m_fontSize.second };
+			return;
+		}
+		else if (m_fontSize.first == LineHeightMetric::NORM)
+		{
+			m_size.first = Space::NORMALIZED;
+			m_size.second = { GuiManager::Instance().m_fontRenderer.GetTextWidthPx(m_text, m_fontSize.second * screenSize.x) / screenSize.x, m_fontSize.second };
+			return;
+		}
 	}
 } // namespace lei3d

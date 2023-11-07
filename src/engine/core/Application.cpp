@@ -275,7 +275,7 @@ namespace lei3d
 		// open sample splash screen
 		if (im.isKeyPressed(GLFW_KEY_0))
 		{
-			GuiManager::Instance().SetActiveScreen(new MainMenuScreen());
+			GuiManager::Instance().QueueNextScreen(new MainMenuScreen());
 		}
 
 		// Editor Specific Controls

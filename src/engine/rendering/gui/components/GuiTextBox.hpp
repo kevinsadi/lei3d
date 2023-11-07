@@ -47,7 +47,7 @@ namespace lei3d
 		UiMesh* m_textMesh = nullptr;
 
     private:
-		glm::vec2 GetFontScalar(const glm::vec2& screenSize) const;
+		glm::vec2 GetFontScalarNormalized(const glm::vec2& screenSize) const;
 
 		void GenerateMesh();
 		void UpdateBackgroundSize(const glm::vec2& screenSize);

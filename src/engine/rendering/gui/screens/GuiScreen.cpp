@@ -51,6 +51,10 @@ namespace lei3d
 			{
 				guiComponent.second->m_mouseOver = true;
 			}
+			else
+			{
+				guiComponent.second->m_mouseOver = false;
+			}
 
 			guiComponent.second->Update();
 		}
