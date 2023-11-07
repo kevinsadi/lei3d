@@ -9,7 +9,7 @@ namespace lei3d
 	{
 		GuiScreen::Init();
 
-		GuiTextBox* text = new GuiTextBox("Hello");
+		GuiTextBox* text = new GuiTextBox("Put HUD components here.", GuiComponent::Anchor::TOP_LEFT, {GuiComponent::Space::NORMALIZED, {0.1, 0.1}});
 
 		AddComponent(text);
 	}
