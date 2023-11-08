@@ -25,7 +25,6 @@ namespace lei3d
 
 	public:
 		Shader m_guiShader;
-		Shader m_guiTextureShader;
 
 		FontRenderer m_fontRenderer;
 

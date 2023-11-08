@@ -36,7 +36,9 @@ namespace lei3d
 			Anchor anchor = Anchor::CENTER, 
 			const std::pair<Space, glm::vec2>& pos = { Space::NORMALIZED, { 0.25, 0.25 } }, 
 			const std::pair<Space, glm::vec2>& size = { Space::NORMALIZED, { 0.5, 0.5 } },
-			std::function<void()> onClick = nullptr
+			std::function<void()> onClick = nullptr,
+			std::function<void()> m_onHover = nullptr,
+			std::function<void()> m_onStopHover = nullptr
 		);
 		virtual ~GuiComponent();
 
@@ -45,6 +47,11 @@ namespace lei3d
 
 		void SetSizeNormalized(const glm::vec2& size);
 		void SetSizePixels(const glm::vec2& size);
+
+		void SetOnClick(std::function<void()> onClick);
+		void SetOnHover(std::function<void()> onHover);
+		void SetOnStopHover(std::function<void()> onStopHover
+);
 
 		bool GetMouseOver();
 
@@ -63,7 +70,11 @@ namespace lei3d
 		std::pair<Space, glm::vec2> m_size;	
 		UiMesh* m_mesh = nullptr;
 		std::function<void()> m_onClick;
+		std::function<void()> m_onHover;
+		std::function<void()> m_onStopHover;
+
 		bool m_mouseOver = false;
+		bool m_mouseOverLast = false;
 
 		void BeginRender();
 		void EndRender();

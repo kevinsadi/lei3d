@@ -23,12 +23,16 @@ namespace lei3d
 		Anchor anchor, 
 		const std::pair<Space, glm::vec2>& pos, 
 		const std::pair<Space, glm::vec2>& size, 
-		std::function<void()> onClick
+		std::function<void()> onClick,
+		std::function<void()> onHover,
+		std::function<void()> onStopHover
 	)
 		: m_anchor((unsigned)anchor)
 		, m_position(pos)
 		, m_size(size)
 		, m_onClick(onClick)
+		, m_onHover(onHover)
+		, m_onStopHover(onStopHover)
 		, m_id(s_nextId++)
 	{
 	}
@@ -55,6 +59,21 @@ namespace lei3d
 	void GuiComponent::SetSizePixels(const glm::vec2& size)
 	{
 		m_size = { Space::PIXELS, size };
+	}
+
+	void GuiComponent::SetOnClick(std::function<void()> onClick)
+	{
+		m_onClick = onClick;
+	}
+
+	void GuiComponent::SetOnHover(std::function<void()> onHover)
+	{
+		m_onHover = onHover;
+	}
+
+	void GuiComponent::SetOnStopHover(std::function<void()> onStopHover)
+	{
+		m_onStopHover = onStopHover;
 	}
 
 	bool GuiComponent::GetMouseOver()

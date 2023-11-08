@@ -11,19 +11,23 @@ namespace lei3d
 		Anchor anchor, 
 		const std::pair<Space, glm::vec2>& pos, 
 		const std::pair<Space, glm::vec2>& size,
+		const glm::vec4& color,
+		int m_textureId,
 		std::function<void()> onClick,
-		glm::vec4 color
+		std::function<void()> onHover,
+		std::function<void()> onStopHover
 	)
-		: GuiComponent(anchor, pos, size, onClick)
+		: GuiComponent(anchor, pos, size, onClick, onHover, onStopHover)
 		, m_color(color)
+		, m_textureId(m_textureId)
 	{
 		std::vector<UiMesh::Vertex> vertices;
 		std::vector<unsigned int> indices;
 
-		vertices.emplace_back(UiMesh::Vec2{ 0.0f, 0.0f });
-		vertices.emplace_back(UiMesh::Vec2{ 0.0f, 1.0f });
-		vertices.emplace_back(UiMesh::Vec2{ 1.0f, 1.0f });
-		vertices.emplace_back(UiMesh::Vec2{ 1.0f, 0.0f });
+		vertices.emplace_back(UiMesh::Vec2{ 0.0f, 0.0f }, UiMesh::Vec2{ 0.0f, 0.0f });
+		vertices.emplace_back(UiMesh::Vec2{ 0.0f, 1.0f }, UiMesh::Vec2{ 0.0f, 1.0f });
+		vertices.emplace_back(UiMesh::Vec2{ 1.0f, 1.0f }, UiMesh::Vec2{ 1.0f, 1.0f });
+		vertices.emplace_back(UiMesh::Vec2{ 1.0f, 0.0f }, UiMesh::Vec2{ 1.0f, 0.0f });
 
 		indices.emplace_back(0);
 		indices.emplace_back(1);
@@ -33,7 +37,7 @@ namespace lei3d
 		indices.emplace_back(3);
 		indices.emplace_back(2);
 
-		m_mesh = new UiMesh(vertices, indices);
+		m_mesh = new UiMesh(vertices, indices, m_textureId);
 	}
 
 	GuiRect::~GuiRect()
@@ -58,14 +62,29 @@ namespace lei3d
 		
 		GuiManager::Instance().m_guiShader.setVec4("color", m_color);
 
+		GuiManager::Instance().m_guiShader.setInt("useTex", m_textureId == -1 ? 0 : 1);
+		GuiManager::Instance().m_guiShader.setInt("ourTexture", 0);
+
 		m_mesh->Draw(&GuiManager::Instance().m_guiShader);
 	}
 
 	void GuiRect::Update()
 	{
-		if (m_mouseOver && m_onClick && InputManager::GetInstance().isButtonDown(GLFW_MOUSE_BUTTON_LEFT, InputManager::InputTarget::GUI))
+		if (m_mouseOver)
 		{
-			m_onClick();
+			if (m_onHover)
+			{
+				m_onHover();
+			}
+
+			if (m_onClick && InputManager::GetInstance().isButtonDown(GLFW_MOUSE_BUTTON_LEFT, InputManager::InputTarget::GUI))
+			{
+				m_onClick();
+			}
+		}
+		else if (m_mouseOverLast && m_onStopHover)
+		{
+			m_onStopHover();
 		}
 	}
 

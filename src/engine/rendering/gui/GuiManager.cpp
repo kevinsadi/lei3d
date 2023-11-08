@@ -50,7 +50,6 @@ namespace lei3d
 	void GuiManager::Init()
 	{
 		m_guiShader = Shader("./data/shaders/gui.vert", "./data/shaders/gui.frag");
-		m_guiTextureShader = Shader("./data/shaders/gui.vert", "./data/shaders/guitexture.frag");
 		
 		m_fontRenderer.Init();
 

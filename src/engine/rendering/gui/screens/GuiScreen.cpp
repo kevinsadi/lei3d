@@ -49,10 +49,12 @@ namespace lei3d
 		{
 			if (guiComponent.second->IsMouseOver(screenSize, mousePos))
 			{
+				guiComponent.second->m_mouseOverLast = guiComponent.second->m_mouseOver;
 				guiComponent.second->m_mouseOver = true;
 			}
 			else
 			{
+				guiComponent.second->m_mouseOverLast = guiComponent.second->m_mouseOver;
 				guiComponent.second->m_mouseOver = false;
 			}
 

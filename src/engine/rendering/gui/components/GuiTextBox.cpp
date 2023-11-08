@@ -8,20 +8,20 @@ namespace lei3d
 {
 	GuiTextBox::GuiTextBox
 	(
-		const std::string& text, 
+		const std::string& text,
 		Anchor anchor,
-		const std::pair<Space, glm::vec2>& pos,
+		const std::pair<Space, glm::vec2>& pos ,
+		const std::pair<LineHeightMetric, float>& fontSize,
+		const glm::vec4& textColor,
+		const glm::vec4& backgroundColor,
 		std::function<void()> onClick,
-		const std::pair<LineHeightMetric, float>& fontSize, 
-		glm::vec4 textColor, 
-		glm::vec4 backgroundColor, 
-		bool backgroundEnabled
+		std::function<void()> onHover,
+		std::function<void()> onStopHover
 	)
-		: GuiRect(anchor, pos, { Space::NORMALIZED, { 0.25, 0.25 } }, onClick, backgroundColor)
+		: GuiRect(anchor, pos, { Space::NORMALIZED, { 0, 0 } }, backgroundColor, -1, onClick, onHover, onStopHover)
 		, m_text(text)
 		, m_fontSize(fontSize)
 		, m_textColor(textColor)
-		, m_backgroundEnabled(backgroundEnabled)
 	{
 		GenerateMesh();
 	}
@@ -62,33 +62,31 @@ namespace lei3d
 		m_color = backgroundColor;
 	}
 
-	void GuiTextBox::SetBackgroundEnabled(bool backgroundEnabled)
-	{
-		m_backgroundEnabled = backgroundEnabled;
-	}
-
 	void GuiTextBox::Render(const glm::vec2& screenSize)
 	{
-		if (m_backgroundEnabled)
+		UpdateBackgroundSize(screenSize);
+
+		if (abs(m_color.w - 0) > 0.0001f)
 		{
-			UpdateBackgroundSize(screenSize);
 			GuiRect::Render(screenSize);
 		}
 
-		GuiManager::Instance().m_guiTextureShader.bind();
+		GuiManager::Instance().m_guiShader.bind();
 
-		GuiManager::Instance().m_guiTextureShader.setUniformMat4("translation",
+		GuiManager::Instance().m_guiShader.setUniformMat4("translation",
 			glm::translate(glm::identity<glm::mat4>(),PosNormalized(screenSize))
 		);
 
-		GuiManager::Instance().m_guiTextureShader.setUniformMat4("scale",
+		GuiManager::Instance().m_guiShader.setUniformMat4("scale",
 			glm::scale(glm::identity<glm::mat4>(), glm::vec3(GetFontScalarNormalized(screenSize), 1))
 		);
 		
-		GuiManager::Instance().m_guiTextureShader.setVec4("color", m_textColor);
-		GuiManager::Instance().m_guiTextureShader.setInt("ourTexture", 0);
+		GuiManager::Instance().m_guiShader.setVec4("color", m_textColor);
 
-		m_textMesh->Draw(&GuiManager::Instance().m_guiTextureShader);
+		GuiManager::Instance().m_guiShader.setInt("useTex", 1);
+		GuiManager::Instance().m_guiShader.setInt("ourTexture", 0);
+
+		m_textMesh->Draw(&GuiManager::Instance().m_guiShader);
 	}
 
 	void GuiTextBox::Update()
