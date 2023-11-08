@@ -57,6 +57,11 @@ namespace lei3d
 		m_size = { Space::PIXELS, size };
 	}
 
+	bool GuiComponent::GetMouseOver()
+	{
+		return m_mouseOver;
+	}
+
 	unsigned GuiComponent::GetId() const
 	{
 		return m_id;

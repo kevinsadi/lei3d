@@ -5,8 +5,8 @@ namespace lei3d
 {
 	class MainMenuScreen : public GuiScreen
 	{
-    private:
-        int GetSplashTexId();
+	private:
+		int m_closeButtonId = -1;
 
 	protected:
 		void Init() override;
@@ -14,5 +14,7 @@ namespace lei3d
     public:
         MainMenuScreen();
         ~MainMenuScreen() override;
+
+		void Update(const glm::vec2& screenSize, const glm::vec2& mousePos) override;
 	};
 } 

@@ -11,11 +11,11 @@ namespace lei3d
 		friend class GuiManager;
 
     private:
-		std::unordered_map<unsigned, GuiComponent*> m_components;
 		bool m_initialized = false;
 
 	protected:
 		virtual void Init();
+		std::unordered_map<unsigned, GuiComponent*> m_components;
 
 	public:
 		GuiScreen();
@@ -24,7 +24,7 @@ namespace lei3d
 		void AddComponent(GuiComponent* guiComponent);
 		bool RemoveComponent(unsigned id);
 
-		void Update(const glm::vec2& screenSize, const glm::vec2& mousePos);
+		virtual void Update(const glm::vec2& screenSize, const glm::vec2& mousePos);
 		void Render(const glm::vec2& screenSize);
     };
 } 

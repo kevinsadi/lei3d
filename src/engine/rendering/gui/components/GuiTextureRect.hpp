@@ -7,6 +7,7 @@ namespace lei3d
 	{
 	private:
 		int m_textureID;
+		float m_alpha;
 
 	public:
 		GuiTextureRect(
@@ -14,6 +15,7 @@ namespace lei3d
 			Anchor anchor = Anchor::CENTER,
 			const std::pair<Space, glm::vec2>& pos = { Space::NORMALIZED, { 0.25, 0.25 } },
 			const std::pair<Space, glm::vec2>& size = { Space::NORMALIZED, { 0.5, 0.5 } },
+			float alpha = 1.0f,
 			std::function<void()> onClick = nullptr
 		);
 		~GuiTextureRect() override;

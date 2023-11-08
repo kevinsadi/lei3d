@@ -46,6 +46,8 @@ namespace lei3d
 		void SetSizeNormalized(const glm::vec2& size);
 		void SetSizePixels(const glm::vec2& size);
 
+		bool GetMouseOver();
+
 		unsigned GetId() const;
 
 	protected:

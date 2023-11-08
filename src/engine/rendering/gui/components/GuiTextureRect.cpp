@@ -11,10 +11,12 @@ namespace lei3d
 		Anchor anchor,
 		const std::pair<Space, glm::vec2>& pos,
 		const std::pair<Space, glm::vec2>& size,
+		float alpha,
 		std::function<void()> onClick
 	)
 		: GuiComponent(anchor, pos, size, onClick)
 		, m_textureID(textureID)
+		, m_alpha(alpha)
 	{
 		std::vector<UiMesh::Vertex> vertices;
 		std::vector<unsigned int> indices;
@@ -50,7 +52,7 @@ namespace lei3d
 		GuiManager::Instance().m_guiTextureShader.setUniformMat4("scale",
 			glm::scale(glm::identity<glm::mat4>(), glm::vec3(SizeNormalized(screenSize), 1)));
 
-		GuiManager::Instance().m_guiTextureShader.setVec4("color", { 1, 1, 1, 1 });
+		GuiManager::Instance().m_guiTextureShader.setVec4("color", { 1, 1, 1, m_alpha });
 
 		m_mesh->Draw(&GuiManager::Instance().m_guiTextureShader);
 	}
