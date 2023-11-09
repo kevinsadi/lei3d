@@ -446,14 +446,6 @@ namespace lei3d
 		glViewport(0, 0, scwidth, scheight);
 	}
 
-	void RenderSystem::UiPass()
-	{
-		//GuiTextBox* rect = new GuiTextBox();
-		//GuiManager::Instance().AddGuiComponent((GuiComponent*)rect);
-		//GuiManager::Instance().RenderGui(glm::vec2(scwidth, scheight));
-		//delete rect;
-	}
-
 	std::vector<glm::vec4> RenderSystem::getFrustumCornersWS(const glm::mat4& projection, const glm::mat4& view)
 	{
 		glm::mat4 invVP = glm::inverse(projection * view);
@@ -522,8 +514,6 @@ namespace lei3d
 		const glm::mat4 lightProj = glm::ortho(pminX, pmaxX, pminY, pmaxY, pminZ, pmaxZ);
 		return lightProj * lightView;
 	}
-<<<<<<< HEAD
-=======
 
 	void RenderSystem::UiPass()
 	{
@@ -531,7 +521,6 @@ namespace lei3d
 
 		GuiManager::Instance().RenderGui(glm::vec2(scwidth, scheight));
 	}
->>>>>>> cf5babd (Misc progress on Interactive Gui)
 	
 	std::vector<glm::mat4> RenderSystem::getLightSpaceMatrices(DirectionalLight* light, Camera& camera)
 	{
