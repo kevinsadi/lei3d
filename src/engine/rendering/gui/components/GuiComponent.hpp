@@ -7,6 +7,7 @@
 
 namespace lei3d
 {
+	class Shader;
 	class UiMesh;
 
 	class GuiComponent
@@ -50,8 +51,9 @@ namespace lei3d
 
 		void SetOnClick(std::function<void()> onClick);
 		void SetOnHover(std::function<void()> onHover);
-		void SetOnStopHover(std::function<void()> onStopHover
-);
+		void SetOnStopHover(std::function<void()> onStopHover);
+
+		void UseShader(Shader* pShader);
 
 		bool GetMouseOver();
 
@@ -68,10 +70,13 @@ namespace lei3d
 
 		std::pair<Space, glm::vec2> m_position;
 		std::pair<Space, glm::vec2> m_size;	
-		UiMesh* m_mesh = nullptr;
+		UiMesh* m_pMesh = nullptr;
 		std::function<void()> m_onClick;
 		std::function<void()> m_onHover;
 		std::function<void()> m_onStopHover;
+
+		// assign in constructor
+		Shader* m_pShader = nullptr;
 
 		bool m_mouseOver = false;
 		bool m_mouseOverLast = false;

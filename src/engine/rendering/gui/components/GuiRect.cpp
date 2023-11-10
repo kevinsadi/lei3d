@@ -37,12 +37,12 @@ namespace lei3d
 		indices.emplace_back(3);
 		indices.emplace_back(2);
 
-		m_mesh = new UiMesh(vertices, indices, m_textureId);
+		m_pMesh = new UiMesh(vertices, indices, m_textureId);
 	}
 
 	GuiRect::~GuiRect()
 	{
-		delete m_mesh;
+		delete m_pMesh;
 	}
 
 	void GuiRect::SetColor(const glm::vec4& color)
@@ -52,20 +52,18 @@ namespace lei3d
 
 	void GuiRect::Render(const glm::vec2& screenSize)
 	{
-		GuiManager::Instance().m_guiShader.bind();
+		m_pShader->bind();
 
-		GuiManager::Instance().m_guiShader.setUniformMat4("translation",
-			glm::translate(glm::identity<glm::mat4>(), PosNormalized(screenSize)));
+		m_pShader->setUniformMat4("translation", translate(glm::identity<glm::mat4>(), PosNormalized(screenSize)));
 
-		GuiManager::Instance().m_guiShader.setUniformMat4("scale",
-			glm::scale(glm::identity<glm::mat4>(), glm::vec3(SizeNormalized(screenSize), 1)));
+		m_pShader->setUniformMat4("scale", scale(glm::identity<glm::mat4>(), glm::vec3(SizeNormalized(screenSize), 1)));
 		
-		GuiManager::Instance().m_guiShader.setVec4("color", m_color);
+		m_pShader->setVec4("color", m_color);
 
-		GuiManager::Instance().m_guiShader.setInt("useTex", m_textureId == -1 ? 0 : 1);
-		GuiManager::Instance().m_guiShader.setInt("ourTexture", 0);
+		m_pShader->setInt("useTex", m_textureId == -1 ? 0 : 1);
+		m_pShader->setInt("ourTexture", 0);
 
-		m_mesh->Draw(&GuiManager::Instance().m_guiShader);
+		m_pMesh->Draw(m_pShader);
 	}
 
 	void GuiRect::Update()

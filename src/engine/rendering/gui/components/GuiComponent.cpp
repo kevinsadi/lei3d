@@ -35,6 +35,7 @@ namespace lei3d
 		, m_onStopHover(onStopHover)
 		, m_id(s_nextId++)
 	{
+		m_pShader = &GuiManager::Instance().m_guiShader;
 	}
 
 	GuiComponent::~GuiComponent()
@@ -74,6 +75,11 @@ namespace lei3d
 	void GuiComponent::SetOnStopHover(std::function<void()> onStopHover)
 	{
 		m_onStopHover = onStopHover;
+	}
+
+	void GuiComponent::UseShader(Shader* pShader)
+	{
+		m_pShader = pShader;
 	}
 
 	bool GuiComponent::GetMouseOver()

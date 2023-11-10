@@ -71,22 +71,18 @@ namespace lei3d
 			GuiRect::Render(screenSize);
 		}
 
-		GuiManager::Instance().m_guiShader.bind();
+		m_pShader->bind();
 
-		GuiManager::Instance().m_guiShader.setUniformMat4("translation",
-			glm::translate(glm::identity<glm::mat4>(),PosNormalized(screenSize))
-		);
+		m_pShader->setUniformMat4("translation", translate(glm::identity<glm::mat4>(),PosNormalized(screenSize)));
 
-		GuiManager::Instance().m_guiShader.setUniformMat4("scale",
-			glm::scale(glm::identity<glm::mat4>(), glm::vec3(GetFontScalarNormalized(screenSize), 1))
-		);
+		m_pShader->setUniformMat4("scale", scale(glm::identity<glm::mat4>(), glm::vec3(GetFontScalarNormalized(screenSize), 1)));
 		
-		GuiManager::Instance().m_guiShader.setVec4("color", m_textColor);
+		m_pShader->setVec4("color", m_textColor);
 
-		GuiManager::Instance().m_guiShader.setInt("useTex", 1);
-		GuiManager::Instance().m_guiShader.setInt("ourTexture", 0);
+		m_pShader->setInt("useTex", 1);
+		m_pShader->setInt("ourTexture", 0);
 
-		m_textMesh->Draw(&GuiManager::Instance().m_guiShader);
+		m_textMesh->Draw(m_pShader);
 	}
 
 	void GuiTextBox::Update()
