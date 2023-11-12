@@ -15,16 +15,16 @@ namespace lei3d
 		friend class GuiManager;
 		friend class GuiTextBox;
 
-		static std::vector<Font> s_fonts;
+		std::vector<Font> m_fonts;
 
 		FontRenderer();
 		~FontRenderer();
 
 		void Init();
 
-		UiMesh* CreateMesh(std::string text, unsigned fontIndex = 0);
-		float GetTextWidth(std::string text, unsigned fontIndex = 0);
+		UiMesh* CreateMesh(const std::string& text, unsigned fontIndex = 0);
+		float GetTextWidthPx(const std::string& text, float lineHeightPx, unsigned fontIndex = 0);
 
-		float PtToPx(float pt);
+		static float PtToPx(float pt);
 	};
 }

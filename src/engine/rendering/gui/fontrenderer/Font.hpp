@@ -23,16 +23,16 @@ namespace lei3d
 	{
 	private:
 		friend class FontRenderer;
-		// px = 3/4 * pt
-		float fontSize;
+		float m_fontSize;
+		float m_lineHeightPx;
 
-		void Load(const char* filename);
+		void Load(const std::string& filename);
 	public:
-		const char* m_fontName;
+		std::string m_fontName;
 		TGATexture* m_texture;
 		Character m_characters[256];
 
-		Font(const char* fontname);
+		Font(const std::string& fontname);
 		~Font();
 	};
 }

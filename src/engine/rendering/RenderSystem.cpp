@@ -9,9 +9,11 @@
 #include <array>
 
 #include "core/Application.hpp"
+#include "core/InputManager.hpp"
 #include "gui/GuiManager.hpp"
 #include "gui/components/GuiRect.hpp"
 #include "gui/components/GuiTextBox.hpp"
+#include "logging/Log.hpp"
 
 namespace lei3d
 {
@@ -444,14 +446,6 @@ namespace lei3d
 		glViewport(0, 0, scwidth, scheight);
 	}
 
-	void RenderSystem::UiPass()
-	{
-		//GuiTextBox* rect = new GuiTextBox();
-		//GuiManager::Instance().AddGuiComponent((GuiComponent*)rect);
-		//GuiManager::Instance().RenderGui(glm::vec2(scwidth, scheight));
-		//delete rect;
-	}
-
 	std::vector<glm::vec4> RenderSystem::getFrustumCornersWS(const glm::mat4& projection, const glm::mat4& view)
 	{
 		glm::mat4 invVP = glm::inverse(projection * view);
@@ -519,6 +513,13 @@ namespace lei3d
 
 		const glm::mat4 lightProj = glm::ortho(pminX, pmaxX, pminY, pmaxY, pminZ, pmaxZ);
 		return lightProj * lightView;
+	}
+
+	void RenderSystem::UiPass()
+	{
+		GuiManager::Instance().UpdateGui({ scwidth, scheight }, InputManager::GetInstance().getMousePosition());
+
+		GuiManager::Instance().RenderGui(glm::vec2(scwidth, scheight));
 	}
 	
 	std::vector<glm::mat4> RenderSystem::getLightSpaceMatrices(DirectionalLight* light, Camera& camera)

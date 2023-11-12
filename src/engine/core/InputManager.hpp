@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <unordered_map>
@@ -10,18 +11,30 @@ namespace lei3d
 	class InputManager
 	{
 	public:
+		enum class InputTarget
+		{
+			GAME,
+			IMGUI,
+			GUI,
+			NONE
+		};
+
 		static InputManager& GetInstance();
 		~InputManager();
 
 		static void initialize(GLFWwindow* window);
-		static void update();
 
-		bool isKeyDown(unsigned int key_id);
-		bool isKeyPressed(unsigned int key_id);
-		bool isButtonDown(unsigned int butt_id);
+		void update(GLFWwindow* window);
 
-		glm::vec2 getMouseOffset() { return mouse_offset; }
+		bool isKeyDown(unsigned int key_id, InputTarget for_target = InputTarget::GAME);
+		bool isKeyPressed(unsigned int key_id, InputTarget for_target = InputTarget::GAME);
+		bool isButtonDown(unsigned int butt_id, InputTarget for_target = InputTarget::GAME);
+
+		glm::vec2 getMouseOffset(InputTarget for_target = InputTarget::GAME);
 		glm::vec2 getMousePosition() { return mouse_coords; }
+
+		void giveInputFocus(InputTarget target) { has_focus = target; }
+		InputTarget inputFocus() const { return has_focus; }
 
 	private:
 		InputManager();
@@ -48,6 +61,7 @@ namespace lei3d
 		glm::vec2 mouse_offset;
 		bool invert_y = false;
 		bool first_mouse_input = true;
+		InputTarget has_focus = InputTarget::GAME;
 	};
 
 } // namespace lei3d
