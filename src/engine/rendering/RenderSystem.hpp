@@ -59,7 +59,7 @@ namespace lei3d
 
 		// shadow resources
 		unsigned int shadowFBO;
-		unsigned int shadowResolution = 2048;
+		unsigned int shadowResolution;
 		unsigned int shadowDepth;
 
 		unsigned int dummyVAO; // used to draw full-screen "quad"
@@ -74,9 +74,6 @@ namespace lei3d
 		Shader SSRShader;
 		Shader reflectionShader;
 		Shader shadowCSMShader;
-
-		// settings
-		bool isSSROn = true;
 	};
 
 } // namespace lei3d

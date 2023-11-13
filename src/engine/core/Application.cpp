@@ -4,6 +4,7 @@
 #include "logging/GLDebug.hpp"
 #include "core/InputManager.hpp"
 #include "core/SceneManager.hpp"
+#include "core/AppSettings.hpp"
 
 #include <stb_image.h>
 
@@ -75,9 +76,16 @@ namespace lei3d
 		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
 #endif
 
+		AppSettings& settings = AppSettings::GetInstance();
 		GetMonitorConfiguration();
+		settings.Initialize();
 
-		m_Window = glfwCreateWindow(screenWidth, screenHeight, "lei3d", nullptr, nullptr);
+		screenWidth = AppSettings::Width;
+		screenHeight = AppSettings::Height;
+
+		GLFWmonitor* monitor = AppSettings::Fullscreen ? m_Monitor : nullptr;
+		m_Window = glfwCreateWindow(screenWidth, screenHeight, "lei3d", monitor, nullptr);
+
 		if (m_Window == nullptr)
 		{
 			LEI_WARN("failed to create GLFW window");
@@ -287,8 +295,8 @@ namespace lei3d
 
 		const GLFWvidmode* mode = glfwGetVideoMode(m_Monitor);
 
-		screenWidth = mode->width;
-		screenHeight = mode->height;
+		AppSettings::Width = mode->width;
+		AppSettings::Height = mode->height;
 	}
 
 } // namespace lei3d

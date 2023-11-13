@@ -8,6 +8,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #include <array>
 
+#include "core/AppSettings.hpp"
 #include "core/Application.hpp"
 #include "gui/GuiManager.hpp"
 #include "gui/components/GuiRect.hpp"
@@ -20,6 +21,7 @@ namespace lei3d
 	{
 		scwidth = width;
 		scheight = height;
+		shadowResolution = AppSettings::ShadowQuality == 1 ? 4096 : 2048;
 
 		depthShader = Shader("./data/shaders/depth.vert", "./data/shaders/null.frag");
 		forwardShader = Shader("./data/shaders/forward.vert", "./data/shaders/forward.frag");
@@ -46,7 +48,7 @@ namespace lei3d
 		glGenTextures(1, &finalTexture);
 
 		// lighting pass
-		GLenum mipMode = isSSROn ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST;
+		GLenum mipMode = AppSettings::SSR ? GL_LINEAR_MIPMAP_NEAREST : GL_NEAREST;
 		glBindTexture(GL_TEXTURE_2D, rawTexture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, width, height, 0, GL_RGB, GL_FLOAT, nullptr);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mipMode);
@@ -185,7 +187,7 @@ namespace lei3d
 			environmentPass(*skyBox, colorSources, camera);
 		}
 
-		if (isSSROn)
+		if (AppSettings::SSR)
 		{
 			indirectLightingPass(*skyBox, camera);
 		}

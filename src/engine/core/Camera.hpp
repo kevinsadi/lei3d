@@ -21,7 +21,6 @@ namespace lei3d
 
 	protected:
 		const float MAX_PITCH = 89.0f;
-		const float MOUSE_SENSITIVITY = 0.1f;
 
 		float m_Yaw;
 		float m_Pitch;
