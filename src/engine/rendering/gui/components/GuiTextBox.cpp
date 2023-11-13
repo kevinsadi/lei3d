@@ -8,22 +8,22 @@ namespace lei3d
 {
 	GuiTextBox::GuiTextBox
 	(
-		const std::string& text, 
+		const std::string& text,
 		Anchor anchor,
-		const std::pair<Space, glm::vec2>& pos,
-		const std::pair<LineHeightMetric, float>& fontSize, 
-		glm::vec4 textColor, 
-		glm::vec4 backgroundColor, 
-		bool backgroundEnabled
+		const std::pair<Space, glm::vec2>& pos ,
+		const std::pair<LineHeightMetric, float>& fontSize,
+		const glm::vec4& textColor,
+		const glm::vec4& backgroundColor,
+		std::function<void()> onClick,
+		std::function<void()> onHover,
+		std::function<void()> onStopHover
 	)
-		: GuiRect(anchor, pos)
+		: GuiRect(anchor, pos, { Space::NORMALIZED, { 0, 0 } }, backgroundColor, -1, onClick, onHover, onStopHover)
 		, m_text(text)
 		, m_fontSize(fontSize)
 		, m_textColor(textColor)
-		, m_backgroundEnabled(backgroundEnabled)
 	{
 		GenerateMesh();
-		m_color = backgroundColor;
 	}
 
 	GuiTextBox::~GuiTextBox()
@@ -62,32 +62,27 @@ namespace lei3d
 		m_color = backgroundColor;
 	}
 
-	void GuiTextBox::SetBackgroundEnabled(bool backgroundEnabled)
-	{
-		m_backgroundEnabled = backgroundEnabled;
-	}
-
 	void GuiTextBox::Render(const glm::vec2& screenSize)
 	{
-		if (m_backgroundEnabled)
+		UpdateBackgroundSize(screenSize);
+
+		if (abs(m_color.w - 0) > 0.0001f)
 		{
-			UpdateBackgroundSize(screenSize);
 			GuiRect::Render(screenSize);
 		}
 
-		GuiManager::Instance().m_guiFontShader.bind();
+		m_pShader->bind();
 
-		GuiManager::Instance().m_guiFontShader.setUniformMat4("transform",
-			glm::translate(glm::identity<glm::mat4>(), PosNormalized(screenSize)) *
-			glm::scale(glm::identity<glm::mat4>(), glm::vec3(GetFontScalar(screenSize), 1))
-		);
+		m_pShader->setUniformMat4("translation", translate(glm::identity<glm::mat4>(),PosNormalized(screenSize)));
 
-		GuiManager::Instance().m_guiFontShader.setVec2("screenSize", screenSize);
-		GuiManager::Instance().m_guiFontShader.setVec4("color", m_textColor);
-		GuiManager::Instance().m_guiFontShader.setInt("normalized", true);
-		GuiManager::Instance().m_guiFontShader.setInt("ourTexture", 0);
+		m_pShader->setUniformMat4("scale", scale(glm::identity<glm::mat4>(), glm::vec3(GetFontScalarNormalized(screenSize), 1)));
+		
+		m_pShader->setVec4("color", m_textColor);
 
-		m_textMesh->Draw(&GuiManager::Instance().m_guiFontShader);
+		m_pShader->setInt("useTex", 1);
+		m_pShader->setInt("ourTexture", 0);
+
+		m_textMesh->Draw(m_pShader);
 	}
 
 	void GuiTextBox::Update()
@@ -95,14 +90,14 @@ namespace lei3d
 		GuiRect::Update();
 	}
 
-	glm::vec2 GuiTextBox::GetFontScalar(const glm::vec2& screenSize) const
+	glm::vec2 GuiTextBox::GetFontScalarNormalized(const glm::vec2& screenSize) const
 	{
 		switch (m_fontSize.first)
 		{
 		case LineHeightMetric::PT:
-			return { m_fontSize.second / screenSize.x, m_fontSize.second / screenSize.y };
+				return { FontRenderer::PtToPx(m_fontSize.second) / screenSize.x, FontRenderer::PtToPx(m_fontSize.second) / screenSize.y };
 		case LineHeightMetric::PX:
-			return { m_fontSize.second * (4.f / 3.f) / screenSize.x, m_fontSize.second * (4.f / 3.f) / screenSize.y };
+			return { m_fontSize.second / screenSize.x, m_fontSize.second / screenSize.y };
 		case LineHeightMetric::NORM:
 			return { m_fontSize.second * screenSize.y / screenSize.x, m_fontSize.second };
 		default:
@@ -117,9 +112,23 @@ namespace lei3d
 
 	void GuiTextBox::UpdateBackgroundSize(const glm::vec2& screenSize)
 	{
-		glm::vec2 fontScalar = GetFontScalar(screenSize);
-
-		m_size.first = Space::NORMALIZED;
-		m_size.second = { GuiManager::Instance().m_fontRenderer.GetTextWidth(m_text) * fontScalar.x, fontScalar.y };
+		if (m_fontSize.first == LineHeightMetric::PT)
+		{
+			m_size.first = Space::PIXELS;
+			m_size.second = { GuiManager::Instance().m_fontRenderer.GetTextWidthPx(m_text, FontRenderer::PtToPx(m_fontSize.second)), FontRenderer::PtToPx(m_fontSize.second) };
+			return;
+		}
+		else if (m_fontSize.first == LineHeightMetric::PX)
+		{
+			m_size.first = Space::PIXELS;
+			m_size.second = { GuiManager::Instance().m_fontRenderer.GetTextWidthPx(m_text, m_fontSize.second), m_fontSize.second };
+			return;
+		}
+		else if (m_fontSize.first == LineHeightMetric::NORM)
+		{
+			m_size.first = Space::NORMALIZED;
+			m_size.second = { GuiManager::Instance().m_fontRenderer.GetTextWidthPx(m_text, m_fontSize.second * screenSize.x) / screenSize.x, m_fontSize.second };
+			return;
+		}
 	}
 } // namespace lei3d

@@ -8,29 +8,38 @@ namespace lei3d
 
 	const glm::vec3 GuiComponent::s_anchorPositions[unsigned(Anchor::ANCHOR_COUNT)] = 
 	{
-		{0.0f, 1.0f, 0},	// TOP_LEFT
-		{1.0f, 1.0f, 0},	// TOP_RIGHT
-		{0.0f, 0.0f, 0},	// BOTTOM_LEFT
-		{1.0f, 0.0f, 0},	// BOTTOM_RIGHT
-		{0.5f, 1.0f, 0},	// CENTER_TOP
+		{0.0f, 0.0f, 0},	// TOP_LEFT
+		{1.0f, 0.0f, 0},	// TOP_RIGHT
+		{0.0f, 1.0f, 0},	// BOTTOM_LEFT
+		{1.0f, 1.0f, 0},	// BOTTOM_RIGHT
+		{0.5f, 0.0f, 0},	// CENTER_TOP
 		{1.0f, 0.5f, 0},	// CENTER_RIGHT
-		{0.5f, 0.0f, 0},	// CENTER_BOTTOM
+		{0.5f, 1.0f, 0},	// CENTER_BOTTOM
 		{0.0f, 0.5f, 0},	// CENTER_LEFT
-		{0.5f, 0.5f, 0}	// CENTER
+		{0.5f, 0.5f, 0}	    // CENTER
 	};
 
-	GuiComponent::GuiComponent(Anchor anchor, const std::pair<Space, glm::vec2>& pos, const std::pair<Space, glm::vec2>& size)
+	GuiComponent::GuiComponent(
+		Anchor anchor, 
+		const std::pair<Space, glm::vec2>& pos, 
+		const std::pair<Space, glm::vec2>& size, 
+		std::function<void()> onClick,
+		std::function<void()> onHover,
+		std::function<void()> onStopHover
+	)
 		: m_anchor((unsigned)anchor)
 		, m_position(pos)
 		, m_size(size)
+		, m_onClick(onClick)
+		, m_onHover(onHover)
+		, m_onStopHover(onStopHover)
+		, m_id(s_nextId++)
 	{
-		m_id = s_nextId++;
-		GuiManager::Instance().AddGuiComponent(this);
+		m_pShader = &GuiManager::Instance().m_guiShader;
 	}
 
 	GuiComponent::~GuiComponent()
 	{
-		GuiManager::Instance().RemoveGuiComponent(m_id);
 	}
 
 	void GuiComponent::SetPositionNormalized(const glm::vec2& pos)
@@ -53,6 +62,36 @@ namespace lei3d
 		m_size = { Space::PIXELS, size };
 	}
 
+	void GuiComponent::SetOnClick(std::function<void()> onClick)
+	{
+		m_onClick = onClick;
+	}
+
+	void GuiComponent::SetOnHover(std::function<void()> onHover)
+	{
+		m_onHover = onHover;
+	}
+
+	void GuiComponent::SetOnStopHover(std::function<void()> onStopHover)
+	{
+		m_onStopHover = onStopHover;
+	}
+
+	void GuiComponent::UseShader(Shader* pShader)
+	{
+		m_pShader = pShader;
+	}
+
+	bool GuiComponent::GetMouseOver()
+	{
+		return m_mouseOver;
+	}
+
+	unsigned GuiComponent::GetId() const
+	{
+		return m_id;
+	}
+
 	void GuiComponent::BeginRender()
 	{
 		glEnable(GL_BLEND);
@@ -67,7 +106,7 @@ namespace lei3d
 		glEnable(GL_DEPTH_TEST);
 	}
 
-	glm::vec3 GuiComponent::PosNormalized(const glm::vec2& screenSize)
+	glm::vec3 GuiComponent::PosNormalized(const glm::vec2& screenSize) const
 	{
 		glm::vec3 pos = s_anchorPositions[m_anchor];
 
@@ -75,7 +114,7 @@ namespace lei3d
 		{
 			pos += glm::vec3(m_position.second / screenSize, 0);
 		}
-		else
+		else if (m_position.first == Space::NORMALIZED)
 		{
 			pos += glm::vec3(m_position.second, 0);
 		}
@@ -83,15 +122,47 @@ namespace lei3d
 		return pos;
 	}
 
-	glm::vec2 GuiComponent::SizeNormalized(const glm::vec2& screenSize)
+	glm::vec2 GuiComponent::SizeNormalized(const glm::vec2& screenSize) const
 	{
 		if (m_size.first == Space::PIXELS)
 		{
 			return m_size.second / screenSize;
 		}
-		else
+		else if (m_size.first == Space::NORMALIZED)
 		{
 			return m_size.second;
 		}
+
+		return {};
+	}
+
+	glm::vec3 GuiComponent::PosPixels(const glm::vec2& screenSize) const
+	{
+		glm::vec3 pos = s_anchorPositions[m_anchor] * glm::vec3(screenSize, 0);
+
+		if (m_position.first == Space::NORMALIZED)
+		{
+			pos += glm::vec3(m_position.second * screenSize, 0);
+		}
+		else if (m_position.first == Space::PIXELS)
+		{
+			pos += glm::vec3(m_position.second, 0);
+		}
+
+		return pos;
+	}
+
+	glm::vec2 GuiComponent::SizePixels(const glm::vec2& screenSize) const
+	{
+		if (m_size.first == Space::NORMALIZED)
+		{
+			return m_size.second * screenSize;
+		}
+		else if (m_size.first == Space::PIXELS)
+		{
+			return m_size.second;
+		}
+
+		return {};
 	}
 }

@@ -46,8 +46,8 @@ namespace lei3d
 		RenderSystem m_Renderer;
 		PrimitiveRenderer m_PrimitiveRenderer;
 
-		// NOTE: Don't modify this directly. Use SetUIActive.
-		bool m_UIActive = false;
+		// NOTE: Don't modify this directly. Use SetIMGUIActive.
+		bool m_ImGUIActive = false;
 
 		float m_LastFrameTime = 0.0f; // used to keep track of delta time
 		float m_DeltaTime = 0.0f;	  // Total time for last frame.
@@ -63,7 +63,7 @@ namespace lei3d
 
 		void Run(); // Run the app.
 
-		void SetUIActive(bool uiActive);
+		void SetIMGUIActive(bool uiActive);
 
 		static GLFWwindow* Window();
 		static float DeltaTime();

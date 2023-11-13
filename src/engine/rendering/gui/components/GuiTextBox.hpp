@@ -6,7 +6,7 @@
 
 namespace lei3d
 {
-    class GuiTextBox : private GuiRect
+    class GuiTextBox : public GuiRect
 	{
     public:
 		enum class LineHeightMetric
@@ -21,9 +21,11 @@ namespace lei3d
 			Anchor anchor = Anchor::CENTER,
 			const std::pair<Space, glm::vec2>& pos = { Space::NORMALIZED, { 0.25, 0.25 } },
 			const std::pair<LineHeightMetric, float>& fontSize = { LineHeightMetric::PT, 100 },
-			glm::vec4 textColor = { 1, 1, 1, 1 },
-			glm::vec4 backgroundColor = { 1, 0, 0, 0.5 },
-			bool backgroundEnabled = true
+			const glm::vec4& textColor = { 1, 1, 1, 1 },
+			const glm::vec4& backgroundColor = { 1, 0, 0, 0.5 },
+			std::function<void()> onClick = nullptr,
+			std::function<void()> onHover = nullptr,
+			std::function<void()> onStopHover = nullptr
 		);
 		~GuiTextBox() override;
 
@@ -33,7 +35,6 @@ namespace lei3d
 		void SetFontSizeNorm(float fontSize);
 		void SetTextColor(const glm::vec4& textColor);
 		void SetBackgroundColor(const glm::vec4& backgroundColor);
-		void SetBackgroundEnabled(bool backgroundEnabled);
 
 		void Render(const glm::vec2& screenSize) override;
 		void Update() override;
@@ -42,11 +43,10 @@ namespace lei3d
 		std::string m_text;
 		std::pair<LineHeightMetric, float> m_fontSize;
 		glm::vec4 m_textColor;
-		bool m_backgroundEnabled;
 		UiMesh* m_textMesh = nullptr;
 
     private:
-		glm::vec2 GetFontScalar(const glm::vec2& screenSize) const;
+		glm::vec2 GetFontScalarNormalized(const glm::vec2& screenSize) const;
 
 		void GenerateMesh();
 		void UpdateBackgroundSize(const glm::vec2& screenSize);
