@@ -73,11 +73,11 @@ namespace lei3d
 		// ModelInstance* modelRender = backpackObj.AddComponent<ModelInstance>();
 		// modelRender->Init(backpackModel.get());
 		backpackObj.SetScale(glm::vec3(1.f, 1.f, 1.f));
-		backpackObj.SetPosition(glm::vec3(0.f, 60.f, 0.f));
+		backpackObj.SetPosition(glm::vec3(0.f, 26.f, 35.f));
 		backpackObj.SetYawRotation(0);
 
-		CharacterController* characterController = backpackObj.AddComponent<CharacterController>();
-		characterController->Init(1.f, 3.f);
+		// CharacterController* characterController = backpackObj.AddComponent<CharacterController>();
+		// characterController->Init(1.f, 3.f);
 
 		FollowCameraController* followCam = backpackObj.AddComponent<FollowCameraController>();
 		followCam->Init(*m_DefaultCamera, glm::vec3(0.0f, 5.0f, 0.0f));
@@ -89,7 +89,7 @@ namespace lei3d
 		ModelInstance* playgroundRender = physicsPlaygroundObj.AddComponent<ModelInstance>();
 		playgroundRender->Init(playgroundModel.get());
 		physicsPlaygroundObj.SetScale(glm::vec3(15.f, 5.f, 10.0f));
-		physicsPlaygroundObj.SetPosition(glm::vec3(0.0f, -200.0f, 0.0f));
+		physicsPlaygroundObj.SetPosition(glm::vec3(25.0f, 10.0f, 39.0f));
 
 		StaticCollider* physicsPlaygroundCollider = physicsPlaygroundObj.AddComponent<StaticCollider>();
 		physicsPlaygroundCollider->Init();
@@ -138,6 +138,12 @@ namespace lei3d
 
 		// Fish ---------------------
 		Entity& fishObj = AddEntity("Fish");
+
+		m_fishTheta = 0.0f;
+		m_fishRadius = glm::length(glm::vec2(400.5f, 85.0f));
+		//                2 * PI radians        (14 second loop, assuming 60fps)
+		m_deltaTheta = (2 * glm::pi<float>()) / (5 * 60);
+
 		fishObj.SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
 		fishObj.SetPosition(glm::vec3(-50.0f, 150.0f, -400.0f));
 		fishObj.SetYawRotation(-45.0f);
@@ -271,7 +277,16 @@ namespace lei3d
 	void SceneTitle::OnUpdate()
 	{
 		Entity* colorObj = GetEntity("Start Color Area");
-		colorObj->GetComponent<ColorSource>()->radius += 0.8f;
+		colorObj->GetComponent<ColorSource>()->radius += 60 * Application::GetInstance().DeltaTime();
+
+		// Fly fishy fly!
+		m_fishTheta -= m_deltaTheta;
+		Entity* fishObj = GetEntity("Fish");
+		fishObj->SetPosition(glm::vec3(
+			m_fishRadius * glm::cos(m_fishTheta),
+			150.0f,
+			m_fishRadius * glm::sin(m_fishTheta)));
+		fishObj->SetYawRotation(m_fishTheta * -360.0f / (2.0f * glm::pi<float>()));
 	}
 
 	void SceneTitle::OnPhysicsUpdate()

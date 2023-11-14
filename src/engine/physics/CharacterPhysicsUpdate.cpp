@@ -36,7 +36,7 @@ namespace lei3d
 		bool onGround = callback.m_Grounded;
 		if (m_Controller.m_IncludeSFX && m_Controller.m_Grounded == false && onGround == true)
 		{
-			AudioPlayer::PlaySFX("SFX-LAND-SHORT-RR4.wav"); //.PlaySound("landing");
+			AudioPlayer::GetInstance().PlaySFX("SFX-LAND-SHORT-RR4.wav"); //.PlaySound("landing");
 		}
 		bool groundPoint = callback.m_GroundPoint;
 		m_Controller.m_Grounded = onGround;
@@ -108,7 +108,13 @@ namespace lei3d
 		const btScalar radius = m_GroundCheckDist;
 		const btVector3 groundCheckColor = btVector3(0.f, 0.f, 1.f);
 
+		btTransform deathPlaneTrans;
+		deathPlaneTrans.setIdentity();
+		const btVector3 deathPlaneColor = btVector3(1.0f, 0.0f, 1.0f);
+
 		debugDrawer->drawSphere(center, radius, groundCheckColor);
+
+		debugDrawer->drawPlane(btVector3(0.0f, 1.0f, 0.0f), m_Controller.m_deathPlaneY, deathPlaneTrans, deathPlaneColor);
 	}
 
 	btCollisionObject* CharacterController::CharacterPhysicsUpdate::getGroundCheckObj()

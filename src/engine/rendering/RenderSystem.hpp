@@ -37,7 +37,7 @@ namespace lei3d
 		void lightingPass(const std::vector<ModelInstance*>& objects, const std::vector<ColorSource*>& colorSrcs, const DirectionalLight* light, Camera& camera);
 		void environmentPass(const SkyBox& skyBox, const std::vector<ColorSource*>& colorSrcs, Camera& camera);
 		void indirectLightingPass(const SkyBox& skyBox, Camera& camera);
-		void postprocessPass();
+		void postprocessPass(Camera& camera);
 
 		void genShadowPass(const std::vector<ModelInstance*>& objects, DirectionalLight* light, Camera& camera);
 		std::vector<glm::vec4> getFrustumCornersWS(const glm::mat4& projection, const glm::mat4& view);

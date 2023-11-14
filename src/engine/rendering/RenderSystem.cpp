@@ -9,9 +9,11 @@
 #include <array>
 
 #include "core/Application.hpp"
+#include "core/InputManager.hpp"
 #include "gui/GuiManager.hpp"
 #include "gui/components/GuiRect.hpp"
 #include "gui/components/GuiTextBox.hpp"
+#include "logging/Log.hpp"
 
 namespace lei3d
 {
@@ -189,7 +191,7 @@ namespace lei3d
 		{
 			indirectLightingPass(*skyBox, camera);
 		}
-		postprocessPass();
+		postprocessPass(camera);
 		UiPass();
 	}
 
@@ -378,7 +380,7 @@ namespace lei3d
 		glDisable(GL_BLEND);
 	}
 
-	void RenderSystem::postprocessPass()
+	void RenderSystem::postprocessPass(Camera& camera)
 	{
 		postprocessShader.bind();
 
@@ -389,8 +391,14 @@ namespace lei3d
 		glBindTexture(GL_TEXTURE_2D, rawTexture);	   // 0
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, saturationMask);  // 1
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, depthTexture);
 		postprocessShader.setInt("RawFinalImage", 0);
 		postprocessShader.setInt("SaturationMask", 1); // match active texture bindings
+		postprocessShader.setInt("DepthMask", 2);
+
+		postprocessShader.setFloat("nearPlane", camera.GetNearPlane());
+		postprocessShader.setFloat("farPlane", camera.GetFarPlane());
 
 		glBindVertexArray(dummyVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -509,10 +517,9 @@ namespace lei3d
 
 	void RenderSystem::UiPass()
 	{
-		//GuiTextBox* rect = new GuiTextBox();
-		//GuiManager::Instance().AddGuiComponent((GuiComponent*)rect);
-		//GuiManager::Instance().RenderGui(glm::vec2(scwidth, scheight));
-		//delete rect;
+		GuiManager::Instance().UpdateGui({ scwidth, scheight }, InputManager::GetInstance().getMousePosition());
+
+		GuiManager::Instance().RenderGui(glm::vec2(scwidth, scheight));
 	}
 	
 	std::vector<glm::mat4> RenderSystem::getLightSpaceMatrices(DirectionalLight* light, Camera& camera)

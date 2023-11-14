@@ -1,5 +1,6 @@
 #include "core/Scene.hpp"
 
+#include "InputManager.hpp"
 #include "core/Application.hpp"
 #include "core/Camera.hpp"
 
@@ -89,6 +90,8 @@ namespace lei3d
 			Start();
 		}
 		m_State = SCENE_PLAYING;
+
+		InputManager::GetInstance().giveInputFocus(InputManager::InputTarget::GAME);
 	}
 
 	void Scene::Pause()

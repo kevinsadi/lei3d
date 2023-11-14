@@ -27,6 +27,8 @@ namespace lei3d
 		// float m_maxSpeed = 40.0f;
 		//  float m_maxVelocity = 100;
 
+		float m_deathPlaneY = -1000.0f;
+
 		bool m_IsInDynamicsWorld;
 
 	private:

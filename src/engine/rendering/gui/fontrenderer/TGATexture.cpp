@@ -10,7 +10,7 @@
 
 namespace lei3d
 {
-	TGATexture::TGATexture(std::string fileName)
+	TGATexture::TGATexture(const std::string& fileName)
 	{
 		LoadTga(fileName);
 		//LoadTexture();

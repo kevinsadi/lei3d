@@ -2,9 +2,40 @@
 
 #include "components/GuiComponent.hpp"
 #include "core/Application.hpp"
+#include "core/InputManager.hpp"
+#include "screens/BaseGuiScreen.hpp"
+#include "screens/GuiScreen.hpp"
+#include "logging/Log.hpp"
 
 namespace lei3d 
 {
+
+	void GuiManager::SetActiveScreen(GuiScreen* screen)
+	{
+		if (m_activeScreen)
+		{
+			delete m_activeScreen;
+			m_activeScreen = nullptr;
+		}
+
+		if (screen == nullptr)
+		{
+			SceneManager::GetInstance().ActiveScene().Play();
+		}
+		else
+		{
+			if (!screen->m_initialized)
+			{
+				screen->Init();
+			}
+
+			SceneManager::GetInstance().ActiveScene().Pause();
+			InputManager::GetInstance().giveInputFocus(InputManager::InputTarget::GUI);
+		}
+
+		m_activeScreen = screen;
+	}
+
 	GuiManager::GuiManager()
 	{
 		
@@ -18,46 +49,64 @@ namespace lei3d
 
 	void GuiManager::Init()
 	{
-		m_guiFontShader = Shader("./data/shaders/gui.vert", "./data/shaders/guifont.frag");
 		m_guiShader = Shader("./data/shaders/gui.vert", "./data/shaders/gui.frag");
-		m_guiTextureShader = Shader("./data/shaders/gui.vert", "./data/shaders/guitexture.frag");
 		
 		m_fontRenderer.Init();
+
+		m_baseScreen = new BaseGuiScreen();
+		m_baseScreen->Init();
 	}
 
-	void GuiManager::AddGuiComponent(GuiComponent* guiComponent)
+	GuiScreen& GuiManager::GetBaseScreen()
 	{
-		s_guiComponents[guiComponent->m_id] = guiComponent;
+		return *m_baseScreen;
 	}
 
-	bool GuiManager::RemoveGuiComponent(unsigned id)
+	GuiScreen& GuiManager::GetActiveScreen()
 	{
-		auto it = s_guiComponents.find(id);
+		return *m_activeScreen;
+	}
 
-		if (it != s_guiComponents.end())
-		{
-			s_guiComponents.erase(it);
-			return true;
-		}
+	void GuiManager::CloseActiveScreen()
+	{
+		QueueNextScreen(nullptr);
+	}
 
-		return false;
+	void GuiManager::QueueNextScreen(GuiScreen* screen)
+	{
+		m_nextScreen = screen;
+		m_shouldSwapScreens = true;
 	}
 
 	void GuiManager::RenderGui(const glm::vec2& screenSize)
 	{
-		for (auto& guiComponent : s_guiComponents)
-		{
-			guiComponent.second->BeginRender();
-			guiComponent.second->Render(screenSize);
-			guiComponent.second->EndRender();
-		}
+		m_baseScreen->Render(screenSize);
+
+		if (m_activeScreen)
+			m_activeScreen->Render(screenSize);
 	}
 
-	void GuiManager::UpdateGui()
+	void GuiManager::UpdateGui(const glm::vec2& screenSize, const glm::vec2& mousePos)
 	{
-		for (auto& guiComponent : s_guiComponents)
+		m_baseScreen->Update(screenSize, mousePos);
+
+		if (m_shouldSwapScreens)
 		{
-			guiComponent.second->Update();
+			SetActiveScreen(m_nextScreen);
+			m_nextScreen = nullptr;
+			m_shouldSwapScreens = false;
+		}
+
+		if (m_activeScreen)
+		{
+			if (InputManager::GetInstance().isKeyPressed(GLFW_KEY_ESCAPE, InputManager::InputTarget::GUI))
+			{
+				CloseActiveScreen();
+			}
+			else
+			{
+				m_activeScreen->Update(screenSize, mousePos);
+			}
 		}
 	}
 }

@@ -1,24 +1,30 @@
 #pragma once
 #include <unordered_map>
+#include <unordered_set>
 
-#include "fontrenderer/FontRenderer.hpp"
 #include "rendering/Shader.hpp"
+#include "fontrenderer/FontRenderer.hpp"
 
 namespace lei3d 
 {
+	class GuiScreen;
 	class GuiComponent;
 
 	class GuiManager
     {
     private:
-		std::unordered_map<unsigned, GuiComponent*> s_guiComponents;
+		GuiScreen* m_baseScreen = nullptr;
+		GuiScreen* m_activeScreen = nullptr;
+
+		GuiScreen* m_nextScreen = nullptr;
+		bool m_shouldSwapScreens = false;
+
+		void SetActiveScreen(GuiScreen* screen);
 
 		GuiManager();
 
 	public:
 		Shader m_guiShader;
-		Shader m_guiTextureShader;
-		Shader m_guiFontShader;
 
 		FontRenderer m_fontRenderer;
 
@@ -26,10 +32,13 @@ namespace lei3d
 
 		void Init();
 
-		void AddGuiComponent(GuiComponent* guiComponent);
-		bool RemoveGuiComponent(unsigned id);
+		GuiScreen& GetBaseScreen();
+		GuiScreen& GetActiveScreen();
+
+		void CloseActiveScreen();
+		void QueueNextScreen(GuiScreen* screen);
 
 		void RenderGui(const glm::vec2& screenSize);
-		void UpdateGui();
+		void UpdateGui(const glm::vec2& screenSize, const glm::vec2& mousePos);
     };
 }
