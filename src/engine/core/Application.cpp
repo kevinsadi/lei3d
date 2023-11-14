@@ -228,6 +228,11 @@ namespace lei3d
 		m_Renderer.draw(SceneManager::ActiveScene(), *m_SceneView);
 
 		Camera& sceneCamera = m_SceneView->ActiveCamera(SceneManager::ActiveScene());
+		// Maybe enable this in debug mode only?
+		// if (m_UIActive)
+		// {
+		 	EditorGUI::renderDebugCursor();
+		// }
 		m_PrimitiveRenderer.drawAll(sceneCamera);
 		// SceneManager::ActiveScene().GetPhysicsWorld().m_dynamicsWorld->debugDrawWorld();
 	}

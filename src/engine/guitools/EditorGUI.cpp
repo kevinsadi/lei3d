@@ -95,4 +95,14 @@ namespace lei3d
 		scene.ShowHeirarchyGUI();
 	}
 
+	// SUPER JANKY AND SCUFFED! REDO AFTER 2D LINE RENDERING IS IMPLEMENTED
+	void EditorGUI::renderDebugCursor()
+	{
+		PrimitiveRenderer& lineRenderer = Application::GetPrimitiveRenderer();
+		Camera& camera = Application::GetSceneCamera();
+		glm::vec3 origin = camera.GetPosition() + camera.GetFront() * 10.f;
+		lineRenderer.pushLine(Application::GetSceneCamera(), origin, origin + glm::vec3{1,0,0}, glm::vec3{1,0,0}, .01);
+		lineRenderer.pushLine(Application::GetSceneCamera(), origin, origin + glm::vec3{0,1,0}, glm::vec3{0,1,0}, .01);
+		lineRenderer.pushLine(Application::GetSceneCamera(), origin, origin + glm::vec3{0,0,1}, glm::vec3{0,0,1}, .01);
+	}
 } // namespace lei3d

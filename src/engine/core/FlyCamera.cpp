@@ -61,6 +61,9 @@ namespace lei3d
 	{
 		ImGui::SliderFloat("Camera Speed", &m_FlySpeed, MIN_FLY_SPEED, MAX_FLY_SPEED, "%.2f");
 		ImGui::Checkbox("Use 'Minecraft' Camera Controls: ", &m_UseMinecraftControls);
+
+		glm::vec3 pos = this->GetPosition();
+		ImGui::Text("x: %f, y: %f, z: %f", pos.x, pos.y, pos.z); 
 	}
 
 	void FlyCamera::handleForward(float speed)

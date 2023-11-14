@@ -11,5 +11,6 @@ namespace lei3d
 
 	public:
 		void RenderUI(); // DON"T MAKE THIS CONST
+		static void renderDebugCursor();
 	};
 } // namespace lei3d
