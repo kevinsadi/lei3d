@@ -13,6 +13,8 @@
 
 #include <glm/glm.hpp>
 
+#include <algorithm>
+
 namespace lei3d
 {
 	std::unique_ptr<Scene> MakeSceneIntro()
@@ -95,20 +97,33 @@ namespace lei3d
 		physicsPlaygroundCollider->Init();
 		physicsPlaygroundCollider->SetColliderToModel(*playgroundModel);
 
-		// Flower ---------------------
-		Entity& flowerObj = AddEntity("Flower");
+		// Flowers ---------------------
+		Entity& flowerObj = AddEntity("Flower 1");
 		flowerObj.SetYawRotation(0);
-
 		ModelInstance* flowerRender = flowerObj.AddComponent<ModelInstance>();
 		flowerRender->Init(m_EnviromentModels["flower"].get());
 		flowerObj.SetScale(glm::vec3(2.5f, 2.5f, 2.5f));
-		flowerObj.SetPosition(glm::vec3(0.0f, 50.3f, 0.0f));
-
-		// color source
-		Entity& startColorSrcObj = AddEntity("Start Color Area");
-		ColorSource* startSrc = startColorSrcObj.AddComponent<ColorSource>();
+		flowerObj.SetPosition(glm::vec3(0.0f, 51.3f, 0.0f));
+		ColorSource* startSrc = flowerObj.AddComponent<ColorSource>();
 		startSrc->Init(5, 10, true);
-		startColorSrcObj.SetPosition(glm::vec3(0, 0, 0));
+
+		Entity& flowerObj2 = AddEntity("Flower 2");
+		flowerObj2.SetYawRotation(60);
+		ModelInstance* flowerRender2 = flowerObj2.AddComponent<ModelInstance>();
+		flowerRender2->Init(m_EnviromentModels["flower"].get());
+		flowerObj2.SetScale(glm::vec3(2.5f, 2.5f, 2.5f));
+		flowerObj2.SetPosition(glm::vec3(5.0f, 9.8f, -147.0f));
+		ColorSource* startSrc2 = flowerObj2.AddComponent<ColorSource>();
+		startSrc2->Init(5, 10, true);
+
+		Entity& flowerObj3 = AddEntity("Flower 3");
+		flowerObj3.SetYawRotation(0);
+		ModelInstance* flowerRender3 = flowerObj3.AddComponent<ModelInstance>();
+		flowerRender3->Init(m_EnviromentModels["flower"].get());
+		flowerObj3.SetScale(glm::vec3(2.5f, 2.5f, 2.5f));
+		flowerObj3.SetPosition(glm::vec3(51.5f, -10.2f, -42.0f));
+		ColorSource* startSrc3 = flowerObj3.AddComponent<ColorSource>();
+		startSrc3->Init(5, 10, true);
 
 		// House ---------------------
 		Entity& houseObj = AddEntity("House");
@@ -198,16 +213,13 @@ namespace lei3d
 		backpackObj->SetScale(glm::vec3(1.f, 1.f, 1.f));
 		backpackObj->SetPosition(glm::vec3(0.f, 60.f, 0.f));
 
-		Entity* colorObj = GetEntity("Start Color Area");
-		colorObj->GetComponent<ColorSource>()->radius = 0;
-
 		// AudioPlayer::PlaySFX("win.mp3");
 	}
 
 	void SceneIntro::OnUpdate()
 	{
-		Entity* colorObj = GetEntity("Start Color Area");
-		colorObj->GetComponent<ColorSource>()->radius += 0.8;
+		Entity* colorObj = GetEntity("Flower 1");
+		colorObj->GetComponent<ColorSource>()->radius = std::clamp(colorObj->GetComponent<ColorSource>()->radius + 0.8f, 0.0f, 10.0f);
 	}
 
 	void SceneIntro::OnPhysicsUpdate()
