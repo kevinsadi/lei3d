@@ -46,12 +46,19 @@ namespace lei3d
 	{
 		GuiScreen::Update(screenSize, mousePos);
 
-		// set color of color bar to be sin function of time (for testing)
 		GuiTextBox* flowersFoundTextbox = (GuiTextBox*)m_components[m_flowersFoundId];
 		flowersFoundTextbox->SetText(std::to_string(static_cast<int>(m_flowersFound)) + " / 3");
 
-		m_timer += Application::DeltaTime();
-		GuiTextBox* timerTextbox = (GuiTextBox*)m_components[m_timerTextboxId];
-		timerTextbox->SetText(std::to_string(static_cast<int>(std::floor(m_timer))));
+		if (m_flowersFound != 3)
+		{
+			m_timer += Application::DeltaTime();
+			GuiTextBox* timerTextbox = (GuiTextBox*)m_components[m_timerTextboxId];
+			timerTextbox->SetText(std::to_string(static_cast<int>(std::floor(m_timer))));
+		}
+	}
+
+	void BaseGuiScreen::AddFlower()
+	{
+		m_flowersFound++;
 	}
 } // namespace lei3d

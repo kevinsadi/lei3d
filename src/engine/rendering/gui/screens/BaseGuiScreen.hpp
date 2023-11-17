@@ -20,5 +20,6 @@ namespace lei3d
 		~BaseGuiScreen() override;
 
 		void Update(const glm::vec2& screenSize, const glm::vec2& mousePos) override;
+		void AddFlower();
 	};
 } // namespace lei3d
