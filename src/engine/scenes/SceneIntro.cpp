@@ -128,7 +128,7 @@ namespace lei3d
 		ModelInstance* flowerRender2 = flowerObj2.AddComponent<ModelInstance>();
 		flowerRender2->Init(m_EnviromentModels["flower"].get());
 		flowerObj2.SetScale(glm::vec3(2.5f, 2.5f, 2.5f));
-		flowerObj2.SetPosition(glm::vec3(5.0f, 9.8f, -147.0f));
+		flowerObj2.SetPosition(glm::vec3(5.0f, 8.8f, -147.0f));
 		ColorSource* startSrc2 = flowerObj2.AddComponent<ColorSource>();
 		startSrc2->Init(5, 10, true);
 		StaticCollider* flowerCollider2 = flowerObj2.AddComponent<StaticCollider>();
@@ -150,7 +150,7 @@ namespace lei3d
 		ModelInstance* flowerRender3 = flowerObj3.AddComponent<ModelInstance>();
 		flowerRender3->Init(m_EnviromentModels["flower"].get());
 		flowerObj3.SetScale(glm::vec3(2.5f, 2.5f, 2.5f));
-		flowerObj3.SetPosition(glm::vec3(51.5f, -10.2f, -42.0f));
+		flowerObj3.SetPosition(glm::vec3(51.5f, -10.6f, -42.0f));
 		ColorSource* startSrc3 = flowerObj3.AddComponent<ColorSource>();
 		startSrc3->Init(5, 10, true);
 		StaticCollider* flowerCollider3 = flowerObj3.AddComponent<StaticCollider>();
@@ -163,7 +163,7 @@ namespace lei3d
 				color_3 = true;
 				// this is a code smell, but I cannot think of a cleaner way to do this
 				dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).AddFlower();
-				AudioPlayer::GetInstance().PlaySFX("win.mp3");
+				AudioPlayer::GetInstance().PlaySFX("collect.mp3");
 			}
 		});
 
@@ -173,10 +173,14 @@ namespace lei3d
 		endSrc->Init(5, 10, false);
 		endColorSrcObj.SetPosition(glm::vec3(0, 0, 0));
 		TimerComponent* timerComponent = endColorSrcObj.AddComponent<TimerComponent>();
-		timerComponent->SetTargetTime(1.0f);
+		timerComponent->SetTargetTime(9.0f);
 		timerComponent->OnTimerEnd([&]() {
 			LEI_TRACE("Timer Ended!!!");
-			// SceneManager::SetScene("Test Kevin");
+			// this is still bad
+			AudioPlayer::GetInstance().PlaySFX("menu_reverse.mp3");
+			SceneManager::SetScene("Test Kevin");
+			dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).ResetFlowers();
+			dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).ResetTimer();
 		});
 
 		// House ---------------------
@@ -291,7 +295,7 @@ namespace lei3d
 			if (!m_Won)
 			{
 				m_Won = true;
-				colorObj4->GetComponent<TimerComponent>()->Start();
+				colorObj4->GetComponent<TimerComponent>()->StartTimer();
 			}
 		}
 	}

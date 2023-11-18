@@ -21,5 +21,7 @@ namespace lei3d
 
 		void Update(const glm::vec2& screenSize, const glm::vec2& mousePos) override;
 		void AddFlower();
+		void ResetFlowers();
+		void ResetTimer();
 	};
 } // namespace lei3d

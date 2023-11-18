@@ -61,4 +61,14 @@ namespace lei3d
 	{
 		m_flowersFound++;
 	}
+
+	void BaseGuiScreen::ResetFlowers()
+	{
+		m_flowersFound = 0;
+	}
+
+	void BaseGuiScreen::ResetTimer()
+	{
+		m_timer = 0;
+	}
 } // namespace lei3d

@@ -6,6 +6,7 @@
 #include "rendering/gui/GuiManager.hpp"
 #include "rendering/gui/components/GuiTextBox.hpp"
 #include "rendering/gui/components/GuiRect.hpp"
+#include "audio/AudioPlayer.hpp"
 
 namespace lei3d
 {
@@ -33,9 +34,8 @@ namespace lei3d
 			GuiComponent::Anchor::CENTER,
 			{ GuiComponent::Space::NORMALIZED, { 0.025, -.2 } },
 			{ GuiComponent::Space::PIXELS, { 699, 247.5 } },
-			{1, 1, 1, 1},
-			GetSkyLeiTexture()
-		);
+			{ 1, 1, 1, 1 },
+			GetSkyLeiTexture());
 		skyleilogo->m_alignCenter = true;
 
 		GuiRect* lei3dlogo = new GuiRect(
@@ -43,8 +43,7 @@ namespace lei3d
 			{ GuiComponent::Space::PIXELS, { -800, -250 } },
 			{ GuiComponent::Space::PIXELS, { 862.5, 203.5 } },
 			{ 1, 1, 1, 1 },
-			GetLei3dTexture()
-		);
+			GetLei3dTexture());
 
 		GuiTextBox* startGame = new GuiTextBox(
 			"START",
@@ -54,16 +53,22 @@ namespace lei3d
 			{ 0.827, 0.827, 0.827, 1 },
 			{ 0, 0, 0, 0 },
 			[]() {
+				AudioPlayer::GetInstance().PlaySFX("menu_reverse.mp3");
 				LEI_INFO("Starting game.");
 				GuiManager::Instance().CloseActiveScreen();
 				SceneManager::SetScene(1);
-			}
-		);
+			});
 
 		startGame->SetOnHover([this, startGame]() {
+			if (!m_enteredHover)
+			{
+				AudioPlayer::GetInstance().PlaySFX("menu_select.mp3");
+				m_enteredHover = true;
+			}
 			((GuiTextBox*)(this->m_components[startGame->GetId()]))->SetTextColor({ 0.522, 0.827, 0.965, 1 });
 		});
 		startGame->SetOnStopHover([this, startGame]() {
+			m_enteredHover = false;
 			((GuiTextBox*)(this->m_components[startGame->GetId()]))->SetTextColor({ 0.827, 0.827, 0.827, 1 });
 		});
 
@@ -86,4 +91,4 @@ namespace lei3d
 	{
 		// don't want to close screen if they press escape
 	}
-}
+} // namespace lei3d

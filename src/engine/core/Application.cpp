@@ -137,7 +137,7 @@ namespace lei3d
 
 		// INIT SCENE VIEWER ------------------------------
 		m_SceneView = std::make_unique<SceneView>();
-		m_SceneView->SetMode(SceneView::ModeScene);
+		m_SceneView->SetMode(SceneView::ModeGame);
 
 		// INIT AUDIO ENGINE ------------------------------
 		m_AudioPlayer = std::make_unique<AudioPlayer>();
