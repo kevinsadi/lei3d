@@ -22,7 +22,6 @@ namespace lei3d
 			std::function<void()> onClick = nullptr,
 			std::function<void()> onHover = nullptr,
 			std::function<void()> onStopHover = nullptr
-
         );
 		~GuiRect() override;
 

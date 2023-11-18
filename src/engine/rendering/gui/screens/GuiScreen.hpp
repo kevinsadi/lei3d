@@ -14,6 +14,7 @@ namespace lei3d
 		bool m_initialized = false;
 
 	protected:
+		bool m_shouldHideHUD = false;
 		virtual void Init();
 		std::unordered_map<unsigned, GuiComponent*> m_components;
 
@@ -24,6 +25,7 @@ namespace lei3d
 		void AddComponent(GuiComponent* guiComponent);
 		bool RemoveComponent(unsigned id);
 
+		virtual void HandleInput();
 		virtual void Update(const glm::vec2& screenSize, const glm::vec2& mousePos);
 		void Render(const glm::vec2& screenSize);
     };

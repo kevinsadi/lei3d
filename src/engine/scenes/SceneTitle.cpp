@@ -82,6 +82,8 @@ namespace lei3d
 		FollowCameraController* followCam = backpackObj.AddComponent<FollowCameraController>();
 		followCam->Init(*m_DefaultCamera, glm::vec3(0.0f, 5.0f, 0.0f));
 
+		backpackObj.SetYawRotation(180);
+
 		// PHYSICS PLAYGROUND---------------------
 		Entity& physicsPlaygroundObj = AddEntity("Physics Playground");
 		physicsPlaygroundObj.SetYawRotation(0);
