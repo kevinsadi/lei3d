@@ -8,6 +8,7 @@ namespace lei3d
 	private:
 		static int GetLei3dTexture();
 		static int GetSkyLeiTexture();
+		bool m_enteredHover = false;
 
 	protected:
 		void Init() override;
@@ -18,4 +19,4 @@ namespace lei3d
 
 		void HandleInput() override;
 	};
-}
+} // namespace lei3d

@@ -3,6 +3,7 @@
 #include "components/CharacterController.hpp"
 #include "components/SkyBox.hpp"
 #include "components/StaticCollider.hpp"
+#include "components/PlayerTriggerComponent.hpp"
 #include "core/Entity.hpp"
 #include "core/Scene.hpp"
 #include "physics/PhysicsWorld.hpp"
@@ -32,6 +33,10 @@ namespace lei3d
 		std::unique_ptr<Model> backpackModel;
 		std::unique_ptr<Model> playgroundModel;
 		std::unordered_map<std::string, std::unique_ptr<Model>> m_EnviromentModels;
+		bool color_1 = false;
+		bool color_2 = false;
+		bool color_3 = false;
+		bool m_Won = false;
 	};
 
 	extern std::unique_ptr<Scene> MakeSceneIntro();

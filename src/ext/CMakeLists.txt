@@ -331,7 +331,7 @@ set (BULLET_INCLUDE ${bullet_SOURCE_DIR}/src PARENT_SCOPE)
 FetchContent_Declare(
         miniaudio
         GIT_REPOSITORY  https://github.com/mackron/miniaudio.git
-        GIT_TAG         master
+        GIT_TAG         0.11.18
         GIT_SHALLOW     TRUE
         GIT_PROGRESS    TRUE
 )
