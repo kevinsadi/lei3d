@@ -1,76 +1,66 @@
 #include "MainMenuScreen.hpp"
 
-#include "SplashScreen.hpp"
-#include "rendering/gui/components/GuiTextBox.hpp"
-#include "Logging/Log.hpp"
+#include "core/SceneManager.hpp"
+#include "logging/Log.hpp"
 #include "rendering/gui/GuiManager.hpp"
+#include "rendering/gui/components/GuiTextBox.hpp"
 
 namespace lei3d
 {
+	void MainMenuScreen::Init()
+	{
+		GuiScreen::Init();
+
+		m_shouldHideHUD = true;
+
+		GuiTextBox* splashText = new GuiTextBox(
+			"SkyLei",
+			GuiComponent::Anchor::CENTER,
+			{ GuiComponent::Space::NORMALIZED, { 0, -.1 } },
+			{ GuiTextBox::LineHeightMetric::PT, 200 },
+			{ 0.827, 0.827, 0.827, 1 },
+			{ 0, 0, 0, 0 }
+		);
+
+		splashText->m_alignCenter = true;
+
+		GuiTextBox* startGame = new GuiTextBox(
+			"START",
+			GuiComponent::Anchor::CENTER,
+			{ GuiComponent::Space::NORMALIZED, { 0, 0.1 } },
+			{ GuiTextBox::LineHeightMetric::PT, 100 },
+			{ 0.827, 0.827, 0.827, 1 },
+			{ 0, 0, 0, 0 },
+			[]() {
+				LEI_INFO("Starting game.");
+				GuiManager::Instance().CloseActiveScreen();
+				SceneManager::SetScene(1);
+			}
+		);
+
+		startGame->SetOnHover([this, startGame]() {
+			((GuiTextBox*)(this->m_components[startGame->GetId()]))->SetTextColor({ 0.353, 0.353, 0.353, 1 });
+		});
+		startGame->SetOnStopHover([this, startGame]() {
+			((GuiTextBox*)(this->m_components[startGame->GetId()]))->SetTextColor({ 0.827, 0.827, 0.827, 1 });
+		});
+
+		startGame->m_alignCenter = true;
+
+		AddComponent(splashText);
+		AddComponent(startGame);
+	}
+
 	MainMenuScreen::MainMenuScreen()
 	{
-		
 	}
 
 	MainMenuScreen::~MainMenuScreen()
 	{
 	}
 
-	void MainMenuScreen::Init()
+	void MainMenuScreen::HandleInput()
 	{
-		GuiScreen::Init();
-
-		AddComponent(new GuiRect(
-			GuiComponent::Anchor::TOP_LEFT,
-			{ GuiComponent::Space::NORMALIZED, { 0, 0 } },
-			{ GuiComponent::Space::NORMALIZED, { 1, 1 } },
-			{0, 0, 0, 0.5}
-		));
-
-		GuiTextBox* closeButton = new GuiTextBox(
-			"Close",
-			GuiComponent::Anchor::TOP_LEFT,
-			{ GuiComponent::Space::PIXELS, { 50, 50 } },
-			{ GuiTextBox::LineHeightMetric::PT, 100 },
-			{0, 1, 1, 1},
-			{ 0.827, 0.827, 0.827, 0.5 },
-			[]() {
-				LEI_INFO("Button Clicked, Closing GUI Screen.");
-				GuiManager::Instance().CloseActiveScreen();
-			}
-		);
-
-		int closeButtonId = closeButton->GetId();
-		closeButton->SetOnHover([this, closeButtonId]() {
-			((GuiTextBox*)(this->m_components[closeButtonId]))->SetTextColor({ 1, 0, 0, 1 });
-		});
-		closeButton->SetOnStopHover([this, closeButtonId]() {
-			((GuiTextBox*)(this->m_components[closeButtonId]))->SetTextColor({ 0, 1, 1, 1 });
-		});
-
-		AddComponent(closeButton);
-
-		GuiTextBox* splashScreenButton  = new GuiTextBox(
-			"CLICK ME",
-			GuiComponent::Anchor::CENTER,
-			{ GuiComponent::Space::NORMALIZED, { 0, 0 } },
-			{ GuiTextBox::LineHeightMetric::PT, 100 },
-			{ 0, 1, 1, 1 },
-			{ 0, 0, 0, 0 },
-			[]() {
-				LEI_INFO("Button Clicked, Opening Splash Screen.");
-				GuiManager::Instance().QueueNextScreen(new SplashScreen());
-			}
-		);
-
-		int splashScreenButttonId = splashScreenButton->GetId();
-		splashScreenButton->SetOnHover([this, splashScreenButttonId]() {
-			((GuiTextBox*)(this->m_components[splashScreenButttonId]))->SetTextColor({ 1, 0, 0, 1 });
-		});
-		splashScreenButton->SetOnStopHover([this, splashScreenButttonId]() {
-			((GuiTextBox*)(this->m_components[splashScreenButttonId]))->SetTextColor({ 0, 1, 1, 1 });
-		});
-
-		AddComponent(splashScreenButton);
+		// don't want to close screen if they press escape
 	}
-} 
+}

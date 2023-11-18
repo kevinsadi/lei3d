@@ -43,6 +43,14 @@ namespace lei3d
 		return false;
 	}
 
+	void GuiScreen::HandleInput()
+	{
+		if (InputManager::GetInstance().isKeyPressed(GLFW_KEY_ESCAPE, InputManager::InputTarget::GUI))
+		{
+			GuiManager::Instance().CloseActiveScreen();
+		}
+	}
+
 	void GuiScreen::Update(const glm::vec2& screenSize, const glm::vec2& mousePos)
 	{
 		for (auto& guiComponent : m_components)

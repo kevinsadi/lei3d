@@ -119,6 +119,11 @@ namespace lei3d
 			pos += glm::vec3(m_position.second, 0);
 		}
 
+		if (m_alignCenter)
+		{
+			pos -= glm::vec3(SizeNormalized(screenSize) / 2.0f, 0);
+		}
+
 		return pos;
 	}
 
@@ -147,6 +152,11 @@ namespace lei3d
 		else if (m_position.first == Space::PIXELS)
 		{
 			pos += glm::vec3(m_position.second, 0);
+		}
+
+		if (m_alignCenter)
+		{
+			pos -= glm::vec3(SizePixels(screenSize) / 2.0f, 0);
 		}
 
 		return pos;

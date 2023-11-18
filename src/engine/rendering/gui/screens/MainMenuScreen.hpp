@@ -8,8 +8,10 @@ namespace lei3d
 	protected:
 		void Init() override;
 
-    public:
-        MainMenuScreen();
-        ~MainMenuScreen() override;
+	public:
+		MainMenuScreen();
+		~MainMenuScreen() override;
+
+		void HandleInput() override;
 	};
-} 
+}
