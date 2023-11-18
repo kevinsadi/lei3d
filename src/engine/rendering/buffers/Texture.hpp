@@ -11,7 +11,7 @@ namespace lei3d
 		unsigned int m_ID;
 
 	public:
-		Texture(const char* imgPath);
+		Texture(const char* imgPath, bool alpha = false);
 		void bind() const;
 		void unbind() const;
 

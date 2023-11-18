@@ -2,27 +2,49 @@
 
 #include "core/SceneManager.hpp"
 #include "logging/Log.hpp"
+#include "rendering/buffers/Texture.hpp"
 #include "rendering/gui/GuiManager.hpp"
 #include "rendering/gui/components/GuiTextBox.hpp"
+#include "rendering/gui/components/GuiRect.hpp"
 
 namespace lei3d
 {
+	int MainMenuScreen::GetLei3dTexture()
+	{
+		// image is 1725x407
+		static Texture tex = Texture("./data/textures/lei3d.png", true);
+		return tex.id();
+	}
+
+	int MainMenuScreen::GetSkyLeiTexture()
+	{
+		// image is 466x165
+		static Texture tex = Texture("./data/textures/SkyLei.png", true);
+		return tex.id();
+	}
+
 	void MainMenuScreen::Init()
 	{
 		GuiScreen::Init();
 
 		m_shouldHideHUD = true;
 
-		GuiTextBox* splashText = new GuiTextBox(
-			"SkyLei",
+		GuiRect* skyleilogo = new GuiRect(
 			GuiComponent::Anchor::CENTER,
-			{ GuiComponent::Space::NORMALIZED, { 0, -.1 } },
-			{ GuiTextBox::LineHeightMetric::PT, 200 },
-			{ 0.827, 0.827, 0.827, 1 },
-			{ 0, 0, 0, 0 }
+			{ GuiComponent::Space::NORMALIZED, { 0.025, -.2 } },
+			{ GuiComponent::Space::PIXELS, { 699, 247.5 } },
+			{1, 1, 1, 1},
+			GetSkyLeiTexture()
 		);
+		skyleilogo->m_alignCenter = true;
 
-		splashText->m_alignCenter = true;
+		GuiRect* lei3dlogo = new GuiRect(
+			GuiComponent::Anchor::BOTTOM_RIGHT,
+			{ GuiComponent::Space::PIXELS, { -800, -250 } },
+			{ GuiComponent::Space::PIXELS, { 862.5, 203.5 } },
+			{ 1, 1, 1, 1 },
+			GetLei3dTexture()
+		);
 
 		GuiTextBox* startGame = new GuiTextBox(
 			"START",
@@ -39,7 +61,7 @@ namespace lei3d
 		);
 
 		startGame->SetOnHover([this, startGame]() {
-			((GuiTextBox*)(this->m_components[startGame->GetId()]))->SetTextColor({ 0.353, 0.353, 0.353, 1 });
+			((GuiTextBox*)(this->m_components[startGame->GetId()]))->SetTextColor({ 0.522, 0.827, 0.965, 1 });
 		});
 		startGame->SetOnStopHover([this, startGame]() {
 			((GuiTextBox*)(this->m_components[startGame->GetId()]))->SetTextColor({ 0.827, 0.827, 0.827, 1 });
@@ -47,7 +69,8 @@ namespace lei3d
 
 		startGame->m_alignCenter = true;
 
-		AddComponent(splashText);
+		AddComponent(skyleilogo);
+		AddComponent(lei3dlogo);
 		AddComponent(startGame);
 	}
 
