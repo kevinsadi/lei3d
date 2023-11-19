@@ -10,6 +10,7 @@
 #include "components/FollowCameraController.hpp"
 #include "components/TriggerCollider.hpp"
 #include "components/TimerComponent.hpp"
+#include "components/PlayerTriggerComponent.hpp"
 
 #include "logging/GLDebug.hpp"
 #include "physics/PhysicsWorld.hpp"
@@ -65,11 +66,6 @@ namespace lei3d
 		CharacterController* characterController = backpackObj.AddComponent<CharacterController>();
 		characterController->Init(1.f, 3.f);
 
-		TriggerCollider* triggerCollider = backpackObj.AddComponent<TriggerCollider>();
-		std::vector<const btCollisionObject*> ignoredObjects;
-		ignoredObjects.push_back(characterController->getRigidBody());
-		triggerCollider->Init(characterController->getGroundCheckObj(), ignoredObjects);
-
 		FollowCameraController* followCam = backpackObj.AddComponent<FollowCameraController>();
 		followCam->Init(*m_DefaultCamera, glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -95,6 +91,11 @@ namespace lei3d
 		physicsPlaygroundCollider->Init();
 		physicsPlaygroundCollider->SetColliderToModel(*playgroundModel);
 
+		PlayerTriggerComponent* playerTrigger = physicsPlaygroundObj.AddComponent<PlayerTriggerComponent>();
+		playerTrigger->SetOnPlayerEntered([&]() {
+			LEI_TRACE("Player entered trigger collider");
+		});
+
 		// Test color source
 		Entity& startColorSrcObj = AddEntity("Start Color Area");
 		ColorSource* startSrc = startColorSrcObj.AddComponent<ColorSource>();
@@ -110,7 +111,7 @@ namespace lei3d
 			"data/skybox/anime_etheria/front.jpg", "data/skybox/anime_etheria/back.jpg" };
 		skybox->Init(faces);
 
-		AudioPlayer::GetInstance().PlayMusic("sus2.mp3", 0.8f);
+		AudioPlayer::GetInstance().PlayMusic("sus2.mp3", 0.1f);
 	}
 
 	void TestSceneKevin::OnReset()

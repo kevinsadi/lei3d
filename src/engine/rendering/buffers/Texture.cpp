@@ -7,7 +7,7 @@
 
 namespace lei3d
 {
-	Texture::Texture(const char* imgPath)
+	Texture::Texture(const char* imgPath, bool alpha)
 	{
 		// Create a texture buffer on GPU to store the image.
 		GLCall(glGenTextures(1, &m_ID));
@@ -24,11 +24,22 @@ namespace lei3d
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
 		// Load the image
-		unsigned char* img = stbi_load(imgPath, &m_Width, &m_Height, &m_nChannels, STBI_rgb);
-		GLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
-		LEI_ASSERT(img != nullptr, "Could Not Load Image! ", imgPath);
-		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_Width, m_Height, 0, GL_RGB, GL_UNSIGNED_BYTE, img));
-		stbi_image_free(img); // Don't need the image buffer once it's loaded into the texture.
+		if (!alpha)
+		{
+			unsigned char* img = stbi_load(imgPath, &m_Width, &m_Height, &m_nChannels, STBI_rgb);
+			GLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+			LEI_ASSERT(img != nullptr, "Could Not Load Image! ", imgPath);
+			GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_Width, m_Height, 0, GL_RGB, GL_UNSIGNED_BYTE, img));
+			stbi_image_free(img); // Don't need the image buffer once it's loaded into the texture.
+		}
+		else
+		{
+			unsigned char* img = stbi_load(imgPath, &m_Width, &m_Height, &m_nChannels, STBI_rgb_alpha);
+			GLCall(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+			LEI_ASSERT(img != nullptr, "Could Not Load Image! ", imgPath);
+			GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img));
+			stbi_image_free(img); // Don't need the image buffer once it's loaded into the texture.
+		}
 
 		LEI_INFO("Width: {}", m_Width);
 		LEI_INFO("Height: {}", m_Height);

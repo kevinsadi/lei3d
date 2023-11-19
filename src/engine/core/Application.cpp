@@ -10,6 +10,7 @@
 
 #include "rendering/gui/GuiManager.hpp"
 #include "rendering/gui/screens/MainMenuScreen.hpp"
+#include "rendering/gui/screens/PauseMenuScreen.hpp"
 
 namespace lei3d
 {
@@ -144,7 +145,7 @@ namespace lei3d
 
 		// INIT SCENE VIEWER ------------------------------
 		m_SceneView = std::make_unique<SceneView>();
-		m_SceneView->SetMode(SceneView::ModeScene);
+		m_SceneView->SetMode(SceneView::ModeGame);
 
 		// INIT AUDIO ENGINE ------------------------------
 		m_AudioPlayer = std::make_unique<AudioPlayer>();
@@ -154,6 +155,7 @@ namespace lei3d
 		m_PrimitiveRenderer.initialize(screenWidth, screenHeight);
 
 		GuiManager::Instance().Init();
+		GuiManager::Instance().QueueNextScreen(new MainMenuScreen());
 	}
 
 	void Application::FrameTick()
@@ -283,7 +285,7 @@ namespace lei3d
 		// open sample splash screen
 		if (im.isKeyPressed(GLFW_KEY_0))
 		{
-			GuiManager::Instance().QueueNextScreen(new MainMenuScreen());
+			GuiManager::Instance().QueueNextScreen(new PauseMenuScreen());
 		}
 
 		// Editor Specific Controls

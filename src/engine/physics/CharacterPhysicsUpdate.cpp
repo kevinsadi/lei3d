@@ -29,6 +29,8 @@ namespace lei3d
 	 */
 	void CharacterController::CharacterPhysicsUpdate::updateAction(btCollisionWorld* collisionWorld, btScalar deltaTime)
 	{
+		m_Character->setRestitution(0.0);
+
 		// Check if we are on the ground
 		GroundedCallback callback(m_Character);
 		collisionWorld->contactTest(m_GroundCheck, callback);
