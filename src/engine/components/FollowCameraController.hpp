@@ -27,7 +27,9 @@ namespace lei3d
 
 		void Init(Camera& camera, glm::vec3 offsetFromEntity);
 
+#ifdef EDITOR
 		void OnImGuiRender() override;
+#endif
 		void Update() override;
 
 		Camera* GetCamera() const;

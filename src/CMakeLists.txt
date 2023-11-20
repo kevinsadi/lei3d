@@ -22,7 +22,7 @@ target_include_directories(LeiEditor_exe PRIVATE
         engine
         ${IMGUI_INCLUDE}
         )
-target_link_libraries(LeiEditor_exe PRIVATE lei3d_lib glfw glad imgui glm stb_image miniaudio spdlog assimp libbullet3)
+target_link_libraries(LeiEditor_exe PRIVATE leieditor_lib glfw glad imgui glm stb_image miniaudio spdlog assimp libbullet3)
 
 #-------------------------------------------------------------------------------------
 # Game

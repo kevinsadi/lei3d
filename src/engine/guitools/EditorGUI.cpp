@@ -5,6 +5,7 @@
 
 #include <string>
 
+#ifdef EDITOR
 namespace lei3d
 {
 	void EditorGUI::RenderUI()
@@ -96,3 +97,4 @@ namespace lei3d
 	}
 
 } // namespace lei3d
+#endif

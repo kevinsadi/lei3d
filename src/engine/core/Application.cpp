@@ -37,10 +37,12 @@ namespace lei3d
 		glfwDestroyWindow(m_Window);
 		glfwTerminate();
 
+#ifdef EDITOR
 		// Shutdown IMGUI
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
+#endif
 	}
 
 	void Application::Run()
@@ -113,6 +115,7 @@ namespace lei3d
 		// set glfw input callbacks before imgui, so it initializes properly for imgui as well
 		InputManager::initialize(m_Window);
 
+#ifdef EDITOR
 		// IMGUI SETUP --------------------------------
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -128,6 +131,7 @@ namespace lei3d
 		// AppGUI --------------------------------
 		m_EditorGUI = std::make_unique<EditorGUI>();
 		SetIMGUIActive(false);
+#endif
 
 		// CREATE SCENES --------------------------------
 		SceneManager& sm = SceneManager::GetInstance();
@@ -145,7 +149,11 @@ namespace lei3d
 
 		// INIT SCENE VIEWER ------------------------------
 		m_SceneView = std::make_unique<SceneView>();
+#ifdef EDITOR
+		m_SceneView->SetMode(SceneView::ModeScene);
+#else
 		m_SceneView->SetMode(SceneView::ModeGame);
+#endif
 
 		// INIT AUDIO ENGINE ------------------------------
 		m_AudioPlayer = std::make_unique<AudioPlayer>();
@@ -176,7 +184,9 @@ namespace lei3d
 
 		Update();
 		Render();
+#ifdef EDITOR
 		ImGuiRender();
+#endif
 
 		glfwPollEvents();
 		glfwSwapBuffers(m_Window);
@@ -201,12 +211,14 @@ namespace lei3d
 		Scene& scene = SceneManager::GetInstance().ActiveScene();
 		scene.Update();
 
+#ifdef EDITOR
 		ImGuiIO& io = ImGui::GetIO();
 		if (io.WantCaptureMouse || io.WantCaptureKeyboard)
 		{
 			// nothing
 		}
 		else
+#endif
 		{
 			ProcessInput();
 			m_SceneView->Update(scene);
@@ -219,6 +231,7 @@ namespace lei3d
 		scene.PhysicsUpdate();
 	}
 
+#ifdef EDITOR
 	void Application::SetIMGUIActive(bool uiActive)
 	{
 		m_ImGUIActive = uiActive;
@@ -232,6 +245,7 @@ namespace lei3d
 			InputManager::GetInstance().giveInputFocus(InputManager::InputTarget::GAME);
 		}
 	}
+#endif
 
 	void Application::Render()
 	{
@@ -242,6 +256,7 @@ namespace lei3d
 		// SceneManager::ActiveScene().GetPhysicsWorld().m_dynamicsWorld->debugDrawWorld();
 	}
 
+#ifdef EDITOR
 	void Application::ImGuiRender()
 	{
 		if (m_ImGUIActive)
@@ -257,6 +272,7 @@ namespace lei3d
 			ImGui_ImplOpenGL3_RenderDrawData(drawData);
 		}
 	}
+#endif
 
 	SceneView& Application::GetSceneView()
 	{
@@ -288,11 +304,13 @@ namespace lei3d
 			GuiManager::Instance().QueueNextScreen(new PauseMenuScreen());
 		}
 
+#ifdef EDITOR
 		// Editor Specific Controls
 		if (im.isKeyPressed(GLFW_KEY_TAB, m_ImGUIActive ? InputManager::InputTarget::IMGUI : InputManager::InputTarget::GAME))
 		{
 			SetIMGUIActive(!m_ImGUIActive);
 		}
+#endif
 	}
 
 	GLFWwindow* Application::Window()
