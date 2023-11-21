@@ -83,7 +83,7 @@ namespace lei3d
 
 		ModelInstance* playgroundRender = physicsPlaygroundObj.AddComponent<ModelInstance>();
 		playgroundRender->Init(playgroundModel.get());
-		physicsPlaygroundObj.SetScale(glm::vec3(0.2f, 0.2f, 0.2f));
+		physicsPlaygroundObj.SetScale(glm::vec3(0.15f, 0.15f, 0.15f));
 		physicsPlaygroundObj.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 		physicsPlaygroundObj.SetYawRotation(0);
 
@@ -93,7 +93,7 @@ namespace lei3d
 
 		PlayerTriggerComponent* playerTrigger = physicsPlaygroundObj.AddComponent<PlayerTriggerComponent>();
 		playerTrigger->SetOnPlayerEntered([&]() {
-			LEI_TRACE("Player entered trigger collider");
+			// LEI_TRACE("Player entered trigger collider");
 		});
 
 		// Test color source
