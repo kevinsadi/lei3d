@@ -101,9 +101,11 @@ namespace lei3d
 		}
 	}
 
+#ifdef EDITOR
 	void TriggerCollider::OnImGuiRender()
 	{
 	}
+#endif
 
 	void TriggerCollider::OnReset()
 	{

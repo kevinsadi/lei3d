@@ -3,7 +3,9 @@
 #include "core/SceneManager.hpp"
 #include "core/SceneView.hpp"
 
+#ifdef EDITOR
 #include "guitools/EditorGUI.hpp"
+#endif
 
 #include "rendering/PrimitiveRenderer.hpp"
 #include "rendering/RenderSystem.hpp"
@@ -38,7 +40,9 @@ namespace lei3d
 		GLFWwindow* m_Window = nullptr;
 
 		// TODO: Refactor things into editor/game
+#ifdef EDITOR
 		std::unique_ptr<EditorGUI> m_EditorGUI;
+#endif
 		std::unique_ptr<AudioPlayer> m_AudioPlayer;
 		std::unique_ptr<SceneView> m_SceneView;
 
@@ -63,7 +67,9 @@ namespace lei3d
 
 		void Run(); // Run the app.
 
+#ifdef EDITOR
 		void SetIMGUIActive(bool uiActive);
+#endif
 
 		static GLFWwindow* Window();
 		static float DeltaTime();
@@ -86,7 +92,10 @@ namespace lei3d
 		void Update();
 		void FixedUpdate();
 		void Render();
+
+#ifdef EDITOR
 		void ImGuiRender();
+#endif
 
 		void ProcessInput();
 	};

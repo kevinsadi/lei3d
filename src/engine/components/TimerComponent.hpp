@@ -20,6 +20,8 @@ namespace lei3d
 		void OnTimerEnd(const std::function<void()>& event) { m_Event = event; }
 	private:
 		void Update() override;
+#ifdef EDITOR
 		void OnImGuiRender() override;
+#endif
 	};
 }

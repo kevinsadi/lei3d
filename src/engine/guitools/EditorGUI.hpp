@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef EDITOR
 #include <imgui.h>
 
 namespace lei3d
@@ -13,3 +14,4 @@ namespace lei3d
 		void RenderUI(); // DON"T MAKE THIS CONST
 	};
 } // namespace lei3d
+#endif

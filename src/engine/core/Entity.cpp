@@ -74,6 +74,7 @@ namespace lei3d
 		}
 	}
 
+#ifdef EDITOR
 	void Entity::OnEditorUpdate()
 	{
 		for (auto& component : m_Components)
@@ -81,6 +82,7 @@ namespace lei3d
 			component->OnEditorUpdate();
 		}
 	}
+#endif
 
 	const std::string& Entity::GetName() const
 	{
@@ -140,6 +142,7 @@ namespace lei3d
 		return model;
 	}
 
+#ifdef EDITOR
 	void Entity::NameGUI()
 	{
 		constexpr int MAX_NAME_SIZE = 100;
@@ -185,6 +188,7 @@ namespace lei3d
 			SetPosition(glm::vec3(x, y, z));
 		}
 	}
+#endif
 
 	btTransform Entity::getBTTransform()
 	{
@@ -199,6 +203,7 @@ namespace lei3d
 		m_Transform.position = btTransformToVec3(btTrans);
 	}
 
+#ifdef EDITOR
 	void Entity::ShowInspectorGUI()
 	{
 		ImGui::Begin("Inspector");
@@ -215,4 +220,5 @@ namespace lei3d
 		ImGui::SetWindowPos(ImVec2(300, 0), ImGuiCond_Once);
 		ImGui::End();
 	}
+#endif
 } // namespace lei3d

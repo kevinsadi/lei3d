@@ -68,8 +68,10 @@ namespace lei3d
 		void Load();
 		void Unload();
 
+#ifdef EDITOR
 		//GUI
 		void ShowHeirarchyGUI();
+#endif
 
 		// TODO: Abstract scene creation/loading into files: https://trello.com/c/eC66QGuD/25-define-scene-file-format
 		// Right now we use this virtual Load function to load all the objs in code.

@@ -1,6 +1,7 @@
 #include "Camera.hpp"
 
 #include "core/InputManager.hpp"
+#include "core/AppSettings.hpp"
 #include <GLFW/glfw3.h>
 
 namespace lei3d
@@ -48,8 +49,8 @@ namespace lei3d
 		float xoffset = xpos;
 		float yoffset = ypos;
 
-		xoffset *= MOUSE_SENSITIVITY;
-		yoffset *= MOUSE_SENSITIVITY;
+		xoffset *= AppSettings::MouseSpeed;
+		yoffset *= AppSettings::MouseSpeed;
 
 		m_Yaw += xoffset;
 		m_Pitch += yoffset;

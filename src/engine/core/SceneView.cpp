@@ -56,6 +56,7 @@ namespace lei3d
 			Reset(SceneManager::ActiveScene());
 		}
 
+#ifdef EDITOR
 		if (im.isKeyPressed(GLFW_KEY_P))
 		{
 			TogglePlayPause(SceneManager::ActiveScene());
@@ -84,6 +85,7 @@ namespace lei3d
 
 		ImGui::Text("Fly Camera: ");
 		m_FlyCamera->OnImGuiRender();
+#endif
 	}
 
 	void SceneView::TogglePlayPause(Scene& scene)
@@ -102,7 +104,12 @@ namespace lei3d
 
 	void SceneView::Reset(Scene& scene)
 	{
+#ifdef EDITOR
 		SetMode(SceneView::ModeScene);
+#endif
 		scene.Reset();
+#ifndef EDITOR
+		scene.Play();
+#endif
 	}
 } // namespace lei3d

@@ -172,6 +172,7 @@ namespace lei3d
 		}
 	}
 
+#ifdef EDITOR
 	void Scene::ShowHeirarchyGUI()
 	{
 		bool* p_open;
@@ -248,6 +249,7 @@ namespace lei3d
 		ImGui::SetWindowPos(ImVec2(0, 500), ImGuiCond_Once);
 		ImGui::End();
 	}
+#endif
 
 	void Scene::Destroy()
 	{

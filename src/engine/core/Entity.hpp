@@ -19,7 +19,7 @@ namespace lei3d
 	struct Transform
 	{
 		glm::vec3 position;
-		float	  yawRotation;
+		float yawRotation;
 		glm::vec3 scale;
 	};
 
@@ -30,7 +30,7 @@ namespace lei3d
 	{
 	private:
 		std::vector<std::unique_ptr<Component>> m_Components;
-		std::string								m_Name;
+		std::string m_Name;
 
 	public:
 		Transform m_Transform;
@@ -48,7 +48,9 @@ namespace lei3d
 		void OnDestroy();
 		void OnReset();
 
+#ifdef EDITOR
 		void OnEditorUpdate();
+#endif
 
 		glm::mat4 GetTranslationMat() const;
 		glm::mat4 GetRotationMat() const;
@@ -60,15 +62,17 @@ namespace lei3d
 		void SetYawRotation(const float yawRotation);
 
 		btTransform getBTTransform();
-		void		setFromBTTransform(const btTransform& btTrans);
+		void setFromBTTransform(const btTransform& btTrans);
 
 		const std::string& GetName() const;
-		void			   SetName(const std::string& name);
+		void SetName(const std::string& name);
 
-		//TODO: Consider refactoring Editor GUIs to separate class
+#ifdef EDITOR
+		// TODO: Consider refactoring Editor GUIs to separate class
 		void NameGUI();
 		void TransformGUI();
 		void ShowInspectorGUI();
+#endif
 
 		/*
 		 * Component System:
