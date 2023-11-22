@@ -57,7 +57,7 @@ namespace lei3d
 		const std::string flowerPath = "data/models/leveldesignobj/flower/flower_export_2.obj";
 		m_EnviromentModels.insert(std::make_pair("flower", std::make_unique<Model>(flowerPath)));
 
-		const std::string islandPath = "data/models/leveldesignobj/island/island.obj";
+		const std::string islandPath = "data/models/environment/flat_island_3.gltf";
 		m_EnviromentModels.insert(std::make_pair("island", std::make_unique<Model>(islandPath)));
 
 		const std::string housePath = "data/models/leveldesignobj/house/house_texture.obj";
@@ -220,8 +220,8 @@ namespace lei3d
 
 		// Islands ---------------------
 		Entity& islandObj = AddEntity("Island");
-		islandObj.SetScale(glm::vec3(30.0f, 30.0f, 30.0f));
-		islandObj.SetPosition(glm::vec3(20.0f, -20.5f, -44.0f));
+		islandObj.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj.SetPosition(glm::vec3(20.0f, -10.5f, -44.0f));
 		islandObj.SetYawRotation(0);
 
 		ModelInstance* islandRender = islandObj.AddComponent<ModelInstance>();
@@ -234,8 +234,8 @@ namespace lei3d
 		//
 		Entity& islandObj2 = AddEntity("Island2");
 		islandObj2.SetYawRotation(0);
-		islandObj2.SetScale(glm::vec3(20.0f, 20.0f, 20.0f));
-		islandObj2.SetPosition(glm::vec3(0.0f, 0.0f, -154.0f));
+		islandObj2.SetScale(glm::vec3(50.0f, 50.0f, 50.0f));
+		islandObj2.SetPosition(glm::vec3(0.0f, 9.0f, -154.0f));
 
 		ModelInstance* islandRender2 = islandObj2.AddComponent<ModelInstance>();
 		islandRender2->Init(m_EnviromentModels["island"].get());
