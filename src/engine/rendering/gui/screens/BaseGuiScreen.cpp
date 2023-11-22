@@ -9,7 +9,6 @@ namespace lei3d
 	void BaseGuiScreen::Init()
 	{
 		GuiScreen::Init();
-
 		GuiTextBox* flowersFoundTextbox = new GuiTextBox(
 			std::to_string(m_timer),
 			GuiComponent::Anchor::TOP_LEFT,
@@ -53,7 +52,8 @@ namespace lei3d
 		{
 			m_timer += Application::DeltaTime();
 			GuiTextBox* timerTextbox = (GuiTextBox*)m_components[m_timerTextboxId];
-			timerTextbox->SetText(std::to_string(static_cast<int>(std::floor(m_timer))));
+			int intTimer = static_cast<int>(std::floor(m_timer));
+			timerTextbox->SetText(std::format("{:01d}:{:02d}", intTimer / 60, intTimer % 60));
 		}
 	}
 
