@@ -65,7 +65,7 @@ namespace lei3d
 		m_Collider = new btCapsuleShape(btScalar{ width }, btScalar{ height });
 		m_Collider->setMargin(0.0);
 
-		btScalar mass{ 10.f };
+		btScalar mass{ 7.f };
 		btVector3 localInertia{ 0.0f, 0.0f, 0.0f };
 		m_Collider->calculateLocalInertia(mass, localInertia);
 
