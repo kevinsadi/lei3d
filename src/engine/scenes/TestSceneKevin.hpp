@@ -21,9 +21,13 @@ namespace lei3d
 		std::unique_ptr<Model> backpackModel;
 		std::unique_ptr<Model> playgroundModel;
 
-		std::vector<std::unique_ptr<Model>> m_EnviromentModels;
+		std::unordered_map<std::string, std::unique_ptr<Model>> m_EnviromentModels;
+		bool color_1 = false;
+		bool color_2 = false;
+		bool color_3 = false;
+		bool m_Won = false;
 
-		//void Initialize
+		// void Initialize
 	};
 
 	extern std::unique_ptr<Scene> MakeTestSceneKevin();
