@@ -38,7 +38,9 @@ namespace lei3d
 
 		Camera& ActiveCamera(const Scene& scene) const;
 
+#ifdef EDITOR
 		void OnImGuiRender(Scene& scene);
+#endif
 		void ProcessInput();
 	private:
 		void TogglePlayPause(Scene& scene);

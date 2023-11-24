@@ -170,6 +170,7 @@ namespace lei3d
 		return m_CharacterPhysicsUpdate->getRigidBody();
 	}
 
+#ifdef EDITOR
 	void CharacterController::OnImGuiRender()
 	{
 		if (ImGui::CollapsingHeader("Character Controller"))
@@ -190,5 +191,6 @@ namespace lei3d
 			ImGui::InputFloat("Death Plane Y", &m_deathPlaneY);
 		}
 	}
+#endif
 
 } // namespace lei3d

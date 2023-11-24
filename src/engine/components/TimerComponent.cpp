@@ -29,6 +29,7 @@ namespace lei3d
 		}
 	}
 
+#ifdef EDITOR
 	void TimerComponent::OnImGuiRender()
 	{
 		if (ImGui::CollapsingHeader("Timer"))
@@ -37,4 +38,5 @@ namespace lei3d
 			ImGui::Text("Started: %s", m_Start ? "True" : "False");
 		}
 	}
+#endif
 }

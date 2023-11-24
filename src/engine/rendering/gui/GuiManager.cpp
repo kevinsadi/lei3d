@@ -80,7 +80,8 @@ namespace lei3d
 
 	void GuiManager::RenderGui(const glm::vec2& screenSize)
 	{
-		m_baseScreen->Render(screenSize);
+		if (!(m_activeScreen && m_activeScreen->m_shouldHideHUD))
+			m_baseScreen->Render(screenSize);
 
 		if (m_activeScreen)
 			m_activeScreen->Render(screenSize);
@@ -99,14 +100,8 @@ namespace lei3d
 
 		if (m_activeScreen)
 		{
-			if (InputManager::GetInstance().isKeyPressed(GLFW_KEY_ESCAPE, InputManager::InputTarget::GUI))
-			{
-				CloseActiveScreen();
-			}
-			else
-			{
-				m_activeScreen->Update(screenSize, mousePos);
-			}
+			m_activeScreen->HandleInput();
+			m_activeScreen->Update(screenSize, mousePos);
 		}
 	}
 }

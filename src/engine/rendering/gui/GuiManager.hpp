@@ -5,14 +5,14 @@
 #include "rendering/Shader.hpp"
 #include "fontrenderer/FontRenderer.hpp"
 
-namespace lei3d 
+namespace lei3d
 {
 	class GuiScreen;
 	class GuiComponent;
 
 	class GuiManager
-    {
-    private:
+	{
+	private:
 		GuiScreen* m_baseScreen = nullptr;
 		GuiScreen* m_activeScreen = nullptr;
 
@@ -40,5 +40,5 @@ namespace lei3d
 
 		void RenderGui(const glm::vec2& screenSize);
 		void UpdateGui(const glm::vec2& screenSize, const glm::vec2& mousePos);
-    };
-}
+	};
+} // namespace lei3d

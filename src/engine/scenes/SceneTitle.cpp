@@ -74,13 +74,15 @@ namespace lei3d
 		// modelRender->Init(backpackModel.get());
 		backpackObj.SetScale(glm::vec3(1.f, 1.f, 1.f));
 		backpackObj.SetPosition(glm::vec3(0.f, 26.f, 35.f));
-		backpackObj.SetYawRotation(0);
+		backpackObj.SetYawRotation(90);
 
 		// CharacterController* characterController = backpackObj.AddComponent<CharacterController>();
 		// characterController->Init(1.f, 3.f);
 
 		FollowCameraController* followCam = backpackObj.AddComponent<FollowCameraController>();
 		followCam->Init(*m_DefaultCamera, glm::vec3(0.0f, 5.0f, 0.0f));
+
+		backpackObj.SetYawRotation(0);
 
 		// PHYSICS PLAYGROUND---------------------
 		Entity& physicsPlaygroundObj = AddEntity("Physics Playground");

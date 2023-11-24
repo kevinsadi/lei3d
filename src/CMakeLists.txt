@@ -22,7 +22,7 @@ target_include_directories(LeiEditor_exe PRIVATE
         engine
         ${IMGUI_INCLUDE}
         )
-target_link_libraries(LeiEditor_exe PRIVATE lei3d_lib glfw glad imgui glm stb_image miniaudio spdlog assimp libbullet3)
+target_link_libraries(LeiEditor_exe PRIVATE leieditor_lib glfw glad imgui glm stb_image miniaudio spdlog assimp libbullet3)
 
 #-------------------------------------------------------------------------------------
 # Game
@@ -37,11 +37,10 @@ target_include_directories(SkyLei_exe PRIVATE
         ${GLFW_INCLUDE}
         ${GLAD_INCLUDE}
         ${IMGUI_INCLUDE}
-        ${SPDLOG_INCLUDE}
         ${BULLET_INCLUDE}
         ${MINIAUDIO_INCLUDE}
         ${STB_INCLUDE}
         ${ASSIMP_INCLUDE}
         ${GLM_INCLUDE}
         )
-target_link_libraries(SkyLei_exe PRIVATE lei3d_lib glfw glad imgui glm stb_image miniaudio spdlog assimp libbullet3)
+target_link_libraries(SkyLei_exe PRIVATE lei3d_lib glfw glad imgui glm stb_image miniaudio assimp libbullet3)

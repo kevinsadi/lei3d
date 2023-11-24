@@ -29,6 +29,8 @@ namespace lei3d
 	 */
 	void CharacterController::CharacterPhysicsUpdate::updateAction(btCollisionWorld* collisionWorld, btScalar deltaTime)
 	{
+		m_Character->setRestitution(0.0);
+
 		// Check if we are on the ground
 		GroundedCallback callback(m_Character);
 		collisionWorld->contactTest(m_GroundCheck, callback);
@@ -95,7 +97,7 @@ namespace lei3d
 
 		if (im.isKeyPressed(GLFW_KEY_SPACE) && onGround)
 		{
-			v = v + btVector3(0, m_Controller.m_jumpPower, 0);
+			v = v + btVector3(0, m_Controller.m_jumpPower * Application::DeltaTime(), 0);
 		}
 
 		m_Character->setLinearVelocity(v);
@@ -150,7 +152,7 @@ namespace lei3d
 	{
 		constexpr float EPSILON = 0.1f;
 		const float speed = glm::length(prevVelocity);
-		if (speed != 0 && glm::length(wishDir) < EPSILON) // Only factor in friction on deceleration.
+		if (speed != 0) // Only factor in friction on deceleration.
 		{
 			const float drop = speed * m_Controller.m_friction * Application::DeltaTime(); // THIS MIGHT HAVE TO BE MULTIPLIED BY DELTA TIME??
 			prevVelocity *= std::max(speed - drop, 0.0f) / speed;						   // Friction fall off

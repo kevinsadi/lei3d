@@ -20,9 +20,11 @@ namespace lei3d
 		m_OffsetFromEntity = offsetFromEntity;
 	}
 
+#ifdef EDITOR
 	void FollowCameraController::OnImGuiRender()
 	{
 	}
+#endif
 
 	void FollowCameraController::Update()
 	{

@@ -59,6 +59,8 @@ namespace lei3d
 
 		unsigned GetId() const;
 
+		bool m_alignCenter = false;
+
 	protected:
 		friend class GuiScreen;
 

@@ -13,21 +13,21 @@ namespace lei3d
 	{
 	public:
 		// CHARACTER CONTROLLER PARAMETERS
-		float m_accel = 50.0f;
-		float m_airAccel = 300.0f;
-		float m_maxSpeed = 100.0f;
+		float m_accel = 300.0f;
+		float m_airAccel = 700.0f;
+		float m_maxSpeed = 30.0f;
 		float m_maxAirSpeed = 20.575f;
 
-		float m_friction = 19.0f;
+		float m_friction = 10.0f;
 		// float m_airFriction = 0.25f;
 
-		float m_jumpPower = 30.f;
+		float m_jumpPower = 2000.f;
 		// float m_jumpHeight = 1.f;
 
 		// float m_maxSpeed = 40.0f;
 		//  float m_maxVelocity = 100;
 
-		float m_deathPlaneY = -1000.0f;
+		float m_deathPlaneY = -900.0f;
 
 		bool m_IsInDynamicsWorld;
 
@@ -78,7 +78,9 @@ namespace lei3d
 		void Start() override;
 		void Update() override;
 		void PhysicsUpdate() override;
+#ifdef EDITOR
 		void OnImGuiRender() override;
+#endif
 		void OnReset() override;
 
 		bool IsGrounded() const;

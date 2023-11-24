@@ -23,7 +23,9 @@ namespace lei3d
 		virtual void OnDestroy() {}
 		virtual void OnReset() {}
 
+#ifdef EDITOR
 		virtual void OnEditorUpdate() {}
 		virtual void OnImGuiRender() {}
+#endif
 	};
 } // namespace lei3d

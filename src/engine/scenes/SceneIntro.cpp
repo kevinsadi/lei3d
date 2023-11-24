@@ -1,6 +1,9 @@
 #include "SceneIntro.hpp"
 
 #include "core/Application.hpp"
+#include "rendering/gui/GuiManager.hpp"
+#include "rendering/gui/screens/BaseGuiScreen.hpp"
+#include "rendering/gui/screens/GuiScreen.hpp"
 
 #include "components/FollowCameraController.hpp"
 #include "components/ModelInstance.hpp"
@@ -12,6 +15,8 @@
 #include "physics/PhysicsWorld.hpp"
 
 #include <glm/glm.hpp>
+
+#include <algorithm>
 
 namespace lei3d
 {
@@ -52,7 +57,7 @@ namespace lei3d
 		const std::string flowerPath = "data/models/leveldesignobj/flower/flower_export_2.obj";
 		m_EnviromentModels.insert(std::make_pair("flower", std::make_unique<Model>(flowerPath)));
 
-		const std::string islandPath = "data/models/leveldesignobj/island/island.obj";
+		const std::string islandPath = "data/models/environment/flat_island_3.gltf";
 		m_EnviromentModels.insert(std::make_pair("island", std::make_unique<Model>(islandPath)));
 
 		const std::string housePath = "data/models/leveldesignobj/house/house_texture.obj";
@@ -95,20 +100,88 @@ namespace lei3d
 		physicsPlaygroundCollider->Init();
 		physicsPlaygroundCollider->SetColliderToModel(*playgroundModel);
 
-		// Flower ---------------------
-		Entity& flowerObj = AddEntity("Flower");
-		flowerObj.SetYawRotation(0);
-
-		ModelInstance* flowerRender = flowerObj.AddComponent<ModelInstance>();
+		// Flowers ---------------------
+		Entity& flowerObj1 = AddEntity("Flower 1");
+		flowerObj1.SetYawRotation(0);
+		ModelInstance* flowerRender = flowerObj1.AddComponent<ModelInstance>();
 		flowerRender->Init(m_EnviromentModels["flower"].get());
-		flowerObj.SetScale(glm::vec3(2.5f, 2.5f, 2.5f));
-		flowerObj.SetPosition(glm::vec3(0.0f, 50.3f, 0.0f));
-
-		// color source
-		Entity& startColorSrcObj = AddEntity("Start Color Area");
-		ColorSource* startSrc = startColorSrcObj.AddComponent<ColorSource>();
+		flowerObj1.SetScale(glm::vec3(2.5f, 2.5f, 2.5f));
+		flowerObj1.SetPosition(glm::vec3(0.0f, 51.3f, 0.0f));
+		ColorSource* startSrc = flowerObj1.AddComponent<ColorSource>();
 		startSrc->Init(5, 10, true);
-		startColorSrcObj.SetPosition(glm::vec3(0, 0, 0));
+		StaticCollider* flowerCollider1 = flowerObj1.AddComponent<StaticCollider>();
+		flowerCollider1->Init();
+		flowerCollider1->SetColliderToModel(*m_EnviromentModels["flower"].get());
+		PlayerTriggerComponent* playerTrigger1 = flowerObj1.AddComponent<PlayerTriggerComponent>();
+		playerTrigger1->SetOnPlayerEntered([&]() {
+			if (!color_1)
+			{
+				color_1 = true;
+				// this is a code smell, but I cannot think of a cleaner way to do this
+				dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).AddFlower();
+				AudioPlayer::GetInstance().PlaySFX("collect.mp3");
+			}
+		});
+
+		Entity& flowerObj2 = AddEntity("Flower 2");
+		flowerObj2.SetYawRotation(60);
+		ModelInstance* flowerRender2 = flowerObj2.AddComponent<ModelInstance>();
+		flowerRender2->Init(m_EnviromentModels["flower"].get());
+		flowerObj2.SetScale(glm::vec3(2.5f, 2.5f, 2.5f));
+		flowerObj2.SetPosition(glm::vec3(5.0f, 8.8f, -147.0f));
+		ColorSource* startSrc2 = flowerObj2.AddComponent<ColorSource>();
+		startSrc2->Init(5, 10, true);
+		StaticCollider* flowerCollider2 = flowerObj2.AddComponent<StaticCollider>();
+		flowerCollider2->Init();
+		flowerCollider2->SetColliderToModel(*m_EnviromentModels["flower"].get());
+		PlayerTriggerComponent* playerTrigger2 = flowerObj2.AddComponent<PlayerTriggerComponent>();
+		playerTrigger2->SetOnPlayerEntered([&]() {
+			if (!color_2)
+			{
+				color_2 = true;
+				// this is a code smell, but I cannot think of a cleaner way to do this
+				dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).AddFlower();
+				AudioPlayer::GetInstance().PlaySFX("collect.mp3");
+			}
+		});
+
+		Entity& flowerObj3 = AddEntity("Flower 3");
+		flowerObj3.SetYawRotation(0);
+		ModelInstance* flowerRender3 = flowerObj3.AddComponent<ModelInstance>();
+		flowerRender3->Init(m_EnviromentModels["flower"].get());
+		flowerObj3.SetScale(glm::vec3(2.5f, 2.5f, 2.5f));
+		flowerObj3.SetPosition(glm::vec3(51.5f, -10.6f, -42.0f));
+		ColorSource* startSrc3 = flowerObj3.AddComponent<ColorSource>();
+		startSrc3->Init(5, 10, true);
+		StaticCollider* flowerCollider3 = flowerObj3.AddComponent<StaticCollider>();
+		flowerCollider3->Init();
+		flowerCollider3->SetColliderToModel(*m_EnviromentModels["flower"].get());
+		PlayerTriggerComponent* playerTrigger3 = flowerObj3.AddComponent<PlayerTriggerComponent>();
+		playerTrigger3->SetOnPlayerEntered([&]() {
+			if (!color_3)
+			{
+				color_3 = true;
+				// this is a code smell, but I cannot think of a cleaner way to do this
+				dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).AddFlower();
+				AudioPlayer::GetInstance().PlaySFX("collect.mp3");
+			}
+		});
+
+		// Final Color Source ------------------------------
+		Entity& endColorSrcObj = AddEntity("endColor");
+		ColorSource* endSrc = endColorSrcObj.AddComponent<ColorSource>();
+		endSrc->Init(5, 10, false);
+		endColorSrcObj.SetPosition(glm::vec3(0, 0, 0));
+		TimerComponent* timerComponent = endColorSrcObj.AddComponent<TimerComponent>();
+		timerComponent->SetTargetTime(9.0f);
+		timerComponent->OnTimerEnd([&]() {
+			LEI_TRACE("Timer Ended!!!");
+			// this is still bad
+			AudioPlayer::GetInstance().PlaySFX("menu_reverse.mp3");
+			SceneManager::SetScene("Test Kevin");
+			dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).ResetFlowers();
+			dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).ResetTimer();
+		});
 
 		// House ---------------------
 		Entity& houseObj = AddEntity("House");
@@ -147,8 +220,8 @@ namespace lei3d
 
 		// Islands ---------------------
 		Entity& islandObj = AddEntity("Island");
-		islandObj.SetScale(glm::vec3(30.0f, 30.0f, 30.0f));
-		islandObj.SetPosition(glm::vec3(20.0f, -20.5f, -44.0f));
+		islandObj.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj.SetPosition(glm::vec3(20.0f, -10.5f, -44.0f));
 		islandObj.SetYawRotation(0);
 
 		ModelInstance* islandRender = islandObj.AddComponent<ModelInstance>();
@@ -161,8 +234,8 @@ namespace lei3d
 		//
 		Entity& islandObj2 = AddEntity("Island2");
 		islandObj2.SetYawRotation(0);
-		islandObj2.SetScale(glm::vec3(20.0f, 20.0f, 20.0f));
-		islandObj2.SetPosition(glm::vec3(0.0f, 0.0f, -154.0f));
+		islandObj2.SetScale(glm::vec3(50.0f, 50.0f, 50.0f));
+		islandObj2.SetPosition(glm::vec3(0.0f, 9.0f, -154.0f));
 
 		ModelInstance* islandRender2 = islandObj2.AddComponent<ModelInstance>();
 		islandRender2->Init(m_EnviromentModels["island"].get());
@@ -170,14 +243,6 @@ namespace lei3d
 		StaticCollider* islandCollider2 = islandObj2.AddComponent<StaticCollider>();
 		islandCollider2->Init();
 		islandCollider2->SetColliderToModel(*m_EnviromentModels["island"].get());
-
-		// TriggerCollider* trigger = islandObj2.AddComponent<TriggerCollider>();
-
-		// LevelSwitchCollider* triggerCollider = islandObj2.AddComponent<LevelSwitchCollider>();
-		// std::vector<const btCollisionObject*> ignoredObjects;
-		// ignoredObjects.push_back(characterController->getRigidBody());
-		// // ignoredObjects.push_back(islandCollider2->getRigidBody());
-		// triggerCollider->Init(characterController->getGroundCheckObj(), ignoredObjects);
 
 		////Test Multiple Components
 		Entity& skyboxObj = AddEntity("Skybox");
@@ -188,6 +253,7 @@ namespace lei3d
 			"data/skybox/anime_etheria/front.jpg", "data/skybox/anime_etheria/back.jpg" };
 		skybox->Init(faces);
 
+		dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).ResetTimer();
 		// AudioPlayer::PlaySFX("win.mp3");
 	}
 
@@ -198,16 +264,41 @@ namespace lei3d
 		backpackObj->SetScale(glm::vec3(1.f, 1.f, 1.f));
 		backpackObj->SetPosition(glm::vec3(0.f, 60.f, 0.f));
 
-		Entity* colorObj = GetEntity("Start Color Area");
-		colorObj->GetComponent<ColorSource>()->radius = 0;
-
-		// AudioPlayer::PlaySFX("win.mp3");
+		AudioPlayer::GetInstance().PlaySFX("reset.mp3");
 	}
 
 	void SceneIntro::OnUpdate()
 	{
-		Entity* colorObj = GetEntity("Start Color Area");
-		colorObj->GetComponent<ColorSource>()->radius += 0.8;
+		float deltaColorRadius = Application::DeltaTime() * 50.0f;
+
+		if (color_1)
+		{
+			Entity* colorObj1 = GetEntity("Flower 1");
+			colorObj1->GetComponent<ColorSource>()->radius = std::clamp(colorObj1->GetComponent<ColorSource>()->radius + deltaColorRadius, 0.0f, 20.0f);
+		}
+		if (color_2)
+		{
+			Entity* colorObj2 = GetEntity("Flower 2");
+			colorObj2->GetComponent<ColorSource>()->radius = std::clamp(colorObj2->GetComponent<ColorSource>()->radius + deltaColorRadius, 0.0f, 100.0f);
+		}
+		if (color_3)
+		{
+			Entity* colorObj3 = GetEntity("Flower 3");
+			colorObj3->GetComponent<ColorSource>()->radius = std::clamp(colorObj3->GetComponent<ColorSource>()->radius + deltaColorRadius, 0.0f, 100.0f);
+		}
+
+		if (color_1 && color_2 && color_3)
+		{
+			Entity* colorObj4 = GetEntity("endColor");
+			// AudioPlayer::GetInstance().PlaySFX("win.mp3");
+			colorObj4->GetComponent<ColorSource>()->SetActive(true);
+			colorObj4->GetComponent<ColorSource>()->radius += deltaColorRadius * 2;
+			if (!m_Won)
+			{
+				m_Won = true;
+				colorObj4->GetComponent<TimerComponent>()->StartTimer();
+			}
+		}
 	}
 
 	void SceneIntro::OnPhysicsUpdate()
