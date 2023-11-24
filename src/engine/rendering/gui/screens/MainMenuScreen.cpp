@@ -1,5 +1,6 @@
 #include "MainMenuScreen.hpp"
 
+#include "LoadingScreen.hpp"
 #include "core/SceneManager.hpp"
 #include "logging/Log.hpp"
 #include "rendering/buffers/Texture.hpp"
@@ -55,8 +56,7 @@ namespace lei3d
 			[]() {
 				AudioPlayer::GetInstance().PlaySFX("menu_reverse.mp3");
 				LEI_INFO("Starting game.");
-				GuiManager::Instance().CloseActiveScreen();
-				SceneManager::SetScene(1);
+				GuiManager::Instance().QueueNextScreen(new LoadingScreen());
 			});
 
 		startGame->SetOnHover([this, startGame]() {
