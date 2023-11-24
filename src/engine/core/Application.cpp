@@ -10,6 +10,7 @@
 
 #include "rendering/gui/GuiManager.hpp"
 #include "rendering/gui/screens/MainMenuScreen.hpp"
+#include "rendering/gui/screens/MadeInLei3dScreen.hpp"
 #include "rendering/gui/screens/PauseMenuScreen.hpp"
 
 namespace lei3d
@@ -163,7 +164,8 @@ namespace lei3d
 		m_PrimitiveRenderer.initialize(screenWidth, screenHeight);
 
 		GuiManager::Instance().Init();
-		GuiManager::Instance().QueueNextScreen(new MainMenuScreen());
+		// GuiManager::Instance().QueueNextScreen(new MainMenuScreen());
+		GuiManager::Instance().QueueNextScreen(new MadeInLei3dScreen());
 	}
 
 	void Application::FrameTick()
