@@ -29,8 +29,8 @@ namespace lei3d
 
         GuiRect* lei3dlogo = new GuiRect(
 			GuiComponent::Anchor::CENTER,
-			{ GuiComponent::Space::PIXELS, { -800, -250 } },
-			{ GuiComponent::Space::PIXELS, { 862.5, 203.5 } },
+			{ GuiComponent::Space::NORMALIZED, { 0, 0 } },
+			{ GuiComponent::Space::PIXELS, { 1725, 407 } },
 			{ 1, 1, 1, 1 },
 			GetLei3dTexture());
         lei3dlogo->m_alignCenter = true;
