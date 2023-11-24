@@ -80,7 +80,7 @@ namespace lei3d
         
         m_components[logo_id] = lei3dlogo;
 
-        if (clock() - start > 4 * CLOCKS_PER_SEC)
+        if (alpha <= -0.01)
         {
             GuiManager::Instance().QueueNextScreen(new MainMenuScreen());
         }
@@ -93,19 +93,20 @@ namespace lei3d
         switch (fadeState) {
             case INCREASING:
                 if (alpha < 1) {
-                    alpha += 0.03;
+                    alpha = (static_cast<float>(clock() - start) / 1284.0f);
                 } else {
                     fadeState = STATIC;
                 }
                 break;
             case STATIC:
                 // 1284 for delta_alpha = 0.02, 897 for 0.03
-                if ((4 * CLOCKS_PER_SEC) - (clock() - start) <= 897) { // 897 = number of clocks to get alpha >= 1
+                if ((4 * CLOCKS_PER_SEC) - (clock() - start) <= 1284) { // 897 = number of clocks to get alpha >= 1
                     fadeState = DECREASING;
+                    start = clock();
                 }
                 break;
             case DECREASING:
-                alpha -= 0.03;
+                alpha = ((1284.0f - static_cast<float>(clock() - start)) / 1284.0f);
                 break;
             default:
                 break;
