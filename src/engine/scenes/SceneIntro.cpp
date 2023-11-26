@@ -209,6 +209,54 @@ namespace lei3d
 		signCollider->Init();
 		signCollider->SetColliderToModel(*m_EnviromentModels["sign"].get());
 
+		Entity& signObj2 = AddEntity("Sign2");
+		signObj2.SetScale(glm::vec3(15.0f, 15.0f, 15.0f));
+		signObj2.SetPosition(glm::vec3(350.0f, -50.0f, 450.0f));
+		signObj2.SetYawRotation(0);
+
+		ModelInstance* signRender2 = signObj2.AddComponent<ModelInstance>();
+		signRender2->Init(m_EnviromentModels["sign"].get());
+
+		StaticCollider* signCollider2 = signObj2.AddComponent<StaticCollider>();
+		signCollider2->Init();
+		signCollider2->SetColliderToModel(*m_EnviromentModels["sign"].get());
+
+		Entity& signObj3 = AddEntity("Sign3");
+		signObj3.SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
+		signObj3.SetPosition(glm::vec3(0.0f, -100.0f, -500.0f));
+		signObj3.SetYawRotation(-20);
+
+		ModelInstance* signRender3 = signObj3.AddComponent<ModelInstance>();
+		signRender3->Init(m_EnviromentModels["sign"].get());
+
+		StaticCollider* signCollider3 = signObj3.AddComponent<StaticCollider>();
+		signCollider3->Init();
+		signCollider3->SetColliderToModel(*m_EnviromentModels["sign"].get());
+
+		Entity& signObj4 = AddEntity("Sign4");
+		signObj4.SetScale(glm::vec3(15.0f, 15.0f, 15.0f));
+		signObj4.SetPosition(glm::vec3(0.0f, 0.0f, 250.0f));
+		signObj4.SetYawRotation(70);
+
+		ModelInstance* signRender4 = signObj4.AddComponent<ModelInstance>();
+		signRender4->Init(m_EnviromentModels["sign"].get());
+
+		StaticCollider* signCollider4 = signObj4.AddComponent<StaticCollider>();
+		signCollider4->Init();
+		signCollider4->SetColliderToModel(*m_EnviromentModels["sign"].get());
+
+		Entity& signObj5 = AddEntity("Sign5");
+		signObj5.SetScale(glm::vec3(15.0f, 15.0f, 15.0f));
+		signObj5.SetPosition(glm::vec3(-500.0f, -150.0f, -350.0f));
+		signObj5.SetYawRotation(-42);
+
+		ModelInstance* signRender5 = signObj5.AddComponent<ModelInstance>();
+		signRender5->Init(m_EnviromentModels["sign"].get());
+
+		StaticCollider* signCollider5 = signObj5.AddComponent<StaticCollider>();
+		signCollider5->Init();
+		signCollider5->SetColliderToModel(*m_EnviromentModels["sign"].get());
+
 		// Fish ---------------------
 		Entity& fishObj = AddEntity("Fish");
 		fishObj.SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
@@ -217,6 +265,54 @@ namespace lei3d
 
 		ModelInstance* fishRender = fishObj.AddComponent<ModelInstance>();
 		fishRender->Init(m_EnviromentModels["fish"].get());
+
+		Entity& fishObj2 = AddEntity("Fish2");
+		fishObj2.SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
+		fishObj2.SetPosition(glm::vec3(-300.0f, -100.0f, 0.0f));
+		fishObj2.SetYawRotation(0);
+
+		ModelInstance* fishRender2 = fishObj2.AddComponent<ModelInstance>();
+		fishRender2->Init(m_EnviromentModels["fish"].get());
+
+		Entity& fishObj3 = AddEntity("Fish3");
+		fishObj3.SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
+		fishObj3.SetPosition(glm::vec3(-200.0f, 0.0f, 200.0f));
+		fishObj3.SetYawRotation(45);
+
+		ModelInstance* fishRender3 = fishObj3.AddComponent<ModelInstance>();
+		fishRender3->Init(m_EnviromentModels["fish"].get());
+
+		Entity& fishObj4 = AddEntity("Fish4");
+		fishObj4.SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
+		fishObj4.SetPosition(glm::vec3(-100.0f, 100.0f, -100.0f));
+		fishObj4.SetYawRotation(-45);
+
+		ModelInstance* fishRender4 = fishObj4.AddComponent<ModelInstance>();
+		fishRender4->Init(m_EnviromentModels["fish"].get());
+
+		Entity& fishObj5 = AddEntity("Fish5");
+		fishObj5.SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
+		fishObj5.SetPosition(glm::vec3(0.0f, 150.0f, -300.0f));
+		fishObj5.SetYawRotation(90);
+
+		ModelInstance* fishRender5 = fishObj5.AddComponent<ModelInstance>();
+		fishRender5->Init(m_EnviromentModels["fish"].get());
+
+		Entity& fishObj6 = AddEntity("Fish6");
+		fishObj6.SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
+		fishObj6.SetPosition(glm::vec3(100.0f, 50.0f, -200.0f));
+		fishObj6.SetYawRotation(-90);
+
+		ModelInstance* fishRender6 = fishObj6.AddComponent<ModelInstance>();
+		fishRender6->Init(m_EnviromentModels["fish"].get());
+
+		Entity& fishObj7 = AddEntity("Fish7");
+		fishObj7.SetScale(glm::vec3(10.0f, 10.0f, 10.0f));
+		fishObj7.SetPosition(glm::vec3(200.0f, -50.0f, 100.0f));
+		fishObj7.SetYawRotation(135);
+
+		ModelInstance* fishRender7 = fishObj7.AddComponent<ModelInstance>();
+		fishRender7->Init(m_EnviromentModels["fish"].get());
 
 		// Islands ---------------------
 		Entity& islandObj = AddEntity("Island");
