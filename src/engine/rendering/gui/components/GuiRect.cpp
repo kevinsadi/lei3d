@@ -92,7 +92,7 @@ namespace lei3d
 		const glm::vec2 size = SizePixels(screenSize);
 
 		bool mouseOver = mousePosition.x >= pos.x && mousePosition.x <= (pos.x + size.x)
-						&& mousePosition.y >= pos.y && mousePosition.y <= (pos.y + size.y);
+						&& mousePosition.y >= (pos.y - (size.y / 2)) && mousePosition.y <= (pos.y + (size.y / 2));
 
 		return mouseOver;
 	}
