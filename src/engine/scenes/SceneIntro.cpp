@@ -244,6 +244,90 @@ namespace lei3d
 		islandCollider2->Init();
 		islandCollider2->SetColliderToModel(*m_EnviromentModels["island"].get());
 
+		Entity& islandObj3 = AddEntity("Island3");
+		islandObj3.SetYawRotation(0);
+		islandObj3.SetScale(glm::vec3(40.0f, 30.0f, 45.0f));
+		islandObj3.SetPosition(glm::vec3(350.0f, -50.0f, 450.0f));
+
+		ModelInstance* islandRender3 = islandObj3.AddComponent<ModelInstance>();
+		islandRender3->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider3 = islandObj3.AddComponent<StaticCollider>();
+		islandCollider3->Init();
+		islandCollider3->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj4 = AddEntity("Island4");
+		islandObj4.SetYawRotation(0);
+		islandObj4.SetScale(glm::vec3(30.0f, 25.0f, 35.0f));
+		islandObj4.SetPosition(glm::vec3(750.0f, 50.0f, 0.0f));
+
+		ModelInstance* islandRender4 = islandObj4.AddComponent<ModelInstance>();
+		islandRender4->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider4 = islandObj4.AddComponent<StaticCollider>();
+		islandCollider4->Init();
+		islandCollider4->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj5 = AddEntity("Island5");
+		islandObj5.SetYawRotation(0);
+		islandObj5.SetScale(glm::vec3(25.0f, 20.0f, 30.0f));
+		islandObj5.SetPosition(glm::vec3(0.0f, -100.0f, -500.0f));
+
+		ModelInstance* islandRender5 = islandObj5.AddComponent<ModelInstance>();
+		islandRender5->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider5 = islandObj5.AddComponent<StaticCollider>();
+		islandCollider5->Init();
+		islandCollider5->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj6 = AddEntity("Island6");
+		islandObj6.SetYawRotation(0);
+		islandObj6.SetScale(glm::vec3(20.0f, 20.0f, 30.0f));
+		islandObj6.SetPosition(glm::vec3(-200.0f, 75.0f, 650.0f));
+
+		ModelInstance* islandRender6 = islandObj6.AddComponent<ModelInstance>();
+		islandRender6->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider6 = islandObj6.AddComponent<StaticCollider>();
+		islandCollider6->Init();
+		islandCollider6->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj7 = AddEntity("Island7");
+		islandObj7.SetYawRotation(0);
+		islandObj7.SetScale(glm::vec3(40.0f, 30.0f, 35.0f));
+		islandObj7.SetPosition(glm::vec3(0.0f, 0.0f, 250.0f));
+
+		ModelInstance* islandRender7 = islandObj7.AddComponent<ModelInstance>();
+		islandRender7->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider7 = islandObj7.AddComponent<StaticCollider>();
+		islandCollider7->Init();
+		islandCollider7->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj8 = AddEntity("Island8");
+		islandObj8.SetYawRotation(0);
+		islandObj8.SetScale(glm::vec3(50.0f, 50.0f, 50.0f));
+		islandObj8.SetPosition(glm::vec3(550.0f, 150.0f, -400.0f));
+
+		ModelInstance* islandRender8 = islandObj8.AddComponent<ModelInstance>();
+		islandRender8->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider8 = islandObj8.AddComponent<StaticCollider>();
+		islandCollider8->Init();
+		islandCollider8->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj9 = AddEntity("Island9");
+		islandObj9.SetYawRotation(0);
+		islandObj9.SetScale(glm::vec3(50.0f, 50.0f, 50.0f));
+		islandObj9.SetPosition(glm::vec3(-500.0f, -150.0f, -350.0f));
+
+		ModelInstance* islandRender9 = islandObj9.AddComponent<ModelInstance>();
+		islandRender9->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider9 = islandObj9.AddComponent<StaticCollider>();
+		islandCollider9->Init();
+		islandCollider9->SetColliderToModel(*m_EnviromentModels["island"].get());
+
 		////Test Multiple Components
 		Entity& skyboxObj = AddEntity("Skybox");
 
