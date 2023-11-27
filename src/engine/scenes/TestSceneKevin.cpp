@@ -60,6 +60,16 @@ namespace lei3d
 		const std::string flowerPath = "data/models/leveldesignobj/flower/flower_export_2.obj";
 		m_EnviromentModels.insert(std::make_pair("flower", std::make_unique<Model>(flowerPath)));
 
+		const std::string islandPath = "data/models/environment/flat_island_3.gltf";
+		m_EnviromentModels.insert(std::make_pair("island", std::make_unique<Model>(islandPath)));
+
+		const std::string housePath = "data/models/leveldesignobj/house/house_texture.obj";
+		m_EnviromentModels.insert(std::make_pair("house", std::make_unique<Model>(housePath)));
+
+		const std::string fishPath = "data/models/leveldesignobj/fish2/fish.obj";
+		m_EnviromentModels["fish"] = (std::make_unique<Model>(fishPath));
+		m_EnviromentModels.insert(std::make_pair("fish", std::make_unique<Model>(fishPath)));
+
 		// BACKPACK (Character) ---------------------
 		Entity& backpackObj = AddEntity("Backpack");
 
@@ -92,6 +102,133 @@ namespace lei3d
 		playerTrigger->SetOnPlayerEntered([&]() {
 			// LEI_TRACE("Player entered trigger collider");
 		});
+
+		// Islands
+		Entity& islandObj = AddEntity("Island");
+		islandObj.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		islandObj.SetYawRotation(0);
+
+		ModelInstance* islandRender = islandObj.AddComponent<ModelInstance>();
+		islandRender->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider = islandObj.AddComponent<StaticCollider>();
+		islandCollider->Init();
+		islandCollider->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj2 = AddEntity("Island2");
+		islandObj2.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj2.SetPosition(glm::vec3(-50.0f, 300.0f, 900.0f));
+		islandObj2.SetYawRotation(45);
+
+		ModelInstance* islandRender2 = islandObj2.AddComponent<ModelInstance>();
+		islandRender2->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider2 = islandObj2.AddComponent<StaticCollider>();
+		islandCollider2->Init();
+		islandCollider2->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj3 = AddEntity("Island3");
+		islandObj3.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj3.SetPosition(glm::vec3(-700.0f, 100.0f, 200.0f));
+		islandObj3.SetYawRotation(-45);
+
+		ModelInstance* islandRender3 = islandObj3.AddComponent<ModelInstance>();
+		islandRender3->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider3 = islandObj3.AddComponent<StaticCollider>();
+		islandCollider3->Init();
+		islandCollider3->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj4 = AddEntity("Island4");
+		islandObj4.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj4.SetPosition(glm::vec3(700.0f, 100.0f, 200.0f));
+		islandObj4.SetYawRotation(90);
+
+		ModelInstance* islandRender4 = islandObj4.AddComponent<ModelInstance>();
+		islandRender4->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider4 = islandObj4.AddComponent<StaticCollider>();
+		islandCollider4->Init();
+		islandCollider4->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj5 = AddEntity("Island5");
+		islandObj5.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj5.SetPosition(glm::vec3(400.0f, -100.0f, -600.0f));
+		islandObj5.SetYawRotation(-90);
+
+		ModelInstance* islandRender5 = islandObj5.AddComponent<ModelInstance>();
+		islandRender5->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider5 = islandObj5.AddComponent<StaticCollider>();
+		islandCollider5->Init();
+		islandCollider5->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj6 = AddEntity("Island6");
+		islandObj6.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj6.SetPosition(glm::vec3(-400.0f, -100.0f, -600.0f));
+		islandObj6.SetYawRotation(135);
+
+		ModelInstance* islandRender6 = islandObj6.AddComponent<ModelInstance>();
+		islandRender6->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider6 = islandObj6.AddComponent<StaticCollider>();
+		islandCollider6->Init();
+		islandCollider6->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		// House
+		Entity& houseObj = AddEntity("House");
+		houseObj.SetScale(glm::vec3(4.0f, 6.0f, 4.0f));
+		houseObj.SetPosition(glm::vec3(-90.0f, 300.0f, 930.0f));
+		houseObj.SetYawRotation(0);
+
+		ModelInstance* houseRender = houseObj.AddComponent<ModelInstance>();
+		houseRender->Init(m_EnviromentModels["house"].get());
+
+		StaticCollider* houseCollider = houseObj.AddComponent<StaticCollider>();
+		houseCollider->Init();
+		houseCollider->SetColliderToModel(*m_EnviromentModels["house"].get());
+
+		// Fish
+		Entity& fishObj = AddEntity("Fish");
+		fishObj.SetScale(glm::vec3(25.0f, 25.0f, 25.0f));
+		fishObj.SetPosition(glm::vec3(50.0f, 300.0f, 900.0f));
+		fishObj.SetYawRotation(0);
+
+		ModelInstance* fishRender = fishObj.AddComponent<ModelInstance>();
+		fishRender->Init(m_EnviromentModels["fish"].get());
+
+		Entity& fishObj2 = AddEntity("Fish2");
+		fishObj2.SetScale(glm::vec3(25.0f, 25.0f, 25.0f));
+		fishObj2.SetPosition(glm::vec3(-500.0f, 100.0f, 700.0f));
+		fishObj2.SetYawRotation(45);
+
+		ModelInstance* fishRender2 = fishObj2.AddComponent<ModelInstance>();
+		fishRender2->Init(m_EnviromentModels["fish"].get());
+
+		Entity& fishObj3 = AddEntity("Fish3");
+		fishObj3.SetScale(glm::vec3(25.0f, 25.0f, 25.0f));
+		fishObj3.SetPosition(glm::vec3(500.0f, 100.0f, 700.0f));
+		fishObj3.SetYawRotation(-45);
+
+		ModelInstance* fishRender3 = fishObj3.AddComponent<ModelInstance>();
+		fishRender3->Init(m_EnviromentModels["fish"].get());
+
+		Entity& fishObj4 = AddEntity("Fish4");
+		fishObj4.SetScale(glm::vec3(25.0f, 25.0f, 25.0f));
+		fishObj4.SetPosition(glm::vec3(600.0f, 0.0f, -200.0f));
+		fishObj4.SetYawRotation(45);
+
+		ModelInstance* fishRender4 = fishObj4.AddComponent<ModelInstance>();
+		fishRender4->Init(m_EnviromentModels["fish"].get());
+
+		Entity& fishObj5 = AddEntity("Fish5");
+		fishObj5.SetScale(glm::vec3(25.0f, 25.0f, 25.0f));
+		fishObj5.SetPosition(glm::vec3(-600.0f, 0.0f, -200.0f));
+		fishObj5.SetYawRotation(-45);
+
+		ModelInstance* fishRender5 = fishObj5.AddComponent<ModelInstance>();
+		fishRender5->Init(m_EnviromentModels["fish"].get());
 
 		// Test color source
 		Entity& endColorSrcObj = AddEntity("endColor");
