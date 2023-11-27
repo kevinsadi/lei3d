@@ -229,6 +229,10 @@ namespace lei3d
 				m_Won = true;
 			}
 		}
+		if (glfwGetKey(Application::Window(), GLFW_KEY_K) == GLFW_PRESS)
+		{
+			AudioPlayer::GetInstance().StopMusic("sus2.mp3");
+		}
 	}
 
 	void TestSceneKevin::OnPhysicsUpdate()

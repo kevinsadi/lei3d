@@ -4,7 +4,7 @@
 #include <thread>
 #include <chrono>
 #include <stdlib.h>
-#include <unordered_set>
+#include <unordered_map>
 
 #include "miniaudio.h"
 #include "logging/Log.hpp"
@@ -15,6 +15,8 @@ namespace lei3d
 {
 	class AudioPlayer
 	{
+	private:
+		// static std::unordered_map<std::string, ma_sound*> _sounds_on_loop;
 	public:
 		AudioPlayer();
 		~AudioPlayer();
@@ -22,10 +24,15 @@ namespace lei3d
 		static AudioPlayer& GetInstance();
 
 		void PlayMusic(const std::string& musicName, float volume);
+
+		void StopMusic(const std::string& musicName);
+
 		void PlaySFX(const std::string& sfxName);
 
 		std::unique_ptr<ma_engine> m_AudioEngine;
 		std::unique_ptr<ma_sound> m_ThemeSound;
+
+		std::unique_ptr<std::unordered_map<std::string, ma_sound*>> _sounds_on_loop;
 
 		// /**
 		//  * Plays the sound file given for a set time in milliseconds. Includes options
@@ -88,7 +95,7 @@ namespace lei3d
 
 	private:
 		static void timer(std::string sfxPath, ma_uint64 milliseconds, ma_sound* sound, float volume, ma_uint64 fadeOutLengthInMilliseconds);
-		static std::unordered_set<std::string> _sounds_on_loop;
+		
 	};
 
 } // namespace lei3d

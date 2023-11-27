@@ -3,6 +3,9 @@
 
 namespace lei3d
 {
+	// static
+	// std::unordered_map<std::string, ma_sound*> _sounds_on_loop = std::unordered_map<std::string, ma_sound*>();
+
 	AudioPlayer& AudioPlayer::GetInstance()
 	{
 		static AudioPlayer instance;
@@ -13,6 +16,7 @@ namespace lei3d
 	{
 		ma_result result;
 		m_AudioEngine = std::make_unique<ma_engine>();
+		_sounds_on_loop = std::make_unique<std::unordered_map<std::string, ma_sound*>>();
 		ma_engine_config engineConfig;
 
 		engineConfig = ma_engine_config_init();
@@ -22,6 +26,7 @@ namespace lei3d
 		{
 			LEI_ERROR("AudioPlayer: Unable to initialize audio engine");
 		}
+		
 	}
 
 	AudioPlayer::~AudioPlayer()
@@ -31,21 +36,43 @@ namespace lei3d
 
 	void AudioPlayer::PlayMusic(const std::string& musicName, float volume)
 	{
+		if (_sounds_on_loop.get()->contains(musicName))
+		{
+			LEI_ERROR("AudioPlayer: Music sound already playing!");
+			return;
+		}
 		std::string musicPath = "data/audio/" + musicName;
 
 		std::string sfxPath = "data/audio/sfx/" + musicName;
-		ma_engine_play_sound(m_AudioEngine.get(), musicPath.c_str(), NULL);
+		// ma_engine_play_sound(m_AudioEngine.get(), musicPath.c_str(), NULL);
 
-		// ma_result result;
-		// ma_sound sound;
+		ma_result result;
+		ma_sound* sound = (ma_sound*)malloc(sizeof(ma_sound));
 
-		// result = ma_sound_init_from_file(m_AudioEngine.get(), musicPath.c_str(), 0, NULL, NULL, &sound);
-		// if (result != MA_SUCCESS)
-		// {
-		// 	LEI_ERROR("AudioPlayer: Unable to create music sound");
-		// }
+		result = ma_sound_init_from_file(m_AudioEngine.get(), musicPath.c_str(), 0, NULL, NULL, sound);
+		if (result != MA_SUCCESS)
+		{
+			LEI_ERROR("AudioPlayer: Unable to create music sound");
+			free(sound);
+			return;
+		}
+		ma_sound_set_volume(sound, volume);
+		ma_sound_set_looping(sound, MA_TRUE);
+		ma_sound_start(sound);
+		_sounds_on_loop.get()->insert({ musicName, sound });
+	}
 
-		// ma_sound_start(&sound);
+	void AudioPlayer::StopMusic(const std::string& musicName)
+	{
+		if (!_sounds_on_loop.get()->contains(musicName))
+		{
+			LEI_ERROR("AudioPlayer: Music sound " + musicName + " not on loop");
+			return;
+		}
+		ma_sound *sound = _sounds_on_loop.get()->at(musicName);
+		ma_sound_uninit(sound);
+		free(sound);
+		_sounds_on_loop.get()->erase(musicName);
 	}
 
 	void AudioPlayer::PlaySFX(const std::string& sfxName)
