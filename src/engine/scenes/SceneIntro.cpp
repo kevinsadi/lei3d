@@ -4,6 +4,7 @@
 #include "rendering/gui/GuiManager.hpp"
 #include "rendering/gui/screens/BaseGuiScreen.hpp"
 #include "rendering/gui/screens/GuiScreen.hpp"
+#include "rendering/gui/screens/LoadingScreen.hpp"
 
 #include "components/FollowCameraController.hpp"
 #include "components/ModelInstance.hpp"
@@ -57,7 +58,7 @@ namespace lei3d
 		const std::string flowerPath = "data/models/leveldesignobj/flower/flower_export_2.obj";
 		m_EnviromentModels.insert(std::make_pair("flower", std::make_unique<Model>(flowerPath)));
 
-		const std::string islandPath = "data/models/environment/flat_island_3.gltf";
+		const std::string islandPath = "data/models/environment/flat_grass_island_fix.gltf";
 		m_EnviromentModels.insert(std::make_pair("island", std::make_unique<Model>(islandPath)));
 
 		const std::string housePath = "data/models/leveldesignobj/house/house_texture.obj";
@@ -67,8 +68,10 @@ namespace lei3d
 		m_EnviromentModels.insert(std::make_pair("sign", std::make_unique<Model>(signPath)));
 
 		const std::string fishPath = "data/models/leveldesignobj/fish2/fish.obj";
-		m_EnviromentModels["fish"] = (std::make_unique<Model>(fishPath));
 		m_EnviromentModels.insert(std::make_pair("fish", std::make_unique<Model>(fishPath)));
+
+		const std::string treePath = "data/models/environment/palm_tree.gltf";
+		m_EnviromentModels.insert(std::make_pair("tree", std::make_unique<Model>(treePath)));
 
 		// this is some of the worst code I have written in my life, please forgive me
 
@@ -179,6 +182,7 @@ namespace lei3d
 			// this is still bad
 			AudioPlayer::GetInstance().PlaySFX("menu_reverse.mp3");
 			SceneManager::SetScene("Test Kevin");
+			GuiManager::Instance().QueueNextScreen(new LoadingScreen());
 			dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).ResetFlowers();
 			dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).ResetTimer();
 		});
@@ -316,7 +320,7 @@ namespace lei3d
 
 		// Islands ---------------------
 		Entity& islandObj = AddEntity("Island");
-		islandObj.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj.SetScale(glm::vec3(55.0f, 55.0f, 55.0f));
 		islandObj.SetPosition(glm::vec3(20.0f, -10.5f, -44.0f));
 		islandObj.SetYawRotation(0);
 
@@ -330,7 +334,7 @@ namespace lei3d
 		//
 		Entity& islandObj2 = AddEntity("Island2");
 		islandObj2.SetYawRotation(0);
-		islandObj2.SetScale(glm::vec3(50.0f, 50.0f, 50.0f));
+		islandObj2.SetScale(glm::vec3(40.0f, 40.0f, 40.0f));
 		islandObj2.SetPosition(glm::vec3(0.0f, 9.0f, -154.0f));
 
 		ModelInstance* islandRender2 = islandObj2.AddComponent<ModelInstance>();
@@ -424,6 +428,17 @@ namespace lei3d
 		islandCollider9->Init();
 		islandCollider9->SetColliderToModel(*m_EnviromentModels["island"].get());
 
+		// Trees
+		Entity& treeObj = AddEntity("Tree");
+		treeObj.SetScale(glm::vec3(7.0f, 7.0f, 7.0f));
+		treeObj.SetPosition(glm::vec3(-30.0f, -14.5f, -87.0f));
+		treeObj.SetYawRotation(0);
+		ModelInstance* treeRender = treeObj.AddComponent<ModelInstance>();
+		treeRender->Init(m_EnviromentModels["tree"].get());
+		StaticCollider* treeCollider = treeObj.AddComponent<StaticCollider>();
+		treeCollider->Init();
+		treeCollider->SetColliderToModel(*m_EnviromentModels["tree"].get());
+
 		////Test Multiple Components
 		Entity& skyboxObj = AddEntity("Skybox");
 
@@ -434,7 +449,6 @@ namespace lei3d
 		skybox->Init(faces);
 
 		dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).ResetTimer();
-		// AudioPlayer::PlaySFX("win.mp3");
 	}
 
 	void SceneIntro::OnReset()

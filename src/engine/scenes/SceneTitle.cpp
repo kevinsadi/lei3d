@@ -260,7 +260,7 @@ namespace lei3d
 			"data/skybox/anime_etheria/front.jpg", "data/skybox/anime_etheria/back.jpg" };
 		skybox->Init(faces);
 
-		// AudioPlayer::PlaySFX("win.mp3");
+		AudioPlayer::GetInstance().PlayMusic("skylei_title.mp3", 0.1f);
 	}
 
 	void SceneTitle::OnReset()
