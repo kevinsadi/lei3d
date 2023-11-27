@@ -60,6 +60,19 @@ namespace lei3d
 		const std::string flowerPath = "data/models/leveldesignobj/flower/flower_export_2.obj";
 		m_EnviromentModels.insert(std::make_pair("flower", std::make_unique<Model>(flowerPath)));
 
+		const std::string islandPath = "data/models/environment/flat_island_3.gltf";
+		m_EnviromentModels.insert(std::make_pair("island", std::make_unique<Model>(islandPath)));
+
+		const std::string housePath = "data/models/leveldesignobj/house/house_texture.obj";
+		m_EnviromentModels.insert(std::make_pair("house", std::make_unique<Model>(housePath)));
+
+		const std::string fishPath = "data/models/leveldesignobj/fish2/fish.obj";
+		m_EnviromentModels["fish"] = (std::make_unique<Model>(fishPath));
+		m_EnviromentModels.insert(std::make_pair("fish", std::make_unique<Model>(fishPath)));
+
+		const std::string treePath = "data/models/environment/palm_tree.gltf";
+		m_EnviromentModels.insert(std::make_pair("tree", std::make_unique<Model>(treePath)));
+
 		// BACKPACK (Character) ---------------------
 		Entity& backpackObj = AddEntity("Backpack");
 
@@ -92,6 +105,290 @@ namespace lei3d
 		playerTrigger->SetOnPlayerEntered([&]() {
 			// LEI_TRACE("Player entered trigger collider");
 		});
+
+		// Islands
+		Entity& islandObj = AddEntity("Island");
+		islandObj.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		islandObj.SetYawRotation(0);
+
+		ModelInstance* islandRender = islandObj.AddComponent<ModelInstance>();
+		islandRender->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider = islandObj.AddComponent<StaticCollider>();
+		islandCollider->Init();
+		islandCollider->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj2 = AddEntity("Island2");
+		islandObj2.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj2.SetPosition(glm::vec3(-50.0f, 300.0f, 900.0f));
+		islandObj2.SetYawRotation(45);
+
+		ModelInstance* islandRender2 = islandObj2.AddComponent<ModelInstance>();
+		islandRender2->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider2 = islandObj2.AddComponent<StaticCollider>();
+		islandCollider2->Init();
+		islandCollider2->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj3 = AddEntity("Island3");
+		islandObj3.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj3.SetPosition(glm::vec3(-700.0f, 100.0f, 200.0f));
+		islandObj3.SetYawRotation(-45);
+
+		ModelInstance* islandRender3 = islandObj3.AddComponent<ModelInstance>();
+		islandRender3->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider3 = islandObj3.AddComponent<StaticCollider>();
+		islandCollider3->Init();
+		islandCollider3->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj4 = AddEntity("Island4");
+		islandObj4.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj4.SetPosition(glm::vec3(700.0f, 100.0f, 200.0f));
+		islandObj4.SetYawRotation(90);
+
+		ModelInstance* islandRender4 = islandObj4.AddComponent<ModelInstance>();
+		islandRender4->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider4 = islandObj4.AddComponent<StaticCollider>();
+		islandCollider4->Init();
+		islandCollider4->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj5 = AddEntity("Island5");
+		islandObj5.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj5.SetPosition(glm::vec3(400.0f, -100.0f, -600.0f));
+		islandObj5.SetYawRotation(-90);
+
+		ModelInstance* islandRender5 = islandObj5.AddComponent<ModelInstance>();
+		islandRender5->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider5 = islandObj5.AddComponent<StaticCollider>();
+		islandCollider5->Init();
+		islandCollider5->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		Entity& islandObj6 = AddEntity("Island6");
+		islandObj6.SetScale(glm::vec3(60.0f, 60.0f, 60.0f));
+		islandObj6.SetPosition(glm::vec3(-400.0f, -100.0f, -600.0f));
+		islandObj6.SetYawRotation(135);
+
+		ModelInstance* islandRender6 = islandObj6.AddComponent<ModelInstance>();
+		islandRender6->Init(m_EnviromentModels["island"].get());
+
+		StaticCollider* islandCollider6 = islandObj6.AddComponent<StaticCollider>();
+		islandCollider6->Init();
+		islandCollider6->SetColliderToModel(*m_EnviromentModels["island"].get());
+
+		// House
+		Entity& houseObj = AddEntity("House");
+		houseObj.SetScale(glm::vec3(4.0f, 6.0f, 4.0f));
+		houseObj.SetPosition(glm::vec3(-90.0f, 300.0f, 930.0f));
+		houseObj.SetYawRotation(0);
+
+		ModelInstance* houseRender = houseObj.AddComponent<ModelInstance>();
+		houseRender->Init(m_EnviromentModels["house"].get());
+
+		StaticCollider* houseCollider = houseObj.AddComponent<StaticCollider>();
+		houseCollider->Init();
+		houseCollider->SetColliderToModel(*m_EnviromentModels["house"].get());
+
+		// Fish
+		Entity& fishObj = AddEntity("Fish");
+		fishObj.SetScale(glm::vec3(25.0f, 25.0f, 25.0f));
+		fishObj.SetPosition(glm::vec3(50.0f, 300.0f, 900.0f));
+		fishObj.SetYawRotation(0);
+
+		ModelInstance* fishRender = fishObj.AddComponent<ModelInstance>();
+		fishRender->Init(m_EnviromentModels["fish"].get());
+
+		Entity& fishObj2 = AddEntity("Fish2");
+		fishObj2.SetScale(glm::vec3(25.0f, 25.0f, 25.0f));
+		fishObj2.SetPosition(glm::vec3(-500.0f, 100.0f, 700.0f));
+		fishObj2.SetYawRotation(45);
+
+		ModelInstance* fishRender2 = fishObj2.AddComponent<ModelInstance>();
+		fishRender2->Init(m_EnviromentModels["fish"].get());
+
+		Entity& fishObj3 = AddEntity("Fish3");
+		fishObj3.SetScale(glm::vec3(25.0f, 25.0f, 25.0f));
+		fishObj3.SetPosition(glm::vec3(500.0f, 100.0f, 700.0f));
+		fishObj3.SetYawRotation(-45);
+
+		ModelInstance* fishRender3 = fishObj3.AddComponent<ModelInstance>();
+		fishRender3->Init(m_EnviromentModels["fish"].get());
+
+		Entity& fishObj4 = AddEntity("Fish4");
+		fishObj4.SetScale(glm::vec3(25.0f, 25.0f, 25.0f));
+		fishObj4.SetPosition(glm::vec3(600.0f, 0.0f, -200.0f));
+		fishObj4.SetYawRotation(45);
+
+		ModelInstance* fishRender4 = fishObj4.AddComponent<ModelInstance>();
+		fishRender4->Init(m_EnviromentModels["fish"].get());
+
+		Entity& fishObj5 = AddEntity("Fish5");
+		fishObj5.SetScale(glm::vec3(25.0f, 25.0f, 25.0f));
+		fishObj5.SetPosition(glm::vec3(-600.0f, 0.0f, -200.0f));
+		fishObj5.SetYawRotation(-45);
+
+		ModelInstance* fishRender5 = fishObj5.AddComponent<ModelInstance>();
+		fishRender5->Init(m_EnviromentModels["fish"].get());
+
+		// Trees
+		Entity& treeObj = AddEntity("Tree");
+		treeObj.SetScale(glm::vec3(7.0f, 7.0f, 7.0f));
+		treeObj.SetPosition(glm::vec3(20.0f, 0.0f, -20.0f));
+		treeObj.SetYawRotation(0);
+
+		ModelInstance* treeRender = treeObj.AddComponent<ModelInstance>();
+		treeRender->Init(m_EnviromentModels["tree"].get());
+
+		StaticCollider* treeCollider = treeObj.AddComponent<StaticCollider>();
+		treeCollider->Init();
+		treeCollider->SetColliderToModel(*m_EnviromentModels["tree"].get());
+
+		Entity& treeObj2 = AddEntity("Tree2");
+		treeObj2.SetScale(glm::vec3(7.0f, 7.0f, 7.0f));
+		treeObj2.SetPosition(glm::vec3(-720.0f, 100.0f, 220.0f));
+		treeObj2.SetYawRotation(45);
+
+		ModelInstance* treeRender2 = treeObj2.AddComponent<ModelInstance>();
+		treeRender2->Init(m_EnviromentModels["tree"].get());
+		
+		StaticCollider* treeCollider2 = treeObj2.AddComponent<StaticCollider>();
+		treeCollider2->Init();
+		treeCollider2->SetColliderToModel(*m_EnviromentModels["tree"].get());
+
+		Entity& treeObj3 = AddEntity("Tree3");
+		treeObj3.SetScale(glm::vec3(7.0f, 7.0f, 7.0f));
+		treeObj3.SetPosition(glm::vec3(710.0f, 100.0f, 170.0f));
+		treeObj3.SetYawRotation(-45);
+
+		ModelInstance* treeRender3 = treeObj3.AddComponent<ModelInstance>();
+		treeRender3->Init(m_EnviromentModels["tree"].get());
+		
+		StaticCollider* treeCollider3 = treeObj3.AddComponent<StaticCollider>();
+		treeCollider3->Init();
+		treeCollider3->SetColliderToModel(*m_EnviromentModels["tree"].get());
+
+		Entity& treeObj4 = AddEntity("Tree4");
+		treeObj4.SetScale(glm::vec3(7.0f, 7.0f, 7.0f));
+		treeObj4.SetPosition(glm::vec3(380.0f, -100.0f, -620.0f));
+		treeObj4.SetYawRotation(90);
+
+		ModelInstance* treeRender4 = treeObj4.AddComponent<ModelInstance>();
+		treeRender4->Init(m_EnviromentModels["tree"].get());
+		
+		StaticCollider* treeCollider4 = treeObj4.AddComponent<StaticCollider>();
+		treeCollider4->Init();
+		treeCollider4->SetColliderToModel(*m_EnviromentModels["tree"].get());
+
+		Entity& treeObj5 = AddEntity("Tree5");
+		treeObj5.SetScale(glm::vec3(7.0f, 7.0f, 7.0f));
+		treeObj5.SetPosition(glm::vec3(-420.0f, -100.0f, -620.0f));
+		treeObj5.SetYawRotation(-90);
+
+		ModelInstance* treeRender5 = treeObj5.AddComponent<ModelInstance>();
+		treeRender5->Init(m_EnviromentModels["tree"].get());
+		
+		StaticCollider* treeCollider5 = treeObj5.AddComponent<StaticCollider>();
+		treeCollider5->Init();
+		treeCollider5->SetColliderToModel(*m_EnviromentModels["tree"].get());
+
+		Entity& treeObj6 = AddEntity("Tree6");
+		treeObj6.SetScale(glm::vec3(6.0f, 6.0f, 6.0f));
+		treeObj6.SetPosition(glm::vec3(10.0f, 0.0f, 20.0f));
+		treeObj6.SetYawRotation(60);
+
+		ModelInstance* treeRender6 = treeObj6.AddComponent<ModelInstance>();
+		treeRender6->Init(m_EnviromentModels["tree"].get());
+
+		StaticCollider* treeCollider6 = treeObj6.AddComponent<StaticCollider>();
+		treeCollider6->Init();
+		treeCollider6->SetColliderToModel(*m_EnviromentModels["tree"].get());
+
+		Entity& treeObj7 = AddEntity("Tree7");
+		treeObj7.SetScale(glm::vec3(8.0f, 8.0f, 8.0f));
+		treeObj7.SetPosition(glm::vec3(-40.0f, 0.0f, 0.0f));
+		treeObj7.SetYawRotation(-40);
+
+		ModelInstance* treeRender7 = treeObj7.AddComponent<ModelInstance>();
+		treeRender7->Init(m_EnviromentModels["tree"].get());
+
+		StaticCollider* treeCollider7 = treeObj7.AddComponent<StaticCollider>();
+		treeCollider7->Init();
+		treeCollider7->SetColliderToModel(*m_EnviromentModels["tree"].get());
+
+		Entity& treeObj8 = AddEntity("Tree8");
+		treeObj8.SetScale(glm::vec3(5.0f, 5.0f, 5.0f));
+		treeObj8.SetPosition(glm::vec3(-690.0f, 100.0f, 170.0f));
+		treeObj8.SetYawRotation(-80);
+
+		ModelInstance* treeRender8 = treeObj8.AddComponent<ModelInstance>();
+		treeRender8->Init(m_EnviromentModels["tree"].get());
+		
+		StaticCollider* treeCollider8 = treeObj8.AddComponent<StaticCollider>();
+		treeCollider8->Init();
+		treeCollider8->SetColliderToModel(*m_EnviromentModels["tree"].get());
+
+		Entity& treeObj9 = AddEntity("Tree9");
+		treeObj9.SetScale(glm::vec3(9.0f, 9.0f, 9.0f));
+		treeObj9.SetPosition(glm::vec3(680.0f, 100.0f, 220.0f));
+		treeObj9.SetYawRotation(115);
+
+		ModelInstance* treeRender9 = treeObj9.AddComponent<ModelInstance>();
+		treeRender9->Init(m_EnviromentModels["tree"].get());
+		
+		StaticCollider* treeCollider9 = treeObj9.AddComponent<StaticCollider>();
+		treeCollider9->Init();
+		treeCollider9->SetColliderToModel(*m_EnviromentModels["tree"].get());
+
+		Entity& treeObj10 = AddEntity("Tree10");
+		treeObj10.SetScale(glm::vec3(8.0f, 8.0f, 8.0f));
+		treeObj10.SetPosition(glm::vec3(410.0f, -100.0f, -580.0f));
+		treeObj10.SetYawRotation(10);
+
+		ModelInstance* treeRender10 = treeObj10.AddComponent<ModelInstance>();
+		treeRender10->Init(m_EnviromentModels["tree"].get());
+		
+		StaticCollider* treeCollider10 = treeObj10.AddComponent<StaticCollider>();
+		treeCollider10->Init();
+		treeCollider10->SetColliderToModel(*m_EnviromentModels["tree"].get());
+
+		Entity& treeObj11 = AddEntity("Tree11");
+		treeObj11.SetScale(glm::vec3(6.0f, 6.0f, 6.0f));
+		treeObj11.SetPosition(glm::vec3(420.0f, -100.0f, -610.0f));
+		treeObj11.SetYawRotation(-40);
+
+		ModelInstance* treeRender11 = treeObj11.AddComponent<ModelInstance>();
+		treeRender11->Init(m_EnviromentModels["tree"].get());
+		
+		StaticCollider* treeCollider11 = treeObj11.AddComponent<StaticCollider>();
+		treeCollider11->Init();
+		treeCollider11->SetColliderToModel(*m_EnviromentModels["tree"].get());
+
+		Entity& treeObj12 = AddEntity("Tree12");
+		treeObj12.SetScale(glm::vec3(8.0f, 8.0f, 8.0f));
+		treeObj12.SetPosition(glm::vec3(-390.0f, -100.0f, -580.0f));
+		treeObj12.SetYawRotation(-20);
+
+		ModelInstance* treeRender12 = treeObj12.AddComponent<ModelInstance>();
+		treeRender12->Init(m_EnviromentModels["tree"].get());
+		
+		StaticCollider* treeCollider12 = treeObj12.AddComponent<StaticCollider>();
+		treeCollider12->Init();
+		treeCollider12->SetColliderToModel(*m_EnviromentModels["tree"].get());
+
+		Entity& treeObj13 = AddEntity("Tree13");
+		treeObj13.SetScale(glm::vec3(6.0f, 6.0f, 6.0f));
+		treeObj13.SetPosition(glm::vec3(-380.0f, -100.0f, -610.0f));
+		treeObj13.SetYawRotation(60);
+
+		ModelInstance* treeRender13 = treeObj13.AddComponent<ModelInstance>();
+		treeRender13->Init(m_EnviromentModels["tree"].get());
+		
+		StaticCollider* treeCollider13 = treeObj13.AddComponent<StaticCollider>();
+		treeCollider13->Init();
+		treeCollider13->SetColliderToModel(*m_EnviromentModels["tree"].get());
 
 		// Test color source
 		Entity& endColorSrcObj = AddEntity("endColor");
