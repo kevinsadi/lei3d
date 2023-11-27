@@ -9,12 +9,10 @@ namespace lei3d
 {
 	LoadingScreen::LoadingScreen()
 	{
-		
 	}
 
 	LoadingScreen::~LoadingScreen()
 	{
-		
 	}
 
 	void LoadingScreen::HandleInput()
@@ -47,8 +45,7 @@ namespace lei3d
 			GuiComponent::Anchor::TOP_LEFT,
 			{ GuiComponent::Space::NORMALIZED, { 0, 0 } },
 			{ GuiComponent::Space::NORMALIZED, { 1, 1 } },
-			{ 0.4, 0.4, 0.4, 0.7 }
-		);
+			{ 0.4, 0.4, 0.4, 0.7 });
 
 		GuiTextBox* loading = new GuiTextBox(
 			"Loading Game...",
@@ -56,12 +53,11 @@ namespace lei3d
 			{ GuiComponent::Space::NORMALIZED, { 0, 0 } },
 			{ GuiTextBox::LineHeightMetric::PT, 100 },
 			{ 0.827, 0.827, 0.827, 1 },
-			{ 0, 0, 0, 0 }
-		);
+			{ 0, 0, 0, 0 });
 
 		loading->m_alignCenter = true;
 
 		AddComponent(background);
 		AddComponent(loading);
 	}
-}
+} // namespace lei3d

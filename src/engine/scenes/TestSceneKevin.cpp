@@ -186,6 +186,7 @@ namespace lei3d
 		skybox->Init(faces);
 
 		AudioPlayer::GetInstance().PlayMusic("sus2.mp3", 0.1f);
+		GuiManager::Instance().QueueNextScreen(nullptr);
 	}
 
 	void TestSceneKevin::OnReset()
