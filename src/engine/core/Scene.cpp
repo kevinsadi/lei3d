@@ -61,6 +61,10 @@ namespace lei3d
 		return AddEntity("Unnamed Entity");
 	}
 
+	void RemoveEntity(std::string)
+	{
+	}
+
 	Entity* Scene::GetEntity(std::string name) const
 	{
 		for (auto& entity : m_Entities)
