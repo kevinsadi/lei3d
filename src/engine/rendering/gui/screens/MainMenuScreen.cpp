@@ -1,5 +1,7 @@
 #include "MainMenuScreen.hpp"
 
+#include "ControlsScreen.hpp"
+#include "CreditsScreen.hpp"
 #include "LoadingScreen.hpp"
 #include "core/SceneManager.hpp"
 #include "logging/Log.hpp"
@@ -74,9 +76,63 @@ namespace lei3d
 
 		startGame->m_alignCenter = true;
 
+		GuiTextBox* creditsButton = new GuiTextBox(
+			"CREDITS",
+			GuiComponent::Anchor::CENTER,
+			{ GuiComponent::Space::NORMALIZED, { 0, 0.2 } },
+			{ GuiTextBox::LineHeightMetric::PT, 50 },
+			{ 0.827, 0.827, 0.827, 1 },
+			{ 0, 0, 0, 0 },
+			[]() {
+				GuiManager::Instance().QueueNextScreen(new CreditsScreen());
+			});
+
+		creditsButton->SetOnHover([this, creditsButton]() {
+			if (!m_enteredHover)
+			{
+				AudioPlayer::GetInstance().PlaySFX("menu_select.mp3");
+				m_enteredHover = true;
+			}
+			((GuiTextBox*)(this->m_components[creditsButton->GetId()]))->SetTextColor({ 0.522, 0.827, 0.965, 1 });
+		});
+		creditsButton->SetOnStopHover([this, creditsButton]() {
+			m_enteredHover = false;
+			((GuiTextBox*)(this->m_components[creditsButton->GetId()]))->SetTextColor({ 0.827, 0.827, 0.827, 1 });
+		});
+
+		creditsButton->m_alignCenter = true;
+
+		GuiTextBox* controlsButton = new GuiTextBox(
+			"CONTROLS",
+			GuiComponent::Anchor::CENTER,
+			{ GuiComponent::Space::NORMALIZED, { 0, 0.3 } },
+			{ GuiTextBox::LineHeightMetric::PT, 50 },
+			{ 0.827, 0.827, 0.827, 1 },
+			{ 0, 0, 0, 0 },
+			[]() {
+				GuiManager::Instance().QueueNextScreen(new ControlsScreen());
+			});
+
+		controlsButton->SetOnHover([this, controlsButton]() {
+			if (!m_enteredHover)
+			{
+				AudioPlayer::GetInstance().PlaySFX("menu_select.mp3");
+				m_enteredHover = true;
+			}
+			((GuiTextBox*)(this->m_components[controlsButton->GetId()]))->SetTextColor({ 0.522, 0.827, 0.965, 1 });
+		});
+		controlsButton->SetOnStopHover([this, controlsButton]() {
+			m_enteredHover = false;
+			((GuiTextBox*)(this->m_components[controlsButton->GetId()]))->SetTextColor({ 0.827, 0.827, 0.827, 1 });
+		});
+
+		controlsButton->m_alignCenter = true;
+
 		AddComponent(skyleilogo);
 		AddComponent(lei3dlogo);
 		AddComponent(startGame);
+		AddComponent(creditsButton);
+		AddComponent(controlsButton);
 	}
 
 	MainMenuScreen::MainMenuScreen()
