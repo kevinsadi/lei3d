@@ -24,16 +24,7 @@ namespace lei3d
 
 		//We want to check that the colliding object is NOT the player
 		const bool objIsPlayer = colObj1->m_collisionObject == m_AttachedObj;
-		
-		if (!objIsPlayer) {
-			void* userPtr = colObj1->m_collisionObject->getUserPointer();
-			if (userPtr != nullptr)
-				static_cast<PlayerTriggerCallback*>(userPtr)->PlayerEntered();
-		}
 
-		////We only want the flag to be set when colliding with non-player geometry.
-		//// we also want to check the angle of collision
-		
 		btVector3 collisionAngle = cp.m_normalWorldOnB;
 
 		// for testing
@@ -43,6 +34,8 @@ namespace lei3d
 		// 	collisionAngle.angle(btVector3(0, 1, 0));
 		// }
 
+		////We only want the flag to be set when colliding with non-player geometry.
+		//// we also want to check the angle of collision
 		m_Grounded |= !objIsPlayer && collisionAngle.getY() < -0.95; // && angleIsGood; //  syntactic sugar for a = a | b;
 		return 0;
 	}
