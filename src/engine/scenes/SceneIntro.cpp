@@ -36,6 +36,8 @@ namespace lei3d
 
 	void SceneIntro::OnLoad()
 	{
+		AudioPlayer::GetInstance().StopMusic("skylei_title.mp3");
+
 		// load textures
 		stbi_set_flip_vertically_on_load(true);
 
@@ -123,6 +125,7 @@ namespace lei3d
 				// this is a code smell, but I cannot think of a cleaner way to do this
 				dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).AddFlower();
 				AudioPlayer::GetInstance().PlaySFX("collect.mp3");
+				flowerObj1.SetScale(glm::vec3(0.0f, 0.0f, 0.0f));
 			}
 		});
 
@@ -145,6 +148,7 @@ namespace lei3d
 				// this is a code smell, but I cannot think of a cleaner way to do this
 				dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).AddFlower();
 				AudioPlayer::GetInstance().PlaySFX("collect.mp3");
+				flowerObj2.SetScale(glm::vec3(0.0f, 0.0f, 0.0f));
 			}
 		});
 
@@ -167,6 +171,7 @@ namespace lei3d
 				// this is a code smell, but I cannot think of a cleaner way to do this
 				dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).AddFlower();
 				AudioPlayer::GetInstance().PlaySFX("collect.mp3");
+				flowerObj3.SetScale(glm::vec3(0.0f, 0.0f, 0.0f));
 			}
 		});
 
@@ -399,7 +404,7 @@ namespace lei3d
 
 		ModelInstance* treeRender2 = treeObj2.AddComponent<ModelInstance>();
 		treeRender2->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider2 = treeObj2.AddComponent<StaticCollider>();
 		treeCollider2->Init();
 		treeCollider2->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -411,7 +416,7 @@ namespace lei3d
 
 		ModelInstance* treeRender3 = treeObj3.AddComponent<ModelInstance>();
 		treeRender3->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider3 = treeObj3.AddComponent<StaticCollider>();
 		treeCollider3->Init();
 		treeCollider3->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -423,7 +428,7 @@ namespace lei3d
 
 		ModelInstance* treeRender4 = treeObj4.AddComponent<ModelInstance>();
 		treeRender4->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider4 = treeObj4.AddComponent<StaticCollider>();
 		treeCollider4->Init();
 		treeCollider4->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -435,7 +440,7 @@ namespace lei3d
 
 		ModelInstance* treeRender5 = treeObj5.AddComponent<ModelInstance>();
 		treeRender5->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider5 = treeObj5.AddComponent<StaticCollider>();
 		treeCollider5->Init();
 		treeCollider5->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -447,7 +452,7 @@ namespace lei3d
 
 		ModelInstance* treeRender6 = treeObj6.AddComponent<ModelInstance>();
 		treeRender6->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider6 = treeObj6.AddComponent<StaticCollider>();
 		treeCollider6->Init();
 		treeCollider6->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -459,7 +464,7 @@ namespace lei3d
 
 		ModelInstance* treeRender7 = treeObj7.AddComponent<ModelInstance>();
 		treeRender7->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider7 = treeObj7.AddComponent<StaticCollider>();
 		treeCollider7->Init();
 		treeCollider7->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -471,7 +476,7 @@ namespace lei3d
 
 		ModelInstance* treeRender8 = treeObj8.AddComponent<ModelInstance>();
 		treeRender8->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider8 = treeObj8.AddComponent<StaticCollider>();
 		treeCollider8->Init();
 		treeCollider8->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -483,7 +488,7 @@ namespace lei3d
 
 		ModelInstance* treeRender9 = treeObj9.AddComponent<ModelInstance>();
 		treeRender9->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider9 = treeObj9.AddComponent<StaticCollider>();
 		treeCollider9->Init();
 		treeCollider9->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -495,7 +500,7 @@ namespace lei3d
 
 		ModelInstance* treeRender10 = treeObj10.AddComponent<ModelInstance>();
 		treeRender10->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider10 = treeObj10.AddComponent<StaticCollider>();
 		treeCollider10->Init();
 		treeCollider10->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -504,11 +509,12 @@ namespace lei3d
 		Entity& skyboxObj = AddEntity("Skybox");
 
 		SkyBox* skybox = skyboxObj.AddComponent<SkyBox>();
-		std::vector<std::string> faces{ "data/skybox/anime_etheria/right.jpg", "data/skybox/anime_etheria/left.jpg",
-			"data/skybox/anime_etheria/up.jpg", "data/skybox/anime_etheria/down.jpg",
-			"data/skybox/anime_etheria/front.jpg", "data/skybox/anime_etheria/back.jpg" };
+		std::vector<std::string> faces{ "data/skybox/jessica_sky/right.jpg", "data/skybox/jessica_sky/left.jpg",
+			"data/skybox/jessica_sky/py.jpg", "data/skybox/jessica_sky/down.jpg",
+			"data/skybox/jessica_sky/front.jpg", "data/skybox/jessica_sky/back.jpg" };
 		skybox->Init(faces);
 
+		AudioPlayer::GetInstance().PlayMusic("wind.mp3", 0.8f);
 		dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).ResetTimer();
 	}
 
