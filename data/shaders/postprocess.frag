@@ -90,7 +90,7 @@ void main() {
 
     float satFactor = texture(SaturationMask, TexCoords).r;
 
-    const vec3 fogColor = vec3(0.145, 0.588, 0.745);  // TODO: change this based on skybox
+    const vec3 fogColor = vec3(0.24, 0.46, 0.675);  // TODO: change this based on skybox
     float fogFactor = depth * (1.0 - satFactor) - 0.2;
     fogFactor = clamp(fogFactor, 0.0, 1.0);
     color = mix(color, fogColor, fogFactor);
