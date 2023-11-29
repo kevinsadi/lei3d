@@ -435,7 +435,7 @@ namespace lei3d
 		ModelInstance* flowerRender2 = flowerObj2.AddComponent<ModelInstance>();
 		flowerRender2->Init(m_EnviromentModels["flower"].get());
 		flowerObj2.SetScale(glm::vec3(2.5f, 2.5f, 2.5f));
-		flowerObj2.SetPosition(glm::vec3(-87.0f, 178.3f, 446.0f));
+		flowerObj2.SetPosition(glm::vec3(-703.5f, 100.0f, 196.0f));
 		ColorSource* startSrc2 = flowerObj2.AddComponent<ColorSource>();
 		startSrc2->Init(5, 10, true);
 		StaticCollider* flowerCollider2 = flowerObj2.AddComponent<StaticCollider>();
