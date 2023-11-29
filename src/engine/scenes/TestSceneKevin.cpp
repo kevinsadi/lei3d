@@ -50,7 +50,7 @@ namespace lei3d
 		}
 		backpackModel = std::make_unique<Model>(backpackPath);
 
-		const std::string physicsPlaygroundPath = "data/models/skyramps/skyramps.obj";
+		const std::string physicsPlaygroundPath = "data/models/environment/level_disassociate_2.gltf";
 		if (playgroundModel)
 		{
 			playgroundModel.reset();
@@ -433,8 +433,8 @@ namespace lei3d
 		flowerObj2.SetYawRotation(60);
 		ModelInstance* flowerRender2 = flowerObj2.AddComponent<ModelInstance>();
 		flowerRender2->Init(m_EnviromentModels["flower"].get());
-		flowerObj2.SetScale(glm::vec3(2.5f, 2.5f, 2.5f));
-		flowerObj2.SetPosition(glm::vec3(-703.5f, 100.0f, 196.0f));
+		flowerObj2.SetScale(glm::vec3(2.4f, 2.4f, 2.4f));
+		flowerObj2.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 		ColorSource* startSrc2 = flowerObj2.AddComponent<ColorSource>();
 		startSrc2->Init(5, 10, true);
 		StaticCollider* flowerCollider2 = flowerObj2.AddComponent<StaticCollider>();
@@ -520,12 +520,12 @@ namespace lei3d
 		if (color_1 && color_2 && color_3)
 		{
 			Entity* colorObj4 = GetEntity("endColor");
-			AudioPlayer::GetInstance().StopMusic("sus2.mp3");
-			AudioPlayer::GetInstance().PlayMusic("MUS-END_CREDITS.wav", 0.3);
 			colorObj4->GetComponent<ColorSource>()->SetActive(true);
 			colorObj4->GetComponent<ColorSource>()->radius += deltaColorRadius * 2;
 			if (!m_Won)
 			{
+				AudioPlayer::GetInstance().StopMusic("sus2.mp3");
+				AudioPlayer::GetInstance().PlayMusic("MUS-END_CREDITS.wav", 0.3);
 				m_Won = true;
 			}
 		}
