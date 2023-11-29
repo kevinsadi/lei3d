@@ -252,7 +252,7 @@ namespace lei3d
 
 		ModelInstance* treeRender2 = treeObj2.AddComponent<ModelInstance>();
 		treeRender2->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider2 = treeObj2.AddComponent<StaticCollider>();
 		treeCollider2->Init();
 		treeCollider2->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -264,7 +264,7 @@ namespace lei3d
 
 		ModelInstance* treeRender3 = treeObj3.AddComponent<ModelInstance>();
 		treeRender3->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider3 = treeObj3.AddComponent<StaticCollider>();
 		treeCollider3->Init();
 		treeCollider3->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -276,7 +276,7 @@ namespace lei3d
 
 		ModelInstance* treeRender4 = treeObj4.AddComponent<ModelInstance>();
 		treeRender4->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider4 = treeObj4.AddComponent<StaticCollider>();
 		treeCollider4->Init();
 		treeCollider4->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -288,7 +288,7 @@ namespace lei3d
 
 		ModelInstance* treeRender5 = treeObj5.AddComponent<ModelInstance>();
 		treeRender5->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider5 = treeObj5.AddComponent<StaticCollider>();
 		treeCollider5->Init();
 		treeCollider5->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -324,7 +324,7 @@ namespace lei3d
 
 		ModelInstance* treeRender8 = treeObj8.AddComponent<ModelInstance>();
 		treeRender8->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider8 = treeObj8.AddComponent<StaticCollider>();
 		treeCollider8->Init();
 		treeCollider8->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -336,7 +336,7 @@ namespace lei3d
 
 		ModelInstance* treeRender9 = treeObj9.AddComponent<ModelInstance>();
 		treeRender9->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider9 = treeObj9.AddComponent<StaticCollider>();
 		treeCollider9->Init();
 		treeCollider9->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -348,7 +348,7 @@ namespace lei3d
 
 		ModelInstance* treeRender10 = treeObj10.AddComponent<ModelInstance>();
 		treeRender10->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider10 = treeObj10.AddComponent<StaticCollider>();
 		treeCollider10->Init();
 		treeCollider10->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -360,7 +360,7 @@ namespace lei3d
 
 		ModelInstance* treeRender11 = treeObj11.AddComponent<ModelInstance>();
 		treeRender11->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider11 = treeObj11.AddComponent<StaticCollider>();
 		treeCollider11->Init();
 		treeCollider11->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -372,7 +372,7 @@ namespace lei3d
 
 		ModelInstance* treeRender12 = treeObj12.AddComponent<ModelInstance>();
 		treeRender12->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider12 = treeObj12.AddComponent<StaticCollider>();
 		treeCollider12->Init();
 		treeCollider12->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -384,7 +384,7 @@ namespace lei3d
 
 		ModelInstance* treeRender13 = treeObj13.AddComponent<ModelInstance>();
 		treeRender13->Init(m_EnviromentModels["tree"].get());
-		
+
 		StaticCollider* treeCollider13 = treeObj13.AddComponent<StaticCollider>();
 		treeCollider13->Init();
 		treeCollider13->SetColliderToModel(*m_EnviromentModels["tree"].get());
@@ -416,7 +416,7 @@ namespace lei3d
 		startSrc->Init(5, 10, true);
 		StaticCollider* flowerCollider1 = flowerObj1.AddComponent<StaticCollider>();
 		flowerCollider1->Init();
-		flowerCollider1->SetColliderToModel(*m_EnviromentModels["flower"].get());
+		flowerCollider1->SetColliderToModel(*m_EnviromentModels["flower"].get(), true);
 		PlayerTriggerComponent* playerTrigger1 = flowerObj1.AddComponent<PlayerTriggerComponent>();
 		playerTrigger1->SetOnPlayerEntered([&]() {
 			if (!color_1)
@@ -425,6 +425,7 @@ namespace lei3d
 				// this is a code smell, but I cannot think of a cleaner way to do this
 				dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).AddFlower();
 				AudioPlayer::GetInstance().PlaySFX("collect.mp3");
+				flowerObj1.SetScale(glm::vec3(0.0f, 0.0f, 0.0f));
 			}
 		});
 
@@ -433,12 +434,12 @@ namespace lei3d
 		ModelInstance* flowerRender2 = flowerObj2.AddComponent<ModelInstance>();
 		flowerRender2->Init(m_EnviromentModels["flower"].get());
 		flowerObj2.SetScale(glm::vec3(2.5f, 2.5f, 2.5f));
-		flowerObj2.SetPosition(glm::vec3(-87.0f, 178.3f, 446.0f));
+		flowerObj2.SetPosition(glm::vec3(-703.5f, 100.0f, 196.0f));
 		ColorSource* startSrc2 = flowerObj2.AddComponent<ColorSource>();
 		startSrc2->Init(5, 10, true);
 		StaticCollider* flowerCollider2 = flowerObj2.AddComponent<StaticCollider>();
 		flowerCollider2->Init();
-		flowerCollider2->SetColliderToModel(*m_EnviromentModels["flower"].get());
+		flowerCollider2->SetColliderToModel(*m_EnviromentModels["flower"].get(), true);
 		PlayerTriggerComponent* playerTrigger2 = flowerObj2.AddComponent<PlayerTriggerComponent>();
 		playerTrigger2->SetOnPlayerEntered([&]() {
 			if (!color_2)
@@ -447,6 +448,7 @@ namespace lei3d
 				// this is a code smell, but I cannot think of a cleaner way to do this
 				dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).AddFlower();
 				AudioPlayer::GetInstance().PlaySFX("collect.mp3");
+				flowerObj2.SetScale(glm::vec3(0.0f, 0.0f, 0.0f));
 			}
 		});
 
@@ -460,7 +462,7 @@ namespace lei3d
 		startSrc3->Init(5, 10, true);
 		StaticCollider* flowerCollider3 = flowerObj3.AddComponent<StaticCollider>();
 		flowerCollider3->Init();
-		flowerCollider3->SetColliderToModel(*m_EnviromentModels["flower"].get());
+		flowerCollider3->SetColliderToModel(*m_EnviromentModels["flower"].get(), true);
 		PlayerTriggerComponent* playerTrigger3 = flowerObj3.AddComponent<PlayerTriggerComponent>();
 		playerTrigger3->SetOnPlayerEntered([&]() {
 			if (!color_3)
@@ -469,6 +471,7 @@ namespace lei3d
 				// this is a code smell, but I cannot think of a cleaner way to do this
 				dynamic_cast<BaseGuiScreen&>(GuiManager::Instance().GetBaseScreen()).AddFlower();
 				AudioPlayer::GetInstance().PlaySFX("collect.mp3");
+				flowerObj3.SetScale(glm::vec3(0.0f, 0.0f, 0.0f));
 			}
 		});
 
@@ -476,12 +479,12 @@ namespace lei3d
 		Entity& skyboxObj = AddEntity("Skybox");
 
 		SkyBox* skybox = skyboxObj.AddComponent<SkyBox>();
-		std::vector<std::string> faces{ "data/skybox/anime_etheria/right.jpg", "data/skybox/anime_etheria/left.jpg",
-			"data/skybox/anime_etheria/up.jpg", "data/skybox/anime_etheria/down.jpg",
-			"data/skybox/anime_etheria/front.jpg", "data/skybox/anime_etheria/back.jpg" };
+		std::vector<std::string> faces{ "data/skybox/jessica_sky/right.jpg", "data/skybox/jessica_sky/left.jpg",
+			"data/skybox/jessica_sky/py.jpg", "data/skybox/jessica_sky/down.jpg",
+			"data/skybox/jessica_sky/front.jpg", "data/skybox/jessica_sky/back.jpg" };
 		skybox->Init(faces);
 
-		AudioPlayer::GetInstance().PlayMusic("sus2.mp3", 0.1f);
+		AudioPlayer::GetInstance().PlayMusic("sus2.mp3", 0.3f);
 		GuiManager::Instance().QueueNextScreen(nullptr);
 	}
 
@@ -517,17 +520,14 @@ namespace lei3d
 		if (color_1 && color_2 && color_3)
 		{
 			Entity* colorObj4 = GetEntity("endColor");
-			// AudioPlayer::GetInstance().PlaySFX("win.mp3");
+			AudioPlayer::GetInstance().StopMusic("sus2.mp3");
+			AudioPlayer::GetInstance().PlayMusic("MUS-END_CREDITS.wav", 0.3);
 			colorObj4->GetComponent<ColorSource>()->SetActive(true);
 			colorObj4->GetComponent<ColorSource>()->radius += deltaColorRadius * 2;
 			if (!m_Won)
 			{
 				m_Won = true;
 			}
-		}
-		if (glfwGetKey(Application::Window(), GLFW_KEY_K) == GLFW_PRESS)
-		{
-			AudioPlayer::GetInstance().StopMusic("sus2.mp3");
 		}
 	}
 
