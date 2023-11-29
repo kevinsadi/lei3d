@@ -180,6 +180,7 @@ namespace lei3d
 		m_PhysicsElapsedTime += m_DeltaTime;
 		if (m_PhysicsElapsedTime >= m_FixedDeltaTime)
 		{
+			std::cout << (Application::DeltaTime()) << std::endl;
 			FixedUpdate();
 			m_PhysicsElapsedTime -= m_FixedDeltaTime;
 		}
@@ -229,6 +230,7 @@ namespace lei3d
 
 	void Application::FixedUpdate()
 	{
+		LEI_TRACE(Application::GetInstance.DeltaTime())
 		Scene& scene = SceneManager::GetInstance().ActiveScene();
 		scene.PhysicsUpdate();
 	}

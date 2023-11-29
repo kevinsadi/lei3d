@@ -22,16 +22,14 @@ namespace lei3d
 			GuiComponent::Anchor::TOP_LEFT,
 			{ GuiComponent::Space::NORMALIZED, { 0, 0 } },
 			{ GuiComponent::Space::NORMALIZED, { 1, 1 } },
-			{1, 1, 1, 1}
-		));
+			{ 1, 1, 1, 1 }));
 
 		AddComponent(new GuiRect(
 			GuiComponent::Anchor::TOP_LEFT,
 			{ GuiComponent::Space::NORMALIZED, { 0, 0 } },
 			{ GuiComponent::Space::NORMALIZED, { 1, 1 } },
-			{1, 1, 1, 1},
-			GetControlsTexID()
-		));
+			{ 1, 1, 1, 1 },
+			GetControlsTexID()));
 
 		AddComponent(new GuiTextBox(
 			"x",
@@ -42,17 +40,14 @@ namespace lei3d
 			{ 0, 0, 0, 0 },
 			[]() {
 				GuiManager::Instance().QueueNextScreen(new MainMenuScreen());
-			}
-		));
+			}));
 	}
 
 	ControlsScreen::ControlsScreen()
 	{
-		
 	}
 
 	ControlsScreen::~ControlsScreen()
 	{
-
 	}
-}
+} // namespace lei3d

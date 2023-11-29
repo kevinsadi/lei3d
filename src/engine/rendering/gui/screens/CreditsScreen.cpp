@@ -10,7 +10,7 @@ namespace lei3d
 {
 	int CreditsScreen::GetCreditsTexID()
 	{
-		static Texture splash = Texture("./data/textures/credits.png");
+		static Texture splash = Texture("./data/textures/credits_5.png");
 		return splash.id();
 	}
 
@@ -22,16 +22,14 @@ namespace lei3d
 			GuiComponent::Anchor::TOP_LEFT,
 			{ GuiComponent::Space::NORMALIZED, { 0, 0 } },
 			{ GuiComponent::Space::NORMALIZED, { 1, 1 } },
-			{1, 1, 1, 1}
-		));
+			{ 1, 1, 1, 1 }));
 
 		AddComponent(new GuiRect(
 			GuiComponent::Anchor::TOP_LEFT,
 			{ GuiComponent::Space::NORMALIZED, { 0, 0 } },
 			{ GuiComponent::Space::NORMALIZED, { 1, 1 } },
-			{1, 1, 1, 1},
-			GetCreditsTexID()
-		));
+			{ 1, 1, 1, 1 },
+			GetCreditsTexID()));
 
 		AddComponent(new GuiTextBox(
 			"x",
@@ -42,17 +40,14 @@ namespace lei3d
 			{ 0, 0, 0, 0 },
 			[]() {
 				GuiManager::Instance().QueueNextScreen(new MainMenuScreen());
-			}
-		));
+			}));
 	}
 
 	CreditsScreen::CreditsScreen()
 	{
-		
 	}
 
 	CreditsScreen::~CreditsScreen()
 	{
-
 	}
-}
+} // namespace lei3d
