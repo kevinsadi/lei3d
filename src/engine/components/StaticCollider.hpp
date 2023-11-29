@@ -21,12 +21,12 @@ namespace lei3d
 		~StaticCollider();
 
 		void Init();
-		void SetColliderToModel(Model& model);
+		void SetColliderToModel(Model& model, bool addToTriggers = false);
 		void PhysicsUpdate() override;
 		
 		btRigidBody* getRigidBody();
 
 	private:
-		void AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, const Transform& transform);
+		void AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, const Transform& transform, bool addToPhysics);
 	};
 } // namespace lei3d

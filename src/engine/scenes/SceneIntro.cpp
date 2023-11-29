@@ -114,7 +114,7 @@ namespace lei3d
 		startSrc->Init(5, 10, true);
 		StaticCollider* flowerCollider1 = flowerObj1.AddComponent<StaticCollider>();
 		flowerCollider1->Init();
-		flowerCollider1->SetColliderToModel(*m_EnviromentModels["flower"].get());
+		flowerCollider1->SetColliderToModel(*m_EnviromentModels["flower"].get(), true);
 		PlayerTriggerComponent* playerTrigger1 = flowerObj1.AddComponent<PlayerTriggerComponent>();
 		playerTrigger1->SetOnPlayerEntered([&]() {
 			if (!color_1)
@@ -136,7 +136,7 @@ namespace lei3d
 		startSrc2->Init(5, 10, true);
 		StaticCollider* flowerCollider2 = flowerObj2.AddComponent<StaticCollider>();
 		flowerCollider2->Init();
-		flowerCollider2->SetColliderToModel(*m_EnviromentModels["flower"].get());
+		flowerCollider2->SetColliderToModel(*m_EnviromentModels["flower"].get(), true);
 		PlayerTriggerComponent* playerTrigger2 = flowerObj2.AddComponent<PlayerTriggerComponent>();
 		playerTrigger2->SetOnPlayerEntered([&]() {
 			if (!color_2)
@@ -158,7 +158,7 @@ namespace lei3d
 		startSrc3->Init(5, 10, true);
 		StaticCollider* flowerCollider3 = flowerObj3.AddComponent<StaticCollider>();
 		flowerCollider3->Init();
-		flowerCollider3->SetColliderToModel(*m_EnviromentModels["flower"].get());
+		flowerCollider3->SetColliderToModel(*m_EnviromentModels["flower"].get(), true);
 		PlayerTriggerComponent* playerTrigger3 = flowerObj3.AddComponent<PlayerTriggerComponent>();
 		playerTrigger3->SetOnPlayerEntered([&]() {
 			if (!color_3)

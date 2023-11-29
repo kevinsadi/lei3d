@@ -4,6 +4,8 @@
 #include "rendering/gui/components/GuiRect.hpp"
 #include "rendering/gui/components/GuiTextBox.hpp"
 
+#include <sstream>
+
 namespace lei3d
 {
 	void BaseGuiScreen::Init()
@@ -53,7 +55,10 @@ namespace lei3d
 			m_timer += Application::DeltaTime();
 			GuiTextBox* timerTextbox = (GuiTextBox*)m_components[m_timerTextboxId];
 			int intTimer = static_cast<int>(std::floor(m_timer));
-			timerTextbox->SetText(std::format("{:01d}:{:02d}", intTimer / 60, intTimer % 60));
+
+			std::stringstream ss;
+			
+			//timerTextbox->SetText(std::format("{:01d}:{:02d}", intTimer / 60, intTimer % 60));
 		}
 	}
 

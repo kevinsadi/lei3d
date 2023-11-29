@@ -27,6 +27,8 @@ namespace lei3d
 		std::unique_ptr<btIDebugDraw> m_debugDrawer = nullptr;
 		// btAlignedObjectArray<btCollisionShape*> m_collisionShapes;	//Can we get rid of this??
 
+		std::unique_ptr<btDiscreteDynamicsWorld> m_triggersWorld = nullptr; 
+
 		PhysicsWorld();
 
 		void Create();

@@ -27,6 +27,10 @@ namespace lei3d
 		m_debugDrawer = std::make_unique<LeiDebugDrawer>();
 		m_debugDrawer->setDebugMode(btIDebugDraw::DBG_DrawContactPoints | btIDebugDraw::DBG_EnableCCD);
 		m_dynamicsWorld->setDebugDrawer(m_debugDrawer.get());
+
+		m_triggersWorld = std::make_unique<btDiscreteDynamicsWorld>(m_dispatcher.get(), m_overlappingPairCache.get(), m_solver.get(), m_collisionConfiguration.get());
+		m_triggersWorld->getSolverInfo().m_numIterations = 30;
+		m_triggersWorld->setDebugDrawer(m_debugDrawer.get());
 	}
 
 	void PhysicsWorld::Create()

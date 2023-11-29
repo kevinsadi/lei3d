@@ -3,6 +3,7 @@
 #include "core/Application.hpp"
 #include "core/InputManager.hpp"
 #include "physics/GroundedCallback.hpp"
+#include "physics/TriggerCallback.hpp"
 
 #include <algorithm>
 
@@ -32,15 +33,19 @@ namespace lei3d
 		m_Character->setRestitution(0.0);
 
 		// Check if we are on the ground
-		GroundedCallback callback(m_Character);
-		collisionWorld->contactTest(m_GroundCheck, callback);
+		PhysicsWorld& world = SceneManager::ActiveScene().GetPhysicsWorld();
+		GroundedCallback grounded_callback(m_Character);
+		TriggerCallback trigger_callback(m_Character);
 
-		bool onGround = callback.m_Grounded;
+		collisionWorld->contactTest(m_GroundCheck, grounded_callback);
+		world.m_triggersWorld->contactTest(m_Character, trigger_callback);
+
+		bool onGround = grounded_callback.m_Grounded;
 		if (m_Controller.m_IncludeSFX && m_Controller.m_Grounded == false && onGround == true)
 		{
 			AudioPlayer::GetInstance().PlaySFX("SFX-LAND-SHORT-RR4.wav"); //.PlaySound("landing");
 		}
-		bool groundPoint = callback.m_GroundPoint;
+		bool groundPoint = grounded_callback.m_GroundPoint;
 		m_Controller.m_Grounded = onGround;
 
 		// Update velocity accordingly
