@@ -533,6 +533,7 @@ namespace lei3d
 
 	void TestSceneKevin::OnPhysicsUpdate()
 	{
+		// std::cout << "OnPhysicsUpdate frame tick" << (Application::DeltaTime()) << std::endl;
 		m_PhysicsWorld->Step(Application::DeltaTime());
 	}
 } // namespace lei3d

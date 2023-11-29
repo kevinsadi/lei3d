@@ -4,7 +4,7 @@
 #include "core/SceneView.hpp"
 
 #ifdef EDITOR
-#include "guitools/EditorGUI.hpp"
+	#include "guitools/EditorGUI.hpp"
 #endif
 
 #include "rendering/PrimitiveRenderer.hpp"
@@ -59,7 +59,7 @@ namespace lei3d
 									  // means that the FPS cap is half, not sure why)
 
 		float m_PhysicsElapsedTime = 0.0f;
-		float m_FixedDeltaTime = 0.01f;
+		float m_FixedDeltaTime = 0.0166f;
 
 	public:
 		static Application& GetInstance();
@@ -73,7 +73,7 @@ namespace lei3d
 
 		static GLFWwindow* Window();
 		static float DeltaTime();
-    
+
 		SceneView& GetSceneView();
 		PrimitiveRenderer& GetPrimitiveRenderer();
 
