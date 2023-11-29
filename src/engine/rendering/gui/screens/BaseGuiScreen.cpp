@@ -58,7 +58,7 @@ namespace lei3d
 
 			std::stringstream ss;
 			
-			//timerTextbox->SetText(std::format("{:01d}:{:02d}", intTimer / 60, intTimer % 60));
+			timerTextbox->SetText(std::format("{:01d}:{:02d}", intTimer / 60, intTimer % 60));
 		}
 	}
 
