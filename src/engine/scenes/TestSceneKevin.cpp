@@ -480,9 +480,9 @@ namespace lei3d
 		Entity& skyboxObj = AddEntity("Skybox");
 
 		SkyBox* skybox = skyboxObj.AddComponent<SkyBox>();
-		std::vector<std::string> faces{ "data/skybox/anime_etheria/right.jpg", "data/skybox/anime_etheria/left.jpg",
-			"data/skybox/anime_etheria/up.jpg", "data/skybox/anime_etheria/down.jpg",
-			"data/skybox/anime_etheria/front.jpg", "data/skybox/anime_etheria/back.jpg" };
+		std::vector<std::string> faces{ "data/skybox/jessica_sky/right.jpg", "data/skybox/jessica_sky/left.jpg",
+			"data/skybox/jessica_sky/py.jpg", "data/skybox/jessica_sky/down.jpg",
+			"data/skybox/jessica_sky/front.jpg", "data/skybox/jessica_sky/back.jpg" };
 		skybox->Init(faces);
 
 		AudioPlayer::GetInstance().PlayMusic("sus2.mp3", 0.3f);
