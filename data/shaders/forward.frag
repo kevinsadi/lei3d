@@ -217,7 +217,7 @@ void main() {
     }
 
     float visible = 1.0 - calcShadowPCF(N);
-    vec3 ambient = vec3(0.2) * albedo * ao;
+    vec3 ambient = vec3(0.15) * albedo * ao * vec3(0.24, 0.46, 0.675);  // TODO: change this based on skybox;
     vec3 color = ambient + Lo * visible;
 
     FragOut = color;

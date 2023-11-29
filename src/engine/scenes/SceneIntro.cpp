@@ -60,13 +60,13 @@ namespace lei3d
 		const std::string flowerPath = "data/models/leveldesignobj/flower/flower_export_2.obj";
 		m_EnviromentModels.insert(std::make_pair("flower", std::make_unique<Model>(flowerPath)));
 
-		const std::string islandPath = "data/models/environment/flat_grass_island_fix.gltf";
+		const std::string islandPath = "data/models/environment/flat_grass_island.gltf";
 		m_EnviromentModels.insert(std::make_pair("island", std::make_unique<Model>(islandPath)));
 
 		const std::string housePath = "data/models/leveldesignobj/house/house_texture.obj";
 		m_EnviromentModels.insert(std::make_pair("house", std::make_unique<Model>(housePath)));
 
-		const std::string signPath = "data/models/leveldesignobj/sign/sign.obj";
+		const std::string signPath = "data/models/leveldesignobj/sign/sign.gltf";
 		m_EnviromentModels.insert(std::make_pair("sign", std::make_unique<Model>(signPath)));
 
 		const std::string fishPath = "data/models/leveldesignobj/fish2/fish.obj";
