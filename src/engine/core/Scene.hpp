@@ -39,9 +39,9 @@ namespace lei3d
 	protected:
 		// We should prob. limit how much stuff we put into the base scene.
 
-		//FlyCamera moved to SceneView
-		std::unique_ptr<Camera>			  m_DefaultCamera = nullptr;
-		std::unique_ptr<PhysicsWorld>	  m_PhysicsWorld = nullptr; // Each scene has a physics world
+		// FlyCamera moved to SceneView
+		std::unique_ptr<Camera> m_DefaultCamera = nullptr;
+		std::unique_ptr<PhysicsWorld> m_PhysicsWorld = nullptr; // Each scene has a physics world
 		std::unique_ptr<DirectionalLight> m_DirectionalLight = nullptr;
 
 		SceneState m_State;
@@ -53,6 +53,7 @@ namespace lei3d
 		// Entities
 		Entity& AddEntity(std::string name);
 		Entity& AddEntity();
+		void RemoveEntity(std::string name);
 
 		// Entity Messages
 		void Start();
@@ -69,7 +70,7 @@ namespace lei3d
 		void Unload();
 
 #ifdef EDITOR
-		//GUI
+		// GUI
 		void ShowHeirarchyGUI();
 #endif
 
@@ -85,9 +86,9 @@ namespace lei3d
 		virtual void OnDestroy() {}
 		virtual void OnReset() {}
 
-		virtual Camera& GetMainCamera() const; //Scene must have some camera created (basically just the first person camera lmao.
+		virtual Camera& GetMainCamera() const; // Scene must have some camera created (basically just the first person camera lmao.
 
-		Entity*		  GetEntity(std::string name) const;
+		Entity* GetEntity(std::string name) const;
 		PhysicsWorld& GetPhysicsWorld() const;
 
 		void PrintEntityList() const; // For Debugging
