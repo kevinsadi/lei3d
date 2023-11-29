@@ -28,12 +28,12 @@ namespace lei3d
 	{
 	}
 
-	void StaticCollider::SetColliderToModel(Model& model)
+	void StaticCollider::SetColliderToModel(Model& model, bool isTrigger)
 	{
 		std::vector<btTriangleMesh*>& modelMeshes = model.GetCollisionMeshes();
 		for (auto triMesh : modelMeshes)
 		{
-			AddCollisionsFromTriangleMesh(triMesh, m_Entity.m_Transform);
+			AddCollisionsFromTriangleMesh(triMesh, m_Entity.m_Transform, isTrigger);
 		}
 	}
 
@@ -44,8 +44,9 @@ namespace lei3d
 	 *
 	 * @param triMesh
 	 * @param transform
+	 * @param isTrigger
 	 */
-	void StaticCollider::AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, const Transform& transform)
+	void StaticCollider::AddCollisionsFromTriangleMesh(btTriangleMesh* triMesh, const Transform& transform, bool isTrigger)
 	{
 		btVector3 scaleVector{ transform.scale.x, transform.scale.y, transform.scale.z };
 		m_NonScaledCollider = new btBvhTriangleMeshShape(triMesh, true, true);
@@ -70,7 +71,13 @@ namespace lei3d
 		m_RigidBody->setCcdMotionThreshold(0.0001); // Adjust the threshold as needed
 		m_RigidBody->setCcdSweptSphereRadius(0.4);	// Adjust the swept sphere radius
 
-		world.m_dynamicsWorld->addRigidBody(m_RigidBody);
+		if (isTrigger)
+		{
+			world.m_triggersWorld->addCollisionObject(m_RigidBody);
+		} else
+		{
+			world.m_dynamicsWorld->addRigidBody(m_RigidBody);
+		}
 	}
 
 	// FOR SOME REASON THE COLLISION MESH DOESN'T CHANGE
