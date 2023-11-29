@@ -177,11 +177,13 @@ namespace lei3d
 		m_DeltaTime = currentTime - m_LastFrameTime;
 		m_LastFrameTime = currentTime;
 
+		// std::cout << "render frame tick" << (Application::DeltaTime()) << std::endl;
+
 		m_PhysicsElapsedTime += m_DeltaTime;
 		while (m_PhysicsElapsedTime >= m_FixedDeltaTime)
 		{
-			std::cout << "deltaTime" << (Application::DeltaTime()) << std::endl;
-			std::cout << "m_PhysicsElapsedTime" << (m_PhysicsElapsedTime) << std::endl;
+			// std::cout << "deltaTime frame tick" << (Application::DeltaTime()) << std::endl;
+			//  std::cout << "m_PhysicsElapsedTime" << (m_PhysicsElapsedTime) << std::endl;
 
 			FixedUpdate();
 			m_PhysicsElapsedTime -= m_FixedDeltaTime;
@@ -233,7 +235,7 @@ namespace lei3d
 	void Application::FixedUpdate()
 	{
 		// LEI_TRACE(Application::GetInstance.DeltaTime())
-		std::cout << "fixed update time" << (Application::DeltaTime()) << std::endl;
+		// std::cout << "fixed update time" << (Application::DeltaTime()) << std::endl;
 
 		Scene& scene = SceneManager::GetInstance().ActiveScene();
 		scene.PhysicsUpdate();
@@ -301,13 +303,13 @@ namespace lei3d
 		sceneCamera.Pan();
 
 		// gracefully exit on escape
-		if (im.isKeyPressed(GLFW_KEY_ESCAPE))
+		if (im.isKeyPressed(GLFW_KEY_0))
 		{
 			glfwSetWindowShouldClose(m_Window, true);
 		}
 
 		// open sample splash screen
-		if (im.isKeyPressed(GLFW_KEY_0))
+		if (im.isKeyPressed(GLFW_KEY_ESCAPE))
 		{
 			GuiManager::Instance().QueueNextScreen(new PauseMenuScreen());
 		}

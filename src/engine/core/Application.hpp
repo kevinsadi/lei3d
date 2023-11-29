@@ -59,7 +59,7 @@ namespace lei3d
 									  // means that the FPS cap is half, not sure why)
 
 		float m_PhysicsElapsedTime = 0.0f;
-		float m_FixedDeltaTime = 0.015f;
+		float m_FixedDeltaTime = 0.0166f;
 
 	public:
 		static Application& GetInstance();
