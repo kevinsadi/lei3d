@@ -1,5 +1,5 @@
 # lei3D / SkyLei
-![skylei logo](screenshots/skylei_logo.png)
+![skylei logo](screenshots/skylei.png)
 
 ## About
 This is a dual repo to support the game SkyLei, and bespoke game engine Lei3D that it was built on.
