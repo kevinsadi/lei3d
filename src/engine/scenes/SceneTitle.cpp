@@ -61,7 +61,7 @@ namespace lei3d
 		const std::string signPath = "data/models/leveldesignobj/sign/sign.gltf";
 		m_EnviromentModels.insert(std::make_pair("sign", std::make_unique<Model>(signPath)));
 
-		const std::string fishPath = "data/models/leveldesignobj/fish2/fish.obj";
+		const std::string fishPath = "data/models/leveldesignobj/fish2/Fish.obj";
 		m_EnviromentModels["fish"] = (std::make_unique<Model>(fishPath));
 		m_EnviromentModels.insert(std::make_pair("fish", std::make_unique<Model>(fishPath)));
 
