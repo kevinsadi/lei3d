@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <cstdint>
 
 namespace lei3d
 {
@@ -9,7 +10,6 @@ namespace lei3d
 	class AppSettings
 	{
 	public:
-
 		static AppSettings& GetInstance();
 		~AppSettings() = default;
 

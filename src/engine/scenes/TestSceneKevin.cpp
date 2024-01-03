@@ -51,6 +51,8 @@ namespace lei3d
 		backpackModel = std::make_unique<Model>(backpackPath);
 
 		const std::string physicsPlaygroundPath = "data/models/environment/level_disassociate_2.gltf";
+		// const std::string physicsPlaygroundPath = "data/models/environment/level_7_colors.gltf";
+
 		if (playgroundModel)
 		{
 			playgroundModel.reset();
@@ -66,7 +68,7 @@ namespace lei3d
 		const std::string housePath = "data/models/leveldesignobj/house/house_texture.obj";
 		m_EnviromentModels.insert(std::make_pair("house", std::make_unique<Model>(housePath)));
 
-		const std::string fishPath = "data/models/leveldesignobj/fish2/fish.obj";
+		const std::string fishPath = "data/models/leveldesignobj/fish2/Fish.obj";
 		m_EnviromentModels.insert(std::make_pair("fish", std::make_unique<Model>(fishPath)));
 
 		const std::string treePath = "data/models/environment/palm_tree.gltf";
@@ -434,7 +436,7 @@ namespace lei3d
 		ModelInstance* flowerRender2 = flowerObj2.AddComponent<ModelInstance>();
 		flowerRender2->Init(m_EnviromentModels["flower"].get());
 		flowerObj2.SetScale(glm::vec3(2.4f, 2.4f, 2.4f));
-		flowerObj2.SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+		flowerObj2.SetPosition(glm::vec3(-91.5f, -233.6f, -467.0f));
 		ColorSource* startSrc2 = flowerObj2.AddComponent<ColorSource>();
 		startSrc2->Init(5, 10, true);
 		StaticCollider* flowerCollider2 = flowerObj2.AddComponent<StaticCollider>();

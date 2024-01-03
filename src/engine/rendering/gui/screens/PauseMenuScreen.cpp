@@ -3,14 +3,13 @@
 #include "SplashScreen.hpp"
 #include "core/Application.hpp"
 #include "rendering/gui/components/GuiTextBox.hpp"
-#include "Logging/Log.hpp"
+#include "logging/Log.hpp"
 #include "rendering/gui/GuiManager.hpp"
 
 namespace lei3d
 {
 	PauseMenuScreen::PauseMenuScreen()
 	{
-		
 	}
 
 	PauseMenuScreen::~PauseMenuScreen()
@@ -22,11 +21,10 @@ namespace lei3d
 		GuiScreen::Init();
 
 		AddComponent(new GuiRect(
-			GuiComponent::Anchor::TOP_LEFT, 
-			{ GuiComponent::Space::NORMALIZED, { 0, 0 } }, 
-			{ GuiComponent::Space::NORMALIZED, { 1, 1 } }, 
-			{ 0, 0, 0, 0.5 }
-		));
+			GuiComponent::Anchor::TOP_LEFT,
+			{ GuiComponent::Space::NORMALIZED, { 0, 0 } },
+			{ GuiComponent::Space::NORMALIZED, { 1, 1 } },
+			{ 0, 0, 0, 0.5 }));
 
 		GuiTextBox* resumeButton = new GuiTextBox(
 			"Resume",
@@ -91,6 +89,6 @@ namespace lei3d
 
 		AddComponent(resumeButton);
 		AddComponent(restartButton);
-		AddComponent(exitButton);	
+		AddComponent(exitButton);
 	}
-} 
+} // namespace lei3d
